@@ -1,0 +1,13 @@
+{
+  "schema": "basair-tafsir-update-v1",
+  "version": 1,
+  "surahs": {
+    "3": {
+      "name": "آل عمران",
+      "content_version": "001",
+      "ayah_count": 200,
+      "file": "basair-aal-imran-001.json",
+      "sha256": "a09008f6df11ad033bb6f172df20ed388f3c30de359d206b62d9cd610378da42"
+    }
+  }
+}
