@@ -1,13 +1,22 @@
 {
-  "schema": "basair-tafsir-update-v1",
-  "version": 1,
+  "schema": "basair-tafsir-update-v2",
+  "version": 2,
   "surahs": {
     "3": {
       "name": "آل عمران",
       "content_version": "001",
       "ayah_count": 200,
-      "file": "basair-aal-imran-001.json",
-      "sha256": "a09008f6df11ad033bb6f172df20ed388f3c30de359d206b62d9cd610378da42"
+      "parts": [
+        {"from":1,"to":25,"file":"surah-003/001/part-001-025.json","sha256":"5ebdbbf7839f3acb3e494f1a4caec2658da84f06942a9dd231f44e2bd87c3607","bytes":23357},
+        {"from":26,"to":50,"file":"surah-003/001/part-026-050.json","sha256":"775fc1fdbdfcd6e632d7cee8abc0a0e14eb5fed7b46711471624f428aae6f38b","bytes":24118},
+        {"from":51,"to":75,"file":"surah-003/001/part-051-075.json","sha256":"f8d05f88dd40dbc7937281b9403cf21a81448683f8ad8016edd8f74af028dbff","bytes":22893},
+        {"from":76,"to":100,"file":"surah-003/001/part-076-100.json","sha256":"bba66b7adaed5825f2ed763e2030f4a231460bcf68fc184f6780bfbaf51276c7","bytes":24005},
+        {"from":101,"to":125,"file":"surah-003/001/part-101-125.json","sha256":"fde00e360a642b0b75c31e155fee1c7c90a6ed48d20206f97efc522dcead25cf","bytes":24273},
+        {"from":126,"to":150,"file":"surah-003/001/part-126-150.json","sha256":"82d59eb458750c222da56f39d2f54d955242eca17b0167033e99f3c8627a2f42","bytes":22275},
+        {"from":151,"to":175,"file":"surah-003/001/part-151-175.json","sha256":"37235d1dd5cec7880728331f0a84012bb42bc0458366cac95a9b1f4d61388209","bytes":28430},
+        {"from":176,"to":200,"file":"surah-003/001/part-176-200.json","sha256":"18cfc1f2535dcab006a19962239d0f4f7a2b3f2b89d71303244f2e83de210d86","bytes":26837}
+      ],
+      "canonical_sha256": "a09008f6df11ad033bb6f172df20ed388f3c30de359d206b62d9cd610378da42"
     }
   }
 }
