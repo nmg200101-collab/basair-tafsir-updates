@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-dex:
+  build-native:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -29,9 +29,33 @@ jobs:
             --output native-build-step32/dex \
             native-build-step32/app-classes.jar
           ls -lh native-build-step32/dex/classes.dex
-      - name: Upload classes.dex
+      - name: Build manifest/resource skeleton
+        run: |
+          mkdir -p native-build-step32/res/drawable native-build-step32/compiled
+          python3 - <<'PY'
+          import base64, pathlib
+          # Valid 1x1 PNG placeholder. Final package replaces this with the preserved Basair launcher icon.
+          png='iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII='
+          pathlib.Path('native-build-step32/res/drawable/ic_launcher.png').write_bytes(base64.b64decode(png))
+          PY
+          "$ANDROID_HOME/build-tools/35.0.0/aapt2" compile \
+            --dir native-build-step32/res \
+            -o native-build-step32/compiled/resources.zip
+          "$ANDROID_HOME/build-tools/35.0.0/aapt2" link \
+            -I "$ANDROID_HOME/platforms/android-35/android.jar" \
+            --manifest native-build-step32/AndroidManifest.xml \
+            --min-sdk-version 23 \
+            --target-sdk-version 35 \
+            --version-code 194 \
+            --version-name 0.19.4 \
+            -o native-build-step32/skeleton.apk \
+            native-build-step32/compiled/resources.zip
+          unzip -l native-build-step32/skeleton.apk
+      - name: Upload native outputs
         uses: actions/upload-artifact@v4
         with:
-          name: step32-native-classes-dex
-          path: native-build-step32/dex/classes.dex
+          name: step32-native-runtime
+          path: |
+            native-build-step32/dex/classes.dex
+            native-build-step32/skeleton.apk
           if-no-files-found: error
