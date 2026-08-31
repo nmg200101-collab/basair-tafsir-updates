@@ -39,9 +39,7 @@ public class MainActivity extends Activity {
         s.setAllowFileAccess(true);
         s.setAllowFileAccessFromFileURLs(true);
         s.setAllowUniversalAccessFromFileURLs(true);
-        if (Build.VERSION.SDK_INT >= 17) {
-            s.setMediaPlaybackRequiresUserGesture(false);
-        }
+        if (Build.VERSION.SDK_INT >= 17) s.setMediaPlaybackRequiresUserGesture(false);
         webView.setWebChromeClient(new MicChromeClient());
         webView.addJavascriptInterface(new NativeSpeechBridge(), "BasairSpeech");
         if (Build.VERSION.SDK_INT >= 23 && checkSelfPermission(Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
@@ -94,7 +92,10 @@ public class MainActivity extends Activity {
         ensureRecognizer();
         if (speechRecognizer == null) return;
         try {
-            speechRecognizer.cancel();
+            if (speechRunning) {
+                speechRecognizer.cancel();
+                speechRunning = false;
+            }
             Intent i = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
             i.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
             i.putExtra(RecognizerIntent.EXTRA_LANGUAGE, pendingLanguage);
