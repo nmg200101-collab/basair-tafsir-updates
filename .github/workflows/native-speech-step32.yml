@@ -16,6 +16,8 @@ jobs:
         run: |
           yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses >/dev/null || true
           "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-35" "build-tools;35.0.0"
+      - name: Apply STEP37 native patch
+        run: python3 native-build-step32/step37_patch.py
       - name: Compile native activity
         run: |
           mkdir -p native-build-step32/out native-build-step32/dex
@@ -34,7 +36,6 @@ jobs:
           mkdir -p native-build-step32/res/drawable native-build-step32/compiled
           python3 - <<'PY'
           import base64, pathlib
-          # Valid 1x1 PNG placeholder. Final package replaces this with the preserved Basair launcher icon.
           png='iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII='
           pathlib.Path('native-build-step32/res/drawable/ic_launcher.png').write_bytes(base64.b64decode(png))
           PY
@@ -54,7 +55,7 @@ jobs:
       - name: Upload native outputs
         uses: actions/upload-artifact@v4
         with:
-          name: step32-native-runtime
+          name: step37-native-runtime
           path: |
             native-build-step32/dex/classes.dex
             native-build-step32/skeleton.apk
