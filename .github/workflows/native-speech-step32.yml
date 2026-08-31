@@ -23,18 +23,11 @@ jobs:
             -classpath "$ANDROID_HOME/platforms/android-35/android.jar" \
             -d native-build-step32/out \
             native-build-step32/app/basair/quran/MainActivity.java
+          jar cf native-build-step32/app-classes.jar -C native-build-step32/out .
           "$ANDROID_HOME/build-tools/35.0.0/d8" \
             --min-api 23 \
             --output native-build-step32/dex \
-            native-build-step32/out/app/basair/quran/MainActivity.class \
-            native-build-step32/out/app/basair/quran/MainActivity\$NativeSpeechBridge.class \
-            native-build-step32/out/app/basair/quran/MainActivity\$MicChromeClient.class \
-            native-build-step32/out/app/basair/quran/MainActivity\$1.class \
-            native-build-step32/out/app/basair/quran/MainActivity\$2.class \
-            native-build-step32/out/app/basair/quran/MainActivity\$3.class \
-            native-build-step32/out/app/basair/quran/MainActivity\$4.class \
-            native-build-step32/out/app/basair/quran/MainActivity\$5.class \
-            native-build-step32/out/app/basair/quran/MainActivity\$MicChromeClient\$1.class
+            native-build-step32/app-classes.jar
           ls -lh native-build-step32/dex/classes.dex
       - name: Upload classes.dex
         uses: actions/upload-artifact@v4
