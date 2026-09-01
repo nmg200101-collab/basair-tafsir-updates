@@ -1,0 +1,100 @@
+name: basair-surah6-publication-qa
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - '.github/workflows/basair-hash-surah6.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  qa:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Hash and validate Basair surah 6
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import json, hashlib, pathlib
+
+          root = pathlib.Path('.')
+          manifest = json.loads((root/'basair-tafsir-manifest.json').read_text(encoding='utf-8'))
+
+          def h(b): return hashlib.sha256(b).hexdigest()
+          def compact(obj): return json.dumps(obj, ensure_ascii=False, separators=(',',':')).encode('utf-8')
+
+          # Print candidate canonical calculations for published surahs to infer the existing rule safely.
+          for sn in (3,4,5):
+              s = manifest['surahs'][str(sn)]
+              raw_concat = b''
+              all_ayahs = []
+              part_objs = []
+              for p in s['parts']:
+                  b = (root/p['file']).read_bytes()
+                  raw_concat += b
+                  o = json.loads(b)
+                  part_objs.append(o)
+                  all_ayahs.extend(o['ayahs'])
+              candidates = {
+                  'raw_parts_concat': h(raw_concat),
+                  'ayahs_array_compact': h(compact(all_ayahs)),
+                  'surah_ayahs_object_compact': h(compact({'surah':sn,'ayahs':all_ayahs})),
+                  'parts_array_compact': h(compact(part_objs)),
+              }
+              print(f'CANONICAL_TEST surah={sn} expected={s.get("canonical_sha256")} candidates={json.dumps(candidates, separators=(",",":"))}')
+
+          d = root/'surah-006'/'001'
+          files = [
+              ('part-001-025.json',1,25),
+              ('part-026-050.json',26,50),
+              ('part-051-075.json',51,75),
+              ('part-076-100.json',76,100),
+              ('part-101-125.json',101,125),
+              ('part-126-150.json',126,150),
+              ('part-151-165.json',151,165),
+          ]
+          all_ayahs=[]
+          raw_concat=b''
+          part_objs=[]
+          expected_ayah=1
+          required=('meaning','bayan','tadabbur','summary')
+          errors=[]
+          for fn,lo,hi in files:
+              p=d/fn
+              b=p.read_bytes()
+              o=json.loads(b)
+              raw_concat += b
+              part_objs.append(o)
+              ayahs=o.get('ayahs',[])
+              if o.get('surah') != 6 or o.get('from') != lo or o.get('to') != hi or o.get('ayah_count') != hi-lo+1:
+                  errors.append(f'metadata:{fn}')
+              if len(ayahs) != hi-lo+1:
+                  errors.append(f'count:{fn}:{len(ayahs)}')
+              for a in ayahs:
+                  n=a.get('ayah')
+                  if n != expected_ayah:
+                      errors.append(f'sequence:{fn}:{n}!={expected_ayah}')
+                      expected_ayah=n if isinstance(n,int) else expected_ayah
+                  for k in required:
+                      if not isinstance(a.get(k),str) or not a.get(k).strip():
+                          errors.append(f'missing:{fn}:{n}:{k}')
+                  if 'knowledge' in a and (not isinstance(a['knowledge'],str) or not a['knowledge'].strip()):
+                      errors.append(f'empty_knowledge:{fn}:{n}')
+                  all_ayahs.append(a)
+                  expected_ayah += 1
+              print(f'PART file=surah-006/001/{fn} from={lo} to={hi} bytes={len(b)} sha256={h(b)}')
+
+          candidates6 = {
+              'raw_parts_concat': h(raw_concat),
+              'ayahs_array_compact': h(compact(all_ayahs)),
+              'surah_ayahs_object_compact': h(compact({'surah':6,'ayahs':all_ayahs})),
+              'parts_array_compact': h(compact(part_objs)),
+          }
+          print('SURAH6_CANDIDATES '+json.dumps(candidates6,separators=(',',':')))
+          print(f'QA ayahs={len(all_ayahs)} expected_next={expected_ayah} errors={json.dumps(errors,ensure_ascii=False)}')
+          if len(all_ayahs) != 165 or expected_ayah != 166 or errors:
+              raise SystemExit(1)
+          PY
