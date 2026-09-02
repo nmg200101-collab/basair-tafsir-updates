@@ -1,0 +1,44 @@
+{
+  "schema": "basair-tajweed-reference-pack-v1",
+  "pack_version": "2026.09.02.1",
+  "riwayah": "Hafs-an-Asim",
+  "default_reciter": "husary_teacher",
+  "sync_policy": {
+    "mode": "ayah-audio-cache",
+    "download_scope": ["current-surah", "juz", "full-quran"],
+    "integrity": "sha256-after-download",
+    "offline_after_download": true
+  },
+  "reciters": {
+    "husary_teacher": {
+      "name_ar": "محمود خليل الحصري - مرتل",
+      "role": "teacher-reference",
+      "provider": "everyayah-compatible",
+      "audio_template": "https://everyayah.com/data/Husary_64kbps/{SSS}{AAA}.mp3",
+      "timing_mode": "ayah",
+      "enabled": true
+    },
+    "minshawy_mujawwad": {
+      "name_ar": "محمد صديق المنشاوي - مجود",
+      "role": "mujawwad-reference",
+      "provider": "everyayah-compatible",
+      "audio_template": "https://everyayah.com/data/Minshawy_Mujawwad_192kbps/{SSS}{AAA}.mp3",
+      "timing_mode": "ayah",
+      "enabled": true
+    },
+    "qf_timed_reference": {
+      "name_ar": "مرجع بصائر المتزامن - توقيت كلمات",
+      "role": "future-word-timed-reference",
+      "provider": "basair-qf-proxy",
+      "requires_backend_proxy": true,
+      "timing_mode": "word-segments",
+      "enabled": false
+    }
+  },
+  "rules": {
+    "lexical_first": true,
+    "do_not_grade_low_quality_audio": true,
+    "supported_metadata": ["madd", "ghunnah", "tanween", "ikhfa", "idgham", "iqlab", "izhar", "qalqalah"],
+    "acoustic_grading": "deferred-to-next-phase"
+  }
+}
