@@ -1,0 +1,24 @@
+{
+  "schema": "basair-tajweed-dedicated-pack-v2",
+  "pack_version": "2026.09.02.1",
+  "riwayah": "Hafs-an-Asim",
+  "primary_reference": {
+    "id": "husary_teacher",
+    "name_ar": "محمود خليل الحصري - المرجع الأول",
+    "audio_template": "https://everyayah.com/data/Husary_64kbps/{SSS}{AAA}.mp3"
+  },
+  "secondary_reference": {
+    "id": "fares_abbad",
+    "name_ar": "فارس عباد - المرجع الثاني",
+    "audio_template": "https://everyayah.com/data/Fares_Abbad_64kbps/{SSS}{AAA}.mp3"
+  },
+  "policy": {
+    "dual_reference": true,
+    "local_first": true,
+    "preload_current_and_next": true,
+    "rules_embedded_per_ayah": true,
+    "offline_after_download": true,
+    "fallback_order": ["husary_teacher", "fares_abbad"]
+  },
+  "supported_rules": ["ghunnah", "tanween", "noon_sakinah", "mim_sakinah", "ikhfa", "idgham", "iqlab", "izhar", "qalqalah", "madd"]
+}
