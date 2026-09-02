@@ -1,11 +1,15 @@
 {
   "schema": "basair-tajweed-reference-pack-v1",
-  "pack_version": "2026.09.02.1",
+  "pack_version": "2026.09.02.2",
   "riwayah": "Hafs-an-Asim",
   "default_reciter": "husary_teacher",
   "sync_policy": {
     "mode": "ayah-audio-cache",
-    "download_scope": ["current-surah", "juz", "full-quran"],
+    "download_scope": [
+      "current-surah",
+      "juz",
+      "full-quran"
+    ],
     "integrity": "sha256-after-download",
     "offline_after_download": true
   },
@@ -18,11 +22,11 @@
       "timing_mode": "ayah",
       "enabled": true
     },
-    "minshawy_mujawwad": {
-      "name_ar": "محمد صديق المنشاوي - مجود",
-      "role": "mujawwad-reference",
+    "fares_abbad": {
+      "name_ar": "فارس عباد - المرجع الثاني",
+      "role": "secondary-reference",
       "provider": "everyayah-compatible",
-      "audio_template": "https://everyayah.com/data/Minshawy_Mujawwad_192kbps/{SSS}{AAA}.mp3",
+      "audio_template": "https://everyayah.com/data/Fares_Abbad_64kbps/{SSS}{AAA}.mp3",
       "timing_mode": "ayah",
       "enabled": true
     },
@@ -38,7 +42,16 @@
   "rules": {
     "lexical_first": true,
     "do_not_grade_low_quality_audio": true,
-    "supported_metadata": ["madd", "ghunnah", "tanween", "ikhfa", "idgham", "iqlab", "izhar", "qalqalah"],
+    "supported_metadata": [
+      "madd",
+      "ghunnah",
+      "tanween",
+      "ikhfa",
+      "idgham",
+      "iqlab",
+      "izhar",
+      "qalqalah"
+    ],
     "acoustic_grading": "deferred-to-next-phase"
   }
 }
