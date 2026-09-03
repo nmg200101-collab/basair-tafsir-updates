@@ -6,5 +6,4 @@ interface IPrivilegedService {
     String setArabicLocale(String languageTag);
     String bestEffortReapply(String packageName);
     String applyDefaultTheme();
-    void destroy() = 16777114;
 }
