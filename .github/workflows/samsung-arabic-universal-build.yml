@@ -47,7 +47,7 @@ jobs:
           unzip -t "$APK"
           unzip -l "$APK" | grep -q 'assets/arabic_core_theme.apk'
           "$ANDROID_HOME/build-tools/35.0.0/aapt2" dump badging "$APK" | tee /tmp/badging.txt
-          grep -q "package: name='com.basair.samsungarabic'" /tmp/badging.txt
+          grep -q "package: name='com.basair.samsungarabic.oneclick'" /tmp/badging.txt
           grep -q "targetSdkVersion:'35'" /tmp/badging.txt
           "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose --print-certs "$APK" | tee /tmp/signature.txt
           grep -q 'Verified' /tmp/signature.txt
