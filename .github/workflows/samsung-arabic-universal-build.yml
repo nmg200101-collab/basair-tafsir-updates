@@ -1,0 +1,55 @@
+name: Build Samsung Arabic Universal One UI 7
+on:
+  push:
+    branches: [ samsung-arabic-core-v1-build ]
+    paths:
+      - 'samsung-arabic-build/**'
+      - '.github/workflows/samsung-arabic-universal-build.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: android-actions/setup-android@v3
+      - name: Install Android SDK 35
+        run: |
+          yes | sdkmanager --licenses >/dev/null || true
+          sdkmanager "platforms;android-35" "build-tools;35.0.0" "platform-tools"
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.9'
+      - name: Build manager APK
+        run: gradle -p samsung-arabic-build :app:assembleDebug --stacktrace
+      - name: Validate APK
+        shell: bash
+        run: |
+          set -euo pipefail
+          APK=samsung-arabic-build/app/build/outputs/apk/debug/app-debug.apk
+          test -s "$APK"
+          unzip -t "$APK"
+          "$ANDROID_HOME/build-tools/35.0.0/aapt2" dump badging "$APK" | tee /tmp/badging.txt
+          grep -q "package: name='com.basair.samsungarabic'" /tmp/badging.txt
+          grep -q "targetSdkVersion:'35'" /tmp/badging.txt
+          "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose --print-certs "$APK" | tee /tmp/signature.txt
+          grep -q 'Verified' /tmp/signature.txt
+          mkdir -p artifact
+          cp "$APK" artifact/SamsungArabicUniversal-OneUI7-v1.0.apk
+          sha256sum artifact/SamsungArabicUniversal-OneUI7-v1.0.apk | tee artifact/SamsungArabicUniversal-OneUI7-v1.0.sha256
+          cp /tmp/badging.txt artifact/SamsungArabicUniversal-OneUI7-v1.0-badging.txt
+          cp /tmp/signature.txt artifact/SamsungArabicUniversal-OneUI7-v1.0-signature.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: SamsungArabicUniversal-OneUI7-v1.0
+          path: artifact/*
+          if-no-files-found: error
+          retention-days: 14
