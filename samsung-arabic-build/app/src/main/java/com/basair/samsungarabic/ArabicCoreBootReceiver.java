@@ -3,14 +3,21 @@ package com.basair.samsungarabic;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 
 public class ArabicCoreBootReceiver extends BroadcastReceiver {
     private static final String CORE_PACKAGE = "com.samsung.Arabic_Core_Theme01";
     private static final String THEME_CENTER = "com.samsung.android.themecenter";
     private static final String ACTION_REAPPLY = "com.samsung.android.theme.themecenter.THEME_REAPPLY";
+    private static final String PREFS = "arabic_core";
+    private static final String PREF_PERSISTENCE = "persistence_enabled";
 
     @Override public void onReceive(Context context, Intent intent) {
+        Context storage = context;
+        try { storage = context.createDeviceProtectedStorageContext(); } catch (Throwable ignored) {}
+        SharedPreferences p = storage.getSharedPreferences(PREFS, Context.MODE_PRIVATE);
+        if (!p.getBoolean(PREF_PERSISTENCE, false)) return;
         if (!isCoreInstalled(context)) return;
         tryReapply(context);
     }
