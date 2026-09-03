@@ -1,17 +1,22 @@
 package com.basair.samsungarabic;
 
 import android.app.Activity;
+import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInstaller;
 import android.content.pm.PackageManager;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.provider.Settings;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
@@ -21,6 +26,7 @@ import android.widget.TextView;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -32,13 +38,52 @@ public class MainActivity extends Activity {
     private static final String TARGET_MODEL = "SM-G998U";
     private static final String PREFS = "arabic_core";
     private static final String PREF_PERSISTENCE = "persistence_enabled";
+    private static final String ACTION_INSTALL_RESULT = "com.basair.samsungarabic.oneclick.CORE_INSTALL_RESULT";
 
     private final ExecutorService worker = Executors.newSingleThreadExecutor();
     private IPrivilegedService service;
     private boolean binding;
     private boolean oneClickPending;
+    private boolean systemInstallPermissionPending;
+    private boolean packageSessionPending;
+    private boolean postInstallPending;
+    private boolean installReceiverRegistered;
     private TextView deviceBox, frameworkState, settingsState, systemUiState, localeState, themeState, logBox;
     private SharedPreferences prefs;
+
+    private final BroadcastReceiver packageInstallReceiver = new BroadcastReceiver() {
+        @Override public void onReceive(Context context, Intent intent) {
+            int status = intent.getIntExtra(PackageInstaller.EXTRA_STATUS, PackageInstaller.STATUS_FAILURE);
+            String message = intent.getStringExtra(PackageInstaller.EXTRA_STATUS_MESSAGE);
+
+            if (status == PackageInstaller.STATUS_PENDING_USER_ACTION) {
+                Intent confirm;
+                if (Build.VERSION.SDK_INT >= 33) {
+                    confirm = intent.getParcelableExtra(Intent.EXTRA_INTENT, Intent.class);
+                } else {
+                    //noinspection deprecation
+                    confirm = intent.getParcelableExtra(Intent.EXTRA_INTENT);
+                }
+                if (confirm != null) {
+                    confirm.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    log("Android يحتاج موافقة تثبيت واحدة لـ Arabic Core. وافق على التثبيت وسيكمل التعريب تلقائيًا بعد ذلك.");
+                    try { startActivity(confirm); }
+                    catch (Throwable t) { log("تعذر فتح نافذة تأكيد التثبيت: " + t.getMessage()); }
+                }
+                return;
+            }
+
+            packageSessionPending = false;
+            if (status == PackageInstaller.STATUS_SUCCESS || isCoreInstalledLocal()) {
+                postInstallPending = true;
+                log("✓ تم تثبيت Arabic Core. أُكمل تطبيق التعريب والحماية تلقائيًا…");
+                continueAfterSystemInstall();
+            } else {
+                log("فشل مثبت Android في تثبيت Arabic Core.\n" + (message == null ? "status=" + status : message)
+                        + "\nإذا ظهر لك نص خطأ مختلف في نافذة النظام فأرسله لي كما هو.");
+            }
+        }
+    };
 
     private final Shizuku.OnRequestPermissionResultListener permissionListener = (requestCode, grantResult) -> {
         if (requestCode == REQ_SHIZUKU && grantResult == PackageManager.PERMISSION_GRANTED) {
@@ -62,9 +107,17 @@ public class MainActivity extends Activity {
             service = IPrivilegedService.Stub.asInterface(b);
             binding = false;
             runOnUiThread(() -> {
-                if (oneClickPending) continueOneClick(); else runCheck();
+                if (postInstallPending && isCoreInstalledLocal()) {
+                    postInstallPending = false;
+                    activateInstalledCore();
+                } else if (oneClickPending) {
+                    continueOneClick();
+                } else {
+                    runCheck();
+                }
             });
         }
+
         @Override public void onServiceDisconnected(ComponentName n) {
             service = null;
             binding = false;
@@ -74,11 +127,39 @@ public class MainActivity extends Activity {
     @Override protected void onCreate(Bundle b) {
         super.onCreate(b);
         prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
+        registerPackageInstallReceiver();
         setContentView(buildUi());
         Shizuku.addRequestPermissionResultListener(permissionListener);
         Shizuku.addBinderReceivedListenerSticky(binderReceivedListener);
         Shizuku.addBinderDeadListener(binderDeadListener);
         showBasicDevice();
+    }
+
+    @Override protected void onResume() {
+        super.onResume();
+        if (systemInstallPermissionPending && getPackageManager().canRequestPackageInstalls()) {
+            systemInstallPermissionPending = false;
+            launchPackageInstallerSession();
+            return;
+        }
+        if ((packageSessionPending || postInstallPending) && isCoreInstalledLocal()) {
+            packageSessionPending = false;
+            postInstallPending = true;
+            continueAfterSystemInstall();
+        }
+    }
+
+    private void registerPackageInstallReceiver() {
+        try {
+            IntentFilter filter = new IntentFilter(ACTION_INSTALL_RESULT);
+            if (Build.VERSION.SDK_INT >= 33) {
+                registerReceiver(packageInstallReceiver, filter, Context.RECEIVER_NOT_EXPORTED);
+            } else {
+                //noinspection deprecation
+                registerReceiver(packageInstallReceiver, filter);
+            }
+            installReceiverRegistered = true;
+        } catch (Throwable ignored) {}
     }
 
     private View buildUi() {
@@ -101,7 +182,7 @@ public class MainActivity extends Activity {
         main.setMinHeight(dp(64));
         root.addView(main);
 
-        TextView hint = text("زر واحد ينفذ: فحص الجهاز ← تثبيت Arabic Core المدمج ← تطبيقه ← تفعيل العربية ← تفعيل حماية الثبات ← فحص النتيجة.", 14, false);
+        TextView hint = text("زر واحد ينفذ: فحص الجهاز ← تثبيت Arabic Core المدمج ← تجاوز قيود Android 15 عند الحاجة ← تطبيقه ← تفعيل العربية ← حماية الثبات ← فحص النتيجة.", 14, false);
         hint.setPadding(dp(4), dp(5), dp(4), dp(12));
         root.addView(hint);
 
@@ -180,6 +261,15 @@ public class MainActivity extends Activity {
                 && Build.VERSION.SDK_INT == 35;
     }
 
+    private boolean isCoreInstalledLocal() {
+        try {
+            getPackageManager().getPackageInfo(CORE_PACKAGE, 0);
+            return true;
+        } catch (Throwable ignored) {
+            return false;
+        }
+    }
+
     private void setPersistenceEnabled(boolean enabled) {
         prefs.edit().putBoolean(PREF_PERSISTENCE, enabled).apply();
         try {
@@ -194,6 +284,7 @@ public class MainActivity extends Activity {
             return;
         }
         oneClickPending = true;
+        postInstallPending = false;
         log("بدء التعريب… فحص صلاحية التنفيذ.");
         refreshPrivilege();
     }
@@ -234,7 +325,12 @@ public class MainActivity extends Activity {
 
     private void bindPrivileged() {
         if (service != null || binding) {
-            if (service != null && oneClickPending) continueOneClick();
+            if (service != null && postInstallPending && isCoreInstalledLocal()) {
+                postInstallPending = false;
+                activateInstalledCore();
+            } else if (service != null && oneClickPending) {
+                continueOneClick();
+            }
             return;
         }
         binding = true;
@@ -243,7 +339,7 @@ public class MainActivity extends Activity {
                 .daemon(false)
                 .processNameSuffix("core")
                 .tag("samsung-arabic-universal")
-                .version(3)
+                .version(4)
                 .debuggable(BuildConfig.DEBUG);
         try {
             Shizuku.bindUserService(a, connection);
@@ -270,52 +366,140 @@ public class MainActivity extends Activity {
         }
     }
 
+    private boolean shellInstallSucceeded(String install) {
+        return install != null && (install.contains("Success") || install.contains("success") || install.contains("package:/"));
+    }
+
     private void continueOneClick() {
         if (!oneClickPending || service == null) return;
         oneClickPending = false;
-        log("جارٍ تنفيذ التعريب الكامل…");
+        log("جارٍ تثبيت Arabic Core بالطريقة المناسبة لـ Android 15…");
         worker.execute(() -> {
             try {
                 String before = service.diagnosticState();
                 savePrevious(before);
                 byte[] core = readCoreAsset();
                 String install = service.installCoreTheme(core);
-                if (!(install.contains("Success") || install.contains("success"))) {
-                    runOnUiThread(() -> log("فشل تثبيت Arabic Core:\n" + install));
+                if (!shellInstallSucceeded(install) && !isCoreInstalledLocal()) {
+                    prefs.edit().putString("last_shell_install_error", install).apply();
+                    runOnUiThread(() -> launchSystemInstallerFallback(install));
                     return;
                 }
-
-                setPersistenceEnabled(true);
-                String apply1 = service.bestEffortReapply(CORE_PACKAGE);
-                Thread.sleep(1500);
-                String mid = service.diagnosticState();
-                boolean overlays = allCoreEnabled(mid);
-                String apply2 = "";
-                if (!overlays) {
-                    apply2 = service.bestEffortReapply(CORE_PACKAGE);
-                    Thread.sleep(1200);
-                    mid = service.diagnosticState();
-                    overlays = allCoreEnabled(mid);
-                }
-
-                final boolean applied = overlays;
-                final String diagBeforeLocale = mid;
-                final String a1 = apply1;
-                final String a2 = apply2;
-                prefs.edit().putBoolean("last_apply_needed_manual", !applied).apply();
-                String locale = service.setArabicLocale("ar-YE");
-
-                runOnUiThread(() -> {
-                    renderDiagnostic(diagBeforeLocale);
-                    if (applied) {
-                        log("✓ تم تثبيت Arabic Core وتطبيق Framework وSettings وSystemUI.\n✓ تم تفعيل العربية ar-YE.\n✓ تم تفعيل حماية ثبات التعريب بعد إعادة التشغيل.\n" + locale);
-                    } else {
-                        log("تم تثبيت Arabic Core وتفعيل العربية وحماية الثبات، لكن One UI لم يؤكد تفعيل المكونات تلقائيًا. سأفتح «ثيماتي»؛ إذا ظهرت شاشة سامسونج فاضغط تطبيق مرة واحدة فقط.\n\n" + a1 + "\n" + a2);
-                        openMyThemes();
-                    }
-                });
+                performActivation();
             } catch (Throwable t) {
                 runOnUiThread(() -> log("تعذر إكمال زر التعريب: " + t));
+            }
+        });
+    }
+
+    private void launchSystemInstallerFallback(String shellLog) {
+        log("لم يقبل PackageManager التثبيت الصامت. سأنتقل تلقائيًا إلى مثبت Android الرسمي.\nلن تحتاج إلى استخراج Arabic Core أو تثبيت ملف منفصل.\n\nتشخيص التثبيت الصامت:\n" + shellLog);
+        try {
+            if (!getPackageManager().canRequestPackageInstalls()) {
+                systemInstallPermissionPending = true;
+                Intent i = new Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES, Uri.parse("package:" + getPackageName()));
+                startActivity(i);
+                return;
+            }
+            launchPackageInstallerSession();
+        } catch (Throwable t) {
+            log("تعذر تشغيل مثبت Android الاحتياطي: " + t.getMessage());
+        }
+    }
+
+    private void launchPackageInstallerSession() {
+        if (packageSessionPending) return;
+        packageSessionPending = true;
+        log("جارٍ تجهيز Arabic Core داخل مثبت Android…");
+        worker.execute(() -> {
+            PackageInstaller.Session session = null;
+            try {
+                byte[] core = readCoreAsset();
+                PackageInstaller installer = getPackageManager().getPackageInstaller();
+                PackageInstaller.SessionParams params = new PackageInstaller.SessionParams(PackageInstaller.SessionParams.MODE_FULL_INSTALL);
+                params.setAppPackageName(CORE_PACKAGE);
+                params.setInstallReason(PackageManager.INSTALL_REASON_USER);
+                int sessionId = installer.createSession(params);
+                session = installer.openSession(sessionId);
+                try (OutputStream out = session.openWrite("base.apk", 0, core.length)) {
+                    out.write(core);
+                    session.fsync(out);
+                }
+
+                Intent result = new Intent(ACTION_INSTALL_RESULT);
+                result.setPackage(getPackageName());
+                int flags = PendingIntent.FLAG_UPDATE_CURRENT;
+                if (Build.VERSION.SDK_INT >= 31) flags |= PendingIntent.FLAG_MUTABLE;
+                PendingIntent pi = PendingIntent.getBroadcast(this, sessionId, result, flags);
+                session.commit(pi.getIntentSender());
+                session.close();
+                session = null;
+                runOnUiThread(() -> log("تم إرسال Arabic Core إلى مثبت Android. إذا ظهرت نافذة تثبيت فوافق عليها مرة واحدة؛ بعدها يكمل التطبيق تلقائيًا."));
+            } catch (Throwable t) {
+                if (session != null) {
+                    try { session.abandon(); } catch (Throwable ignored) {}
+                    try { session.close(); } catch (Throwable ignored) {}
+                }
+                packageSessionPending = false;
+                runOnUiThread(() -> log("تعذر تجهيز مثبت Arabic Core الرسمي: " + t));
+            }
+        });
+    }
+
+    private void continueAfterSystemInstall() {
+        if (!isCoreInstalledLocal()) return;
+        if (service == null) {
+            postInstallPending = true;
+            refreshPrivilege();
+            return;
+        }
+        postInstallPending = false;
+        activateInstalledCore();
+    }
+
+    private void activateInstalledCore() {
+        if (service == null) {
+            postInstallPending = true;
+            refreshPrivilege();
+            return;
+        }
+        worker.execute(() -> {
+            try {
+                performActivation();
+            } catch (Throwable t) {
+                runOnUiThread(() -> log("تم تثبيت Arabic Core لكن تعذر إكمال التفعيل: " + t));
+            }
+        });
+    }
+
+    private void performActivation() throws Exception {
+        setPersistenceEnabled(true);
+        String apply1 = service.bestEffortReapply(CORE_PACKAGE);
+        Thread.sleep(1500);
+        String mid = service.diagnosticState();
+        boolean overlays = allCoreEnabled(mid);
+        String apply2 = "";
+        if (!overlays) {
+            apply2 = service.bestEffortReapply(CORE_PACKAGE);
+            Thread.sleep(1200);
+            mid = service.diagnosticState();
+            overlays = allCoreEnabled(mid);
+        }
+
+        final boolean applied = overlays;
+        final String diagBeforeLocale = mid;
+        final String a1 = apply1;
+        final String a2 = apply2;
+        prefs.edit().putBoolean("last_apply_needed_manual", !applied).apply();
+        String locale = service.setArabicLocale("ar-YE");
+
+        runOnUiThread(() -> {
+            renderDiagnostic(diagBeforeLocale);
+            if (applied) {
+                log("✓ تم تثبيت Arabic Core وتطبيق Framework وSettings وSystemUI.\n✓ تم تفعيل العربية ar-YE.\n✓ تم تفعيل حماية ثبات التعريب بعد إعادة التشغيل.\n" + locale);
+            } else {
+                log("✓ تم تثبيت Arabic Core وتفعيل العربية وحماية الثبات.\nلكن One UI يحتاج موافقة تطبيق الثيم من شاشة سامسونج. سأفتح «ثيماتي» تلقائيًا؛ اضغط «تطبيق» فقط، ثم ارجع إلى التطبيق للفحص.\n\n" + a1 + "\n" + a2);
+                openMyThemes();
             }
         });
     }
@@ -364,7 +548,7 @@ public class MainActivity extends Activity {
         mark(settingsState, "Settings Arabic", enabled(r, "cdma.yemen.tool.settings"));
         mark(systemUiState, "SystemUI Arabic", enabled(r, "cdma.yemen.tool.systemui"));
         mark(localeState, "Arabic locale", loc.startsWith("ar") || loc.contains("ar-YE"));
-        mark(themeState, "Arabic Core Theme", CORE_PACKAGE.equals(active) || installed.startsWith("package:"));
+        mark(themeState, "Arabic Core Theme", CORE_PACKAGE.equals(active) || installed.startsWith("package:") || isCoreInstalledLocal());
     }
 
     private void mark(TextView v, String n, boolean ok) {
@@ -450,6 +634,9 @@ public class MainActivity extends Activity {
         Shizuku.removeRequestPermissionResultListener(permissionListener);
         Shizuku.removeBinderReceivedListener(binderReceivedListener);
         Shizuku.removeBinderDeadListener(binderDeadListener);
+        if (installReceiverRegistered) {
+            try { unregisterReceiver(packageInstallReceiver); } catch (Throwable ignored) {}
+        }
         worker.shutdownNow();
         super.onDestroy();
     }
