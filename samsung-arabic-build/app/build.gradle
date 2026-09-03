@@ -1,0 +1,33 @@
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    namespace 'com.basair.samsungarabic'
+    compileSdk 35
+
+    defaultConfig {
+        applicationId 'com.basair.samsungarabic'
+        minSdk 29
+        targetSdk 35
+        versionCode 100
+        versionName '1.0-oneui7-core'
+    }
+
+    buildFeatures {
+        aidl true
+        buildConfig true
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}
+
+dependencies {
+    implementation 'androidx.annotation:annotation:1.9.1'
+    def shizuku_version = '13.1.5'
+    implementation "dev.rikka.shizuku:api:$shizuku_version"
+    implementation "dev.rikka.shizuku:provider:$shizuku_version"
+}
