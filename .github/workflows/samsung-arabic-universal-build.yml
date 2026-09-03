@@ -39,20 +39,22 @@ jobs:
           unzip -t "$APK"
           "$BT/aapt2" dump badging "$APK" | tee /tmp/badging.txt
           grep -q "package: name='com.basair.samsungarabic.oneclick'" /tmp/badging.txt
+          grep -q "versionCode='120'" /tmp/badging.txt
           grep -q "targetSdkVersion:'35'" /tmp/badging.txt
+          grep -q "android.permission.REQUEST_INSTALL_PACKAGES" /tmp/badging.txt
           "$BT/apksigner" verify --verbose --print-certs "$APK" | tee /tmp/signature.txt
           grep -q 'Verified' /tmp/signature.txt
           mkdir -p artifact/apksigner-tool/lib
-          cp "$APK" artifact/SamsungArabicUniversal-OneUI7-v1.1-OneClick-shell.apk
-          sha256sum artifact/SamsungArabicUniversal-OneUI7-v1.1-OneClick-shell.apk | tee artifact/SamsungArabicUniversal-OneUI7-v1.1-OneClick-shell.sha256
-          cp /tmp/badging.txt artifact/SamsungArabicUniversal-OneUI7-v1.1-OneClick-shell-badging.txt
-          cp /tmp/signature.txt artifact/SamsungArabicUniversal-OneUI7-v1.1-OneClick-shell-signature.txt
+          cp "$APK" artifact/SamsungArabicUniversal-OneUI7-v1.2-OneClick-shell.apk
+          sha256sum artifact/SamsungArabicUniversal-OneUI7-v1.2-OneClick-shell.apk | tee artifact/SamsungArabicUniversal-OneUI7-v1.2-OneClick-shell.sha256
+          cp /tmp/badging.txt artifact/SamsungArabicUniversal-OneUI7-v1.2-OneClick-shell-badging.txt
+          cp /tmp/signature.txt artifact/SamsungArabicUniversal-OneUI7-v1.2-OneClick-shell-signature.txt
           cp "$BT/apksigner" artifact/apksigner-tool/apksigner
           cp "$BT/lib/apksigner.jar" artifact/apksigner-tool/lib/apksigner.jar
           chmod +x artifact/apksigner-tool/apksigner
       - uses: actions/upload-artifact@v4
         with:
-          name: SamsungArabicUniversal-OneUI7-v1.1-OneClick-shell
+          name: SamsungArabicUniversal-OneUI7-v1.2-OneClick-shell
           path: artifact/*
           if-no-files-found: error
           retention-days: 14
