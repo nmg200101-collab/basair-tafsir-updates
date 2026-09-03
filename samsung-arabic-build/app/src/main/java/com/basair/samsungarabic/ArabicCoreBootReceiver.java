@@ -31,7 +31,6 @@ public class ArabicCoreBootReceiver extends BroadcastReceiver {
             i.putExtra("packageName", CORE_PACKAGE);
             i.putExtra("package", CORE_PACKAGE);
             i.putExtra("themePackage", CORE_PACKAGE);
-            i.addFlags(Intent.FLAG_RECEIVER_INCLUDE_BACKGROUND);
             context.sendBroadcast(i);
         } catch (Throwable ignored) {}
 
@@ -40,7 +39,6 @@ public class ArabicCoreBootReceiver extends BroadcastReceiver {
             i2.putExtra("packageName", CORE_PACKAGE);
             i2.putExtra("package", CORE_PACKAGE);
             i2.putExtra("themePackage", CORE_PACKAGE);
-            i2.addFlags(Intent.FLAG_RECEIVER_INCLUDE_BACKGROUND);
             context.sendBroadcast(i2);
         } catch (Throwable ignored) {}
     }
