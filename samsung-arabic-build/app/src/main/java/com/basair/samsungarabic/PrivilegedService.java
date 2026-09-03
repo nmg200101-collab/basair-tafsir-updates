@@ -40,8 +40,17 @@ public class PrivilegedService extends IPrivilegedService.Stub {
 
     private int currentUser() {
         String r = exec("am get-current-user");
-        try { String[] a = r.trim().split("\\n"); return Integer.parseInt(a[a.length-1].trim()); }
+        try { String[] a = r.trim().split("\\n"); return Integer.parseInt(a[a.length - 1].trim()); }
         catch (Throwable ignored) { return 0; }
+    }
+
+    private boolean success(String result) {
+        return result != null && (result.contains("Success") || result.contains("success"));
+    }
+
+    private String installAttempt(int user, boolean bypassLowTarget) {
+        String bypass = bypassLowTarget ? "--bypass-low-target-sdk-block " : "";
+        return exec("pm install " + bypass + "-r -d --user " + user + " '" + TMP_APK + "'");
     }
 
     @Override public String diagnosticState() {
@@ -57,6 +66,7 @@ public class PrivilegedService extends IPrivilegedService.Stub {
             "echo LOCALES=$(settings get system system_locales); " +
             "echo ACTIVE_THEME=$(settings get system current_sec_active_themepackage); " +
             "echo CORE_INSTALLED=$(pm path " + CORE_PACKAGE + " 2>/dev/null | head -1); " +
+            "echo CORE_PKG=$(dumpsys package " + CORE_PACKAGE + " 2>/dev/null | grep -m1 -E 'versionName=|targetSdk=' || true); " +
             "for p in cdma.yemen.tool.android cdma.yemen.tool.settings cdma.yemen.tool.systemui; do " +
             "echo ====OVERLAY:$p====; cmd overlay dump --user " + user + " $p 2>&1 | grep -E 'mState|mTargetPackageName|mBaseCodePath|IDMAP|missing idmap' || true; done; " +
             "echo ====FILTERED_LIST====; cmd overlay list --user " + user + " | grep -E 'cdma\\.yemen\\.tool\\.(android|settings|systemui)' || true";
@@ -73,15 +83,58 @@ public class PrivilegedService extends IPrivilegedService.Stub {
             }
             exec("chmod 0644 '" + TMP_APK + "'");
             int user = currentUser();
-            String first = exec("pm install -r -d --user " + user + " '" + TMP_APK + "'");
-            if (first.contains("INSTALL_FAILED_UPDATE_INCOMPATIBLE") || first.contains("signatures do not match")) {
-                String remove = exec("pm uninstall --user " + user + " " + CORE_PACKAGE);
-                String second = exec("pm install -r -d --user " + user + " '" + TMP_APK + "'");
+            StringBuilder report = new StringBuilder();
+
+            // Android 14/15 may block older Samsung Theme containers because of their legacy targetSdk.
+            String first = installAttempt(user, true);
+            report.append("BYPASS_INSTALL:\n").append(first);
+            if (success(first)) {
                 exec("rm -f '" + TMP_APK + "'");
-                return "FIRST_INSTALL:\n" + first + "\nREPLACE_OLD_CORE:\n" + remove + "\nSECOND_INSTALL:\n" + second;
+                return report.toString();
             }
+
+            // Some builds do not expose the bypass switch. Retry using the normal package-manager path.
+            if (first.contains("Unknown option") || first.contains("unknown option") || first.contains("IllegalArgumentException")) {
+                String normal = installAttempt(user, false);
+                report.append("\nNORMAL_INSTALL:\n").append(normal);
+                if (success(normal)) {
+                    exec("rm -f '" + TMP_APK + "'");
+                    return report.toString();
+                }
+                first = normal;
+            }
+
+            // Remove every user-installed copy when a previous test build has another certificate.
+            if (first.contains("INSTALL_FAILED_UPDATE_INCOMPATIBLE")
+                    || first.contains("signatures do not match")
+                    || first.contains("existing package")
+                    || first.contains("incompatible")) {
+                String removeUser = exec("pm uninstall --user " + user + " " + CORE_PACKAGE + " 2>&1 || true");
+                String removeAll = exec("pm uninstall " + CORE_PACKAGE + " 2>&1 || true");
+                report.append("\nREMOVE_CURRENT_USER:\n").append(removeUser)
+                      .append("\nREMOVE_ALL_USERS:\n").append(removeAll);
+
+                String second = installAttempt(user, true);
+                report.append("\nREINSTALL_BYPASS:\n").append(second);
+                if (success(second)) {
+                    exec("rm -f '" + TMP_APK + "'");
+                    return report.toString();
+                }
+                if (second.contains("Unknown option") || second.contains("unknown option")) {
+                    String third = installAttempt(user, false);
+                    report.append("\nREINSTALL_NORMAL:\n").append(third);
+                    if (success(third)) {
+                        exec("rm -f '" + TMP_APK + "'");
+                        return report.toString();
+                    }
+                }
+            }
+
+            // Confirm whether PackageManager installed it despite unusual command output.
+            String path = exec("pm path " + CORE_PACKAGE + " 2>/dev/null | head -1");
+            report.append("\nFINAL_PACKAGE_CHECK:\n").append(path);
             exec("rm -f '" + TMP_APK + "'");
-            return first;
+            return report.toString();
         } catch (Throwable t) {
             exec("rm -f '" + TMP_APK + "'");
             return "ERROR: " + t.getClass().getSimpleName() + ": " + t.getMessage();
@@ -101,11 +154,11 @@ public class PrivilegedService extends IPrivilegedService.Stub {
             if (iam == null) return "ERROR: ActivityManager unavailable";
             Method update = null;
             for (Method m : iam.getClass().getMethods()) {
-                if (m.getName().equals("updatePersistentConfiguration") && m.getParameterTypes().length == 1) { update=m; break; }
+                if (m.getName().equals("updatePersistentConfiguration") && m.getParameterTypes().length == 1) { update = m; break; }
             }
             if (update == null) {
                 for (Method m : iam.getClass().getDeclaredMethods()) {
-                    if (m.getName().equals("updatePersistentConfiguration") && m.getParameterTypes().length == 1) { m.setAccessible(true); update=m; break; }
+                    if (m.getName().equals("updatePersistentConfiguration") && m.getParameterTypes().length == 1) { m.setAccessible(true); update = m; break; }
                 }
             }
             if (update == null) return "ERROR: updatePersistentConfiguration not found";
