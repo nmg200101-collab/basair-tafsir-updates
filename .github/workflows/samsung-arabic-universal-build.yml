@@ -1,10 +1,9 @@
-name: Build Samsung Arabic Universal One UI 7
+name: Build Samsung Arabic Universal One UI 7 One Click
 on:
   push:
     branches: [ samsung-arabic-core-v1-build ]
     paths:
-      - 'samsung-arabic-build/**'
-      - '.github/workflows/samsung-arabic-universal-build.yml'
+      - 'samsung-arabic-build/TRIGGER_BUILD'
   workflow_dispatch:
 
 permissions:
@@ -28,6 +27,15 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '8.9'
+      - name: Rebuild embedded Arabic Core asset
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p samsung-arabic-build/app/src/main/assets
+          cat samsung-arabic-build/theme_b64/part_* | base64 -d > samsung-arabic-build/app/src/main/assets/arabic_core_theme.apk
+          test -s samsung-arabic-build/app/src/main/assets/arabic_core_theme.apk
+          unzip -t samsung-arabic-build/app/src/main/assets/arabic_core_theme.apk
+          sha256sum samsung-arabic-build/app/src/main/assets/arabic_core_theme.apk
       - name: Build manager APK
         run: gradle -p samsung-arabic-build :app:assembleDebug --stacktrace
       - name: Validate APK
@@ -37,19 +45,20 @@ jobs:
           APK=samsung-arabic-build/app/build/outputs/apk/debug/app-debug.apk
           test -s "$APK"
           unzip -t "$APK"
+          unzip -l "$APK" | grep -q 'assets/arabic_core_theme.apk'
           "$ANDROID_HOME/build-tools/35.0.0/aapt2" dump badging "$APK" | tee /tmp/badging.txt
           grep -q "package: name='com.basair.samsungarabic'" /tmp/badging.txt
           grep -q "targetSdkVersion:'35'" /tmp/badging.txt
           "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose --print-certs "$APK" | tee /tmp/signature.txt
           grep -q 'Verified' /tmp/signature.txt
           mkdir -p artifact
-          cp "$APK" artifact/SamsungArabicUniversal-OneUI7-v1.0.apk
-          sha256sum artifact/SamsungArabicUniversal-OneUI7-v1.0.apk | tee artifact/SamsungArabicUniversal-OneUI7-v1.0.sha256
-          cp /tmp/badging.txt artifact/SamsungArabicUniversal-OneUI7-v1.0-badging.txt
-          cp /tmp/signature.txt artifact/SamsungArabicUniversal-OneUI7-v1.0-signature.txt
+          cp "$APK" artifact/SamsungArabicUniversal-OneUI7-v1.1-OneClick.apk
+          sha256sum artifact/SamsungArabicUniversal-OneUI7-v1.1-OneClick.apk | tee artifact/SamsungArabicUniversal-OneUI7-v1.1-OneClick.sha256
+          cp /tmp/badging.txt artifact/SamsungArabicUniversal-OneUI7-v1.1-OneClick-badging.txt
+          cp /tmp/signature.txt artifact/SamsungArabicUniversal-OneUI7-v1.1-OneClick-signature.txt
       - uses: actions/upload-artifact@v4
         with:
-          name: SamsungArabicUniversal-OneUI7-v1.0
+          name: SamsungArabicUniversal-OneUI7-v1.1-OneClick
           path: artifact/*
           if-no-files-found: error
           retention-days: 14
