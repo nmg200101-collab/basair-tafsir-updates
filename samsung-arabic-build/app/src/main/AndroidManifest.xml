@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" />
+    <queries>
+        <package android:name="moe.shizuku.privileged.api" />
+        <package android:name="com.samsung.android.themestore" />
+        <package android:name="com.samsung.android.themecenter" />
+        <package android:name="com.samsung.Arabic_Core_Theme01" />
+        <package android:name="cdma.yemen.tool.android" />
+        <package android:name="cdma.yemen.tool.settings" />
+        <package android:name="cdma.yemen.tool.systemui" />
+    </queries>
+    <application android:allowBackup="false" android:label="Samsung Arabic Universal" android:supportsRtl="true" android:theme="@android:style/Theme.Material.Light.NoActionBar">
+        <provider android:name="rikka.shizuku.ShizukuProvider" android:authorities="${applicationId}.shizuku" android:multiprocess="false" android:enabled="true" android:exported="true" android:permission="android.permission.INTERACT_ACROSS_USERS_FULL" />
+        <activity android:name=".MainActivity" android:screenOrientation="portrait" android:exported="true">
+            <intent-filter><action android:name="android.intent.action.MAIN"/><category android:name="android.intent.category.LAUNCHER"/></intent-filter>
+        </activity>
+    </application>
+</manifest>
