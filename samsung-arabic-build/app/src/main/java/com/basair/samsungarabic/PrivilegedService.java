@@ -8,12 +8,17 @@ import android.os.LocaleList;
 import androidx.annotation.Keep;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 
 public class PrivilegedService extends IPrivilegedService.Stub {
+    private static final String CORE_PACKAGE = "com.samsung.Arabic_Core_Theme01";
+    private static final String TMP_APK = "/data/local/tmp/SamsungArabicCore-OneUI7.apk";
+
     public PrivilegedService() {}
     @Keep public PrivilegedService(Context context) {}
 
@@ -51,11 +56,36 @@ public class PrivilegedService extends IPrivilegedService.Stub {
             "echo FINGERPRINT=$(getprop ro.build.fingerprint); " +
             "echo LOCALES=$(settings get system system_locales); " +
             "echo ACTIVE_THEME=$(settings get system current_sec_active_themepackage); " +
-            "echo CORE_INSTALLED=$(pm path com.samsung.Arabic_Core_Theme01 2>/dev/null | head -1); " +
+            "echo CORE_INSTALLED=$(pm path " + CORE_PACKAGE + " 2>/dev/null | head -1); " +
             "for p in cdma.yemen.tool.android cdma.yemen.tool.settings cdma.yemen.tool.systemui; do " +
             "echo ====OVERLAY:$p====; cmd overlay dump --user " + user + " $p 2>&1 | grep -E 'mState|mTargetPackageName|mBaseCodePath|IDMAP|missing idmap' || true; done; " +
             "echo ====FILTERED_LIST====; cmd overlay list --user " + user + " | grep -E 'cdma\\.yemen\\.tool\\.(android|settings|systemui)' || true";
         return exec(cmd);
+    }
+
+    @Override public String installCoreTheme(byte[] apkBytes) {
+        if (apkBytes == null || apkBytes.length < 100000) return "ERROR: embedded APK is missing or too small";
+        try {
+            File f = new File(TMP_APK);
+            try (FileOutputStream out = new FileOutputStream(f, false)) {
+                out.write(apkBytes);
+                out.flush();
+            }
+            exec("chmod 0644 '" + TMP_APK + "'");
+            int user = currentUser();
+            String first = exec("pm install -r -d --user " + user + " '" + TMP_APK + "'");
+            if (first.contains("INSTALL_FAILED_UPDATE_INCOMPATIBLE") || first.contains("signatures do not match")) {
+                String remove = exec("pm uninstall --user " + user + " " + CORE_PACKAGE);
+                String second = exec("pm install -r -d --user " + user + " '" + TMP_APK + "'");
+                exec("rm -f '" + TMP_APK + "'");
+                return "FIRST_INSTALL:\n" + first + "\nREPLACE_OLD_CORE:\n" + remove + "\nSECOND_INSTALL:\n" + second;
+            }
+            exec("rm -f '" + TMP_APK + "'");
+            return first;
+        } catch (Throwable t) {
+            exec("rm -f '" + TMP_APK + "'");
+            return "ERROR: " + t.getClass().getSimpleName() + ": " + t.getMessage();
+        }
     }
 
     @Override public String setArabicLocale(String languageTag) {
@@ -80,6 +110,7 @@ public class PrivilegedService extends IPrivilegedService.Stub {
             }
             if (update == null) return "ERROR: updatePersistentConfiguration not found";
             update.invoke(iam, config);
+            exec("settings put system system_locales '" + languageTag.replace("'", "") + "'");
             return "OK locale=" + languageTag;
         } catch (Throwable t) {
             return "REFLECTION_ERROR: " + t.getClass().getSimpleName() + ": " + t.getMessage() + "\n" +
@@ -89,8 +120,14 @@ public class PrivilegedService extends IPrivilegedService.Stub {
 
     @Override public String bestEffortReapply(String packageName) {
         String safe = packageName.replaceAll("[^A-Za-z0-9._]", "");
-        return exec("am broadcast -a com.samsung.android.theme.themecenter.THEME_REAPPLY " +
+        String a = exec("am broadcast -a com.samsung.android.theme.themecenter.THEME_REAPPLY -p com.samsung.android.themecenter " +
                 "--es packageName '" + safe + "' --es package '" + safe + "' --es themePackage '" + safe + "'");
+        String b = exec("am broadcast -a com.samsung.android.themecenter.THEME_REAPPLY -p com.samsung.android.themecenter " +
+                "--es packageName '" + safe + "' --es package '" + safe + "' --es themePackage '" + safe + "'");
+        String c = exec("am broadcast -a com.samsung.android.theme.themecenter.THEME_REAPPLY " +
+                "--es packageName '" + safe + "' --es package '" + safe + "' --es themePackage '" + safe + "'");
+        exec("am force-stop com.android.settings 2>/dev/null || true");
+        return "TRY1:\n" + a + "\nTRY2:\n" + b + "\nTRY3:\n" + c;
     }
 
     @Override public String applyDefaultTheme() {
