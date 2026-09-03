@@ -96,6 +96,4 @@ public class PrivilegedService extends IPrivilegedService.Stub {
     @Override public String applyDefaultTheme() {
         return exec("am broadcast -a com.samsung.android.themecenter.APPLY_DEFAULT -p com.samsung.android.themecenter");
     }
-
-    @Override public void destroy() { System.exit(0); }
 }
