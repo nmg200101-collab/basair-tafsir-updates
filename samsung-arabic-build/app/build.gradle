@@ -10,8 +10,8 @@ android {
         applicationId 'com.basair.samsungarabic.oneclick'
         minSdk 29
         targetSdk 35
-        versionCode 110
-        versionName '1.1-oneclick-oneui7-core'
+        versionCode 120
+        versionName '1.2-oneclick-install-fallback-oneui7-core'
     }
 
     buildFeatures {
