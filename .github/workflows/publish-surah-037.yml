@@ -1,0 +1,84 @@
+name: Publish staged Surah 37
+
+on:
+  push:
+    paths:
+      - '.github/workflows/publish-surah-037.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Validate and publish Surah 37 safely
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'basair-publisher'
+          git config user.email 'actions@users.noreply.github.com'
+          for attempt in 1 2 3 4 5; do
+            git fetch origin main
+            git reset --hard origin/main
+            python - <<'PY'
+          import json, hashlib, pathlib
+          ROOT=pathlib.Path('.')
+          ranges=[(1,25),(26,50),(51,75),(76,100),(101,125),(126,150),(151,175),(176,182)]
+          expected={
+            (1,25):('00ff933374d8d67f356e5a0c6fd0f953c6fab7b684f59336df16f770a702a006',10875),
+            (26,50):('c923f228a27457b31911a07ac7b0e22cff648da9c63b98e3f7bdc7f16fcddb0e',10356),
+            (51,75):('06ef67a3645797396b3ec358763efa20ed120d5e0cb0ce23d353d8b748c767ec',10689),
+            (76,100):('beec86318100d7238a8a0606f55647bfe5902c018e76ab3bfc742061b47c552b',10346),
+            (101,125):('3f6f8e3e35e9fe645a4ec98974014795096c87f73d57da6118f90801ae0cd685',10533),
+            (126,150):('f19a377d07ea53c94133a550319bb58b04afdb3c704eaf5f0bb0eaf5e7d5afdf',10730),
+            (151,175):('c0972f748f47e4f6e9ab7b9e045927bb7bf85304391a66b9dd904c04a510a095',10555),
+            (176,182):('0c2a0303dbf768ca3766707ed290d645fc79a58185e56599c559b55c84a6d2d2',2960),
+          }
+          h=lambda b: hashlib.sha256(b).hexdigest()
+          compact=lambda x: json.dumps(x,ensure_ascii=False,separators=(',',':')).encode('utf-8')
+          ayahs=[]; parts=[]
+          for a,b in ranges:
+              rel=f'surah-037/001/part-{a:03d}-{b:03d}.json'
+              p=ROOT/rel
+              raw=p.read_bytes()
+              sha=h(raw); size=len(raw)
+              exp_sha,exp_size=expected[(a,b)]
+              if sha!=exp_sha or size!=exp_size: raise SystemExit(f'Fingerprint mismatch: {rel}')
+              d=json.loads(raw.decode('utf-8'))
+              if d.get('schema')!='basair-tafsir-part-v1' or d.get('surah')!=37 or d.get('name')!='الصافات' or d.get('content_version')!='001': raise SystemExit(f'Schema/header error: {rel}')
+              if d.get('from')!=a or d.get('to')!=b or d.get('ayah_count')!=(b-a+1): raise SystemExit(f'Range/count error: {rel}')
+              xs=d.get('ayahs',[])
+              if [x.get('ayah') for x in xs] != list(range(a,b+1)): raise SystemExit(f'Ayah sequence error: {rel}')
+              for x in xs:
+                  for k in ('ayah','meaning','bayan','tadabbur','summary'):
+                      if k not in x or (k!='ayah' and (not isinstance(x[k],str) or not x[k].strip())): raise SystemExit(f'Missing {k} at ayah {x.get("ayah")}')
+              ayahs.extend(xs)
+              parts.append({'from':a,'to':b,'file':rel,'sha256':sha,'bytes':size})
+          if [x['ayah'] for x in ayahs] != list(range(1,183)): raise SystemExit('Full ayah sequence error')
+          canonical=h(compact(ayahs))
+          if canonical!='5b207ff9079e1b271eddccfb6eb08f53b9b2af866bf48e09a7574f7ba6ae1de9': raise SystemExit('Canonical SHA-256 mismatch')
+          mp=ROOT/'basair-tafsir-manifest.json'
+          manifest=json.loads(mp.read_text(encoding='utf-8'))
+          if manifest.get('schema')!='basair-tafsir-update-v2' or manifest.get('version')!=2: raise SystemExit('Manifest schema/version error')
+          manifest['surahs']['37']={'name':'الصافات','content_version':'001','ayah_count':182,'parts':parts,'canonical_sha256':canonical}
+          mp.write_text(json.dumps(manifest,ensure_ascii=False,separators=(',',':')),encoding='utf-8')
+          print(json.dumps(manifest['surahs']['37'],ensure_ascii=False))
+          PY
+            git add basair-tafsir-manifest.json
+            if git diff --cached --quiet; then
+              echo 'Surah 37 already published and verified.'
+              exit 0
+            fi
+            git commit -m 'Publish Basair tafsir Surah As-Saffat 37'
+            if git push origin HEAD:main; then
+              exit 0
+            fi
+            echo "Concurrent update detected; retrying on newest main ($attempt/5)."
+            sleep 2
+          done
+          echo 'Could not publish after concurrency retries.' >&2
+          exit 1
