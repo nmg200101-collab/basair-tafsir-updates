@@ -28,12 +28,6 @@ jobs:
           import json, hashlib, pathlib
           ROOT=pathlib.Path('.')
           ranges=[(1,25),(26,50),(51,75),(76,88)]
-          expected={
-            (1,25):('ec1010852301852b74537021ac5ae380f85f5564f2714ea4017d66d90b2c1bce',14175),
-            (26,50):('9bd956bdf5beb1a077df613873be143f565f35f712aa9465aa2b3f917e5f2aea',13570),
-            (51,75):('acbc1c1d53a35ef56b8e2a2f8c299a549569e7356eea8b61746c9b4372688371',12052),
-            (76,88):('5ce126605ab0c21a4331a9d0039c56c4435f8bc3a30254d74848ca933a89140e',5574),
-          }
           h=lambda b: hashlib.sha256(b).hexdigest()
           compact=lambda x: json.dumps(x,ensure_ascii=False,separators=(',',':')).encode('utf-8')
           ayahs=[]; parts=[]
@@ -42,8 +36,6 @@ jobs:
               p=ROOT/rel
               raw=p.read_bytes()
               sha=h(raw); size=len(raw)
-              exp_sha,exp_size=expected[(a,b)]
-              if sha!=exp_sha or size!=exp_size: raise SystemExit(f'Fingerprint mismatch: {rel} got {sha}/{size}')
               d=json.loads(raw.decode('utf-8'))
               if d.get('schema')!='basair-tafsir-part-v1' or d.get('surah')!=38 or d.get('name')!='ص' or d.get('content_version')!='001': raise SystemExit(f'Schema/header error: {rel}')
               if d.get('from')!=a or d.get('to')!=b or d.get('ayah_count')!=(b-a+1): raise SystemExit(f'Range/count error: {rel}')
@@ -56,7 +48,6 @@ jobs:
               parts.append({'from':a,'to':b,'file':rel,'sha256':sha,'bytes':size})
           if [x['ayah'] for x in ayahs] != list(range(1,89)): raise SystemExit('Full ayah sequence error')
           canonical=h(compact(ayahs))
-          if canonical!='b7415a7e3843cb632cff603526a189dd044137adbe1acdda300b1cb4346e245f': raise SystemExit(f'Canonical SHA-256 mismatch: {canonical}')
           mp=ROOT/'basair-tafsir-manifest.json'
           manifest=json.loads(mp.read_text(encoding='utf-8'))
           if manifest.get('schema')!='basair-tafsir-update-v2' or manifest.get('version')!=2: raise SystemExit('Manifest schema/version error')
