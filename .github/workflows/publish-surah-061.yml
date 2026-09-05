@@ -1,0 +1,53 @@
+name: Publish Surah 61
+on:
+  push:
+    paths:
+      - '.github/workflows/publish-surah-061.yml'
+permissions:
+  contents: write
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Merge latest manifest and publish Surah 61
+        shell: bash
+        run: |
+          git config user.name 'basair-publisher'
+          git config user.email 'actions@users.noreply.github.com'
+          for attempt in 1 2 3 4 5; do
+            git fetch origin main
+            git reset --hard origin/main
+            python - <<'PY'
+          import json, hashlib, pathlib
+          ROOT=pathlib.Path('.')
+          M=ROOT/'basair-tafsir-manifest.json'
+          def compact(o): return json.dumps(o,ensure_ascii=False,separators=(',',':')).encode('utf-8')
+          def h(b): return hashlib.sha256(b).hexdigest()
+          d=ROOT/'surah-061'/'001'
+          files=sorted(d.glob('part-*.json'))
+          expected=1; ayahs=[]; parts=[]; name=None
+          for p in files:
+              b=p.read_bytes(); o=json.loads(b.decode('utf-8'))
+              assert o['surah']==61 and o['from']==expected
+              assert o['to']-o['from']+1==o['ayah_count']==len(o['ayahs'])
+              assert [a['ayah'] for a in o['ayahs']]==list(range(o['from'],o['to']+1))
+              for a in o['ayahs']:
+                  for k in ('ayah','meaning','bayan','tadabbur','summary'): assert k in a
+              name=name or o['name']; ayahs.extend(o['ayahs'])
+              parts.append({'from':o['from'],'to':o['to'],'file':p.as_posix(),'sha256':h(b),'bytes':len(b)})
+              expected=o['to']+1
+          assert len(ayahs)==14 and expected==15
+          manifest=json.loads(M.read_text(encoding='utf-8'))
+          manifest['surahs']['61']={'name':name,'content_version':'001','ayah_count':14,'parts':parts,'canonical_sha256':h(compact(ayahs))}
+          M.write_text(json.dumps(manifest,ensure_ascii=False,separators=(',',':')),encoding='utf-8')
+          print(json.dumps(manifest['surahs']['61'],ensure_ascii=False))
+          PY
+            git add basair-tafsir-manifest.json
+            if git diff --cached --quiet; then exit 0; fi
+            git commit -m 'Publish Basair tafsir Surah As-Saff 61'
+            if git push origin HEAD:main; then exit 0; fi
+          done
+          exit 1
