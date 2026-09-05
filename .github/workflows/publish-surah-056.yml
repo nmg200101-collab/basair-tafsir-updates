@@ -55,8 +55,6 @@ jobs:
           # Infer the canonical-hash recipe from already-published Surah 55.
           n55,a55,r55,p55 = load_surah(55)
           target = manifest['surahs']['55']['canonical_sha256']
-          p55hash=[x['sha256'] for x in p55]
-          meta55={'surah':55,'name':n55,'content_version':'001','ayah_count':len(a55),'ayahs':a55}
           candidates = {
               'ayahs_compact': lambda n,name,a,r,p: compact(a),
               'surah_ayahs_compact': lambda n,name,a,r,p: compact({'surah':n,'ayahs':a}),
@@ -72,7 +70,6 @@ jobs:
               if h(fn(55,n55,a55,r55,p55)) == target:
                   recipe=key; break
           if recipe is None:
-              # Stable fallback: canonical ordered ayah payload.
               recipe='ayahs_compact'
           print('canonical_recipe=', recipe)
 
@@ -99,3 +96,4 @@ jobs:
             git commit -m 'Publish Basair tafsir Surah Al-Waqiah 56'
             git push
           fi
+# rerun 2026-09-05
