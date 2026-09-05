@@ -1,0 +1,82 @@
+name: Publish staged Surah 40
+
+on:
+  push:
+    paths:
+      - '.github/workflows/publish-surah-040.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Validate and publish Surah 40 safely
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'basair-publisher'
+          git config user.email 'actions@users.noreply.github.com'
+          for attempt in 1 2 3 4 5; do
+            git fetch origin main
+            git reset --hard origin/main
+            python - <<'PY'
+          import json, hashlib, pathlib
+          ROOT=pathlib.Path('.')
+          ranges=[(1,25),(26,50),(51,75),(76,85)]
+          expected={
+            (1,25):('96dbac19282894b467cd3f31d454956e9533c884ad4167aaf92464faba6d01e9',11239),
+            (26,50):('40016589f61beaba68692ba56d97aba64eb6e24e2242b1be1da87e1ed4c458d6',11826),
+            (51,75):('15ea4fc6d958b2ba03a17b4eb61abd55382546d7ea48a131d83577fa8d937055',10756),
+            (76,85):('a2ba8ab92278ff2fc5f5bce2d054dac3053c94ff44c449479bad0bbb34f8dc7c',4740),
+          }
+          def compact(x): return json.dumps(x,ensure_ascii=False,separators=(',',':')).encode('utf-8')
+          def h(b): return hashlib.sha256(b).hexdigest()
+          ayahs=[]; parts=[]
+          for a,b in ranges:
+              rel=f'surah-040/001/part-{a:03d}-{b:03d}.json'
+              p=ROOT/rel
+              raw=p.read_bytes()
+              sha=h(raw); size=len(raw)
+              if (sha,size)!=expected[(a,b)]: raise SystemExit(f'SHA/size mismatch {rel}: {sha} {size}')
+              chk=json.loads(raw.decode('utf-8'))
+              if chk.get('schema')!='basair-tafsir-part-v1' or chk.get('surah')!=40 or chk.get('name')!='غافر' or chk.get('content_version')!='001': raise SystemExit(f'Header error {rel}')
+              if chk.get('from')!=a or chk.get('to')!=b or chk.get('ayah_count')!=(b-a+1): raise SystemExit(f'Range/count error {rel}')
+              seq=[x.get('ayah') for x in chk.get('ayahs',[])]
+              if seq!=list(range(a,b+1)): raise SystemExit(f'Ayah sequence error {rel}')
+              ayahs.extend(chk['ayahs'])
+              parts.append({'from':a,'to':b,'file':rel,'sha256':sha,'bytes':size})
+          if [x.get('ayah') for x in ayahs] != list(range(1,86)): raise SystemExit('Full ayah sequence error')
+          for x in ayahs:
+              for k in ('ayah','meaning','bayan','tadabbur','summary'):
+                  if k not in x or (k!='ayah' and (not isinstance(x[k],str) or not x[k].strip())): raise SystemExit(f'Missing {k} at ayah {x.get("ayah")}')
+          canonical=h(compact(ayahs))
+          if canonical!='b4c621875c279044d3e55c5b6e4ff4ee1cf8a580bdb60adf4d1de945711f3219': raise SystemExit(f'Canonical SHA-256 mismatch: {canonical}')
+          mp=ROOT/'basair-tafsir-manifest.json'
+          manifest=json.loads(mp.read_text(encoding='utf-8'))
+          if manifest.get('schema')!='basair-tafsir-update-v2' or manifest.get('version')!=2: raise SystemExit('Manifest schema/version error')
+          existing=manifest.setdefault('surahs',{}).get('40')
+          new={'name':'غافر','content_version':'001','ayah_count':85,'parts':parts,'canonical_sha256':canonical}
+          if existing is not None and existing!=new: raise SystemExit('Surah 40 already exists with different content')
+          manifest['surahs']['40']=new
+          mp.write_text(json.dumps(manifest,ensure_ascii=False,separators=(',',':')),encoding='utf-8')
+          print(json.dumps(new,ensure_ascii=False))
+          PY
+            git add basair-tafsir-manifest.json surah-040/001
+            if git diff --cached --quiet; then
+              echo 'Already published and verified.'
+              exit 0
+            fi
+            git commit -m 'Publish Tafsir Basair Surah 40 Ghafir'
+            if git push origin HEAD:main; then
+              exit 0
+            fi
+            echo "Push race on attempt $attempt; retrying..."
+            sleep $((attempt*2))
+          done
+          echo 'Failed to publish after retries' >&2
+          exit 1
