@@ -1,3 +1,4 @@
+# worker-02 publisher trigger
 name: Publish staged Surah 29
 
 on:
