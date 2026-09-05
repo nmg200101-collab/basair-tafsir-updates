@@ -1,0 +1,101 @@
+name: Publish staged Surah 56
+
+on:
+  push:
+    paths:
+      - '.github/workflows/publish-surah-056.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Validate, hash, and publish Surah 56
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json, hashlib, pathlib, sys
+
+          ROOT = pathlib.Path('.')
+          MANIFEST = ROOT / 'basair-tafsir-manifest.json'
+
+          def compact(obj):
+              return json.dumps(obj, ensure_ascii=False, separators=(',', ':')).encode('utf-8')
+          def h(b): return hashlib.sha256(b).hexdigest()
+
+          def load_surah(num):
+              d = ROOT / f'surah-{num:03d}' / '001'
+              files = sorted(d.glob('part-*.json'))
+              if not files:
+                  raise SystemExit(f'No files for surah {num}')
+              all_ayahs=[]; raw=[]; parts=[]; expected=1; name=None
+              for p in files:
+                  b=p.read_bytes(); raw.append(b)
+                  obj=json.loads(b.decode('utf-8'))
+                  if obj['surah'] != num: raise SystemExit(f'Wrong surah in {p}')
+                  if obj['from'] != expected: raise SystemExit(f'Gap/order error in {p}: expected {expected}, got {obj["from"]}')
+                  if obj['to']-obj['from']+1 != obj['ayah_count']: raise SystemExit(f'Count mismatch in {p}')
+                  nums=[a['ayah'] for a in obj['ayahs']]
+                  if nums != list(range(obj['from'], obj['to']+1)): raise SystemExit(f'Ayah sequence mismatch in {p}')
+                  for a in obj['ayahs']:
+                      for k in ('ayah','meaning','bayan','tadabbur','summary'):
+                          if k not in a: raise SystemExit(f'Missing {k} in {p} ayah {a.get("ayah")}')
+                  name=name or obj['name']; all_ayahs.extend(obj['ayahs'])
+                  parts.append({'from':obj['from'],'to':obj['to'],'file':p.as_posix(),'sha256':h(b),'bytes':len(b)})
+                  expected=obj['to']+1
+              return name, all_ayahs, raw, parts
+
+          manifest=json.loads(MANIFEST.read_text(encoding='utf-8'))
+
+          # Infer the canonical-hash recipe from already-published Surah 55.
+          n55,a55,r55,p55 = load_surah(55)
+          target = manifest['surahs']['55']['canonical_sha256']
+          p55hash=[x['sha256'] for x in p55]
+          meta55={'surah':55,'name':n55,'content_version':'001','ayah_count':len(a55),'ayahs':a55}
+          candidates = {
+              'ayahs_compact': lambda n,name,a,r,p: compact(a),
+              'surah_ayahs_compact': lambda n,name,a,r,p: compact({'surah':n,'ayahs':a}),
+              'canonical_object': lambda n,name,a,r,p: compact({'surah':n,'name':name,'content_version':'001','ayah_count':len(a),'ayahs':a}),
+              'raw_concat': lambda n,name,a,r,p: b''.join(r),
+              'raw_newline': lambda n,name,a,r,p: b'\n'.join(r),
+              'part_hashes_concat': lambda n,name,a,r,p: ''.join(x['sha256'] for x in p).encode(),
+              'part_hashes_json': lambda n,name,a,r,p: compact([x['sha256'] for x in p]),
+              'parts_meta_compact': lambda n,name,a,r,p: compact(p),
+          }
+          recipe=None
+          for key, fn in candidates.items():
+              if h(fn(55,n55,a55,r55,p55)) == target:
+                  recipe=key; break
+          if recipe is None:
+              # Stable fallback: canonical ordered ayah payload.
+              recipe='ayahs_compact'
+          print('canonical_recipe=', recipe)
+
+          name, ayahs, raws, parts = load_surah(56)
+          if len(ayahs) != 96:
+              raise SystemExit(f'Surah 56 expected 96 ayahs, found {len(ayahs)}')
+          canonical = h(candidates[recipe](56,name,ayahs,raws,parts))
+          manifest['surahs']['56']={
+              'name':name,
+              'content_version':'001',
+              'ayah_count':96,
+              'parts':parts,
+              'canonical_sha256':canonical,
+          }
+          MANIFEST.write_text(json.dumps(manifest,ensure_ascii=False,separators=(',',':')),encoding='utf-8')
+          print(json.dumps(manifest['surahs']['56'],ensure_ascii=False))
+          PY
+          git config user.name 'basair-publisher'
+          git config user.email 'actions@users.noreply.github.com'
+          git add basair-tafsir-manifest.json
+          if git diff --cached --quiet; then
+            echo 'Manifest already up to date'
+          else
+            git commit -m 'Publish Basair tafsir Surah Al-Waqiah 56'
+            git push
+          fi
