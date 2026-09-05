@@ -1,0 +1,78 @@
+name: Publish staged Surah 28
+
+on:
+  push:
+    paths:
+      - '.github/workflows/publish-surah-028.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Sync latest main
+        run: git pull --rebase origin main
+      - name: Validate, hash, and register Surah 28
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json, hashlib, pathlib
+          root = pathlib.Path('.')
+          surah = 28
+          name = 'القصص'
+          ayah_count = 88
+          version = '001'
+          paths = [
+              'surah-028/001/part-001-025.json',
+              'surah-028/001/part-026-050.json',
+              'surah-028/001/part-051-075.json',
+              'surah-028/001/part-076-088.json',
+          ]
+          expected_ranges = [(1,25),(26,50),(51,75),(76,88)]
+          all_ayahs=[]
+          parts=[]
+          required={'ayah','meaning','bayan','tadabbur','summary'}
+          for p,(a,b) in zip(paths, expected_ranges):
+              raw=(root/p).read_bytes()
+              obj=json.loads(raw.decode('utf-8'))
+              assert obj['schema']=='basair-tafsir-part-v1', (p,obj.get('schema'))
+              assert obj['surah']==surah and obj['name']==name and obj['content_version']==version
+              assert obj['from']==a and obj['to']==b and obj['ayah_count']==b-a+1
+              ayahs=obj['ayahs']
+              assert len(ayahs)==b-a+1
+              nums=[x['ayah'] for x in ayahs]
+              assert nums==list(range(a,b+1)), (p, nums[:3], nums[-3:])
+              for x in ayahs:
+                  assert required.issubset(x), (p,x.get('ayah'))
+                  for k in ('meaning','bayan','tadabbur','summary'):
+                      assert isinstance(x[k],str) and x[k].strip(), (p,x['ayah'],k)
+              all_ayahs.extend(ayahs)
+              parts.append({'from':a,'to':b,'file':p,'sha256':hashlib.sha256(raw).hexdigest(),'bytes':len(raw)})
+          assert [x['ayah'] for x in all_ayahs]==list(range(1,ayah_count+1))
+          canonical=json.dumps(all_ayahs,ensure_ascii=False,separators=(',',':')).encode('utf-8')
+          entry={'name':name,'content_version':version,'ayah_count':ayah_count,'parts':parts,'canonical_sha256':hashlib.sha256(canonical).hexdigest()}
+          mp=root/'basair-tafsir-manifest.json'
+          manifest=json.loads(mp.read_text(encoding='utf-8'))
+          assert manifest['schema']=='basair-tafsir-update-v2'
+          manifest.setdefault('surahs',{})[str(surah)]=entry
+          mp.write_text(json.dumps(manifest,ensure_ascii=False,separators=(',',':')),encoding='utf-8')
+          print(json.dumps(entry,ensure_ascii=False,indent=2))
+          PY
+      - name: Commit manifest update
+        shell: bash
+        run: |
+          if git diff --quiet -- basair-tafsir-manifest.json; then
+            echo 'Manifest already current.'
+            exit 0
+          fi
+          git config user.name 'basair-publisher'
+          git config user.email 'actions@users.noreply.github.com'
+          git add basair-tafsir-manifest.json
+          git commit -m 'Publish Surah 28 to tafsir manifest'
+          git pull --rebase origin main
+          git push origin HEAD:main
