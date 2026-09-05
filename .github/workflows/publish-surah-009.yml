@@ -1,0 +1,91 @@
+name: Publish staged Surah 9
+
+on:
+  push:
+    paths:
+      - '.github/workflows/publish-surah-009.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Sync latest main
+        run: git pull --rebase origin main
+      - name: Validate, QA, assemble, hash, and register Surah 9
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json, hashlib, pathlib, collections, datetime
+          root = pathlib.Path('.')
+          surah = 9
+          name = 'التوبة'
+          ayah_count = 129
+          version = '001'
+          paths = [
+              'surah-009/001/part-001-025.json',
+              'surah-009/001/part-026-050.json',
+              'surah-009/001/part-051-075.json',
+              'surah-009/001/part-076-100.json',
+              'surah-009/001/part-101-125.json',
+              'surah-009/001/part-126-129.json',
+          ]
+          expected_ranges = [(1,25),(26,50),(51,75),(76,100),(101,125),(126,129)]
+          required = {'ayah','meaning','bayan','tadabbur','summary'}
+          all_ayahs=[]
+          parts=[]
+          for p,(a,b) in zip(paths, expected_ranges):
+              raw=(root/p).read_bytes()
+              obj=json.loads(raw.decode('utf-8'))
+              assert obj['schema']=='basair-tafsir-part-v1', (p,obj.get('schema'))
+              assert obj['surah']==surah and obj['name']==name and obj['content_version']==version
+              assert obj['from']==a and obj['to']==b and obj['ayah_count']==b-a+1
+              ayahs=obj['ayahs']
+              assert len(ayahs)==b-a+1
+              assert [x['ayah'] for x in ayahs]==list(range(a,b+1))
+              for x in ayahs:
+                  assert required.issubset(x), (p,x.get('ayah'))
+                  for k in ('meaning','bayan','tadabbur','summary'):
+                      assert isinstance(x[k],str) and x[k].strip(), (p,x['ayah'],k)
+                  if 'knowledge' in x:
+                      assert isinstance(x['knowledge'],str) and x['knowledge'].strip(), (p,x['ayah'],'knowledge')
+              all_ayahs.extend(ayahs)
+              parts.append({'from':a,'to':b,'file':p,'sha256':hashlib.sha256(raw).hexdigest(),'bytes':len(raw)})
+          assert [x['ayah'] for x in all_ayahs]==list(range(1,ayah_count+1))
+          for field in ('bayan','tadabbur','summary'):
+              vals=[x[field].strip() for x in all_ayahs]
+              dup=[v for v,c in collections.Counter(vals).items() if c>1]
+              assert not dup, f'exact duplicate {field}: {dup[:3]}'
+          canonical_bytes=json.dumps(all_ayahs,ensure_ascii=False,separators=(',',':')).encode('utf-8')
+          canonical_sha=hashlib.sha256(canonical_bytes).hexdigest()
+          full_obj={'schema':'basair-tafsir-surah-v1','surah':surah,'name':name,'content_version':version,'ayah_count':ayah_count,'ayahs':all_ayahs}
+          full_path=root/'surah-009/001/basair-surah-009-001.json'
+          full_path.write_text(json.dumps(full_obj,ensure_ascii=False,separators=(',',':')),encoding='utf-8')
+          entry={'name':name,'content_version':version,'ayah_count':ayah_count,'parts':parts,'canonical_sha256':canonical_sha}
+          mp=root/'basair-tafsir-manifest.json'
+          manifest=json.loads(mp.read_text(encoding='utf-8'))
+          assert manifest['schema']=='basair-tafsir-update-v2'
+          manifest.setdefault('surahs',{})[str(surah)]=entry
+          mp.write_text(json.dumps(manifest,ensure_ascii=False,separators=(',',':')),encoding='utf-8')
+          progress={'current_surah':9,'surah_name':name,'status':'published','completed_to':129,'updated_at':datetime.datetime.now(datetime.timezone.utc).isoformat(),'content_version':version,'staged_to':129,'publish_stage':'manifest-published-verified'}
+          (root/'basair-tafsir-progress.json').write_text(json.dumps(progress,ensure_ascii=False,separators=(',',':')),encoding='utf-8')
+          print(json.dumps(entry,ensure_ascii=False,indent=2))
+          PY
+      - name: Commit published Surah 9
+        shell: bash
+        run: |
+          git config user.name 'basair-publisher'
+          git config user.email 'actions@users.noreply.github.com'
+          git add surah-009/001/basair-surah-009-001.json basair-tafsir-manifest.json basair-tafsir-progress.json
+          if git diff --cached --quiet; then
+            echo 'Surah 9 already published.'
+            exit 0
+          fi
+          git commit -m 'Publish Surah 9 to tafsir manifest'
+          git pull --rebase origin main
+          git push origin HEAD:main
