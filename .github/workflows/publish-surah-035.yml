@@ -15,6 +15,9 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+      - name: Sync latest main
+        shell: bash
+        run: git pull --rebase origin main
       - name: Generate, validate, hash, and publish Surah 35
         shell: bash
         run: |
@@ -73,45 +76,27 @@ jobs:
           out=ROOT/'surah-035'/'001'; out.mkdir(parents=True,exist_ok=True)
           ayahs=[{'ayah':n,'meaning':m,'bayan':b,'tadabbur':t,'summary':s} for n,m,b,t,s in entries]
           part_ranges=[(1,25),(26,45)]
-          parts=[]; raws=[]
+          parts=[]
           for a,z in part_ranges:
               obj={'schema':'basair-tafsir-part-v1','surah':35,'name':'فاطر','content_version':'001','from':a,'to':z,'ayah_count':z-a+1,'ayahs':ayahs[a-1:z]}
-              raw=compact(obj); p=out/f'part-{a:03d}-{z:03d}.json'; p.write_bytes(raw); raws.append(raw)
+              raw=compact(obj)
+              p=out/f'part-{a:03d}-{z:03d}.json'
+              p.write_bytes(raw)
               parts.append({'from':a,'to':z,'file':p.as_posix(),'sha256':h(raw),'bytes':len(raw)})
           if [x['ayah'] for x in ayahs] != list(range(1,46)): raise SystemExit('Ayah sequence error')
           for x in ayahs:
               for k in ('ayah','meaning','bayan','tadabbur','summary'):
                   if k not in x or (k!='ayah' and not x[k].strip()): raise SystemExit(f'Missing {k} at {x.get("ayah")}')
+          canonical=h(compact(ayahs))
           manifest_path=ROOT/'basair-tafsir-manifest.json'
           manifest=json.loads(manifest_path.read_text(encoding='utf-8'))
-          def load_surah(num):
-              d=ROOT/f'surah-{num:03d}'/'001'; files=sorted(d.glob('part-*.json')); aa=[]; rr=[]; pp=[]; expected=1; name=None
-              for p in files:
-                  raw=p.read_bytes(); o=json.loads(raw.decode())
-                  if o['from']!=expected: raise SystemExit('Existing canonical reference has gap')
-                  aa.extend(o['ayahs']); rr.append(raw); name=name or o['name']; expected=o['to']+1
-                  pp.append({'from':o['from'],'to':o['to'],'file':p.as_posix(),'sha256':h(raw),'bytes':len(raw)})
-              return name,aa,rr,pp
-          ref=34 if '34' in manifest.get('surahs',{}) else 33
-          rn,ra,rr,rp=load_surah(ref); target=manifest['surahs'][str(ref)]['canonical_sha256']
-          candidates={
-            'ayahs_compact':lambda n,name,a,r,p:compact(a),
-            'surah_ayahs_compact':lambda n,name,a,r,p:compact({'surah':n,'ayahs':a}),
-            'canonical_object':lambda n,name,a,r,p:compact({'surah':n,'name':name,'content_version':'001','ayah_count':len(a),'ayahs':a}),
-            'raw_concat':lambda n,name,a,r,p:b''.join(r),
-            'raw_newline':lambda n,name,a,r,p:b'\n'.join(r),
-            'part_hashes_concat':lambda n,name,a,r,p:''.join(x['sha256'] for x in p).encode(),
-            'part_hashes_json':lambda n,name,a,r,p:compact([x['sha256'] for x in p]),
-            'parts_meta_compact':lambda n,name,a,r,p:compact(p)}
-          recipe=next((k for k,f in candidates.items() if h(f(ref,rn,ra,rr,rp))==target),'ayahs_compact')
-          canonical=h(candidates[recipe](35,'فاطر',ayahs,raws,parts))
           manifest['surahs']['35']={'name':'فاطر','content_version':'001','ayah_count':45,'parts':parts,'canonical_sha256':canonical}
           manifest_path.write_text(json.dumps(manifest,ensure_ascii=False,separators=(',',':')),encoding='utf-8')
-          print('canonical_recipe=',recipe)
           print(json.dumps(manifest['surahs']['35'],ensure_ascii=False))
           PY
           git config user.name 'basair-publisher'
           git config user.email 'actions@users.noreply.github.com'
           git add surah-035/001/*.json basair-tafsir-manifest.json
           git commit -m 'Publish Basair tafsir Surah Fatir 35'
+          git pull --rebase origin main
           git push
