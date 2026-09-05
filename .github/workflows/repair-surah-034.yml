@@ -1,0 +1,83 @@
+name: Restore verified Surah 34
+
+on:
+  push:
+    paths:
+      - '.github/workflows/repair-surah-034.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  restore:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Sync latest main
+        run: git pull --rebase origin main
+      - name: Validate existing Surah 34 parts and merge latest manifest
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json, hashlib, pathlib
+
+          root = pathlib.Path('.')
+          manifest_path = root / 'basair-tafsir-manifest.json'
+          expected = [
+              (1, 25, 'surah-034/001/part-001-025.json', '27721e14243d051288bffb18bf4db3d13d811aecd0fe3cc97e5e3712bba6c145', 11428),
+              (26, 50, 'surah-034/001/part-026-050.json', '3a84c3995605855b2fcbe78fd47a9b8d2a6e7592957eb07fd7fe9f0ad1ccda79', 10827),
+              (51, 54, 'surah-034/001/part-051-054.json', '7c22077f3d2b54d580942642f3389967cecd1058396fde3bf8c7e024dc3e5110', 1624),
+          ]
+          required = {'ayah','meaning','bayan','tadabbur','summary'}
+          seen = []
+          parts = []
+
+          for start, end, rel, expected_sha, expected_bytes in expected:
+              p = root / rel
+              raw = p.read_bytes()
+              sha = hashlib.sha256(raw).hexdigest()
+              assert sha == expected_sha, (rel, sha, expected_sha)
+              assert len(raw) == expected_bytes, (rel, len(raw), expected_bytes)
+              obj = json.loads(raw.decode('utf-8'))
+              assert obj['schema'] == 'basair-tafsir-part-v1'
+              assert obj['surah'] == 34 and obj['name'] == 'سبأ'
+              assert obj['content_version'] == '001'
+              assert obj['from'] == start and obj['to'] == end
+              assert obj['ayah_count'] == end-start+1
+              ayahs = obj['ayahs']
+              assert [a['ayah'] for a in ayahs] == list(range(start,end+1))
+              for a in ayahs:
+                  assert required.issubset(a)
+                  for k in required-{'ayah'}:
+                      assert isinstance(a[k], str) and a[k].strip()
+              seen.extend(a['ayah'] for a in ayahs)
+              parts.append({'from':start,'to':end,'file':rel,'sha256':sha,'bytes':len(raw)})
+
+          assert seen == list(range(1,55))
+          manifest = json.loads(manifest_path.read_text(encoding='utf-8'))
+          assert manifest['schema'] == 'basair-tafsir-update-v2' and manifest['version'] == 2
+          manifest['surahs']['34'] = {
+              'name':'سبأ',
+              'content_version':'001',
+              'ayah_count':54,
+              'parts':parts,
+              'canonical_sha256':'1e8b7359c5c9c686942b7f492e1c535b320afe6b0b2bc3cfb10c08c69cc93653'
+          }
+          manifest_path.write_text(json.dumps(manifest, ensure_ascii=False, separators=(',',':')), encoding='utf-8')
+          print('Surah 34 validated and merged into latest manifest')
+          PY
+      - name: Commit manifest safely
+        shell: bash
+        run: |
+          if git diff --quiet -- basair-tafsir-manifest.json; then
+            echo 'Manifest already contains verified Surah 34'
+            exit 0
+          fi
+          git config user.name 'basair-publisher'
+          git config user.email 'actions@users.noreply.github.com'
+          git add basair-tafsir-manifest.json
+          git commit -m 'Publish Basair tafsir Surah Saba 34'
+          git pull --rebase origin main
+          git push origin HEAD:main
