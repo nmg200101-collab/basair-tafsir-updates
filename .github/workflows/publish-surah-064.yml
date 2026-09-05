@@ -1,0 +1,58 @@
+name: Publish staged Surah 64
+
+on:
+  push:
+    paths:
+      - '.github/workflows/publish-surah-064.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Refresh, validate, hash, and publish Surah 64
+        shell: bash
+        run: |
+          git pull --rebase origin main
+          python - <<'PY'
+          import json, hashlib, pathlib
+          ROOT=pathlib.Path('.')
+          P=ROOT/'surah-064/001/part-001-018.json'
+          M=ROOT/'basair-tafsir-manifest.json'
+          b=P.read_bytes(); o=json.loads(b.decode('utf-8'))
+          if o['surah']!=64 or o['from']!=1 or o['to']!=18 or o['ayah_count']!=18: raise SystemExit('Surah metadata mismatch')
+          nums=[a['ayah'] for a in o['ayahs']]
+          if nums!=list(range(1,19)): raise SystemExit('Ayah order mismatch')
+          for a in o['ayahs']:
+              for k in ('ayah','meaning','bayan','tadabbur','summary'):
+                  if k not in a: raise SystemExit(f'Missing {k} in ayah {a.get("ayah")}')
+          h=lambda x: hashlib.sha256(x).hexdigest()
+          compact=lambda x: json.dumps(x,ensure_ascii=False,separators=(',',':')).encode('utf-8')
+          part_sha=h(b)
+          if part_sha!='76e20276061e6955d988ab034edd0235dc05a9fcc9adb6c0d1a90c5210c8353b': raise SystemExit('Unexpected file SHA256')
+          if len(b)!=13042: raise SystemExit(f'Unexpected bytes: {len(b)}')
+          canonical=h(compact(o['ayahs']))
+          if canonical!='74f9d67639ed06bb436a718491c542a3b90f65ca7bcdcc2ba7813451c6f13136': raise SystemExit('Unexpected canonical SHA256')
+          manifest=json.loads(M.read_text(encoding='utf-8'))
+          manifest['surahs']['64']={
+            'name':'التغابن','content_version':'001','ayah_count':18,
+            'parts':[{'from':1,'to':18,'file':'surah-064/001/part-001-018.json','sha256':part_sha,'bytes':len(b)}],
+            'canonical_sha256':canonical
+          }
+          M.write_text(json.dumps(manifest,ensure_ascii=False,separators=(',',':')),encoding='utf-8')
+          PY
+          git config user.name 'basair-publisher'
+          git config user.email 'actions@users.noreply.github.com'
+          git add basair-tafsir-manifest.json
+          if git diff --cached --quiet; then
+            echo 'Manifest already up to date'
+          else
+            git commit -m 'Publish Basair tafsir Surah At-Taghabun 64'
+            git pull --rebase origin main
+            git push
+          fi
