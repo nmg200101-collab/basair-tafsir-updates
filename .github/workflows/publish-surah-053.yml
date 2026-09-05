@@ -18,6 +18,7 @@ jobs:
       - name: Validate, hash, and publish Surah 53
         shell: bash
         run: |
+          git pull --rebase origin main
           python - <<'PY'
           import json, hashlib, pathlib
 
@@ -57,8 +58,6 @@ jobs:
               return name, all_ayahs, raw, parts
 
           manifest=json.loads(MANIFEST.read_text(encoding='utf-8'))
-
-          # Infer the canonical hash recipe from published Surah 52.
           n52,a52,r52,p52 = load_surah(52)
           target = manifest['surahs']['52']['canonical_sha256']
           candidates = {
@@ -96,7 +95,6 @@ jobs:
           PY
           git config user.name 'basair-publisher'
           git config user.email 'actions@users.noreply.github.com'
-          git pull --rebase origin main
           git add basair-tafsir-manifest.json
           if git diff --cached --quiet; then
             echo 'Manifest already up to date'
