@@ -1,0 +1,87 @@
+name: Publish Surah 076
+
+on:
+  push:
+    paths:
+      - '.github/workflows/publish-surah-076.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Validate and publish Surah 76 safely
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'basair-publisher'
+          git config user.email 'actions@users.noreply.github.com'
+          for attempt in 1 2 3 4 5; do
+            git fetch origin main
+            git reset --hard origin/main
+            python - <<'PY'
+          import json, hashlib, pathlib
+          ROOT=pathlib.Path('.')
+          compact=lambda x: json.dumps(x,ensure_ascii=False,separators=(',',':')).encode('utf-8')
+          h=lambda b: hashlib.sha256(b).hexdigest()
+          specs=((1,25,'surah-076/001/part-001-025.json'),(26,31,'surah-076/001/part-026-031.json'))
+          all_ayahs=[]
+          parts=[]
+          for a,b,rel in specs:
+              p=ROOT/rel
+              if not p.exists(): raise SystemExit(f'Missing file: {rel}')
+              raw=p.read_bytes()
+              obj=json.loads(raw.decode('utf-8'))
+              expected={'schema':'basair-tafsir-part-v1','surah':76,'name':'الإنسان','content_version':'001','from':a,'to':b,'ayah_count':b-a+1}
+              for k,v in expected.items():
+                  if obj.get(k)!=v: raise SystemExit(f'{rel}: {k} mismatch')
+              seq=[x.get('ayah') for x in obj.get('ayahs',[])]
+              if seq!=list(range(a,b+1)): raise SystemExit(f'{rel}: ayah sequence error')
+              for x in obj['ayahs']:
+                  allowed={'ayah','meaning','bayan','tadabbur','summary','knowledge'}
+                  extra=set(x)-allowed
+                  if extra: raise SystemExit(f'Ayah {x.get("ayah")}: extra fields {sorted(extra)}')
+                  for k in ('ayah','meaning','bayan','tadabbur','summary'):
+                      if k not in x or (k!='ayah' and (not isinstance(x[k],str) or not x[k].strip())):
+                          raise SystemExit(f'Missing {k} at ayah {x.get("ayah")}')
+                  if 'knowledge' in x and (not isinstance(x['knowledge'],str) or not x['knowledge'].strip()):
+                      raise SystemExit(f'Empty knowledge at ayah {x.get("ayah")}')
+              if raw!=compact(obj): raise SystemExit(f'{rel}: file is not canonical compact JSON')
+              all_ayahs.extend(obj['ayahs'])
+              parts.append({'from':a,'to':b,'file':rel,'sha256':h(raw),'bytes':len(raw)})
+          if [x['ayah'] for x in all_ayahs]!=list(range(1,32)): raise SystemExit('Full ayah sequence error')
+          canonical=h(compact(all_ayahs))
+          mp=ROOT/'basair-tafsir-manifest.json'
+          manifest=json.loads(mp.read_text(encoding='utf-8'))
+          if manifest.get('schema')!='basair-tafsir-update-v2' or manifest.get('version')!=2: raise SystemExit('Manifest schema/version error')
+          surahs=manifest.setdefault('surahs',{})
+          existing=surahs.get('76')
+          entry={'name':'الإنسان','content_version':'001','ayah_count':31,'parts':parts,'canonical_sha256':canonical}
+          if existing:
+              if existing==entry:
+                  print('Surah 76 already published identically')
+                  raise SystemExit(0)
+              raise SystemExit('Surah 76 already exists with different content; refusing overwrite')
+          surahs['76']=entry
+          mp.write_text(json.dumps(manifest,ensure_ascii=False,separators=(',',':')),encoding='utf-8')
+          print(json.dumps(entry,ensure_ascii=False))
+          PY
+            git add basair-tafsir-manifest.json
+            if git diff --cached --quiet; then
+              echo 'Nothing to commit'
+              exit 0
+            fi
+            git commit -m 'Publish Basair tafsir Surah 76 Al-Insan'
+            if git push origin HEAD:main; then
+              exit 0
+            fi
+            echo 'Concurrent update detected; retrying on latest main...'
+            sleep $((attempt*2))
+          done
+          echo 'Failed to publish after retries' >&2
+          exit 1
