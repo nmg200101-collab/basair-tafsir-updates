@@ -1,0 +1,72 @@
+name: Publish staged Surah 77
+
+on:
+  push:
+    paths:
+      - '.github/workflows/publish-surah-077.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Validate, hash, and publish Surah 77
+        shell: bash
+        run: |
+          git pull --rebase origin main
+          python - <<'PY'
+          import json, hashlib, pathlib
+          ROOT=pathlib.Path('.')
+          def h(b): return hashlib.sha256(b).hexdigest()
+          def compact(x): return json.dumps(x,ensure_ascii=False,separators=(',',':')).encode()
+          def load_surah(num):
+              d=ROOT/f'surah-{num:03d}'/'001'; files=sorted(d.glob('part-*.json')); aa=[]; rr=[]; pp=[]; expected=1; name=None
+              if not files: raise SystemExit(f'No parts for surah {num}')
+              for p in files:
+                  raw=p.read_bytes(); o=json.loads(raw.decode('utf-8'))
+                  required={'schema','surah','name','content_version','from','to','ayah_count','ayahs'}
+                  if not required.issubset(o): raise SystemExit(f'Missing top-level fields in {p}')
+                  if o['schema']!='basair-tafsir-part-v1' or o['surah']!=num or o['content_version']!='001': raise SystemExit(f'Bad schema/meta in {p}')
+                  if o['from']!=expected or o['ayah_count']!=len(o['ayahs']) or o['to']!=o['from']+len(o['ayahs'])-1: raise SystemExit(f'Gap/count error in {p}')
+                  for i,a in enumerate(o['ayahs'],o['from']):
+                      if a.get('ayah')!=i: raise SystemExit(f'Ayah sequence error {p}:{i}')
+                      for k in ('meaning','bayan','tadabbur','summary'):
+                          if not isinstance(a.get(k),str) or not a[k].strip(): raise SystemExit(f'Missing {k} {p}:{i}')
+                      if 'knowledge' in a and (not isinstance(a['knowledge'],str) or not a['knowledge'].strip()): raise SystemExit(f'Bad knowledge {p}:{i}')
+                  aa.extend(o['ayahs']); rr.append(raw); name=name or o['name']; expected=o['to']+1
+                  pp.append({'from':o['from'],'to':o['to'],'file':p.as_posix(),'sha256':h(raw),'bytes':len(raw)})
+              return name,aa,rr,pp
+          name,ayahs,raws,parts=load_surah(77)
+          if name!='المرسلات' or len(ayahs)!=50 or [x['ayah'] for x in ayahs]!=list(range(1,51)): raise SystemExit('Surah 77 must contain ayahs 1..50')
+          manifest_path=ROOT/'basair-tafsir-manifest.json'
+          manifest=json.loads(manifest_path.read_text(encoding='utf-8'))
+          if '77' in manifest.get('surahs',{}): raise SystemExit('Surah 77 already published; refusing overwrite')
+          ref=76 if '76' in manifest.get('surahs',{}) else next(iter(manifest['surahs']))
+          rn,ra,rr,rp=load_surah(int(ref)); target=manifest['surahs'][str(ref)]['canonical_sha256']
+          candidates={
+            'ayahs_compact':lambda n,name,a,r,p:compact(a),
+            'surah_ayahs_compact':lambda n,name,a,r,p:compact({'surah':n,'ayahs':a}),
+            'canonical_object':lambda n,name,a,r,p:compact({'surah':n,'name':name,'content_version':'001','ayah_count':len(a),'ayahs':a}),
+            'raw_concat':lambda n,name,a,r,p:b''.join(r),
+            'raw_newline':lambda n,name,a,r,p:b'\n'.join(r),
+            'part_hashes_concat':lambda n,name,a,r,p:''.join(x['sha256'] for x in p).encode(),
+            'part_hashes_json':lambda n,name,a,r,p:compact([x['sha256'] for x in p]),
+            'parts_meta_compact':lambda n,name,a,r,p:compact(p)}
+          recipe=next((k for k,f in candidates.items() if h(f(int(ref),rn,ra,rr,rp))==target),None)
+          if recipe is None: raise SystemExit('Could not infer canonical SHA recipe')
+          canonical=h(candidates[recipe](77,name,ayahs,raws,parts))
+          manifest['surahs']['77']={'name':name,'content_version':'001','ayah_count':50,'parts':parts,'canonical_sha256':canonical}
+          manifest_path.write_text(json.dumps(manifest,ensure_ascii=False,separators=(',',':')),encoding='utf-8')
+          print('canonical_recipe=',recipe)
+          print(json.dumps(manifest['surahs']['77'],ensure_ascii=False))
+          PY
+          git config user.name 'basair-publisher'
+          git config user.email 'actions@users.noreply.github.com'
+          git add basair-tafsir-manifest.json
+          git commit -m 'Publish Basair tafsir Surah Al-Mursalat 77'
+          git push origin HEAD:main
