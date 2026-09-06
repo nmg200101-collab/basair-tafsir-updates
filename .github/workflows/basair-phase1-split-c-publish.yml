@@ -24,56 +24,20 @@ jobs:
           set -euo pipefail
           git config user.name "basair-auto-publisher"
           git config user.email "basair-auto-publisher@users.noreply.github.com"
-
-          publish_once() {
+          for attempt in 1 2 3 4 5; do
             git fetch origin main
             git reset --hard origin/main
-            python3 - <<'PY'
-import json, hashlib, pathlib
-SURAHS={21:("الأنبياء",112),22:("الحج",78),23:("المؤمنون",118)}
-def compact(obj): return json.dumps(obj,ensure_ascii=False,separators=(",",":"))
-mpath=pathlib.Path("basair-tafsir-manifest.json")
-manifest=json.loads(mpath.read_text(encoding="utf-8"))
-manifest.setdefault("schema","basair-tafsir-update-v2"); manifest.setdefault("version",2); manifest.setdefault("surahs",{})
-changed=False
-for num,(name,count) in SURAHS.items():
-    d=pathlib.Path(f"surah-{num:03d}/001")
-    if not d.exists(): continue
-    files=sorted(d.glob("part-*.json"))
-    if not files: continue
-    ayahs=[]; parts=[]; expect=1; valid=True
-    for f in files:
-        raw=f.read_bytes()
-        try: obj=json.loads(raw.decode("utf-8"))
-        except Exception: valid=False; break
-        frm=int(obj.get("from",-1)); to=int(obj.get("to",-1))
-        if frm!=expect or to<frm or int(obj.get("ayah_count",-1))!=to-frm+1: valid=False; break
-        chunk=obj.get("ayahs",[])
-        if len(chunk)!=to-frm+1 or [int(x.get("ayah",-1)) for x in chunk]!=list(range(frm,to+1)): valid=False; break
-        for x in chunk:
-            for k in ("meaning","bayan","tadabbur","summary"):
-                if not isinstance(x.get(k),str) or not x[k].strip(): valid=False
-            if "knowledge" in x and (not isinstance(x["knowledge"],str) or not x["knowledge"].strip()): valid=False
-        if not valid: break
-        ayahs.extend(chunk)
-        parts.append({"from":frm,"to":to,"file":str(f).replace("\\","/"),"sha256":hashlib.sha256(raw).hexdigest(),"bytes":len(raw)})
-        expect=to+1
-    if not valid or expect!=count+1 or len(ayahs)!=count: continue
-    full={"schema":"basair-tafsir-content-v1","surah":num,"name":name,"content_version":"001","ayah_count":count,"ayahs":ayahs}
-    full_text=compact(full); full_path=pathlib.Path(f"basair-surah-{num:03d}-001.json")
-    if not full_path.exists() or full_path.read_text(encoding="utf-8")!=full_text:
-        full_path.write_text(full_text,encoding="utf-8"); changed=True
-    entry={"name":name,"content_version":"001","ayah_count":count,"parts":parts,"canonical_sha256":hashlib.sha256(full_text.encode("utf-8")).hexdigest()}
-    if manifest["surahs"].get(str(num))!=entry:
-        manifest["surahs"][str(num)]=entry; changed=True
-if changed: mpath.write_text(compact(manifest),encoding="utf-8")
-PY
-            if git diff --quiet; then return 0; fi
-            git add basair-tafsir-manifest.json basair-surah-021-001.json basair-surah-022-001.json basair-surah-023-001.json 2>/dev/null || true
+            python3 tools/basair_phase1_split_c_publish.py
+            if git diff --quiet; then
+              exit 0
+            fi
+            git add basair-tafsir-manifest.json
+            for f in basair-surah-021-001.json basair-surah-022-001.json basair-surah-023-001.json; do
+              if [ -f "$f" ]; then git add "$f"; fi
+            done
             git commit -m "[phase1-split-c] Publish completed surah(s) 021-023"
-          }
-          for attempt in 1 2 3 4 5; do
-            publish_once
-            if git push origin HEAD:main; then exit 0; fi
+            if git push origin HEAD:main; then
+              exit 0
+            fi
           done
           exit 1
