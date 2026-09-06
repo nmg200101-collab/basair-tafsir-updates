@@ -1,0 +1,44 @@
+name: Basair Phase1 Split B Publish
+
+on:
+  push:
+    paths:
+      - 'surah-017/**'
+      - 'surah-018/**'
+      - 'surah-019/**'
+      - 'surah-020/**'
+      - '.github/workflows/basair-phase1-split-b-publish.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Publish completed Split B surahs
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "basair-auto-publisher"
+          git config user.email "basair-auto-publisher@users.noreply.github.com"
+          for attempt in 1 2 3 4 5; do
+            git fetch origin main
+            git reset --hard origin/main
+            python3 tools/basair_phase1_split_b_publish.py
+            if git diff --quiet; then
+              exit 0
+            fi
+            git add basair-tafsir-manifest.json
+            for f in basair-surah-017-001.json basair-surah-018-001.json basair-surah-019-001.json basair-surah-020-001.json; do
+              if [ -f "$f" ]; then git add "$f"; fi
+            done
+            git commit -m "[phase1-split-b] Publish completed surah(s) 017-020"
+            if git push origin HEAD:main; then
+              exit 0
+            fi
+          done
+          exit 1
