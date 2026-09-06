@@ -1,0 +1,71 @@
+name: Publish staged Surah 74
+
+on:
+  push:
+    paths:
+      - '.github/workflows/publish-surah-074.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Validate and publish Surah 74 safely
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'basair-publisher'
+          git config user.email 'actions@users.noreply.github.com'
+          for attempt in 1 2 3 4 5; do
+            git fetch origin main
+            git reset --hard origin/main
+            python - <<'PY'
+          import json, hashlib, pathlib
+          ROOT=pathlib.Path('.')
+          ranges=[(1,25),(26,50),(51,56)]
+          h=lambda b: hashlib.sha256(b).hexdigest()
+          compact=lambda x: json.dumps(x,ensure_ascii=False,separators=(',',':')).encode('utf-8')
+          ayahs=[]; parts=[]
+          for a,b in ranges:
+              rel=f'surah-074/001/part-{a:03d}-{b:03d}.json'
+              p=ROOT/rel
+              raw=p.read_bytes()
+              sha=h(raw); size=len(raw)
+              d=json.loads(raw.decode('utf-8'))
+              if d.get('schema')!='basair-tafsir-part-v1' or d.get('surah')!=74 or d.get('name')!='المدثر' or d.get('content_version')!='001': raise SystemExit(f'Schema/header error: {rel}')
+              if d.get('from')!=a or d.get('to')!=b or d.get('ayah_count')!=(b-a+1): raise SystemExit(f'Range/count error: {rel}')
+              xs=d.get('ayahs',[])
+              if [x.get('ayah') for x in xs] != list(range(a,b+1)): raise SystemExit(f'Ayah sequence error: {rel}')
+              for x in xs:
+                  for k in ('ayah','meaning','bayan','tadabbur','summary'):
+                      if k not in x or (k!='ayah' and (not isinstance(x[k],str) or not x[k].strip())): raise SystemExit(f'Missing {k} at ayah {x.get("ayah")}')
+              ayahs.extend(xs)
+              parts.append({'from':a,'to':b,'file':rel,'sha256':sha,'bytes':size})
+          if [x['ayah'] for x in ayahs] != list(range(1,57)): raise SystemExit('Full ayah sequence error')
+          canonical=h(compact(ayahs))
+          mp=ROOT/'basair-tafsir-manifest.json'
+          manifest=json.loads(mp.read_text(encoding='utf-8'))
+          if manifest.get('schema')!='basair-tafsir-update-v2' or manifest.get('version')!=2: raise SystemExit('Manifest schema/version error')
+          manifest['surahs']['74']={'name':'المدثر','content_version':'001','ayah_count':56,'parts':parts,'canonical_sha256':canonical}
+          mp.write_text(json.dumps(manifest,ensure_ascii=False,separators=(',',':')),encoding='utf-8')
+          print(json.dumps(manifest['surahs']['74'],ensure_ascii=False))
+          PY
+            git add basair-tafsir-manifest.json
+            if git diff --cached --quiet; then
+              echo 'Surah 74 already published and verified.'
+              exit 0
+            fi
+            git commit -m 'Publish Basair tafsir Surah Al-Muddaththir 74'
+            if git push origin HEAD:main; then
+              exit 0
+            fi
+            echo "Concurrent update detected; retrying on newest main ($attempt/5)."
+            sleep 2
+          done
+          echo 'Could not publish after concurrency retries.' >&2
+          exit 1
