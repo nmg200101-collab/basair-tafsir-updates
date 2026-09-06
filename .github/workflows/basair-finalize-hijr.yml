@@ -1,0 +1,88 @@
+name: Basair finalize Al-Hijr
+
+on:
+  push:
+    paths:
+      - '.github/workflows/basair-finalize-hijr.yml'
+      - 'surah-015/001/part-076-099.json'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  finalize:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Final QA, canonical assembly, hashes and manifest publish
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "basair-publisher-bot"
+          git config user.email "basair-publisher-bot@users.noreply.github.com"
+          for attempt in 1 2 3 4 5; do
+            git fetch origin main
+            git reset --hard origin/main
+            python3 - <<'PY'
+          import json, hashlib, pathlib, difflib, re, datetime
+          SURAH=15; NAME='الحجر'; AYAH_COUNT=99; VER='001'
+          part_paths=[
+            pathlib.Path('surah-015/001/part-001-025.json'),
+            pathlib.Path('surah-015/001/part-026-050.json'),
+            pathlib.Path('surah-015/001/part-051-075.json'),
+            pathlib.Path('surah-015/001/part-076-099.json'),
+          ]
+          all_ayahs=[]; parts_meta=[]; expected=1
+          required=('ayah','meaning','bayan','tadabbur','summary')
+          vals={k:[] for k in ('bayan','tadabbur','summary')}
+          def norm(s):
+            return ' '.join(re.sub(r'[\W_]+',' ',str(s),flags=re.UNICODE).split()).strip()
+          for p in part_paths:
+            raw=p.read_bytes(); data=json.loads(raw.decode('utf-8')); ayahs=data.get('ayahs') or []
+            if data.get('surah')!=SURAH or data.get('name')!=NAME or data.get('content_version')!=VER: raise SystemExit(f'Bad identity {p}')
+            if data.get('ayah_count')!=AYAH_COUNT: raise SystemExit(f'Bad ayah_count {p}')
+            if not ayahs or data.get('from')!=expected: raise SystemExit(f'Gap/order before {p}')
+            if data.get('from')!=ayahs[0].get('ayah') or data.get('to')!=ayahs[-1].get('ayah'): raise SystemExit(f'Range mismatch {p}')
+            if len(ayahs)!=data['to']-data['from']+1: raise SystemExit(f'Part count mismatch {p}')
+            for a in ayahs:
+              if a.get('ayah')!=expected: raise SystemExit(f'Ayah sequence expected {expected}')
+              for k in required:
+                if k not in a or (k!='ayah' and not str(a[k]).strip()): raise SystemExit(f'Missing {k} at {expected}')
+              if 'knowledge' in a and not str(a['knowledge']).strip(): raise SystemExit(f'Empty knowledge at {expected}')
+              for k in vals: vals[k].append((expected,norm(a[k])))
+              all_ayahs.append(a); expected+=1
+            parts_meta.append({'from':data['from'],'to':data['to'],'file':str(p).replace('\\','/'),'sha256':hashlib.sha256(raw).hexdigest(),'bytes':len(raw)})
+          if expected!=AYAH_COUNT+1 or len(all_ayahs)!=AYAH_COUNT: raise SystemExit('Final count mismatch')
+          for field, items in vals.items():
+            seen={}
+            for ay,v in items:
+              if v in seen: raise SystemExit(f'Exact duplicate {field}: {seen[v]},{ay}')
+              seen[v]=ay
+            for i,(ai,vi) in enumerate(items):
+              if len(vi)<45: continue
+              for aj,vj in items[i+1:]:
+                if len(vj)<45: continue
+                r=difflib.SequenceMatcher(None,vi,vj).ratio()
+                if r>=0.965: raise SystemExit(f'Near duplicate {field}: {ai},{aj} ratio={r:.3f}')
+          canonical={'schema':'basair-tafsir-surah-v1','surah':SURAH,'name':NAME,'content_version':VER,'ayah_count':AYAH_COUNT,'ayahs':all_ayahs}
+          cb=json.dumps(canonical,ensure_ascii=False,separators=(',',':')).encode('utf-8')
+          cp=pathlib.Path('basair-surah-015-001.json'); cp.write_bytes(cb); csha=hashlib.sha256(cb).hexdigest()
+          mp=pathlib.Path('basair-tafsir-manifest.json'); manifest=json.loads(mp.read_text(encoding='utf-8'))
+          if manifest.get('schema')!='basair-tafsir-update-v2': raise SystemExit('Unexpected manifest schema')
+          manifest.setdefault('surahs',{})[str(SURAH)]={'name':NAME,'content_version':VER,'ayah_count':AYAH_COUNT,'parts':parts_meta,'canonical_sha256':csha}
+          mp.write_text(json.dumps(manifest,ensure_ascii=False,separators=(',',':')),encoding='utf-8')
+          pp=pathlib.Path('basair-tafsir-progress.json')
+          pp.write_text(json.dumps({'current_surah':SURAH,'surah_name':NAME,'status':'published','completed_to':AYAH_COUNT,'updated_at':datetime.datetime.now(datetime.timezone.utc).isoformat(),'content_version':VER,'staged_to':AYAH_COUNT,'publish_stage':'manifest-published-verified'},ensure_ascii=False,separators=(',',':')),encoding='utf-8')
+          json.loads(cp.read_text(encoding='utf-8')); verify=json.loads(mp.read_text(encoding='utf-8'))['surahs'][str(SURAH)]
+          if verify['ayah_count']!=AYAH_COUNT or verify['canonical_sha256']!=csha: raise SystemExit('Manifest verify failed')
+          print('AL_HIJR_QA_PASS',csha)
+          PY
+            git add basair-surah-015-001.json basair-tafsir-manifest.json basair-tafsir-progress.json
+            if git diff --cached --quiet; then exit 0; fi
+            git commit -m "Publish Surah Al-Hijr 15 after final QA"
+            if git push origin HEAD:main; then exit 0; fi
+          done
+          exit 1
