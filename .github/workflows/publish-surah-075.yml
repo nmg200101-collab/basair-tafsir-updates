@@ -1,0 +1,77 @@
+name: Publish Surah 075
+
+on:
+  push:
+    paths:
+      - '.github/workflows/publish-surah-075.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Validate and publish Surah 75 safely
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'basair-publisher'
+          git config user.email 'actions@users.noreply.github.com'
+          for attempt in 1 2 3 4 5; do
+            git fetch origin main
+            git reset --hard origin/main
+            python - <<'PY'
+          import base64, zlib, json, hashlib, pathlib
+          ROOT=pathlib.Path('.')
+          payload='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'
+          ayahs=json.loads(zlib.decompress(base64.b64decode(payload)).decode('utf-8'))
+          compact=lambda x: json.dumps(x,ensure_ascii=False,separators=(',',':')).encode('utf-8')
+          h=lambda b: hashlib.sha256(b).hexdigest()
+          if [x.get('ayah') for x in ayahs] != list(range(1,41)): raise SystemExit('Full ayah sequence error')
+          for x in ayahs:
+              for k in ('ayah','meaning','bayan','tadabbur','summary'):
+                  if k not in x or (k!='ayah' and (not isinstance(x[k],str) or not x[k].strip())): raise SystemExit(f'Missing {k} at ayah {x.get("ayah")}')
+          canonical=h(compact(ayahs))
+          if canonical!='ef84e0ad3d09bce40878e8f0e98a86bb3a9a568d72d947d0131dea85a317e070': raise SystemExit(f'Canonical SHA-256 mismatch: {canonical}')
+          mp=ROOT/'basair-tafsir-manifest.json'
+          manifest=json.loads(mp.read_text(encoding='utf-8'))
+          if manifest.get('schema')!='basair-tafsir-update-v2' or manifest.get('version')!=2: raise SystemExit('Manifest schema/version error')
+          existing=manifest.get('surahs',{}).get('75')
+          if existing:
+              if existing.get('ayah_count')==40 and existing.get('canonical_sha256')==canonical:
+                  print('Surah 75 already published with same canonical hash')
+                  raise SystemExit(0)
+              raise SystemExit('Surah 75 already exists with different content; refusing overwrite')
+          parts=[]
+          for a,b in ((1,25),(26,40)):
+              obj={'schema':'basair-tafsir-part-v1','surah':75,'name':'القيامة','content_version':'001','from':a,'to':b,'ayah_count':b-a+1,'ayahs':ayahs[a-1:b]}
+              raw=compact(obj)
+              sha=h(raw); size=len(raw)
+              rel=f'surah-075/001/part-{a:03d}-{b:03d}.json'
+              p=ROOT/rel; p.parent.mkdir(parents=True,exist_ok=True); p.write_bytes(raw)
+              chk=json.loads(raw.decode('utf-8'))
+              if chk['from']!=a or chk['to']!=b or chk['ayah_count']!=(b-a+1): raise SystemExit(f'Range/count error {rel}')
+              if [x['ayah'] for x in chk['ayahs']]!=list(range(a,b+1)): raise SystemExit(f'Ayah sequence error {rel}')
+              parts.append({'from':a,'to':b,'file':rel,'sha256':sha,'bytes':size})
+          manifest['surahs']['75']={'name':'القيامة','content_version':'001','ayah_count':40,'parts':parts,'canonical_sha256':canonical}
+          mp.write_text(json.dumps(manifest,ensure_ascii=False,separators=(',',':')),encoding='utf-8')
+          print(json.dumps(manifest['surahs']['75'],ensure_ascii=False))
+          PY
+            git add surah-075/001 basair-tafsir-manifest.json
+            if git diff --cached --quiet; then
+              echo "Nothing to commit"
+              exit 0
+            fi
+            git commit -m 'Publish Basair tafsir Surah 75 Al-Qiyamah'
+            if git push origin HEAD:main; then
+              exit 0
+            fi
+            echo "Concurrent update detected; retrying on latest main..."
+            sleep $((attempt*2))
+          done
+          echo "Failed to publish after retries" >&2
+          exit 1
