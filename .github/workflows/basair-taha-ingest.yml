@@ -3,7 +3,8 @@ name: Basair Taha 020 Ingest
 on:
   push:
     paths:
-      - 'staging/surah-020-001.json.gz.b64'
+      - 'staging/surah-020-001.part1.b64'
+      - 'staging/surah-020-001.part2.b64'
       - '.github/workflows/basair-taha-ingest.yml'
 
 permissions:
@@ -25,14 +26,16 @@ jobs:
           for attempt in 1 2 3 4 5; do
             git fetch origin main
             git reset --hard origin/main
-            if [ ! -f staging/surah-020-001.json.gz.b64 ]; then
+            if [ ! -f staging/surah-020-001.part1.b64 ] || [ ! -f staging/surah-020-001.part2.b64 ]; then
               exit 0
             fi
             python3 - <<'PY'
           import base64, gzip, hashlib, json, pathlib
 
-          stage = pathlib.Path('staging/surah-020-001.json.gz.b64')
-          raw_full = gzip.decompress(base64.b64decode(stage.read_text(encoding='utf-8').strip()))
+          p1 = pathlib.Path('staging/surah-020-001.part1.b64')
+          p2 = pathlib.Path('staging/surah-020-001.part2.b64')
+          payload = p1.read_text(encoding='utf-8').strip() + p2.read_text(encoding='utf-8').strip()
+          raw_full = gzip.decompress(base64.b64decode(payload))
           full = json.loads(raw_full.decode('utf-8'))
           assert full.get('schema') == 'basair-tafsir-content-v1'
           assert int(full.get('surah')) == 20
@@ -52,9 +55,7 @@ jobs:
               return json.dumps(o, ensure_ascii=False, separators=(',', ':'))
 
           full_text = compact(full)
-          full_path = pathlib.Path('basair-surah-020-001.json')
-          full_path.write_text(full_text, encoding='utf-8')
-
+          pathlib.Path('basair-surah-020-001.json').write_text(full_text, encoding='utf-8')
           part_dir = pathlib.Path('surah-020/001')
           part_dir.mkdir(parents=True, exist_ok=True)
           parts=[]
@@ -63,10 +64,10 @@ jobs:
               chunk=ayahs[start-1:end]
               obj={'schema':'basair-tafsir-part-v1','surah':20,'name':'طه','content_version':'001','from':start,'to':end,'ayah_count':len(chunk),'ayahs':chunk}
               text=compact(obj)
-              p=part_dir/f'part-{start:03d}-{end:03d}.json'
-              p.write_text(text, encoding='utf-8')
+              f=part_dir/f'part-{start:03d}-{end:03d}.json'
+              f.write_text(text, encoding='utf-8')
               raw=text.encode('utf-8')
-              parts.append({'from':start,'to':end,'file':str(p).replace('\\','/'),'sha256':hashlib.sha256(raw).hexdigest(),'bytes':len(raw)})
+              parts.append({'from':start,'to':end,'file':str(f).replace('\\','/'),'sha256':hashlib.sha256(raw).hexdigest(),'bytes':len(raw)})
 
           mpath=pathlib.Path('basair-tafsir-manifest.json')
           manifest=json.loads(mpath.read_text(encoding='utf-8'))
@@ -75,9 +76,9 @@ jobs:
           manifest.setdefault('surahs',{})
           manifest['surahs']['20']={'name':'طه','content_version':'001','ayah_count':135,'parts':parts,'canonical_sha256':hashlib.sha256(full_text.encode('utf-8')).hexdigest()}
           mpath.write_text(compact(manifest), encoding='utf-8')
-          stage.unlink()
+          p1.unlink(); p2.unlink()
           PY
-            git add basair-tafsir-manifest.json basair-surah-020-001.json surah-020/001 staging/surah-020-001.json.gz.b64
+            git add basair-tafsir-manifest.json basair-surah-020-001.json surah-020/001 staging/surah-020-001.part1.b64 staging/surah-020-001.part2.b64
             if git diff --cached --quiet; then
               exit 0
             fi
