@@ -1,0 +1,89 @@
+name: Basair Taha 020 Ingest
+
+on:
+  push:
+    paths:
+      - 'staging/surah-020-001.json.gz.b64'
+      - '.github/workflows/basair-taha-ingest.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Decode, validate and publish Surah Taha 020
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "basair-auto-publisher"
+          git config user.email "basair-auto-publisher@users.noreply.github.com"
+          for attempt in 1 2 3 4 5; do
+            git fetch origin main
+            git reset --hard origin/main
+            if [ ! -f staging/surah-020-001.json.gz.b64 ]; then
+              exit 0
+            fi
+            python3 - <<'PY'
+          import base64, gzip, hashlib, json, pathlib
+
+          stage = pathlib.Path('staging/surah-020-001.json.gz.b64')
+          raw_full = gzip.decompress(base64.b64decode(stage.read_text(encoding='utf-8').strip()))
+          full = json.loads(raw_full.decode('utf-8'))
+          assert full.get('schema') == 'basair-tafsir-content-v1'
+          assert int(full.get('surah')) == 20
+          assert full.get('name') == 'طه'
+          assert full.get('content_version') == '001'
+          assert int(full.get('ayah_count')) == 135
+          ayahs = full.get('ayahs') or []
+          assert len(ayahs) == 135
+          assert [int(x.get('ayah', -1)) for x in ayahs] == list(range(1,136))
+          for x in ayahs:
+              for k in ('meaning','bayan','tadabbur','summary'):
+                  assert isinstance(x.get(k), str) and x[k].strip()
+              if 'knowledge' in x:
+                  assert isinstance(x['knowledge'], str) and x['knowledge'].strip()
+
+          def compact(o):
+              return json.dumps(o, ensure_ascii=False, separators=(',', ':'))
+
+          full_text = compact(full)
+          full_path = pathlib.Path('basair-surah-020-001.json')
+          full_path.write_text(full_text, encoding='utf-8')
+
+          part_dir = pathlib.Path('surah-020/001')
+          part_dir.mkdir(parents=True, exist_ok=True)
+          parts=[]
+          for start in range(1,136,25):
+              end=min(start+24,135)
+              chunk=ayahs[start-1:end]
+              obj={'schema':'basair-tafsir-part-v1','surah':20,'name':'طه','content_version':'001','from':start,'to':end,'ayah_count':len(chunk),'ayahs':chunk}
+              text=compact(obj)
+              p=part_dir/f'part-{start:03d}-{end:03d}.json'
+              p.write_text(text, encoding='utf-8')
+              raw=text.encode('utf-8')
+              parts.append({'from':start,'to':end,'file':str(p).replace('\\','/'),'sha256':hashlib.sha256(raw).hexdigest(),'bytes':len(raw)})
+
+          mpath=pathlib.Path('basair-tafsir-manifest.json')
+          manifest=json.loads(mpath.read_text(encoding='utf-8'))
+          manifest.setdefault('schema','basair-tafsir-update-v2')
+          manifest.setdefault('version',2)
+          manifest.setdefault('surahs',{})
+          manifest['surahs']['20']={'name':'طه','content_version':'001','ayah_count':135,'parts':parts,'canonical_sha256':hashlib.sha256(full_text.encode('utf-8')).hexdigest()}
+          mpath.write_text(compact(manifest), encoding='utf-8')
+          stage.unlink()
+          PY
+            git add basair-tafsir-manifest.json basair-surah-020-001.json surah-020/001 staging/surah-020-001.json.gz.b64
+            if git diff --cached --quiet; then
+              exit 0
+            fi
+            git commit -m "[phase1-split-b] Publish Surah 020 Taha"
+            if git push origin HEAD:main; then
+              exit 0
+            fi
+          done
+          exit 1
