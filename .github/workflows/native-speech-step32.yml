@@ -1,9 +1,10 @@
-name: native-speech-step32
+name: basair-quran-hifz-v1-5-final-rc
 on:
   push:
-    branches: [ native-speech-build-step32-temp ]
+    branches: [ basair-quran-hifz-v1-5-final-rc-build ]
     paths:
       - 'native-build-step32/**'
+      - 'basair-v1.5/**'
       - '.github/workflows/native-speech-step32.yml'
   workflow_dispatch:
 
@@ -16,22 +17,19 @@ jobs:
         run: |
           yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses >/dev/null || true
           "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-35" "build-tools;35.0.0"
-      - name: Apply STEP37 native patch
+      - name: Verify locked Quran data
+        if: ${{ hashFiles('basair-v1.5/assets/www/mushaf-data.js') != '' }}
+        run: |
+          echo 'dc2b22fe3925a08ecf9ee2c32392a681362219b7339c627b8cc500190ef64650  basair-v1.5/assets/www/mushaf-data.js' | sha256sum -c -
+      - name: Apply native compatibility patch
         run: python3 native-build-step32/step37_patch.py
       - name: Compile native activity
         run: |
           mkdir -p native-build-step32/out native-build-step32/dex
-          javac -source 8 -target 8 \
-            -classpath "$ANDROID_HOME/platforms/android-35/android.jar" \
-            -d native-build-step32/out \
-            native-build-step32/app/basair/quran/MainActivity.java
+          javac -source 8 -target 8 -classpath "$ANDROID_HOME/platforms/android-35/android.jar" -d native-build-step32/out native-build-step32/app/basair/quran/MainActivity.java
           jar cf native-build-step32/app-classes.jar -C native-build-step32/out .
-          "$ANDROID_HOME/build-tools/35.0.0/d8" \
-            --min-api 23 \
-            --output native-build-step32/dex \
-            native-build-step32/app-classes.jar
-          ls -lh native-build-step32/dex/classes.dex
-      - name: Build manifest/resource skeleton
+          "$ANDROID_HOME/build-tools/35.0.0/d8" --min-api 23 --output native-build-step32/dex native-build-step32/app-classes.jar
+      - name: Build Android skeleton
         run: |
           mkdir -p native-build-step32/res/drawable native-build-step32/compiled
           python3 - <<'PY'
@@ -39,23 +37,12 @@ jobs:
           png='iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII='
           pathlib.Path('native-build-step32/res/drawable/ic_launcher.png').write_bytes(base64.b64decode(png))
           PY
-          "$ANDROID_HOME/build-tools/35.0.0/aapt2" compile \
-            --dir native-build-step32/res \
-            -o native-build-step32/compiled/resources.zip
-          "$ANDROID_HOME/build-tools/35.0.0/aapt2" link \
-            -I "$ANDROID_HOME/platforms/android-35/android.jar" \
-            --manifest native-build-step32/AndroidManifest.xml \
-            --min-sdk-version 23 \
-            --target-sdk-version 35 \
-            --version-code 194 \
-            --version-name 0.19.4 \
-            -o native-build-step32/skeleton.apk \
-            native-build-step32/compiled/resources.zip
-          unzip -l native-build-step32/skeleton.apk
-      - name: Upload native outputs
+          "$ANDROID_HOME/build-tools/35.0.0/aapt2" compile --dir native-build-step32/res -o native-build-step32/compiled/resources.zip
+          "$ANDROID_HOME/build-tools/35.0.0/aapt2" link -I "$ANDROID_HOME/platforms/android-35/android.jar" --manifest native-build-step32/AndroidManifest.xml --min-sdk-version 23 --target-sdk-version 35 --version-code 195 --version-name 1.5.0-RC -o native-build-step32/skeleton.apk native-build-step32/compiled/resources.zip
+      - name: Upload build foundation
         uses: actions/upload-artifact@v4
         with:
-          name: step37-native-runtime
+          name: BASAIR-QURAN-HIFZ-V1.5-RC-BUILD-FOUNDATION
           path: |
             native-build-step32/dex/classes.dex
             native-build-step32/skeleton.apk
