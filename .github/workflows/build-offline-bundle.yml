@@ -1,0 +1,103 @@
+name: Build Basair Tafsir Offline Bundle
+
+on:
+  push:
+    paths:
+      - ".github/workflows/build-offline-bundle.yml"
+      - "basair-tafsir-manifest.json"
+      - "surah-*/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  bundle:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate published parts and build offline bundle
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import json, hashlib, pathlib, datetime
+
+          root = pathlib.Path(".")
+          manifest_path = root / "basair-tafsir-manifest.json"
+          raw_manifest = manifest_path.read_bytes()
+          manifest = json.loads(raw_manifest)
+          out = {
+              "schema": "basair-tafsir-offline-v1",
+              "source_schema": manifest.get("schema"),
+              "source_version": manifest.get("version"),
+              "source_manifest_sha256": hashlib.sha256(raw_manifest).hexdigest(),
+              "surahs": {}
+          }
+          audit = {"surahs": {}, "errors": []}
+
+          for sk in sorted(manifest["surahs"], key=lambda x: int(x)):
+              sid = int(sk)
+              meta = manifest["surahs"][sk]
+              rows = []
+              expected = 1
+              for part in meta.get("parts", []):
+                  p = root / part["file"]
+                  raw = p.read_bytes()
+                  got = hashlib.sha256(raw).hexdigest()
+                  if got != part["sha256"]:
+                      raise SystemExit(f"SHA mismatch: {p}: {got} != {part['sha256']}")
+                  j = json.loads(raw)
+                  if int(j.get("surah", -1)) != sid:
+                      raise SystemExit(f"Surah mismatch in {p}")
+                  ayahs = j.get("ayahs") or []
+                  for row in ayahs:
+                      ay = int(row.get("ayah", -1))
+                      if ay != expected:
+                          raise SystemExit(f"Non-contiguous ayah in surah {sid}: {ay} != {expected}")
+                      cleaned = {"ayah": ay}
+                      for key in ("meaning","bayan","tadabbur","knowledge","summary"):
+                          v = row.get(key)
+                          if isinstance(v, str) and v.strip():
+                              cleaned[key] = v
+                      rows.append(cleaned)
+                      expected += 1
+              if len(rows) != int(meta["ayah_count"]):
+                  raise SystemExit(f"Ayah count mismatch surah {sid}: {len(rows)} != {meta['ayah_count']}")
+              out["surahs"][str(sid)] = {
+                  "name": meta["name"],
+                  "content_version": meta.get("content_version"),
+                  "ayah_count": int(meta["ayah_count"]),
+                  "canonical_sha256": meta.get("canonical_sha256"),
+                  "ayahs": rows
+              }
+              audit["surahs"][str(sid)] = {
+                  "name": meta["name"],
+                  "ayah_count": len(rows),
+                  "parts": len(meta.get("parts", [])),
+                  "canonical_sha256": meta.get("canonical_sha256")
+              }
+
+          payload = json.dumps(out, ensure_ascii=False, separators=(",",":"))
+          pathlib.Path("basair-tafsir-offline-bundle.js").write_text(
+              "window.__BASAIR_TAFSIR_OFFLINE_PUBLISHED__="+payload+";\n", encoding="utf-8")
+          audit["published_surah_count"] = len(out["surahs"])
+          audit["published_ayah_count"] = sum(x["ayah_count"] for x in out["surahs"].values())
+          audit["source_manifest_sha256"] = out["source_manifest_sha256"]
+          audit["bundle_sha256"] = hashlib.sha256(pathlib.Path("basair-tafsir-offline-bundle.js").read_bytes()).hexdigest()
+          pathlib.Path("basair-tafsir-offline-audit.json").write_text(
+              json.dumps(audit, ensure_ascii=False, indent=2)+"\n", encoding="utf-8")
+          print(json.dumps({
+              "published_surahs": audit["published_surah_count"],
+              "published_ayahs": audit["published_ayah_count"],
+              "bundle_sha256": audit["bundle_sha256"]
+          }, ensure_ascii=False))
+          PY
+      - name: Upload offline bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: BASAIR-TAFSIR-OFFLINE-BUNDLE
+          path: |
+            basair-tafsir-offline-bundle.js
+            basair-tafsir-offline-audit.json
+          if-no-files-found: error
+          retention-days: 7
