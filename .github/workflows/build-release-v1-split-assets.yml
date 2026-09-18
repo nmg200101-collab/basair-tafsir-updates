@@ -1,0 +1,153 @@
+name: Build Basair Quran V1 Split Offline Assets
+
+on:
+  push:
+    branches:
+      - release-v1-offline-assets-build-20260918
+    paths:
+      - ".github/workflows/build-release-v1-split-assets.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  core:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build pages layouts meanings
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import concurrent.futures, hashlib, json, pathlib, time, urllib.request
+          root=pathlib.Path("core-assets")
+          dirs={k:root/k for k in ("pages","layouts","meanings")}
+          [d.mkdir(parents=True,exist_ok=True) for d in dirs.values()]
+          UA="BasairQuran-V1-Split-Core/1.0"
+          def get(u):
+              req=urllib.request.Request(u,headers={"User-Agent":UA})
+              with urllib.request.urlopen(req,timeout=45) as r:return r.read()
+          def fetch(urls,dst,minb,jsoncheck=False):
+              last=None
+              for n in range(4):
+                  for u in urls:
+                      try:
+                          b=get(u)
+                          if len(b)<minb:raise RuntimeError(f"small {len(b)}")
+                          if jsoncheck:json.loads(b.decode("utf-8"))
+                          dst.write_bytes(b);return len(b),hashlib.sha256(b).hexdigest()
+                      except Exception as e:last=e
+                  time.sleep(min(8,1.5**n))
+              raise RuntimeError(last)
+          def job(kind,n):
+              if kind=="pages":
+                  return kind,n,*fetch([
+                    f"https://cdn.jsdelivr.net/gh/QuranHub/quran-pages-images@main/kfgqpc/hafs-wasat/{n}.jpg",
+                    f"https://raw.githubusercontent.com/QuranHub/quran-pages-images/main/kfgqpc/hafs-wasat/{n}.jpg"
+                  ],dirs[kind]/f"{n:03d}.jpg",10000)
+              if kind=="layouts":
+                  return kind,n,*fetch([
+                    f"https://raw.githubusercontent.com/zonetecde/mushaf-layout/refs/heads/main/mushaf/page-{n:03d}.json"
+                  ],dirs[kind]/f"page-{n:03d}.json",100,True)
+              return kind,n,*fetch([
+                f"https://alfurqan.online/api/v1/tafseer/mufradat/surah/{n}"
+              ],dirs[kind]/f"surah-{n:03d}.json",50,True)
+          todo=[("pages",p) for p in range(1,605)]+[("layouts",p) for p in range(1,605)]+[("meanings",s) for s in range(1,115)]
+          out=[];bad=[]
+          with concurrent.futures.ThreadPoolExecutor(max_workers=16) as ex:
+              fut={ex.submit(job,*x):x for x in todo}
+              for f in concurrent.futures.as_completed(fut):
+                  x=fut[f]
+                  try:r=f.result();out.append(r);print("OK",r[0],r[1],r[2])
+                  except Exception as e:bad.append([x,repr(e)]);print("ERR",x,repr(e))
+          if bad:
+              pathlib.Path("errors.json").write_text(json.dumps(bad,indent=2));raise SystemExit(len(bad))
+          c={k:0 for k in dirs};sz={k:0 for k in dirs};files=[]
+          for k,n,b,h in out:
+              c[k]+=1;sz[k]+=b;files.append({"kind":k,"number":n,"bytes":b,"sha256":h})
+          if c!={"pages":604,"layouts":604,"meanings":114}:raise SystemExit(c)
+          m={"schema":"basair-v1-core-offline-assets","counts":c,"bytes":sz,"total_bytes":sum(sz.values()),"files":files}
+          (root/"CORE-ASSETS-MANIFEST.json").write_text(json.dumps(m,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
+          print(json.dumps(m["bytes"]))
+          PY
+          zip -0 -r BASAIR-QURAN-V1-CORE-OFFLINE-ASSETS.zip core-assets >/dev/null
+          sha256sum BASAIR-QURAN-V1-CORE-OFFLINE-ASSETS.zip > BASAIR-QURAN-V1-CORE-OFFLINE-ASSETS.zip.sha256
+          du -h BASAIR-QURAN-V1-CORE-OFFLINE-ASSETS.zip
+      - uses: actions/upload-artifact@v4
+        with:
+          name: BASAIR-QURAN-V1-CORE-OFFLINE-ASSETS
+          path: |
+            BASAIR-QURAN-V1-CORE-OFFLINE-ASSETS.zip
+            BASAIR-QURAN-V1-CORE-OFFLINE-ASSETS.zip.sha256
+          compression-level: 0
+          retention-days: 7
+
+  audio:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - part: A
+            start: 1
+            end: 202
+          - part: B
+            start: 203
+            end: 404
+          - part: C
+            start: 405
+            end: 604
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build Alafasy audio split
+        shell: bash
+        env:
+          PART: ${{ matrix.part }}
+          START: ${{ matrix.start }}
+          END: ${{ matrix.end }}
+        run: |
+          python3 - <<'PY'
+          import concurrent.futures,hashlib,json,os,pathlib,time,urllib.request
+          part=os.environ["PART"];start=int(os.environ["START"]);end=int(os.environ["END"])
+          root=pathlib.Path("audio-alafasy");root.mkdir(parents=True,exist_ok=True)
+          UA="BasairQuran-V1-Alafasy-Split/1.0"
+          def one(p):
+              name=f"Page{p:03d}.mp3";dst=root/name;last=None
+              urls=[f"https://www.everyayah.com/data/Alafasy_64kbps/PageMp3s/{name}",f"https://everyayah.com/data/Alafasy_64kbps/PageMp3s/{name}"]
+              for n in range(4):
+                  for u in urls:
+                      try:
+                          req=urllib.request.Request(u,headers={"User-Agent":UA})
+                          with urllib.request.urlopen(req,timeout=45) as r:b=r.read()
+                          if len(b)<12000:raise RuntimeError(f"small {len(b)}")
+                          dst.write_bytes(b);return p,len(b),hashlib.sha256(b).hexdigest()
+                      except Exception as e:last=e
+                  time.sleep(min(8,1.5**n))
+              raise RuntimeError(last)
+          out=[];bad=[]
+          with concurrent.futures.ThreadPoolExecutor(max_workers=12) as ex:
+              fut={ex.submit(one,p):p for p in range(start,end+1)}
+              for f in concurrent.futures.as_completed(fut):
+                  p=fut[f]
+                  try:r=f.result();out.append(r);print("OK",p,r[1])
+                  except Exception as e:bad.append([p,repr(e)]);print("ERR",p,repr(e))
+          if bad:raise SystemExit(bad)
+          out.sort()
+          m={"schema":"basair-v1-alafasy-page-audio","part":part,"from":start,"to":end,"count":len(out),"total_bytes":sum(x[1] for x in out),
+             "files":[{"page":p,"bytes":b,"sha256":h} for p,b,h in out]}
+          pathlib.Path(f"ALAFASY-{part}-MANIFEST.json").write_text(json.dumps(m,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
+          PY
+          zip -0 -r "BASAIR-QURAN-V1-ALAFASY-AUDIO-${PART}.zip" audio-alafasy "ALAFASY-${PART}-MANIFEST.json" >/dev/null
+          sha256sum "BASAIR-QURAN-V1-ALAFASY-AUDIO-${PART}.zip" > "BASAIR-QURAN-V1-ALAFASY-AUDIO-${PART}.zip.sha256"
+          du -h "BASAIR-QURAN-V1-ALAFASY-AUDIO-${PART}.zip"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: BASAIR-QURAN-V1-ALAFASY-AUDIO-${{ matrix.part }}
+          path: |
+            BASAIR-QURAN-V1-ALAFASY-AUDIO-${{ matrix.part }}.zip
+            BASAIR-QURAN-V1-ALAFASY-AUDIO-${{ matrix.part }}.zip.sha256
+          compression-level: 0
+          retention-days: 7
