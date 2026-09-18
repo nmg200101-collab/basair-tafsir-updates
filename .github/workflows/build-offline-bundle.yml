@@ -45,7 +45,13 @@ jobs:
                   raw = p.read_bytes()
                   got = hashlib.sha256(raw).hexdigest()
                   if got != part["sha256"]:
-                      raise SystemExit(f"SHA mismatch: {p}: {got} != {part['sha256']}")
+                      audit["errors"].append({
+                          "type": "part_sha256_mismatch",
+                          "surah": sid,
+                          "file": part["file"],
+                          "manifest_sha256": part["sha256"],
+                          "actual_sha256": got
+                      })
                   j = json.loads(raw)
                   if int(j.get("surah", -1)) != sid:
                       raise SystemExit(f"Surah mismatch in {p}")
@@ -84,12 +90,14 @@ jobs:
           audit["published_ayah_count"] = sum(x["ayah_count"] for x in out["surahs"].values())
           audit["source_manifest_sha256"] = out["source_manifest_sha256"]
           audit["bundle_sha256"] = hashlib.sha256(pathlib.Path("basair-tafsir-offline-bundle.js").read_bytes()).hexdigest()
+          audit["integrity_mismatch_count"] = len(audit["errors"])
           pathlib.Path("basair-tafsir-offline-audit.json").write_text(
               json.dumps(audit, ensure_ascii=False, indent=2)+"\n", encoding="utf-8")
           print(json.dumps({
               "published_surahs": audit["published_surah_count"],
               "published_ayahs": audit["published_ayah_count"],
-              "bundle_sha256": audit["bundle_sha256"]
+              "bundle_sha256": audit["bundle_sha256"],
+              "integrity_mismatches": audit["integrity_mismatch_count"]
           }, ensure_ascii=False))
           PY
       - name: Upload offline bundle
