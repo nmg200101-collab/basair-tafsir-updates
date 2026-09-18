@@ -1,0 +1,178 @@
+name: Build Basair Quran V1 Offline Assets
+
+on:
+  push:
+    branches:
+      - release-v1-offline-assets-build-20260918
+    paths:
+      - ".github/workflows/build-release-v1-offline-assets.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 330
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build verified offline asset bundle
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import concurrent.futures, hashlib, json, os, pathlib, time, urllib.request, urllib.error
+
+          root = pathlib.Path("offline-assets")
+          pages = root / "pages"
+          audio = root / "audio" / "alafasy"
+          layouts = root / "layouts"
+          meanings = root / "meanings"
+          for d in (pages, audio, layouts, meanings):
+              d.mkdir(parents=True, exist_ok=True)
+
+          UA = "BasairQuran-V1-Offline-Builder/1.0"
+          errors = []
+
+          def get(url, timeout=45):
+              req = urllib.request.Request(url, headers={"User-Agent": UA})
+              with urllib.request.urlopen(req, timeout=timeout) as r:
+                  return r.read()
+
+          def fetch_any(urls, dest, min_bytes=1, validator=None, tries=4):
+              dest = pathlib.Path(dest)
+              if dest.exists() and dest.stat().st_size >= min_bytes:
+                  return str(dest), dest.stat().st_size, hashlib.sha256(dest.read_bytes()).hexdigest()
+              last = None
+              for attempt in range(tries):
+                  for url in urls:
+                      try:
+                          data = get(url)
+                          if len(data) < min_bytes:
+                              raise RuntimeError(f"small file {len(data)}")
+                          if validator:
+                              validator(data)
+                          tmp = dest.with_suffix(dest.suffix + ".tmp")
+                          tmp.write_bytes(data)
+                          tmp.replace(dest)
+                          return str(dest), len(data), hashlib.sha256(data).hexdigest()
+                      except Exception as e:
+                          last = f"{url}: {e}"
+                  time.sleep(min(8, 1.5 ** attempt))
+              raise RuntimeError(last or "download failed")
+
+          def valid_json(data):
+              json.loads(data.decode("utf-8"))
+
+          def page_job(p):
+              name = f"{p:03d}.jpg"
+              return ("page", p) + fetch_any([
+                  f"https://cdn.jsdelivr.net/gh/QuranHub/quran-pages-images@main/kfgqpc/hafs-wasat/{p}.jpg",
+                  f"https://raw.githubusercontent.com/QuranHub/quran-pages-images/main/kfgqpc/hafs-wasat/{p}.jpg",
+              ], pages / name, min_bytes=10000)
+
+          def audio_job(p):
+              name = f"Page{p:03d}.mp3"
+              return ("audio", p) + fetch_any([
+                  f"https://www.everyayah.com/data/Alafasy_64kbps/PageMp3s/{name}",
+                  f"https://everyayah.com/data/Alafasy_64kbps/PageMp3s/{name}",
+              ], audio / name, min_bytes=12000)
+
+          def layout_job(p):
+              name = f"page-{p:03d}.json"
+              return ("layout", p) + fetch_any([
+                  f"https://raw.githubusercontent.com/zonetecde/mushaf-layout/refs/heads/main/mushaf/{name}",
+              ], layouts / name, min_bytes=100, validator=valid_json)
+
+          def meaning_job(s):
+              name = f"surah-{s:03d}.json"
+              return ("meaning", s) + fetch_any([
+                  f"https://alfurqan.online/api/v1/tafseer/mufradat/surah/{s}",
+              ], meanings / name, min_bytes=50, validator=valid_json)
+
+          # Samples first: fail fast before the large build.
+          for fn, n in ((page_job,1),(audio_job,1),(layout_job,1),(meaning_job,1)):
+              print("SAMPLE", fn(n)[:4])
+
+          jobs = []
+          for p in range(1, 605):
+              jobs += [(page_job,p), (audio_job,p), (layout_job,p)]
+          for s in range(1,115):
+              jobs.append((meaning_job,s))
+
+          results = []
+          def run(item):
+              fn, n = item
+              try:
+                  r = fn(n)
+                  print("OK", r[0], r[1], r[4])
+                  return r
+              except Exception as e:
+                  print("ERR", fn.__name__, n, repr(e), flush=True)
+                  return ("error", fn.__name__, n, repr(e))
+
+          with concurrent.futures.ThreadPoolExecutor(max_workers=16) as ex:
+              for r in ex.map(run, jobs):
+                  results.append(r)
+
+          bad = [r for r in results if r and r[0] == "error"]
+          if bad:
+              pathlib.Path("offline-assets-errors.json").write_text(json.dumps(bad, ensure_ascii=False, indent=2), encoding="utf-8")
+              raise SystemExit(f"offline asset build failed: {len(bad)} errors")
+
+          manifest = {
+              "schema": "basair-quran-release-v1-offline-assets",
+              "version": 1,
+              "counts": {"pages":0,"audio_alafasy_pages":0,"layouts":0,"meaning_surahs":0},
+              "bytes": {"pages":0,"audio_alafasy_pages":0,"layouts":0,"meaning_surahs":0},
+              "files": []
+          }
+          mapping = {"page":"pages","audio":"audio_alafasy_pages","layout":"layouts","meaning":"meaning_surahs"}
+          for r in results:
+              kind, number, path, size, sha = r
+              key = mapping[kind]
+              manifest["counts"][key] += 1
+              manifest["bytes"][key] += int(size)
+              manifest["files"].append({
+                  "kind":kind,"number":number,"path":path.replace("\\","/"),
+                  "bytes":int(size),"sha256":sha
+              })
+
+          expected = {"pages":604,"audio_alafasy_pages":604,"layouts":604,"meaning_surahs":114}
+          if manifest["counts"] != expected:
+              raise SystemExit(f"count mismatch: {manifest['counts']} != {expected}")
+
+          manifest["total_bytes"] = sum(manifest["bytes"].values())
+          mpath = root / "OFFLINE-ASSETS-MANIFEST.json"
+          mpath.write_text(json.dumps(manifest, ensure_ascii=False, indent=2)+"\n", encoding="utf-8")
+          (root / "README.txt").write_text(
+              "Basair Quran V1 offline assets\n"
+              "604 Mushaf pages\n604 Alafasy page audio files\n604 exact layout files\n114 word-meaning surah files\n",
+              encoding="utf-8"
+          )
+          print(json.dumps({"counts":manifest["counts"],"bytes":manifest["bytes"],"total_bytes":manifest["total_bytes"]}, ensure_ascii=False))
+          PY
+
+      - name: Create deterministic bundle
+        shell: bash
+        run: |
+          zip -0 -r BASAIR-QURAN-V1-OFFLINE-ASSETS.zip offline-assets >/dev/null
+          sha256sum BASAIR-QURAN-V1-OFFLINE-ASSETS.zip | tee BASAIR-QURAN-V1-OFFLINE-ASSETS.zip.sha256
+          du -h BASAIR-QURAN-V1-OFFLINE-ASSETS.zip
+          python3 - <<'PY'
+          import json, pathlib
+          m=json.loads(pathlib.Path("offline-assets/OFFLINE-ASSETS-MANIFEST.json").read_text("utf-8"))
+          print(json.dumps({"counts":m["counts"],"bytes":m["bytes"],"total_bytes":m["total_bytes"]}, ensure_ascii=False))
+          PY
+
+      - name: Upload V1 offline assets
+        uses: actions/upload-artifact@v4
+        with:
+          name: BASAIR-QURAN-V1-OFFLINE-ASSETS
+          path: |
+            BASAIR-QURAN-V1-OFFLINE-ASSETS.zip
+            BASAIR-QURAN-V1-OFFLINE-ASSETS.zip.sha256
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 7
