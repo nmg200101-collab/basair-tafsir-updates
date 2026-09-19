@@ -1,0 +1,110 @@
+name: Publish Basair Word Meanings V1
+
+on:
+  push:
+    branches:
+      - release-v1-offline-assets-build-20260918
+    paths:
+      - ".github/workflows/publish-word-meanings-v1.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Build verified 114-surah word meanings pack
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf /tmp/basair-meanings
+          mkdir -p /tmp/basair-meanings/public-assets/meanings
+          python3 - <<'PY'
+          import concurrent.futures, hashlib, json, pathlib, time, urllib.request
+          out = pathlib.Path('/tmp/basair-meanings/public-assets/meanings')
+          UA='BasairQuran-Public-Meanings-V1/1.0'
+          AYAH_COUNTS=[7,286,200,176,120,165,206,75,129,109,123,111,43,52,99,128,111,110,98,135,112,78,118,64,77,227,93,88,69,60,34,30,73,54,45,83,182,88,75,85,54,53,89,59,37,35,38,29,18,45,60,49,62,55,78,96,29,22,24,13,14,11,11,18,12,12,30,52,52,44,28,28,20,56,40,31,50,40,46,42,29,19,36,25,22,17,19,26,30,20,15,21,11,8,8,19,5,8,8,11,11,8,3,9,5,4,7,3,6,3,5,4,5,6]
+          def get(u):
+              req=urllib.request.Request(u,headers={'User-Agent':UA})
+              with urllib.request.urlopen(req,timeout=45) as r:
+                  return r.read()
+          def one(su):
+              url=f'https://alfurqan.online/api/v1/tafseer/mufradat/surah/{su}'
+              last=None
+              for attempt in range(5):
+                  try:
+                      b=get(url)
+                      j=json.loads(b.decode('utf-8'))
+                      sur=j.get('surah') if isinstance(j,dict) else None
+                      rows=sur.get('ayahs') if isinstance(sur,dict) else None
+                      if not isinstance(rows,list) or len(rows)!=AYAH_COUNTS[su-1]:
+                          raise RuntimeError(f'ayah count {0 if not isinstance(rows,list) else len(rows)} != {AYAH_COUNTS[su-1]}')
+                      if int(sur.get('number') or 0)!=su:
+                          raise RuntimeError('surah number mismatch')
+                      payload=json.dumps(j,ensure_ascii=False,separators=(',',':')).encode('utf-8')
+                      p=out/f'surah-{su:03d}.json'
+                      p.write_bytes(payload)
+                      return {'surah':su,'ayahs':len(rows),'bytes':len(payload),'sha256':hashlib.sha256(payload).hexdigest()}
+                  except Exception as e:
+                      last=e
+                      time.sleep(min(10,1.6**attempt))
+              raise RuntimeError(f'surah {su}: {last}')
+          results=[]
+          with concurrent.futures.ThreadPoolExecutor(max_workers=12) as ex:
+              for r in ex.map(one,range(1,115)):
+                  results.append(r)
+                  print('OK',r['surah'],r['ayahs'],r['bytes'])
+          results.sort(key=lambda x:x['surah'])
+          if len(results)!=114: raise SystemExit('count mismatch')
+          manifest={
+            'schema':'basair-quran-word-meanings-v1',
+            'version':1,
+            'surahs':114,
+            'ayahs':sum(x['ayahs'] for x in results),
+            'bytes':sum(x['bytes'] for x in results),
+            'files':results
+          }
+          pathlib.Path('/tmp/basair-meanings/public-assets/meanings/manifest.json').write_text(
+              json.dumps(manifest,ensure_ascii=False,separators=(',',':'))+'\n',encoding='utf-8')
+          print(json.dumps({k:manifest[k] for k in ('surahs','ayahs','bytes')},ensure_ascii=False))
+          PY
+
+      - name: Publish immutable pack branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "Basair Quran Assets"
+          git config user.email "actions@users.noreply.github.com"
+          git checkout --orphan public-word-meanings-v1
+          git rm -rf . >/dev/null 2>&1 || true
+          cp -R /tmp/basair-meanings/public-assets .
+          printf '%s\n' 'Basair Quran public word meanings package V1' > README.md
+          git add README.md public-assets/meanings
+          git commit -m "assets: publish verified 114-surah word meanings v1"
+          git push -f origin public-word-meanings-v1
+          echo "ASSET_COMMIT=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
+
+      - name: Verify published files through GitHub raw
+        shell: bash
+        run: |
+          set -euo pipefail
+          for n in 001 002 114; do
+            url="https://raw.githubusercontent.com/nmg200101-collab/basair-tafsir-updates/$ASSET_COMMIT/public-assets/meanings/surah-$n.json"
+            curl -fL --retry 4 --retry-delay 2 "$url" -o "/tmp/check-$n.json"
+          done
+          python3 - <<'PY'
+          import json
+          exp={'001':7,'002':286,'114':6}
+          for n,c in exp.items():
+              j=json.load(open('/tmp/check-'+n+'.json',encoding='utf-8'))
+              rows=j['surah']['ayahs']
+              assert len(rows)==c,(n,len(rows),c)
+          print('RAW_VERIFY_OK')
+          PY
