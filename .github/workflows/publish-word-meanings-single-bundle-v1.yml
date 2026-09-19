@@ -1,0 +1,113 @@
+name: Publish Basair Word Meanings Single Bundle V1
+
+on:
+  push:
+    branches:
+      - release-v1-offline-assets-build-20260918
+    paths:
+      - ".github/workflows/publish-word-meanings-single-bundle-v1.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: public-word-meanings-v1
+          fetch-depth: 0
+
+      - name: Build one verified JSON bundle
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/bundle
+          python3 - <<'PY'
+          import json, pathlib, hashlib
+          root=pathlib.Path('public-assets/meanings')
+          surahs={}
+          total_ayahs=0
+          total_words=0
+          for su in range(1,115):
+              p=root/f'surah-{su:03d}.json'
+              j=json.loads(p.read_text('utf-8'))
+              s=j.get('surah') or {}
+              rows=s.get('ayahs') or []
+              if int(s.get('number') or 0)!=su:
+                  raise SystemExit(f'surah number mismatch {su}')
+              if not rows:
+                  raise SystemExit(f'empty surah {su}')
+              surahs[str(su)]=rows
+              total_ayahs += len(rows)
+              for row in rows:
+                  words=row.get('words') or []
+                  total_words += len(words)
+                  for w in words:
+                      if not str(w.get('meaning') or '').strip():
+                          raise SystemExit(f'empty meaning {su}:{row.get("ayah_number")}:{w.get("word_number")}')
+          if total_ayahs != 6236:
+              raise SystemExit(f'ayah count {total_ayahs}')
+          bundle={
+              'schema':'basair-quran-word-meanings-single-bundle-v1',
+              'version':1,
+              'surah_count':114,
+              'ayah_count':6236,
+              'word_entries':total_words,
+              'surahs':surahs
+          }
+          out=pathlib.Path('/tmp/bundle/basair-word-meanings-v1.json')
+          out.write_text(json.dumps(bundle,ensure_ascii=False,separators=(',',':')),encoding='utf-8')
+          raw=out.read_bytes()
+          meta={
+              'schema':bundle['schema'],
+              'version':1,
+              'surah_count':114,
+              'ayah_count':6236,
+              'word_entries':total_words,
+              'bytes':len(raw),
+              'sha256':hashlib.sha256(raw).hexdigest()
+          }
+          pathlib.Path('/tmp/bundle/manifest.json').write_text(json.dumps(meta,ensure_ascii=False,separators=(',',':'))+'\n',encoding='utf-8')
+          print(json.dumps(meta,ensure_ascii=False))
+          PY
+
+      - name: Publish immutable bundle branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "Basair Quran Assets"
+          git config user.email "actions@users.noreply.github.com"
+          git checkout --orphan public-word-meanings-bundle-v1
+          git rm -rf . >/dev/null 2>&1 || true
+          mkdir -p public-assets/meanings-bundle
+          cp /tmp/bundle/basair-word-meanings-v1.json public-assets/meanings-bundle/
+          cp /tmp/bundle/manifest.json public-assets/meanings-bundle/
+          printf '%s\n' 'Basair Quran downloadable word meanings single bundle V1' > README.md
+          git add README.md public-assets/meanings-bundle
+          git commit -m "assets: publish downloadable word meanings single bundle v1"
+          git push -f origin public-word-meanings-bundle-v1
+          echo "ASSET_COMMIT=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
+
+      - name: Verify published bundle
+        shell: bash
+        run: |
+          set -euo pipefail
+          base="https://raw.githubusercontent.com/nmg200101-collab/basair-tafsir-updates/$ASSET_COMMIT/public-assets/meanings-bundle"
+          curl -fL --retry 4 --retry-delay 2 "$base/manifest.json" -o /tmp/manifest.json
+          curl -fL --retry 4 --retry-delay 2 "$base/basair-word-meanings-v1.json" -o /tmp/bundle.json
+          python3 - <<'PY'
+          import json,hashlib,pathlib
+          m=json.load(open('/tmp/manifest.json',encoding='utf-8'))
+          b=pathlib.Path('/tmp/bundle.json').read_bytes()
+          j=json.loads(b.decode('utf-8'))
+          assert m['surah_count']==114 and m['ayah_count']==6236
+          assert j['surah_count']==114 and j['ayah_count']==6236
+          assert len(j['surahs'])==114
+          assert hashlib.sha256(b).hexdigest()==m['sha256']
+          assert len(j['surahs']['32'])==30
+          print('VERIFY_OK',len(b),m['sha256'])
+          PY
