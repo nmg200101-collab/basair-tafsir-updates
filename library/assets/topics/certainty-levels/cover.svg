@@ -1,25 +1,65 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="580" viewBox="0 0 1200 580">
-  <defs>
-    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#f7fbf8"/>
-      <stop offset="100%" stop-color="#eef6f1"/>
-    </linearGradient>
-    <linearGradient id="a" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0%" stop-color="#2f8a72" stop-opacity="0.16"/>
-      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
-    </linearGradient>
-  </defs>
-  <rect width="100%" height="100%" rx="34" fill="url(#g)"/>
-  <rect x="22" y="22" width="1156" height="476" rx="28" fill="#ffffff" fill-opacity="0.58" stroke="#d2e7db"/>
-  <circle cx="1020" cy="124" r="62" fill="#2f8a72" fill-opacity="0.14"/>
-  <circle cx="1085" cy="184" r="20" fill="#2f8a72" fill-opacity="0.22"/>
-  <circle cx="1120" cy="92" r="10" fill="#2f8a72" fill-opacity="0.28"/>
-  <rect x="70" y="92" width="150" height="150" rx="32" fill="#2f8a72" fill-opacity="0.12" stroke="#2f8a72" stroke-opacity="0.35"/>
-  <text x="145" y="188" text-anchor="middle" font-family="Arial, Tahoma, sans-serif" font-size="72" font-weight="700" fill="#2f8a72">✦</text>
-  <rect x="70" y="282" width="180" height="12" rx="6" fill="#2f8a72" fill-opacity="0.18"/>
-  <rect x="70" y="312" width="124" height="12" rx="6" fill="#2f8a72" fill-opacity="0.10"/>
-  <text x="290" y="176" font-family="Arial, Tahoma, sans-serif" font-size="68" font-weight="700" fill="#21493e">درجات اليقين</text>
-  <text x="290" y="238" font-family="Arial, Tahoma, sans-serif" font-size="32" fill="#4a675f">من علم اليقين إلى عين اليقين ثم حق اليقين</text>
-  <text x="290" y="392" font-family="Arial, Tahoma, sans-serif" font-size="28" fill="#2f8a72" opacity="0.82">مكتبة القرآن • القرآن يفسر بعضه بعضًا</text>
-  <path d="M870 334c42-24 77-20 105 12s28 69 0 99-64 36-105 17c-30-13-52-17-75-13-35 7-54 28-70 49" fill="none" stroke="#2f8a72" stroke-opacity="0.24" stroke-width="18" stroke-linecap="round"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720">
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fbfdfb"/><stop offset="1" stop-color="#edf6f1"/></linearGradient>
+  <linearGradient id="card" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#f1f8f4"/></linearGradient>
+  <filter id="s" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="5" stdDeviation="8" flood-color="#1f5947" flood-opacity=".08"/></filter>
+</defs>
+<rect width="1200" height="720" rx="36" fill="url(#bg)"/>
+<rect x="24" y="24" width="1152" height="672" rx="30" fill="#fffdf9" stroke="#d5e8de"/>
+
+<text x="600" y="88" text-anchor="middle" direction="rtl" font-family="Arial,Tahoma,sans-serif" font-size="54" font-weight="700" fill="#155744">درجات اليقين</text>
+<text x="600" y="132" text-anchor="middle" direction="rtl" font-family="Arial,Tahoma,sans-serif" font-size="25" fill="#506d64">من علم اليقين إلى عين اليقين ثم حق اليقين</text>
+
+<!-- three explanatory scenes -->
+<g filter="url(#s)">
+  <rect x="810" y="168" width="300" height="300" rx="30" fill="url(#card)" stroke="#cde3d8"/>
+  <rect x="450" y="168" width="300" height="300" rx="30" fill="url(#card)" stroke="#cde3d8"/>
+  <rect x="90" y="168" width="300" height="300" rx="30" fill="url(#card)" stroke="#cde3d8"/>
+</g>
+
+<!-- علم اليقين icon: open book -->
+<circle cx="960" cy="242" r="58" fill="#e6f2ec"/>
+<path d="M915 226c27-14 55-13 78 2v64c-24-14-51-15-78-2z" fill="none" stroke="#26725e" stroke-width="8" stroke-linejoin="round"/>
+<path d="M1005 226c27-14 55-13 78 2v64c-24-14-51-15-78-2z" fill="none" stroke="#26725e" stroke-width="8" stroke-linejoin="round"/>
+<path d="M1000 224v72" stroke="#26725e" stroke-width="6"/>
+<text x="960" y="332" text-anchor="middle" direction="rtl" font-family="Arial,Tahoma,sans-serif" font-size="34" font-weight="700" fill="#155744">علم اليقين</text>
+<text x="960" y="372" text-anchor="middle" direction="rtl" font-family="Arial,Tahoma,sans-serif" font-size="23" fill="#5d756d">المعرفة الثابتة</text>
+<rect x="885" y="398" width="150" height="44" rx="22" fill="#e6f2ec"/>
+<text x="960" y="428" text-anchor="middle" direction="rtl" font-family="Arial,Tahoma,sans-serif" font-size="21" font-weight="700" fill="#245f50">التكاثر: 5</text>
+
+<!-- عين اليقين icon: eye + horizon -->
+<circle cx="600" cy="242" r="58" fill="#e6f2ec"/>
+<path d="M548 242c26-36 78-36 104 0-26 36-78 36-104 0z" fill="none" stroke="#26725e" stroke-width="7"/>
+<circle cx="600" cy="242" r="16" fill="#26725e"/>
+<path d="M560 209l-16-16M640 209l16-16M600 192v-24M560 275l-16 16M640 275l16 16" stroke="#7cae9d" stroke-width="5" stroke-linecap="round"/>
+<text x="600" y="332" text-anchor="middle" direction="rtl" font-family="Arial,Tahoma,sans-serif" font-size="34" font-weight="700" fill="#155744">عين اليقين</text>
+<text x="600" y="372" text-anchor="middle" direction="rtl" font-family="Arial,Tahoma,sans-serif" font-size="23" fill="#5d756d">مشاهدة الحقيقة</text>
+<rect x="525" y="398" width="150" height="44" rx="22" fill="#e6f2ec"/>
+<text x="600" y="428" text-anchor="middle" direction="rtl" font-family="Arial,Tahoma,sans-serif" font-size="21" font-weight="700" fill="#245f50">التكاثر: 7</text>
+
+<!-- حق اليقين icon: seal/check -->
+<circle cx="240" cy="242" r="58" fill="#e6f2ec"/>
+<circle cx="240" cy="242" r="34" fill="#26725e"/>
+<path d="M221 242l13 14 28-31" fill="none" stroke="#fff" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<g stroke="#b8923d" stroke-width="4" stroke-linecap="round">
+<path d="M240 174v-14"/><path d="M240 324v-14"/><path d="M172 242h-14"/><path d="M322 242h-14"/>
+<path d="M192 194l-10-10"/><path d="M288 290l10 10"/><path d="M288 194l10-10"/><path d="M192 290l-10 10"/>
+</g>
+<text x="240" y="332" text-anchor="middle" direction="rtl" font-family="Arial,Tahoma,sans-serif" font-size="34" font-weight="700" fill="#155744">حق اليقين</text>
+<text x="240" y="372" text-anchor="middle" direction="rtl" font-family="Arial,Tahoma,sans-serif" font-size="23" fill="#5d756d">تمام التحقق</text>
+<rect x="165" y="398" width="150" height="44" rx="22" fill="#e6f2ec"/>
+<text x="240" y="428" text-anchor="middle" direction="rtl" font-family="Arial,Tahoma,sans-serif" font-size="21" font-weight="700" fill="#245f50">الواقعة: 95</text>
+
+<!-- arrows right-to-left -->
+<path d="M796 318H766" stroke="#2d8a70" stroke-width="10" stroke-linecap="round"/><path d="M766 318l18-14v28z" fill="#2d8a70"/>
+<path d="M436 318H406" stroke="#2d8a70" stroke-width="10" stroke-linecap="round"/><path d="M406 318l18-14v28z" fill="#2d8a70"/>
+
+<!-- explanatory integrated map strip -->
+<rect x="90" y="500" width="1020" height="104" rx="28" fill="#eaf5ef" stroke="#d2e7dc"/>
+<text x="600" y="545" text-anchor="middle" direction="rtl" font-family="Arial,Tahoma,sans-serif" font-size="24" font-weight="700" fill="#155744">علم اليقين ← عين اليقين ← حق اليقين</text>
+<text x="600" y="582" text-anchor="middle" direction="rtl" font-family="Arial,Tahoma,sans-serif" font-size="23" fill="#47675d">من العلم بالحقيقة، إلى مشاهدتها، ثم إلى تمام تحققها.</text>
+
+<line x1="220" y1="646" x2="470" y2="646" stroke="#b9d5c8" stroke-width="2"/>
+<line x1="730" y1="646" x2="980" y2="646" stroke="#b9d5c8" stroke-width="2"/>
+<text x="600" y="655" text-anchor="middle" direction="rtl" font-family="Arial,Tahoma,sans-serif" font-size="20" fill="#6a847b">مكتبة القرآن • القرآن يفسر بعضه بعضًا</text>
 </svg>
