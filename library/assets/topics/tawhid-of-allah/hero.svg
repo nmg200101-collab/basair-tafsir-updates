@@ -1,0 +1,101 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fffdf7"/><stop offset="1" stop-color="#f3ead7"/></linearGradient>
+  <linearGradient id="g1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f7fbf7"/><stop offset="1" stop-color="#e6f2ec"/></linearGradient>
+  <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#dcebf2"/><stop offset="1" stop-color="#f8efd9"/></linearGradient>
+  <filter id="shadow"><feDropShadow dx="0" dy="4" stdDeviation="7" flood-color="#143e34" flood-opacity=".10"/></filter>
+</defs>
+<rect width="1280" height="720" rx="34" fill="url(#bg)"/>
+<rect x="18" y="18" width="1244" height="684" rx="30" fill="#fffdf9" stroke="#dcc79d" stroke-width="2"/>
+<path d="M52 115h260M968 115h260" stroke="#b58a3f" stroke-width="2"/>
+<circle cx="326" cy="115" r="7" fill="#b58a3f"/><circle cx="954" cy="115" r="7" fill="#b58a3f"/>
+<text x="640" y="92" text-anchor="middle" direction="rtl" font-family="Tahoma,Arial,sans-serif" font-size="58" font-weight="700" fill="#155744">توحيد الله</text>
+<rect x="390" y="112" width="500" height="52" rx="26" fill="#f5efe2" stroke="#dec89d"/>
+<text x="640" y="146" text-anchor="middle" direction="rtl" font-family="Tahoma,Arial,sans-serif" font-size="25" font-weight="600" fill="#245f50">من معرفة الواحد إلى إفراده بالعبادة</text>
+
+<!-- panels -->
+<g filter="url(#shadow)">
+<rect x="1010" y="198" width="210" height="355" rx="28" fill="url(#g1)" stroke="#d5c395"/>
+<rect x="775" y="198" width="210" height="355" rx="28" fill="url(#g1)" stroke="#d5c395"/>
+<rect x="540" y="198" width="210" height="355" rx="28" fill="url(#g1)" stroke="#d5c395"/>
+<rect x="305" y="198" width="210" height="355" rx="28" fill="url(#g1)" stroke="#d5c395"/>
+<rect x="70" y="198" width="210" height="355" rx="28" fill="url(#g1)" stroke="#d5c395"/>
+</g>
+
+<!-- numbers -->
+<g font-family="Tahoma,Arial,sans-serif" font-size="24" font-weight="700" text-anchor="middle">
+<circle cx="1115" cy="220" r="24" fill="#145b49"/><text x="1115" y="228" fill="#fff">١</text>
+<circle cx="880" cy="220" r="24" fill="#145b49"/><text x="880" y="228" fill="#fff">٢</text>
+<circle cx="645" cy="220" r="24" fill="#145b49"/><text x="645" y="228" fill="#fff">٣</text>
+<circle cx="410" cy="220" r="24" fill="#145b49"/><text x="410" y="228" fill="#fff">٤</text>
+<circle cx="175" cy="220" r="24" fill="#145b49"/><text x="175" y="228" fill="#fff">٥</text>
+</g>
+
+<!-- titles -->
+<g font-family="Tahoma,Arial,sans-serif" font-size="27" font-weight="700" fill="#174f42" text-anchor="middle" direction="rtl">
+<text x="1115" y="270">الله واحد</text>
+<text x="880" y="270">الله كامل منزّه</text>
+<text x="645" y="270">الخالق المدبّر</text>
+<text x="410" y="270">المستحق للعبادة</text>
+<text x="175" y="270">دعوة الأنبياء</text>
+</g>
+
+<!-- stage 1: unity -->
+<circle cx="1115" cy="355" r="74" fill="#fff" stroke="#d8be84" stroke-width="4"/>
+<circle cx="1115" cy="355" r="52" fill="#e8f3ed"/>
+<g stroke="#c69b4b" stroke-width="4" stroke-linecap="round"><path d="M1115 270v-20"/><path d="M1115 460v-20"/><path d="M1030 355h-20"/><path d="M1220 355h-20"/><path d="M1055 295l-14-14"/><path d="M1175 415l14 14"/><path d="M1175 295l14-14"/><path d="M1055 415l-14 14"/></g>
+<text x="1115" y="370" text-anchor="middle" direction="rtl" font-family="Tahoma,Arial,sans-serif" font-size="35" font-weight="700" fill="#155744">واحد</text>
+
+<!-- stage 2: perfection/transcendence -->
+<rect x="805" y="305" width="150" height="130" rx="18" fill="url(#sky)"/>
+<path d="M815 418l42-61 30 38 30-54 30 77z" fill="#688c83"/>
+<path d="M857 357l12 15 18-23 14 17 16-25 12 19" fill="#fff" opacity=".92"/>
+<circle cx="880" cy="323" r="24" fill="#f5d98f" opacity=".8"/>
+<g stroke="#b58a3f" stroke-width="3"><path d="M880 287v18"/><path d="M843 300l11 14"/><path d="M917 300l-11 14"/></g>
+
+<!-- stage 3: creation/order -->
+<rect x="570" y="305" width="150" height="130" rx="18" fill="url(#sky)"/>
+<circle cx="607" cy="340" r="20" fill="#e8b75d"/>
+<circle cx="687" cy="325" r="12" fill="#8aa8c1"/>
+<ellipse cx="687" cy="325" rx="23" ry="7" fill="none" stroke="#b58a3f" stroke-width="3"/>
+<path d="M575 410l38-36 27 24 24-30 50 42z" fill="#73998b"/>
+<path d="M575 420q55-28 140 0" fill="#7db5c1"/>
+<g fill="#fff7d6"><circle cx="640" cy="325" r="3"/><circle cx="660" cy="344" r="3"/><circle cx="704" cy="355" r="3"/></g>
+
+<!-- stage 4: worship -->
+<rect x="335" y="305" width="150" height="130" rx="18" fill="#f4ead8"/>
+<path d="M335 420h150" stroke="#d8be84" stroke-width="3"/>
+<circle cx="405" cy="340" r="16" fill="#6d655b"/>
+<path d="M393 359q13 8 28 0l12 47h-52z" fill="#776f63"/>
+<path d="M392 370l-24-18M420 370l24-18" stroke="#776f63" stroke-width="8" stroke-linecap="round"/>
+<path d="M360 320q45-40 95 0" fill="none" stroke="#d1a95f" stroke-width="5"/>
+
+<!-- stage 5: prophets/message -->
+<rect x="100" y="305" width="150" height="130" rx="18" fill="#f4ead8"/>
+<path d="M125 330q50-15 100 0v85q-50-15-100 0z" fill="#fffaf0" stroke="#b58a3f" stroke-width="3"/>
+<path d="M175 330v85" stroke="#b58a3f" stroke-width="3"/>
+<path d="M142 352h23M142 373h18M185 352h23M185 373h18" stroke="#5d786f" stroke-width="4" stroke-linecap="round"/>
+<path d="M175 298v22" stroke="#d1a95f" stroke-width="5"/><circle cx="175" cy="292" r="10" fill="#e8c778"/>
+
+<!-- labels -->
+<g font-family="Tahoma,Arial,sans-serif" font-size="19" fill="#395e54" text-anchor="middle" direction="rtl">
+<text x="1115" y="486">لا شريك له</text><text x="1115" y="512">في ألوهيته وملكه</text>
+<text x="880" y="486">منزّه عن النقص</text><text x="880" y="512">كامل في صفاته</text>
+<text x="645" y="486">خلق السماوات والأرض</text><text x="645" y="512">ويدبّرها بحكمة</text>
+<text x="410" y="486">فهو وحده</text><text x="410" y="512">المستحق للعبادة</text>
+<text x="175" y="486">رسالة واحدة:</text><text x="175" y="512">اعبدوا الله وحده</text>
+</g>
+
+<!-- connectors -->
+<g fill="#2f7c67">
+<path d="M1003 370h-30l12-11-7-8-28 25 28 25 7-8-12-11h30z"/>
+<path d="M768 370h-30l12-11-7-8-28 25 28 25 7-8-12-11h30z"/>
+<path d="M533 370h-30l12-11-7-8-28 25 28 25 7-8-12-11h30z"/>
+<path d="M298 370h-30l12-11-7-8-28 25 28 25 7-8-12-11h30z"/>
+</g>
+
+<!-- summary -->
+<rect x="90" y="590" width="1100" height="72" rx="30" fill="#f4efe3" stroke="#d8c18c"/>
+<text x="640" y="620" text-anchor="middle" direction="rtl" font-family="Tahoma,Arial,sans-serif" font-size="22" font-weight="700" fill="#174f42">الله واحد، كامل منزّه، خالق مدبّر، ولذلك فهو وحده المستحق للعبادة</text>
+<text x="640" y="648" text-anchor="middle" direction="rtl" font-family="Tahoma,Arial,sans-serif" font-size="20" fill="#536f66">وهذا أصل رسالة الأنبياء: عبادة الله وحده واجتناب ما يُعبد من دونه</text>
+</svg>
