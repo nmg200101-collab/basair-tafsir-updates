@@ -5,7 +5,7 @@
           <circle cx="170" cy="160" r="72" fill="#2f8a72" fill-opacity="0.14"/>
           <text x="170" y="180" text-anchor="middle" font-family="Arial, Tahoma" font-size="72" fill="#2f8a72">٢</text>
           <text x="300" y="160" font-family="Arial, Tahoma" font-size="58" font-weight="700" fill="#205647">عين اليقين</text>
-          <text x="300" y="220" font-family="Arial, Tahoma" font-size="30" fill="#5a776d">الانتقال إلى المشاهدة</text>
+          <text x="300" y="220" font-family="Arial, Tahoma" font-size="30" fill="#5a776d">الانتقال إلى المشاهدة • تحديث الصورة V2</text>
           <rect x="96" y="324" width="910" height="170" rx="22" fill="#eef7f2" stroke="#d3e6db"/>
           <text x="140" y="390" font-family="Arial, Tahoma" font-size="28" fill="#35574c">مشهد بصري مساعد لفهم الفكرة وترتيب عناصرها داخل المرحلة.</text>
           <text x="140" y="438" font-family="Arial, Tahoma" font-size="24" fill="#5f766d">يمكن استبدال هذه الصورة لاحقًا من الخادم دون تحديث APK.</text>
