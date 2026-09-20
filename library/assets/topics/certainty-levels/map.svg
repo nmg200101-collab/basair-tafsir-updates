@@ -1,20 +1,33 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760">
-        <rect width="100%" height="100%" rx="34" fill="#f7fbf8"/>
-        <rect x="30" y="30" width="1140" height="700" rx="28" fill="#ffffff" stroke="#dbece3"/>
-        <text x="600" y="120" text-anchor="middle" font-family="Arial, Tahoma" font-size="58" font-weight="700" fill="#205647">خريطة درجات اليقين</text>
-        <text x="600" y="168" text-anchor="middle" font-family="Arial, Tahoma" font-size="28" fill="#56726a">المعرفة ← المشاهدة ← التحقق</text>
-        <g fill="none" stroke="#2f8a72" stroke-width="12" stroke-linecap="round">
-          <path d="M190 390H410"/><path d="M490 390H710"/><path d="M790 390H1010"/>
-        </g>
-        <g>
-          <rect x="110" y="300" width="160" height="170" rx="24" fill="#eef7f2" stroke="#cfe3d8"/>
-          <rect x="430" y="300" width="160" height="170" rx="24" fill="#eef7f2" stroke="#cfe3d8"/>
-          <rect x="750" y="300" width="160" height="170" rx="24" fill="#eef7f2" stroke="#cfe3d8"/>
-          <text x="190" y="374" text-anchor="middle" font-family="Arial, Tahoma" font-size="28" font-weight="700" fill="#24584b">المحطة الأولى</text>
-          <text x="510" y="374" text-anchor="middle" font-family="Arial, Tahoma" font-size="28" font-weight="700" fill="#24584b">المحطة الثانية</text>
-          <text x="830" y="374" text-anchor="middle" font-family="Arial, Tahoma" font-size="28" font-weight="700" fill="#24584b">المحطة الثالثة</text>
-          <text x="190" y="418" text-anchor="middle" font-family="Arial, Tahoma" font-size="24" fill="#60736b">آية · رابط · شرح</text>
-          <text x="510" y="418" text-anchor="middle" font-family="Arial, Tahoma" font-size="24" fill="#60736b">آية · رابط · شرح</text>
-          <text x="830" y="418" text-anchor="middle" font-family="Arial, Tahoma" font-size="24" fill="#60736b">آية · رابط · شرح</text>
-        </g>
-      </svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="560" viewBox="0 0 1200 560">
+<defs><linearGradient id="bgm" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fbfdfb"/><stop offset="1" stop-color="#edf6f1"/></linearGradient></defs>
+<rect width="1200" height="560" rx="34" fill="url(#bgm)"/>
+<rect x="24" y="24" width="1152" height="512" rx="28" fill="#fffdf9" stroke="#d5e8de"/>
+<text x="600" y="86" text-anchor="middle" direction="rtl" font-family="Arial,Tahoma,sans-serif" font-size="46" font-weight="700" fill="#155744">خريطة درجات اليقين</text>
+<text x="600" y="126" text-anchor="middle" direction="rtl" font-family="Arial,Tahoma,sans-serif" font-size="23" fill="#59756b">المعرفة ← المشاهدة ← التحقق</text>
+
+<rect x="808" y="178" width="280" height="230" rx="28" fill="#f6fbf8" stroke="#cce2d7"/>
+<rect x="460" y="178" width="280" height="230" rx="28" fill="#f6fbf8" stroke="#cce2d7"/>
+<rect x="112" y="178" width="280" height="230" rx="28" fill="#f6fbf8" stroke="#cce2d7"/>
+
+<circle cx="948" cy="230" r="34" fill="#e3f0ea"/><text x="948" y="242" text-anchor="middle" font-family="Arial,Tahoma" font-size="36" fill="#26725e">◫</text>
+<circle cx="600" cy="230" r="34" fill="#e3f0ea"/><path d="M570 230c15-21 45-21 60 0-15 21-45 21-60 0z" fill="none" stroke="#26725e" stroke-width="5"/><circle cx="600" cy="230" r="8" fill="#26725e"/>
+<circle cx="252" cy="230" r="34" fill="#e3f0ea"/><circle cx="252" cy="230" r="21" fill="#26725e"/><path d="M240 230l8 9 18-20" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round"/>
+
+<text x="948" y="296" text-anchor="middle" direction="rtl" font-family="Arial,Tahoma,sans-serif" font-size="30" font-weight="700" fill="#155744">علم اليقين</text>
+<text x="948" y="333" text-anchor="middle" direction="rtl" font-family="Arial,Tahoma,sans-serif" font-size="20" fill="#5e776e">علم ثابت يزيل التردد</text>
+<text x="948" y="374" text-anchor="middle" direction="rtl" font-family="Arial,Tahoma,sans-serif" font-size="20" font-weight="700" fill="#26725e">التكاثر: 5</text>
+
+<text x="600" y="296" text-anchor="middle" direction="rtl" font-family="Arial,Tahoma,sans-serif" font-size="30" font-weight="700" fill="#155744">عين اليقين</text>
+<text x="600" y="333" text-anchor="middle" direction="rtl" font-family="Arial,Tahoma,sans-serif" font-size="20" fill="#5e776e">رؤية تزيد المعنى وضوحًا</text>
+<text x="600" y="374" text-anchor="middle" direction="rtl" font-family="Arial,Tahoma,sans-serif" font-size="20" font-weight="700" fill="#26725e">التكاثر: 7</text>
+
+<text x="252" y="296" text-anchor="middle" direction="rtl" font-family="Arial,Tahoma,sans-serif" font-size="30" font-weight="700" fill="#155744">حق اليقين</text>
+<text x="252" y="333" text-anchor="middle" direction="rtl" font-family="Arial,Tahoma,sans-serif" font-size="20" fill="#5e776e">يقين متحقق بالغ الثبوت</text>
+<text x="252" y="374" text-anchor="middle" direction="rtl" font-family="Arial,Tahoma,sans-serif" font-size="20" font-weight="700" fill="#26725e">الواقعة: 95</text>
+
+<path d="M796 292H752" stroke="#2d8a70" stroke-width="9" stroke-linecap="round"/><path d="M752 292l18-14v28z" fill="#2d8a70"/>
+<path d="M448 292H404" stroke="#2d8a70" stroke-width="9" stroke-linecap="round"/><path d="M404 292l18-14v28z" fill="#2d8a70"/>
+
+<rect x="180" y="452" width="840" height="56" rx="28" fill="#eaf5ef"/>
+<text x="600" y="488" text-anchor="middle" direction="rtl" font-family="Arial,Tahoma,sans-serif" font-size="21" fill="#47675d">خريطة موضوعية تربط بين مواضع القرآن في مسار واحد</text>
+</svg>
