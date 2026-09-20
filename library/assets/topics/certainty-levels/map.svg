@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760">
+        <rect width="100%" height="100%" rx="34" fill="#f7fbf8"/>
+        <rect x="30" y="30" width="1140" height="700" rx="28" fill="#ffffff" stroke="#dbece3"/>
+        <text x="600" y="120" text-anchor="middle" font-family="Arial, Tahoma" font-size="58" font-weight="700" fill="#205647">خريطة درجات اليقين</text>
+        <text x="600" y="168" text-anchor="middle" font-family="Arial, Tahoma" font-size="28" fill="#56726a">المعرفة ← المشاهدة ← التحقق</text>
+        <g fill="none" stroke="#2f8a72" stroke-width="12" stroke-linecap="round">
+          <path d="M190 390H410"/><path d="M490 390H710"/><path d="M790 390H1010"/>
+        </g>
+        <g>
+          <rect x="110" y="300" width="160" height="170" rx="24" fill="#eef7f2" stroke="#cfe3d8"/>
+          <rect x="430" y="300" width="160" height="170" rx="24" fill="#eef7f2" stroke="#cfe3d8"/>
+          <rect x="750" y="300" width="160" height="170" rx="24" fill="#eef7f2" stroke="#cfe3d8"/>
+          <text x="190" y="374" text-anchor="middle" font-family="Arial, Tahoma" font-size="28" font-weight="700" fill="#24584b">المحطة الأولى</text>
+          <text x="510" y="374" text-anchor="middle" font-family="Arial, Tahoma" font-size="28" font-weight="700" fill="#24584b">المحطة الثانية</text>
+          <text x="830" y="374" text-anchor="middle" font-family="Arial, Tahoma" font-size="28" font-weight="700" fill="#24584b">المحطة الثالثة</text>
+          <text x="190" y="418" text-anchor="middle" font-family="Arial, Tahoma" font-size="24" fill="#60736b">آية · رابط · شرح</text>
+          <text x="510" y="418" text-anchor="middle" font-family="Arial, Tahoma" font-size="24" fill="#60736b">آية · رابط · شرح</text>
+          <text x="830" y="418" text-anchor="middle" font-family="Arial, Tahoma" font-size="24" fill="#60736b">آية · رابط · شرح</text>
+        </g>
+      </svg>

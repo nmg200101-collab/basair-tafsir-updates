@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="680" viewBox="0 0 1100 680">
+          <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#f7fbf8"/><stop offset="100%" stop-color="#eef6f1"/></linearGradient></defs>
+          <rect width="100%" height="100%" rx="28" fill="url(#g)"/>
+          <rect x="34" y="34" width="1032" height="612" rx="24" fill="#ffffff" stroke="#d7e9de"/>
+          <circle cx="170" cy="160" r="72" fill="#2f8a72" fill-opacity="0.14"/>
+          <text x="170" y="180" text-anchor="middle" font-family="Arial, Tahoma" font-size="72" fill="#2f8a72">١</text>
+          <text x="300" y="160" font-family="Arial, Tahoma" font-size="58" font-weight="700" fill="#205647">علم اليقين</text>
+          <text x="300" y="220" font-family="Arial, Tahoma" font-size="30" fill="#5a776d">البداية من العلم الجازم</text>
+          <rect x="96" y="324" width="910" height="170" rx="22" fill="#eef7f2" stroke="#d3e6db"/>
+          <text x="140" y="390" font-family="Arial, Tahoma" font-size="28" fill="#35574c">مشهد بصري مساعد لفهم الفكرة وترتيب عناصرها داخل المرحلة.</text>
+          <text x="140" y="438" font-family="Arial, Tahoma" font-size="24" fill="#5f766d">يمكن استبدال هذه الصورة لاحقًا من الخادم دون تحديث APK.</text>
+          <text x="96" y="580" font-family="Arial, Tahoma" font-size="24" fill="#2f8a72">Stage Image • مكتبة القرآن</text>
+        </svg>
