@@ -1,0 +1,31 @@
+name: Package Basair Library RC1
+on:
+  push:
+    branches: [basair-public-rc1-prep]
+  workflow_dispatch:
+jobs:
+  package-library:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate library manifest
+        run: |
+          python3 - <<'PY'
+          import json, pathlib
+          m=json.load(open('library/manifest.json',encoding='utf-8'))
+          assert m.get('schema')=='basair-quran-library-manifest-v1'
+          print('libraryVersion=',m.get('libraryVersion'),'items=',len(m.get('items',[])))
+          for it in m.get('items',[]):
+              p=pathlib.Path(it['path'])
+              if not p.exists(): raise SystemExit(f'missing: {p}')
+          PY
+      - name: Package current library snapshot
+        run: |
+          mkdir -p out
+          zip -qr out/BASAIR-QURAN-LIBRARY-RC1-SNAPSHOT.zip library
+          sha256sum out/BASAIR-QURAN-LIBRARY-RC1-SNAPSHOT.zip > out/SHA256SUMS.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: BASAIR-QURAN-LIBRARY-RC1-SNAPSHOT
+          path: out/*
+          if-no-files-found: error
