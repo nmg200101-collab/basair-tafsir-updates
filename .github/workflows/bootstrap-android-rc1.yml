@@ -20,11 +20,16 @@ jobs:
           mkdir -p out
           cp "$ANDROID_HOME/platforms/android-36/android.jar" out/android-36.jar
           cp "$ANDROID_HOME/build-tools/36.0.0/aapt2" out/aapt2
-          chmod +x out/aapt2
+          cp "$ANDROID_HOME/build-tools/36.0.0/zipalign" out/zipalign
+          mkdir -p out/apksigner-lib
+          cp "$ANDROID_HOME/build-tools/36.0.0/lib/apksigner.jar" out/apksigner-lib/apksigner.jar
+          chmod +x out/aapt2 out/zipalign
           curl -L --fail --retry 3             -o out/bundletool-all-1.18.3.jar             https://github.com/google/bundletool/releases/download/1.18.3/bundletool-all-1.18.3.jar
           out/aapt2 version
+          out/zipalign -h >/dev/null 2>&1 || true
+          java -jar out/apksigner-lib/apksigner.jar version
           java -jar out/bundletool-all-1.18.3.jar version
-          sha256sum out/* > out/SHA256SUMS.txt
+          (find out -type f -print0 | sort -z | xargs -0 sha256sum) > out/SHA256SUMS.txt
       - uses: actions/upload-artifact@v4
         with:
           name: BASAIR-ANDROID36-RC1-TOOLCHAIN
