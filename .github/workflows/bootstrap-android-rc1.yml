@@ -21,6 +21,8 @@ jobs:
           cp "$ANDROID_HOME/platforms/android-36/android.jar" out/android-36.jar
           cp "$ANDROID_HOME/build-tools/36.0.0/aapt2" out/aapt2
           cp "$ANDROID_HOME/build-tools/36.0.0/zipalign" out/zipalign
+          mkdir -p out/lib64
+          cp "$ANDROID_HOME/build-tools/36.0.0/lib64/libc++.so" out/lib64/libc++.so
           mkdir -p out/apksigner-lib
           cp "$ANDROID_HOME/build-tools/36.0.0/lib/apksigner.jar" out/apksigner-lib/apksigner.jar
           chmod +x out/aapt2 out/zipalign
