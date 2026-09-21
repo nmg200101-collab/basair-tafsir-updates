@@ -1,0 +1,30 @@
+name: Bootstrap Android RC1 Toolchain
+on:
+  workflow_dispatch:
+  push:
+    branches: [basair-public-rc1-prep]
+    paths:
+      - '.github/workflows/bootstrap-android-rc1.yml'
+jobs:
+  toolchain:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install Android 36 tools
+        shell: bash
+        run: |
+          set -euxo pipefail
+          SDKMANAGER="$(command -v sdkmanager)"
+          "$SDKMANAGER" "platforms;android-36" "build-tools;36.0.0"
+          mkdir -p out
+          cp "$ANDROID_HOME/platforms/android-36/android.jar" out/android-36.jar
+          cp "$ANDROID_HOME/build-tools/36.0.0/aapt2" out/aapt2
+          chmod +x out/aapt2
+          curl -L --fail --retry 3             -o out/bundletool-all-1.18.3.jar             https://github.com/google/bundletool/releases/download/1.18.3/bundletool-all-1.18.3.jar
+          out/aapt2 version
+          java -jar out/bundletool-all-1.18.3.jar version
+          sha256sum out/* > out/SHA256SUMS.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: BASAIR-ANDROID36-RC1-TOOLCHAIN
+          path: out/*
+          if-no-files-found: error
