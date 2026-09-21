@@ -9,12 +9,14 @@ jobs:
   toolchain:
     runs-on: ubuntu-latest
     steps:
-      - uses: android-actions/setup-android@v3
       - name: Install Android 36 tools
         shell: bash
         run: |
           set -euxo pipefail
-          sdkmanager "platforms;android-36" "build-tools;36.0.0"
+          SDKMANAGER="$(find "$ANDROID_HOME/cmdline-tools" -type f -name sdkmanager | head -n 1)"
+          test -x "$SDKMANAGER"
+          yes | "$SDKMANAGER" --licenses >/dev/null || true
+          "$SDKMANAGER" "platforms;android-36" "build-tools;36.0.0"
           mkdir -p out
           cp "$ANDROID_HOME/platforms/android-36/android.jar" out/android-36.jar
           cp "$ANDROID_HOME/build-tools/36.0.0/aapt2" out/aapt2
