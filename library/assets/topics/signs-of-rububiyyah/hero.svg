@@ -1,0 +1,96 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fffdf7"/><stop offset="1" stop-color="#f2ead8"/></linearGradient>
+  <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#cfe2ef"/><stop offset="1" stop-color="#f8e8c9"/></linearGradient>
+  <linearGradient id="rain" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8198aa"/><stop offset="1" stop-color="#dce9e8"/></linearGradient>
+  <filter id="shadow"><feDropShadow dx="0" dy="4" stdDeviation="7" flood-color="#163f34" flood-opacity=".10"/></filter>
+</defs>
+<rect width="1280" height="720" rx="34" fill="url(#bg)"/>
+<rect x="18" y="18" width="1244" height="684" rx="30" fill="#fffdf9" stroke="#dcc79d" stroke-width="2"/>
+<path d="M65 112h230M985 112h230" stroke="#b58a3f" stroke-width="2"/>
+<circle cx="310" cy="112" r="7" fill="#b58a3f"/><circle cx="970" cy="112" r="7" fill="#b58a3f"/>
+<text x="640" y="91" text-anchor="middle" direction="rtl" font-family="Tahoma,Arial,sans-serif" font-size="52" font-weight="700" fill="#155744">دلائل الربوبية في الخلق</text>
+<rect x="385" y="114" width="510" height="50" rx="25" fill="#f5efe2" stroke="#dec89d"/>
+<text x="640" y="147" text-anchor="middle" direction="rtl" font-family="Tahoma,Arial,sans-serif" font-size="24" font-weight="600" fill="#245f50">من آيات الآفاق والأنفس إلى معرفة الرب</text>
+
+<g filter="url(#shadow)">
+<rect x="1010" y="198" width="210" height="355" rx="28" fill="#f7fbf7" stroke="#d5c395"/>
+<rect x="775" y="198" width="210" height="355" rx="28" fill="#f7fbf7" stroke="#d5c395"/>
+<rect x="540" y="198" width="210" height="355" rx="28" fill="#f7fbf7" stroke="#d5c395"/>
+<rect x="305" y="198" width="210" height="355" rx="28" fill="#f7fbf7" stroke="#d5c395"/>
+<rect x="70" y="198" width="210" height="355" rx="28" fill="#f7fbf7" stroke="#d5c395"/>
+</g>
+
+<g font-family="Tahoma,Arial,sans-serif" font-size="24" font-weight="700" text-anchor="middle">
+<circle cx="1115" cy="220" r="24" fill="#145b49"/><text x="1115" y="228" fill="#fff">١</text>
+<circle cx="880" cy="220" r="24" fill="#145b49"/><text x="880" y="228" fill="#fff">٢</text>
+<circle cx="645" cy="220" r="24" fill="#145b49"/><text x="645" y="228" fill="#fff">٣</text>
+<circle cx="410" cy="220" r="24" fill="#145b49"/><text x="410" y="228" fill="#fff">٤</text>
+<circle cx="175" cy="220" r="24" fill="#145b49"/><text x="175" y="228" fill="#fff">٥</text>
+</g>
+
+<g font-family="Tahoma,Arial,sans-serif" font-size="26" font-weight="700" fill="#174f42" text-anchor="middle" direction="rtl">
+<text x="1115" y="270">نظام الكون</text>
+<text x="880" y="270">المطر وإحياء الأرض</text>
+<text x="645" y="270">آيات الأنفس</text>
+<text x="410" y="270">التفكر في الآيات</text>
+<text x="175" y="270">معرفة الرب</text>
+</g>
+
+<!-- 1 universe -->
+<rect x="1035" y="304" width="160" height="138" rx="20" fill="#102a42"/>
+<circle cx="1068" cy="392" r="26" fill="#f1bf60"/><g stroke="#f1bf60" stroke-width="3"><path d="M1068 354v-18"/><path d="M1068 430v18"/><path d="M1030 392h-18"/><path d="M1106 392h18"/></g>
+<circle cx="1161" cy="335" r="22" fill="#d6e2e7"/><circle cx="1171" cy="328" r="22" fill="#102a42"/>
+<ellipse cx="1138" cy="368" rx="34" ry="10" fill="none" stroke="#6f9ac3" stroke-width="4" transform="rotate(-18 1138 368)"/>
+<g fill="#f5e6ae"><circle cx="1088" cy="323" r="3"/><circle cx="1120" cy="338" r="3"/><circle cx="1178" cy="382" r="3"/><circle cx="1150" cy="410" r="3"/></g>
+
+<!-- 2 rain -->
+<rect x="800" y="304" width="160" height="138" rx="20" fill="url(#rain)"/>
+<path d="M812 340q28-34 58 0q35-32 68 0q17 0 17 15H810q0-15 2-15z" fill="#687b88"/>
+<g stroke="#cfe4ef" stroke-width="4" stroke-linecap="round"><path d="M830 360l-9 28"/><path d="M860 360l-9 28"/><path d="M890 360l-9 28"/><path d="M920 360l-9 28"/><path d="M945 360l-9 28"/></g>
+<path d="M810 427q35-35 70 0q35-40 70 0z" fill="#6aa36e"/>
+<path d="M875 430q0-27 0-48M875 394q-20-18-34-6M875 404q22-20 38-7" stroke="#2f7c67" stroke-width="5" fill="none" stroke-linecap="round"/>
+
+<!-- 3 human signs -->
+<rect x="565" y="304" width="160" height="138" rx="20" fill="url(#sky)"/>
+<circle cx="645" cy="343" r="16" fill="#758a91"/>
+<path d="M645 361v51M620 380l25 8 25-8M628 412l17-25 17 25" stroke="#758a91" stroke-width="8" fill="none" stroke-linecap="round"/>
+<path d="M590 338c15 9 15 25 0 34c-15-9-15-25 0-34zM700 338c15 9 15 25 0 34c-15-9-15-25 0-34z" fill="none" stroke="#2f7c67" stroke-width="4"/>
+<path d="M590 340c14 7 14 23 0 30M700 340c-14 7-14 23 0 30" fill="none" stroke="#2f7c67" stroke-width="3"/>
+<path d="M610 325q-18-22-28 0q10 17 28 0z" fill="#7aa75c"/>
+
+<!-- 4 contemplation -->
+<rect x="330" y="304" width="160" height="138" rx="20" fill="url(#sky)"/>
+<circle cx="405" cy="353" r="14" fill="#69645e"/>
+<path d="M393 369q14 9 28 0l8 44h-48z" fill="#78716a"/>
+<path d="M380 414h50" stroke="#b58a3f" stroke-width="4"/>
+<path d="M435 392l38 14M435 404l38 14" stroke="#8b6740" stroke-width="4"/>
+<path d="M340 425q38-34 72 0q35-31 69 0" fill="#6f9b7f"/>
+
+<!-- 5 knowledge of Lord -->
+<rect x="95" y="304" width="160" height="138" rx="20" fill="url(#sky)"/>
+<circle cx="175" cy="348" r="15" fill="#69645e"/>
+<path d="M162 365q14 9 28 0l10 45h-50z" fill="#78716a"/>
+<path d="M160 377l-22-18M190 377l22-18" stroke="#78716a" stroke-width="8" stroke-linecap="round"/>
+<path d="M105 425q38-30 70 0q34-31 70 0" fill="#7a9f7f"/>
+<circle cx="225" cy="327" r="24" fill="#f3d68e" opacity=".85"/>
+
+<g font-family="Tahoma,Arial,sans-serif" font-size="18" fill="#395e54" text-anchor="middle" direction="rtl">
+<text x="1115" y="484">السماوات والأرض</text><text x="1115" y="511">والليل والنهار</text>
+<text x="880" y="484">نزول الماء</text><text x="880" y="511">وإحياء الأرض بعد موتها</text>
+<text x="645" y="484">خلق الإنسان</text><text x="645" y="511">واختلاف الخلق</text>
+<text x="410" y="484">النظر والتأمل</text><text x="410" y="511">باب المعرفة</text>
+<text x="175" y="484">من الآيات إلى الإيمان</text><text x="175" y="511">بربوبية الله ووحدانيته</text>
+</g>
+
+<g fill="#2f7c67">
+<path d="M1003 370h-30l12-11-7-8-28 25 28 25 7-8-12-11h30z"/>
+<path d="M768 370h-30l12-11-7-8-28 25 28 25 7-8-12-11h30z"/>
+<path d="M533 370h-30l12-11-7-8-28 25 28 25 7-8-12-11h30z"/>
+<path d="M298 370h-30l12-11-7-8-28 25 28 25 7-8-12-11h30z"/>
+</g>
+
+<rect x="75" y="590" width="1130" height="74" rx="30" fill="#f4efe3" stroke="#d8c18c"/>
+<text x="640" y="621" text-anchor="middle" direction="rtl" font-family="Tahoma,Arial,sans-serif" font-size="20" font-weight="700" fill="#174f42">في السماوات والأرض، وفي تعاقب الليل والنهار، وفي الأنفس وإحياء الأرض</text>
+<text x="640" y="649" text-anchor="middle" direction="rtl" font-family="Tahoma,Arial,sans-serif" font-size="20" fill="#536f66">آياتٌ تدل على ربوبية الله ووحدانيته وتدعو إلى التفكر والمعرفة</text>
+</svg>
