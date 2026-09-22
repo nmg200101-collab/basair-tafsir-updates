@@ -1,0 +1,123 @@
+name: Basair PUBLIC RC1 Library Repair
+
+on:
+  push:
+    branches:
+      - basair-quran-public-rc1
+    paths:
+      - ".github/workflows/public-rc1-library-repair.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  repair:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: basair-quran-public-rc1
+          fetch-depth: 0
+
+      - name: Repair and validate library catalog
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import json, hashlib
+          from pathlib import Path
+
+          ROOT=Path('library')
+          VERSION='1.3.6'
+          STAMP='2026-09-22T12:25:00+03:00'
+          def dump(p,o): p.write_text(json.dumps(o,ensure_ascii=False,separators=(',',':')),encoding='utf-8')
+          def sha(p): return hashlib.sha256(p.read_bytes()).hexdigest()
+          def topic_item(p):
+              d=json.loads(p.read_text(encoding='utf-8'))
+              return {'entityType':'topic','id':d['id'],'version':d['version'],'path':'library/topics/'+p.name,'sha256':sha(p),'bytes':p.stat().st_size,'updatedAt':d.get('updatedAt') or STAMP}
+
+          sign=ROOT/'topics/signs-of-rububiyyah.json'
+          t=json.loads(sign.read_text(encoding='utf-8'))
+          t['version']=max(6,int(t.get('version',0))+1)
+          t['updatedAt']=STAMP
+          t['reviewedAt']=STAMP
+          t['reviewVersion']=max(int(t.get('reviewVersion') or 0)+1,t['version'])
+          img={'id':'topic-rububiyyah-cover','kind':'topic-image','path':'library/assets/topics/signs-of-rububiyyah/hero.svg','alt':'رسم توضيحي لدلائل الربوبية في الخلق من آيات الآفاق والأنفس إلى معرفة الرب','caption':'من آيات الآفاق والأنفس إلى معرفة الرب الخالق المدبر.','width':1280,'height':720,'mimeType':'image/svg+xml','bundled':False}
+          t['coverImage']=dict(img); t['heroImage']=dict(img)
+          dump(sign,t)
+
+          topic_files=[]
+          for p in sorted((ROOT/'topics').glob('*.json')):
+              if p.name=='index.json': continue
+              d=json.loads(p.read_text(encoding='utf-8'))
+              if d.get('status')=='published': topic_files.append((p,d))
+          topic_files.sort(key=lambda x:(x[1].get('categoryId',''),x[1].get('subCategoryId') or '',int(x[1].get('displayOrder') or 999999),x[1].get('title',''),x[1].get('id','')))
+          idx={'schema':'basair-quran-library-topic-index-v1','schemaVersion':1,'libraryVersion':VERSION,'topics':[]}
+          for p,d in topic_files:
+              e={'id':d['id'],'version':d['version'],'status':'published','categoryId':d['categoryId']}
+              if d.get('subCategoryId'): e['subCategoryId']=d['subCategoryId']
+              e.update({'title':d['title'],'path':'library/topics/'+p.name,'sha256':sha(p),'updatedAt':d.get('updatedAt') or STAMP})
+              if d.get('displayOrder') is not None: e['displayOrder']=d['displayOrder']
+              idx['topics'].append(e)
+          dump(ROOT/'topics/index.json',idx)
+
+          mp=ROOT/'manifest.json'
+          old=json.loads(mp.read_text(encoding='utf-8'))
+          catp=ROOT/'categories.json'; idxp=ROOT/'topics/index.json'
+          items=[
+            {'entityType':'catalog','id':'library-categories','version':int(old.get('categoriesVersion') or 13),'path':'library/categories.json','sha256':sha(catp),'bytes':catp.stat().st_size,'updatedAt':STAMP},
+            {'entityType':'catalog','id':'library-topic-index','version':int(old.get('contentVersion') or 25)+1,'path':'library/topics/index.json','sha256':sha(idxp),'bytes':idxp.stat().st_size,'updatedAt':STAMP}
+          ]
+          for p,d in topic_files: items.append(topic_item(p))
+          asset_items=[]
+          for it in [x for x in old.get('items',[]) if x.get('entityType')=='asset']:
+              p=ROOT/it['path'].removeprefix('library/')
+              if not p.is_file(): continue
+              ni=dict(it); ni['sha256']=sha(p); ni['bytes']=p.stat().st_size; asset_items.append(ni)
+          asset_items.sort(key=lambda x:x['id']); items.extend(asset_items)
+          old_ids={i['id'] for i in old.get('items',[]) if i.get('entityType')=='topic'}
+          new_topics=[i for i in items if i['entityType']=='topic']
+          added=[i for i in new_topics if i['id'] not in old_ids]
+          repaired=[i for i in new_topics if i['id']=='signs-of-rububiyyah']
+          index_item=[i for i in items if i['entityType']=='catalog' and i['id']=='library-topic-index']
+          checksum=hashlib.sha256(('\n'.join(sorted(i['path']+':'+i['sha256'] for i in items))).encode()).hexdigest()
+          m={
+            'schema':'basair-quran-library-manifest-v1','schemaVersion':1,'libraryVersion':VERSION,'publishedAt':STAMP,
+            'minimumAppVersion':old.get('minimumAppVersion','1.1.5'),
+            'categoriesVersion':int(old.get('categoriesVersion') or 13),
+            'contentVersion':int(old.get('contentVersion') or 25)+1,
+            'assetsVersion':int(old.get('assetsVersion') or 11)+1,
+            'totalItems':len(items),
+            'summary':{'newTopics':len(added),'updatedTopics':1,'newJourneys':len(added),'newInsights':0,'newAssets':0,'updatedAssets':0,'message':'إصلاح اتساق مكتبة القرآن قبل PUBLIC-RC1: إدراج 12 موضوعًا منشورًا كانت خارج الفهرس، وإزالة مرجع صورة مفقودة مع الاعتماد على الصورة التوضيحية الموجودة.'},
+            'items':items,'changedItems':added+repaired+index_item,
+            'deletedItems':[{'entityType':'asset','id':'topic-signs-rububiyyah-cover'}],
+            'catalog':{
+              'categories':{'path':'library/categories.json','sha256':sha(catp),'bytes':catp.stat().st_size},
+              'topicsIndex':{'path':'library/topics/index.json','sha256':sha(idxp),'bytes':idxp.stat().st_size}
+            },
+            'checksum':checksum
+          }
+          dump(mp,m)
+
+          errors=[]
+          for it in m['items']:
+              p=ROOT/it['path'].removeprefix('library/')
+              if not p.is_file(): errors.append((it['id'],'missing')); continue
+              if sha(p)!=it['sha256']: errors.append((it['id'],'sha'))
+              if p.stat().st_size!=it['bytes']: errors.append((it['id'],'bytes'))
+          assert not errors, errors
+          assert len(topic_files)==150, len(topic_files)
+          assert len(idx['topics'])==150
+          assert m['totalItems']==180, m['totalItems']
+          print('libraryVersion',m['libraryVersion'],'topics',len(topic_files),'items',m['totalItems'],'checksum',m['checksum'])
+          PY
+
+      - name: Commit repaired library
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "Basair Quran RC1"
+          git config user.email "actions@users.noreply.github.com"
+          git add library/manifest.json library/topics/index.json library/topics/signs-of-rububiyyah.json
+          git diff --cached --quiet && exit 0
+          git commit -m "library: repair catalog consistency for public rc1"
+          git push origin HEAD:basair-quran-public-rc1
