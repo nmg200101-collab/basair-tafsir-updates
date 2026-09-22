@@ -60,6 +60,17 @@ jobs:
         run: |
           cp -a library rc1-library-snapshot
 
+      - name: Download current bundletool
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p rc1-bundletool
+          API="$(curl -fsSL https://api.github.com/repos/google/bundletool/releases/latest)"
+          URL="$(printf '%s' "$API" | jq -r '.assets[] | select(.name | test("bundletool-all.*\\.jar$")) | .browser_download_url' | head -1)"
+          test -n "$URL"
+          curl -fL "$URL" -o rc1-bundletool/bundletool.jar
+          java -jar rc1-bundletool/bundletool.jar version | tee rc1-bundletool/VERSION.txt
+
       - name: Upload diagnostics
         if: always()
         uses: actions/upload-artifact@v4
@@ -82,4 +93,12 @@ jobs:
         with:
           name: BASAIR-PUBLIC-RC1-LIBRARY-SNAPSHOT
           path: rc1-library-snapshot/
+          compression-level: 6
+
+      - name: Upload bundletool
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: BASAIR-PUBLIC-RC1-BUNDLETOOL
+          path: rc1-bundletool/
           compression-level: 6
