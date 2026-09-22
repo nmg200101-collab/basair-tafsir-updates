@@ -1,54 +1,61 @@
-# BASAIR-QURAN PUBLIC-RC1 — HOME UX V2 Reference
+# BASAIR-QURAN PUBLIC-RC1 — HOME HEADER V3 Reference
 
 - Date: 2026-09-22
-- Version: `1.2.0-rc1.1`
-- versionCode: `214`
+- Version: `1.2.0-rc1.2`
+- versionCode: `215`
 - package: `app.basair.rc20s`
 - minSdk: `23`
 - targetSdk / compileSdk: `36`
 - Offline Quran Library: `1.3.6`
-- Baseline: B212 remains preserved unchanged.
+- Baseline B212 remains preserved unchanged.
 
-## Home UX V2 scope
-- Home global mini-search removed from the Home experience.
-- Four approved primary modules retained: Tilawa, Tafsir/Tadabbur, Hifz, Quran Library.
-- Easy UI is now a direct-Mushaf launch mode.
-- Root Mushaf Back in Easy mode uses the narrow `BasairApp.finishApp()` native bridge.
-- Explicit Easy UI Home control returns to full Home.
-- More menu reorganized: Downloads, Updates, Feedback, Guide, Settings, About + existing useful secondary tools.
-- Update manifest is live on the repository main branch.
-- Feedback uses a pre-filled GitHub issue flow and never claims delivery before the user submits.
+## Correction scope
+This build corrects HOME UX V2 so the change is restricted to the **top Home header only**.
+
+### Top header
+- Small top-header search stays removed.
+- Basair logo/brand is centered and visually emphasized.
+- Night mode + Easy UI are grouped on one side.
+- More is placed on the opposite side.
+- Easy UI direct-Mushaf launch behavior remains intact.
+
+### Restored below the header
+- Quick search restored.
+- Home style/layout controls restored.
+- Existing Home options/cards below the header are no longer hidden by the RC1 override.
+- The existing Home body code and functionality are preserved.
 
 ## Protection
 - Protected B212 `classes.dex` SHA-256:
   `c87a3a22b8125e1305e1933cc0a869c8956c077223674eb2eb091e378063077f`
 - Quran `mushaf-data.js` SHA-256:
   `dc2b22fe3925a08ecf9ee2c32392a681362219b7339c627b8cc500190ef64650`
-- New compatibility `classes2.dex` SHA-256:
+- Compatibility `classes2.dex` SHA-256:
   `ec071b458e6d60662e68d7703153fc22414d2caf1238e04b86641ad27160cabf`
-- APP_SOURCE changes vs previous PUBLIC-RC1 are limited to `index.html` plus new `home-ux-v2.js` and `home-ux-v2.css`.
+- Extracted Build 214 -> 215 payload comparison: **0 unexpected differences**.
+- APP_SOURCE changes from Build 214 are limited to `home-ux-v2.css` and `home-ux-v2.js`.
 
 ## Offline library validation
-- Categories/subcategories: 76
-- Published topics: 150
-- Manifest items: 180
+- Library version: `1.3.6`
+- Published topics: `150`
+- Manifest items: `180`
 - Every manifest item SHA-256 verified.
 
-## Release artifact hashes
+## Artifact hashes
 - Field-test APK:
-  `cdac958862a540ae980ad3cbf08966475113cb64886865e5646a56c08819f1e5`
+  `8eb034d88edb721a4078b7e9d166a1577fcc0af1c867daf8edec9f51ddba552e`
 - Production-signed AAB:
-  `1a7bed414448da1e635bf9bfc2abb558a70dd58739919240e768f5a1e4930acd`
+  `eacba4b55d4ae4e751f83431b8d0795f4dae6686c0439e62683bb23dc61e0241`
 - Source ZIP:
-  `ce26964f9afd23a1fb95d7930f78ce99529f9af59adae0eb4da966d4c663b59b`
+  `3fa6da1b30b88716f049807797023608f24b085261466562ef403f19d97cc2a6`
 - Backup ZIP:
-  `996b296dceb2e3b892ef9a243206756e22725c92c9c4672ecfb02d8fe28bf296`
+  `5af196d7f69ee819c2de17cc8ce0bb1fda687d000e2716280ff1086b9516301e`
 
 ## Signing
-- Field-test APK remains on the B209/B212 test signing chain for in-place field testing.
+- Field-test APK remains on the B209/B212 test signing chain for in-place testing.
 - AAB uses the separate production upload key.
-- No private key or credential is committed to GitHub.
+- Private signing material is not stored in GitHub.
 
 ## Release gate
 Static/package QA: PASS.
-Physical Android validation is required before this Home UX change is locked and before proceeding to Tilawa audit.
+Physical phone validation of header alignment and restored below-header controls is required before locking Home and moving to Tilawa audit.
