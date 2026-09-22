@@ -14,23 +14,29 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Setup Android command line tools
+        uses: android-actions/setup-android@v3
+
       - name: Install Android 36 platform
         shell: bash
         run: |
           set -euo pipefail
           yes | sdkmanager --licenses >/dev/null || true
           sdkmanager "platforms;android-36"
-          echo "ANDROID_HOME=$ANDROID_HOME"
-          ls -1 "$ANDROID_HOME/build-tools" | sort -V
+          SDK_ROOT="${ANDROID_SDK_ROOT:-${ANDROID_HOME:-$HOME/Android/Sdk}}"
+          echo "SDK_ROOT=$SDK_ROOT"
+          test -f "$SDK_ROOT/platforms/android-36/android.jar"
+          ls -1 "$SDK_ROOT/build-tools" | sort -V
 
       - name: Prepare Android toolchain subset
         shell: bash
         run: |
           set -euo pipefail
-          BT="$(ls -1 "$ANDROID_HOME/build-tools" | sort -V | tail -1)"
+          SDK_ROOT="${ANDROID_SDK_ROOT:-${ANDROID_HOME:-$HOME/Android/Sdk}}"
+          BT="$(ls -1 "$SDK_ROOT/build-tools" | sort -V | tail -1)"
           mkdir -p rc1-toolchain/build-tools rc1-toolchain/platforms
-          cp -a "$ANDROID_HOME/build-tools/$BT" "rc1-toolchain/build-tools/$BT"
-          cp -a "$ANDROID_HOME/platforms/android-36" rc1-toolchain/platforms/android-36
+          cp -a "$SDK_ROOT/build-tools/$BT" "rc1-toolchain/build-tools/$BT"
+          cp -a "$SDK_ROOT/platforms/android-36" rc1-toolchain/platforms/android-36
           printf '%s\n' "$BT" > rc1-toolchain/BUILD_TOOLS_VERSION.txt
           printf '%s\n' "36" > rc1-toolchain/TARGET_API.txt
 
