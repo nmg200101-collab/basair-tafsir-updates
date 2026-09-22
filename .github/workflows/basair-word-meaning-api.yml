@@ -28,6 +28,16 @@ jobs:
           test "$(wc -c </tmp/range.bin)" -eq 100
           grep -Eq '^HTTP/[^ ]+ 206' /tmp/range-headers.txt
 
+      - name: Fetch reference meanings bundle
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl -fsSL --retry 3 \
+            "https://raw.githubusercontent.com/nmg200101-collab/basair-tafsir-updates/4d08fdfdd55213ab72066af1c754ffe943bbde9c/public-assets/meanings-bundle/basair-word-meanings-v1.json" \
+            -o /tmp/basair-word-meanings-v1.json
+          test "$(wc -c </tmp/basair-word-meanings-v1.json)" -eq 10399078
+          printf '%s  %s\n' "db6025c825fda31a9b2c195ecf7d4eb812a8e3898a7bd8569e23ca0d18c387f3" "/tmp/basair-word-meanings-v1.json" | sha256sum -c -
+
       - name: Generate per-word ranged data and per-surah indexes
         shell: bash
         run: |
@@ -37,7 +47,7 @@ jobs:
           root=pathlib.Path('public-assets/meanings-word-api/v1')
           idxdir=root/'index'
           idxdir.mkdir(parents=True,exist_ok=True)
-          src=pathlib.Path('public-assets/meanings-bundle/basair-word-meanings-v1.json')
+          src=pathlib.Path('/tmp/basair-word-meanings-v1.json')
           obj=json.loads(src.read_text(encoding='utf-8'))
           assert obj['version']==1 and obj['surah_count']==114 and obj['word_entries']==77432
           data_path=root/'words.ndjson'
