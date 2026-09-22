@@ -1,28 +1,62 @@
-# BASAIR-QURAN PUBLIC-RC1 — TILAWA FINAL LOCK V4
+# BASAIR-QURAN PUBLIC-RC1 — TILAWA FINAL LAYOUT FIX V5
 
 - Date: 2026-09-22
-- Version: `1.2.0-rc1.7`
-- versionCode: `220`
+- Version: `1.2.0-rc1.8`
+- versionCode: `221`
+- package: `app.basair.quran`
+- minSdk: `23`
 - targetSdk / compileSdk: `36`
+- Offline Quran Library: `1.3.6`
+- Baseline B212 remains preserved unchanged.
 
-## Final device-driven Tilawa corrections
-- Word meaning card moved into the Mushaf reader top flow; it no longer overlays Quran lines.
-- Selected word and meaning stay on one compact row; long meanings grow vertically within a controlled limit.
-- Missing meaning-package status is no longer shown as the meaning itself; download requirement is separated.
-- Real viewport space is reserved above the permanent bottom Mushaf dock so the final Quran line is not covered.
-- Font + Reading Size options use compact multi-column rows; automatic font choices use compact rows too.
+## Device-driven final Tilawa layout scope
+- Word meaning is moved into the reader header area instead of occupying space above Quran lines.
+- In Easy UI, the center title temporarily becomes: selected word + meaning + close control.
+- Long meanings increase the header height automatically within a controlled limit.
+- If the meanings pack is missing, the package warning is not used as the meaning; a compact “Download meanings” action is shown instead.
+- Bottom Mushaf dock is normalized to six equal compact controls.
+- Reader geometry is measured from the real page content top to the real dock top, reserving a visible gap above the dock so the final Quran line is not covered.
+- Font + Reading Size is forced into compact rows: 3 choices + 3 choices, with size controls on one horizontal row.
+- Existing audio, reciters, sequential recitation, navigation, Quran data and print engines are not rewritten.
 
-## Protection
-- classes.dex: `c87a3a22b8125e1305e1933cc0a869c8956c077223674eb2eb091e378063077f`
-- classes2.dex: `ec071b458e6d60662e68d7703153fc22414d2caf1238e04b86641ad27160cabf`
-- mushaf-data.js: `dc2b22fe3925a08ecf9ee2c32392a681362219b7339c627b8cc500190ef64650`
-- Build 219 -> 220 payload changes: 4 expected / 0 unexpected.
+## Protection / regression
+- Protected B212 `classes.dex`:
+  `c87a3a22b8125e1305e1933cc0a869c8956c077223674eb2eb091e378063077f`
+- Compatibility `classes2.dex`:
+  `ec071b458e6d60662e68d7703153fc22414d2caf1238e04b86641ad27160cabf`
+- Quran `mushaf-data.js`:
+  `dc2b22fe3925a08ecf9ee2c32392a681362219b7339c627b8cc500190ef64650`
+- Protected Tilawa inline blocks: **42/42 PASS**
+- Library manifest items: **180/180 PASS**
+- Build 220 -> 221 APK payload differences: exactly **4 expected / 0 unexpected**
+  - AndroidManifest.xml — version bump only
+  - assets/www/index.html — V5 links only
+  - assets/www/tilawa-stability-v5.css — new
+  - assets/www/tilawa-stability-v5.js — new
 
 ## Artifact hashes
-- APK: `a71d8b0f00657143120a773a1941a2eb3981517e48909182a5ff36cbba2183ef`
-- AAB: `8b8056f7c89d30a067a19c5dc0945416a945299d91e6184df215edc9366558bd`
-- Source ZIP: `f2d02cd3d7045d6d8cbeef9537d1b35c0e1aa1ddacb1ac6a2aae2b9f2104d53b`
-- Backup ZIP: `ace77aa443983f885fe0f48573158f08f9f793eb1fdf4b1f1ad14efb4a7768be`
+- Field-test APK:
+  `9fd3c4b851ebbacf1159944d51cf6c675afbcf7a936c9d24e837045e58c028b5`
+- Production-signed AAB:
+  `0e815677140a5d21a2f6f8e7e50e50626b5487a5848e404d8f45bff5280333d0`
+- Source ZIP:
+  `7516b1db311a9a79937d843f87f0bd65e63b07b651cbccee2f496d7bf2ef8d84`
+- Backup ZIP:
+  `99aa4db33e4c8a5844cd7dff8cfff2f46002f0a68c12239c941792bd3da80e79`
 
-## Release gate
-Static/package QA PASS. After real-device acceptance, Tilawa is FINAL LOCKED and must not change during Tafsir/Hifz/Library audit unless a true regression is demonstrated.
+## Signing / packaging
+- Field APK: v1/v2/v3 signature PASS using the same B209/B212 test chain.
+- Production upload AAB: signing PASS.
+- Bundletool validate: PASS.
+- AAB-derived Universal APK generation: PASS.
+- Private signing material is not stored in GitHub.
+
+## Field-test gate
+Before locking Tilawa, verify on a real Android phone:
+1. Meaning appears inside the top header, not over Quran lines.
+2. Long meaning grows cleanly without covering the page.
+3. Missing pack shows a compact download action only.
+4. Final Quran line remains fully above the dock.
+5. Six dock actions are equal and usable.
+6. Font + Reading Size is laid out in compact rows.
+7. Audio, reciters, sequential recitation, navigation and page tools remain stable.
