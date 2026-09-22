@@ -1,59 +1,28 @@
-# BASAIR-QURAN PUBLIC-RC1 — TILAWA FINAL LOCK V3
+# BASAIR-QURAN PUBLIC-RC1 — TILAWA FINAL LOCK V4
 
 - Date: 2026-09-22
-- Version: `1.2.0-rc1.6`
-- versionCode: `219`
-- package: `app.basair.rc20s`
-- minSdk: `23`
+- Version: `1.2.0-rc1.7`
+- versionCode: `220`
 - targetSdk / compileSdk: `36`
-- Offline Quran Library: `1.3.6`
-- Baseline B212 remains preserved unchanged.
 
-## Final Tilawa correction
-This is the final Tilawa lock candidate. Scope is visual-only on top of Build 218.
+## Final device-driven Tilawa corrections
+- Word meaning card moved into the Mushaf reader top flow; it no longer overlays Quran lines.
+- Selected word and meaning stay on one compact row; long meanings grow vertically within a controlled limit.
+- Missing meaning-package status is no longer shown as the meaning itself; download requirement is separated.
+- Real viewport space is reserved above the permanent bottom Mushaf dock so the final Quran line is not covered.
+- Font + Reading Size options use compact multi-column rows; automatic font choices use compact rows too.
 
-- Word meaning card is now compact and positioned at the top of the Mushaf reader, immediately below the existing reader header.
-- Expanded alternate meanings remain scrollable.
-- Font + Reading Size remains permanently pinned/stable.
-- Font + Reading Size visual design is restored to the prior coordinated Basair design: green Arabic-A icon, organized font choices, balanced +/- controls and standard reset.
-- No new item was added to the Tilawa/Mushaf top header.
-- All Build 218 Tilawa stabilization remains in place: sequential recitation visibility, downloads organization, duplicate Reading Settings removal, page-package guard, and unified download route.
-
-## Protection / regression
-- Protected B212 `classes.dex`:
-  `c87a3a22b8125e1305e1933cc0a869c8956c077223674eb2eb091e378063077f`
-- Compatibility `classes2.dex`:
-  `ec071b458e6d60662e68d7703153fc22414d2caf1238e04b86641ad27160cabf`
-- Quran `mushaf-data.js`:
-  `dc2b22fe3925a08ecf9ee2c32392a681362219b7339c627b8cc500190ef64650`
-- Build 218 -> 219 unsigned payload differences: exactly 3:
-  - `AndroidManifest.xml` — version bump only
-  - `assets/www/index.html` — one final CSS link
-  - `assets/www/tilawa-stability-v3.css` — new final visual-only layer
-- Unexpected payload differences: **0**
-
-## Offline library validation
-- Library version: `1.3.6`
-- Manifest items: `180`
-- SHA-256 checks: **180/180 PASS**
+## Protection
+- classes.dex: `c87a3a22b8125e1305e1933cc0a869c8956c077223674eb2eb091e378063077f`
+- classes2.dex: `ec071b458e6d60662e68d7703153fc22414d2caf1238e04b86641ad27160cabf`
+- mushaf-data.js: `dc2b22fe3925a08ecf9ee2c32392a681362219b7339c627b8cc500190ef64650`
+- Build 219 -> 220 payload changes: 4 expected / 0 unexpected.
 
 ## Artifact hashes
-- Field-test APK:
-  `f75042247bb2589f407eed00ae606bc9da8d2b8278bd231128c6c490ab7cce61`
-- Production-signed AAB:
-  `31111096e1c681002a6725985ebb17682b6551c9f1bd827995961f3a80e6dfd0`
-- Source ZIP:
-  `92bfb4e3cfca32a52105f6e06776c1bf661dad717296af44dbeed721cb8c2c9b`
-- Backup ZIP:
-  `f5f0fce40b0a98c0da0635b859e4a5c7bad97198980aa845e8d963640a4f8ff5`
+- APK: `a71d8b0f00657143120a773a1941a2eb3981517e48909182a5ff36cbba2183ef`
+- AAB: `8b8056f7c89d30a067a19c5dc0945416a945299d91e6184df215edc9366558bd`
+- Source ZIP: `f2d02cd3d7045d6d8cbeef9537d1b35c0e1aa1ddacb1ac6a2aae2b9f2104d53b`
+- Backup ZIP: `ace77aa443983f885fe0f48573158f08f9f793eb1fdf4b1f1ad14efb4a7768be`
 
-## Package QA
-- Field APK: v1/v2/v3 signature PASS using existing B209/B212 test chain.
-- AAB production upload signing: PASS.
-- Bundletool manifest validation: PASS.
-- AAB-derived Universal APK generation: PASS.
-- Private signing material is not committed to GitHub.
-
-## Lock rule
-After user acceptance on a real Android phone, Tilawa is considered **FINAL LOCKED**.
-During Tafsir, Hifz and Library audits, do not modify Tilawa unless a true regression is demonstrated.
+## Release gate
+Static/package QA PASS. After real-device acceptance, Tilawa is FINAL LOCKED and must not change during Tafsir/Hifz/Library audit unless a true regression is demonstrated.
