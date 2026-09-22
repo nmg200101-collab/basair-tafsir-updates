@@ -1,44 +1,41 @@
-# BASAIR-QURAN PUBLIC-RC1 — TILAWA WORD MEANING B227
+# BASAIR-QURAN PUBLIC-RC1 — TILAWA FINAL LOCK B228
 
 - Date: 2026-09-22
-- VersionName: `1.2.0-rc1.14`
-- VersionCode: `227`
+- VersionName: `1.2.0-rc1.15`
+- VersionCode: `228`
 - Package: `app.basair.rc20s`
-- Base APK: `B226 INSTALL FIX`
-- Source functional base: B225/B226
-- Target SDK: 36
+- Base: B227 field-approved visual layout
+- Target/Compile SDK: `36`
 
-## Scope
-Final word-meaning behavior correction only.
+## Final Tilawa correction
+The last Tilawa issue was the selected-word meaning download path.
 
-### UI
-- Word meaning reuses the existing `#v194s3SurahBadge` location (Makki/Madani + Surah badge position).
-- Selected word appears in its own white framed box.
-- Meaning appears in a second white framed box that fills the rest of the row.
-- Compact close control is in the same row.
-- Long meaning wraps up to three lines.
-- Quran page layout does not participate in this badge change, so it should not move.
+B227 used the legacy `v130ResolveMeaning` network chain for a missing word meaning. That chain can traverse several external sources and may end in a retry/failure state.
 
-### Direct selected-word retrieval
-- If the meaning is already local/cached, it appears immediately.
-- If not, the meaning frame shows: `تنزيل معنى هذه الكلمة`.
-- Pressing it uses the existing network word-resolution path for the current surah/ayah/word/position.
-- It does **not** call the full meanings-bundle downloader.
-- It does **not** reference the 10MB meanings-bundle URL.
-- Only the resolved selected-word record is persisted to localStorage/cache.
-- On success, the same meaning frame updates immediately without tapping the Quran word again.
-- On failure, the same frame becomes a compact retry action.
-- Closing restores the original Makki/Madani + Surah badge.
+B228 removes that path from the direct download action.
 
-## Stability
-New B227 script:
-- no MutationObserver
-- no setInterval
-- no startup DOM mutation
-- no full pack download call
-- event-driven only: word tap / direct selected-word retrieval / close
+### Direct selected-word API
+- Visual layout remains exactly B227.
+- Local/contextual/cached meanings still display immediately.
+- Missing meaning shows `تنزيل معنى هذه الكلمة`.
+- Pressing it uses the Basair Per-Word Meaning API only.
+- API commit pinned in app:
+  `029a332809bac1160967c6490be8b130c30e4046`
+- Per-surah index supplies the exact byte offset/length.
+- The app performs an HTTP Range request for the selected word record only.
+- The full meanings bundle is never started from this action.
+- The changed B228 script contains no old meanings-bundle URL and no `downloadPack()` call.
+- On success, only the selected meaning record is cached and shown immediately.
+- On failure, the same frame shows one compact retry action; no visible attempt counter and no legacy multi-source chain.
 
-## Protected hashes (B226 == B227)
+## Basair Per-Word Meaning API
+- Generated records: 77,432
+- Surahs: 114
+- Data format: range-addressable NDJSON
+- Latest API generation/verification workflow observed: SUCCESS
+- The workflow validates HTTP 206 Range responses and exact selected-record contents.
+
+## Protection
 - classes.dex:
   `c87a3a22b8125e1305e1933cc0a869c8956c077223674eb2eb091e378063077f`
 - classes2.dex:
@@ -48,50 +45,47 @@ New B227 script:
 - mushaf-data.js:
   `dc2b22fe3925a08ecf9ee2c32392a681362219b7339c627b8cc500190ef64650`
 
-## APK payload diff vs B226
-Exactly four expected differences (signature files excluded):
-1. AndroidManifest.xml — version only
-2. assets/www/index.html — B227 CSS/JS links only
-3. assets/www/tilawa-word-meaning-b227.css — new
-4. assets/www/tilawa-word-meaning-b227.js — new
+## Diff vs B227
+APK payload differences, excluding signature files: exactly **2**
+1. `AndroidManifest.xml` — version only
+2. `assets/www/tilawa-word-meaning-b227.js` — selected-word transport only
 
-Unexpected differences: **0**
+Unexpected APK differences: **0**
 
-## Library
-- Manifest items: 180
-- SHA-256: 180/180 PASS
+Source differences vs B227: exactly **2**
+1. `RC1_BUILD/AndroidManifest.xml`
+2. `APP_SOURCE/assets/www/tilawa-word-meaning-b227.js`
 
-## Package QA
-- APK ZIP integrity: PASS
-- zipalign: PASS
-- APK v1/v2/v3 signatures: PASS
-- Field signer SHA-256:
-  `606d3692df3a6932e0cbe0f0094bd370f99827899cba8e284547cfb840c2443d`
-- Package identity: `app.basair.rc20s` PASS
-- AAB production upload signing: PASS
-- Bundletool validate: PASS
-- AAB-derived universal APK generation: PASS
+Library manifest verification: **180/180 PASS**
+
+## Packaging
+Critical APK entries preserve field-proven storage:
+- classes.dex: STORED
+- classes2.dex: STORED
+- resources.arsc: STORED
+
+APK ZIP integrity: PASS
+zipalign: PASS
+APK signatures v1/v2/v3: PASS
+Field signer SHA-256:
+`606d3692df3a6932e0cbe0f0094bd370f99827899cba8e284547cfb840c2443d`
+
+AAB production upload signing: PASS
+Bundletool validate: PASS
+AAB-derived Universal APK: PASS
 
 ## Artifact hashes
 - APK:
-  `1d992245a707685f5bd28378105647111c874bee8a30f9c26272bd192bb8a5a1`
+  `b351e94fe8bf293e588b7ea66d8b71a98142362f43526a3791e34fad5165b920`
 - AAB:
-  `504805e784896d395622655edbfeabce818119ccc4c717b1fb7956a5a10b4e85`
+  `0451479fd1336cc76892ae2ec5785e23b3d624f4450e7c649ea462a6c083f94a`
 - Source ZIP:
-  `5a4813751a525a81bde22f62377d49fc0ec7309b2596cec60f63adfdf97ce414`
+  `d56f4ef4ef86997393be04e71cdf6b4b01da9d92a1028cf7b2487b2bd8fcc374`
 - Backup ZIP:
-  `699eb612b411a9cf37fdf9dcdfde5bbf62972d6d63cf8b3fdf584d5db0721a8d`
+  `acff64842060a5fedbc742226420d999de17d2d1703dfa31dc52a078738e11d5`
 
-## Field gate
-Install B227 over B226 without clearing data.
-Validate:
-1. Cold start passes splash.
-2. Tap a Quran word.
-3. Makki/Madani badge is replaced in-place by word frame + meaning frame.
-4. Quran page remains fixed.
-5. Missing local meaning shows only “تنزيل معنى هذه الكلمة”.
-6. Press it and confirm the full meanings-package download does not start.
-7. Meaning appears in the same frame after success.
-8. Close restores Makki/Madani badge.
+## FINAL LOCK RULE
+Tilawa is now **FINAL LOCKED on B228**.
 
-Do not lock Tilawa until these pass on a real Android device.
+Do not modify Tilawa during Tafsir, Hifz, Library, or full-app audit.
+The only exception is a real, reproducible regression demonstrated on a physical device. Any such correction must preserve the B228 visual layout and protected hashes.
