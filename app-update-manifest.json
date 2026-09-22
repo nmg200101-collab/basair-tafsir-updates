@@ -1,0 +1,13 @@
+{
+  "schema": "basair-quran-app-update-v1",
+  "channel": "public-rc",
+  "versionCode": 214,
+  "versionName": "1.2.0-rc1.1",
+  "publishedAt": "2026-09-22T16:50:00+03:00",
+  "minimumSupportedVersionCode": 212,
+  "mandatory": false,
+  "message": "تحسين الواجهة الرئيسية والواجهة السهلة ومركز التحديثات ومكتبة التنزيلات وإرسال الملاحظات.",
+  "pageUrl": "https://github.com/nmg200101-collab/basair-tafsir-updates",
+  "downloadUrl": "",
+  "libraryVersion": "1.3.6"
+}
