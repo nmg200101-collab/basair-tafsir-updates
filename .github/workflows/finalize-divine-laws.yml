@@ -1,0 +1,83 @@
+name: Finalize Divine Laws
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/finalize-divine-laws.yml']
+permissions:
+  contents: write
+jobs:
+  finalize:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0}
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - name: Finalize section
+        run: |
+          python - <<'PY'
+          import json,hashlib,os,datetime
+          root='library'; tp=f'{root}/topics'
+          ids=['law-guidance-response','law-hearts-deviation','law-gratitude-increase','law-ingratitude-loss','law-trial','law-purification','law-patience-outcome','law-difficulty-ease','law-change-self','law-reform-preservation','law-corruption-consequence','law-gradual-reform','law-victory-faith','law-preparation','law-dispute-weakness','law-days-circulation','law-nations-endings','law-luxury-destruction','law-justice-survival','law-history-reflection']
+          cats=json.load(open(f'{root}/categories.json',encoding='utf-8'))
+          idx=json.load(open(f'{tp}/index.json',encoding='utf-8'))
+          man=json.load(open(f'{root}/manifest.json',encoding='utf-8'))
+          if man.get('libraryVersion')!='1.3.4': raise SystemExit('Unexpected libraryVersion: '+str(man.get('libraryVersion')))
+          planned=[]
+          for c in cats:
+            if c.get('id')=='divine-laws' or c.get('parentId')=='divine-laws':
+              if c.get('id')=='divine-laws': c['version']=c.get('version',0)+1
+              else: c['version']=c.get('version',0)+1
+              c['preparationStatus']='content-complete-no-opening-images'; c['openingImagesStatus']='deferred'
+              for t in c.get('topicPlan',[]): planned.append(t['id'])
+          if set(planned)!=set(ids): raise SystemExit(f'Plan mismatch {len(planned)}')
+          existing={x['id']:x for x in idx['topics']}
+          new_entries=[]
+          changed=[]
+          for tid in ids:
+            path=f'{tp}/{tid}.json'
+            b=open(path,'rb').read(); obj=json.loads(b)
+            if obj.get('id')!=tid or obj.get('categoryId')!='divine-laws': raise SystemExit('Invalid topic '+tid)
+            stages=[s for j in obj.get('journeys',[]) for s in j.get('stages',[])]
+            if not stages: raise SystemExit('No stages '+tid)
+            for s in stages:
+              kinds={b.get('type') for b in s.get('blocks',[])}
+              if not {'tafsir','thematic_link','reflection'}<=kinds: raise SystemExit('Missing content blocks '+tid)
+            sha=hashlib.sha256(b).hexdigest()
+            ent={'id':tid,'version':obj.get('version',1),'status':'published','categoryId':'divine-laws','subCategoryId':obj['subCategoryId'],'title':obj['title'],'path':f'library/topics/{tid}.json','sha256':sha,'updatedAt':obj.get('updatedAt','2026-09-22T09:05:00+03:00'),'displayOrder':obj.get('displayOrder',10)}
+            existing[tid]=ent
+            changed.append({'entityType':'topic','id':tid,'version':ent['version'],'path':ent['path'],'sha256':sha,'bytes':len(b),'updatedAt':ent['updatedAt']})
+          oldorder=[x['id'] for x in idx['topics']]
+          idx['topics']=[existing[i] for i in oldorder if i in existing and i not in ids]+[existing[i] for i in ids]
+          idx['libraryVersion']='1.3.5'
+          def dump(path,obj):
+            open(path,'w',encoding='utf-8',newline='').write(json.dumps(obj,ensure_ascii=False,separators=(',',':')))
+          dump(f'{root}/categories.json',cats)
+          # categories/index hashes after canonical write
+          dump(f'{tp}/index.json',idx)
+          def meta(path,id,kind,version):
+            b=open(path,'rb').read(); return {'entityType':kind,'id':id,'version':version,'path':path,'sha256':hashlib.sha256(b).hexdigest(),'bytes':len(b),'updatedAt':'2026-09-22T09:30:00+03:00'}
+          catm=meta(f'{root}/categories.json','library-categories','catalog',man.get('categoriesVersion',12)+1)
+          idxm=meta(f'{tp}/index.json','library-topic-index','catalog',man.get('contentVersion',24)+1)
+          items=[x for x in man['items'] if x.get('path') not in {m['path'] for m in changed+[catm,idxm]}]
+          items += changed+[catm,idxm]
+          man['libraryVersion']='1.3.5'; man['publishedAt']='2026-09-22T09:30:00+03:00'; man['categoriesVersion']=man.get('categoriesVersion',12)+1; man['contentVersion']=man.get('contentVersion',24)+1
+          man['summary']={'newTopics':20,'updatedTopics':0,'newJourneys':20,'newInsights':0,'newAssets':0,'updatedAssets':0,'message':'إكمال النصوص الفعلية لقسم «السنن والقوانين الربانية» في 20 موضوعًا دون صور افتتاحية.'}
+          man['items']=items; man['changedItems']=changed+[catm,idxm]; man['deletedItems']=[]; man['totalItems']=len(items)
+          s='\n'.join(sorted(x['path']+':'+x['sha256'] for x in items)); man['checksum']=hashlib.sha256(s.encode()).hexdigest()
+          dump(f'{root}/manifest.json',man)
+          # final validation
+          chk='\n'.join(sorted(x['path']+':'+x['sha256'] for x in man['items']))
+          assert hashlib.sha256(chk.encode()).hexdigest()==man['checksum']
+          assert man['totalItems']==len(man['items'])
+          for x in man['items']:
+            if x['entityType'] in ('topic','catalog'):
+              b=open(x['path'],'rb').read(); assert len(b)==x['bytes'] and hashlib.sha256(b).hexdigest()==x['sha256'], x['path']
+          PY
+      - name: Commit verified metadata
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add library/categories.json library/topics/index.json library/manifest.json
+          git commit -m 'library: finalize divine laws section 1.3.5'
+          git push
