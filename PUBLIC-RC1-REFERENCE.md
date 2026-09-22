@@ -1,8 +1,8 @@
-# BASAIR-QURAN PUBLIC-RC1 — HOME FINAL POLISH V4
+# BASAIR-QURAN PUBLIC-RC1 — TILAWA STABILITY V1
 
 - Date: 2026-09-22
-- Version: `1.2.0-rc1.3`
-- versionCode: `216`
+- Version: `1.2.0-rc1.4`
+- versionCode: `217`
 - package: `app.basair.rc20s`
 - minSdk: `23`
 - targetSdk / compileSdk: `36`
@@ -10,37 +10,29 @@
 - Baseline B212 remains preserved unchanged.
 
 ## Scope
-Final Home-page polish only. **No new Home card was added.**
+Tilawa stabilization only. The existing Tilawa/Mushaf top headers were preserved exactly.
 
-### Top header
-- Notifications button restored beside Night mode.
-- Unread notification badge is shown only when the existing Home notification count is non-zero.
-- Night + Notifications are grouped on one side.
-- Easy UI + More are grouped on the opposite side.
-- Basair logo/brand remains in a true centered middle grid column.
-- Small top-header search remains removed.
+### Tilawa UI stabilization
+- Sequential recitation remains the existing engine and is explicitly visible in the Mushaf bottom dock.
+- The bottom dock remains six actions; the later Downloads shortcut no longer consumes a dock slot.
+- Downloads/packages stay available through the existing unified Download Library and are exposed from Page Tools.
+- Quran page pack is no longer shown above the Surah chooser.
+- Existing automatic fonts remain pinned/static in Page Tools.
+- No item was added to the Tilawa page header.
+- Existing audio, reciters, verse navigation, sequential audio/silent handlers and Mushaf data were not rewritten.
 
-### Below the header
-- Quick search remains available.
-- Home style/layout controls remain available.
-- Existing Home options remain unchanged.
-- Only the ordinary duplicate `أقسام بصائر` title text is hidden.
-- The distinctive sections heading remains.
-- `شكل العرض` remains available.
-- Existing conditional app-update strip remains; no new card was introduced.
-
-## Protection
-- Protected B212 `classes.dex` SHA-256:
+## Protected verification
+- Original B212 `classes.dex` SHA-256:
   `c87a3a22b8125e1305e1933cc0a869c8956c077223674eb2eb091e378063077f`
-- Quran `mushaf-data.js` SHA-256:
-  `dc2b22fe3925a08ecf9ee2c32392a681362219b7339c627b8cc500190ef64650`
 - Compatibility `classes2.dex` SHA-256:
   `ec071b458e6d60662e68d7703153fc22414d2caf1238e04b86641ad27160cabf`
-- Build 215 -> 216 source changes are limited to:
-  - `APP_SOURCE/assets/www/home-ux-v2.js`
-  - `APP_SOURCE/assets/www/home-ux-v2.css`
-  - `RC1_BUILD/AndroidManifest.xml`
-- Unexpected source differences: **0**.
+- Quran `mushaf-data.js` SHA-256:
+  `dc2b22fe3925a08ecf9ee2c32392a681362219b7339c627b8cc500190ef64650`
+- Existing Tilawa protected inline blocks: **42/42 SHA-256 PASS**
+- Tilawa index header markup: unchanged
+- Mushaf reader header markup: unchanged
+- Original Mushaf dock HTML markup: unchanged
+- Build 216 -> 217 APK payload differences: 5 expected / **0 unexpected**
 
 ## Offline library validation
 - Library version: `1.3.6`
@@ -49,19 +41,21 @@ Final Home-page polish only. **No new Home card was added.**
 
 ## Artifact hashes
 - Field-test APK:
-  `e90d917bb54d68f050046e50f6b910aaa0484939a09bcac3ae8f918803c868c8`
+  `b46f52dcd89144875959295f776d03e1313eb95f4dde201cc92c3be6d09789f1`
 - Production-signed AAB:
-  `de59af70f056cc931fb1f0e69359dccb1f730c5659902df0636fb3c545e69854`
+  `36ad40aec31d3151124a1a37bb8c3341db898edd11f396f12f3bb81e5df1cef7`
 - Source ZIP:
-  `fd01c415048d694542d0fb5701aa5d7ed2b9c8a99174e7de3dec8a2b094152e8`
+  `7a78227d7f482a887a0417fa1c946b088d6365ed4afa78cd9ee91b5ac2ae4d86`
 - Backup ZIP:
-  `4472ba8811545d83015af964352bdac69ce746129c180cb05a9b69dd287291c4`
+  `fe82d50a3fcd1b622074ed78481f2049b766b164dd4e63969ad5c548695ce845`
+- AAB-derived universal verification APK:
+  `0fc1e65253630b7d9d9ad5b7a80a86a220997784fc535f00f024a3e7d2c18642`
 
 ## Signing
-- Field-test APK keeps the B209/B212 test signing chain for in-place testing.
+- Field-test APK retains the B209/B212 test signing chain for in-place testing.
 - AAB uses the separate production upload key.
 - Private signing material is not stored in GitHub.
 
 ## Release gate
 Static/package QA: PASS.
-Physical Android visual validation is required before locking Home and proceeding to the Tilawa audit.
+Real-device validation is still required for audio playback, reciter switching, page gestures, long-session stability and final visual acceptance before Tilawa is locked and the project moves to Tafsir audit.
