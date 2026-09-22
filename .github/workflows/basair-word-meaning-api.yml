@@ -1,0 +1,149 @@
+name: Basair Per-Word Meaning API
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/basair-word-meaning-api.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-word-api:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Verify GitHub Raw byte-range support
+        shell: bash
+        run: |
+          set -euo pipefail
+          URL="https://raw.githubusercontent.com/nmg200101-collab/basair-tafsir-updates/4d08fdfdd55213ab72066af1c754ffe943bbde9c/public-assets/meanings-bundle/basair-word-meanings-v1.json"
+          curl -fsSL --retry 3 -H 'Range: bytes=0-99' -D /tmp/range-headers.txt -o /tmp/range.bin "$URL"
+          cat /tmp/range-headers.txt
+          test "$(wc -c </tmp/range.bin)" -eq 100
+          grep -Eq '^HTTP/[^ ]+ 206' /tmp/range-headers.txt
+
+      - name: Generate per-word ranged data and per-surah indexes
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json, hashlib, pathlib
+          root=pathlib.Path('public-assets/meanings-word-api/v1')
+          idxdir=root/'index'
+          idxdir.mkdir(parents=True,exist_ok=True)
+          src=pathlib.Path('public-assets/meanings-bundle/basair-word-meanings-v1.json')
+          obj=json.loads(src.read_text(encoding='utf-8'))
+          assert obj['version']==1 and obj['surah_count']==114 and obj['word_entries']==77432
+          data_path=root/'words.ndjson'
+          total=0
+          offset=0
+          sha=hashlib.sha256()
+          with data_path.open('wb') as out:
+              for su in range(1,115):
+                  index={'schema':'basair-word-meaning-range-index-v1','version':1,'surah':su,'records':{}}
+                  rows=obj['surahs'][str(su)]
+                  for row in rows:
+                      ay=int(row['ayah_number'])
+                      for item in row.get('words',[]):
+                          wp=int(item['word_number'])
+                          rec={'s':su,'a':ay,'p':wp,'m':str(item['meaning']).strip()}
+                          raw=(json.dumps(rec,ensure_ascii=False,separators=(',',':'))+'\n').encode('utf-8')
+                          key=f'{ay}:{wp}'
+                          index['records'][key]=[offset,len(raw)]
+                          out.write(raw); sha.update(raw); offset+=len(raw); total+=1
+                  (idxdir/f'{su:03d}.json').write_text(json.dumps(index,ensure_ascii=False,separators=(',',':')),encoding='utf-8')
+          assert total==77432
+          manifest={
+              'schema':'basair-word-meaning-range-api-v1','version':1,'records':total,
+              'surahs':114,'data':'words.ndjson','indexPattern':'index/{surah3}.json',
+              'dataBytes':offset,'sha256':sha.hexdigest(),
+              'sourceBundleSha256':'db6025c825fda31a9b2c195ecf7d4eb812a8e3898a7bd8569e23ca0d18c387f3'
+          }
+          (root/'manifest.json').write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+          print(manifest)
+          PY
+
+      - name: Validate random and boundary records
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json, pathlib, random
+          root=pathlib.Path('public-assets/meanings-word-api/v1')
+          data=(root/'words.ndjson').read_bytes()
+          count=0
+          for su in [1,2,15,36,55,78,112,113,114]:
+              idx=json.loads((root/'index'/f'{su:03d}.json').read_text(encoding='utf-8'))
+              keys=list(idx['records'])
+              for key in [keys[0],keys[-1],random.choice(keys)]:
+                  off,n=idx['records'][key]
+                  rec=json.loads(data[off:off+n].decode('utf-8'))
+                  assert f"{rec['a']}:{rec['p']}"==key and rec['s']==su and rec['m'].strip()
+                  count+=1
+          print('validated',count,'records')
+          PY
+
+      - name: Commit generated API
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'basair-automation'
+          git config user.email 'actions@users.noreply.github.com'
+          git add public-assets/meanings-word-api/v1
+          if git diff --cached --quiet; then
+            echo 'No generated changes'
+            exit 0
+          fi
+          git commit -m 'content: add ranged per-word meanings API v1'
+          git push origin HEAD:main
+          echo "WORD_API_COMMIT=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
+
+      - name: Verify generated API over GitHub Raw
+        if: env.WORD_API_COMMIT != ''
+        shell: bash
+        run: |
+          set -euo pipefail
+          COMMIT="$WORD_API_COMMIT"
+          BASE="https://raw.githubusercontent.com/nmg200101-collab/basair-tafsir-updates/$COMMIT/public-assets/meanings-word-api/v1"
+          for i in {1..12}; do
+            if curl -fsSL "$BASE/manifest.json" -o /tmp/manifest.json; then break; fi
+            sleep 5
+          done
+          python - <<'PY'
+          import json
+          m=json.load(open('/tmp/manifest.json'))
+          assert m['records']==77432 and m['version']==1
+          PY
+          curl -fsSL "$BASE/index/001.json" -o /tmp/i1.json
+          read OFF LEN < <(python - <<'PY'
+          import json
+          i=json.load(open('/tmp/i1.json'))
+          off,n=i['records']['1:1']
+          print(off,n)
+          PY
+          )
+          END=$((OFF+LEN-1))
+          curl -fsSL -H "Range: bytes=$OFF-$END" -D /tmp/h.txt -o /tmp/word.bin "$BASE/words.ndjson"
+          grep -Eq '^HTTP/[^ ]+ 206' /tmp/h.txt
+          test "$(wc -c </tmp/word.bin)" -eq "$LEN"
+          python - <<'PY'
+          import json
+          r=json.loads(open('/tmp/word.bin','rb').read().decode('utf-8'))
+          assert r['s']==1 and r['a']==1 and r['p']==1 and r['m']
+          print(r)
+          PY
+
+      - name: Upload generation report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: BASAIR-WORD-MEANING-API-V1-REPORT
+          path: |
+            /tmp/range-headers.txt
+            public-assets/meanings-word-api/v1/manifest.json
+          if-no-files-found: ignore
