@@ -1,0 +1,54 @@
+name: Finalize Human Soul v2
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/finalize-human-soul-v2.yml']
+permissions: {contents: write}
+jobs:
+  finalize:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0}
+      - shell: bash
+        run: |
+          python3 - <<'PY'
+          import json,hashlib,pathlib
+          R=pathlib.Path('.'); now='2026-09-22T08:15:00+03:00'; ver='1.3.4'
+          groups={'soul-nature-states':['soul-weakness','soul-desire','soul-blameworthy','soul-peaceful'],'soul-heart-diseases':['heart-disease','heart-hardness','heart-arrogance','heart-envy'],'soul-repentance-purification':['from-sin-to-repentance','purification-self','seeking-forgiveness','repair-after-sin'],'soul-fear-hope-patience':['fear-of-allah','hope-in-mercy','patience-trials','balance-fear-hope'],'soul-tranquility-steadfastness':['heart-tranquility','contentment','steadfastness','reliance-heart']}; ids=sum(groups.values(),[])
+          rb=lambda p:p.read_bytes(); hs=lambda p:hashlib.sha256(rb(p)).hexdigest(); dump=lambda p,o:p.write_text(json.dumps(o,ensure_ascii=False,separators=(',',':')),encoding='utf-8')
+          T={}
+          for tid in ids:
+            p=R/'library/topics'/f'{tid}.json'; t=json.loads(p.read_text())
+            assert t['id']==tid and t['categoryId']=='human-soul' and t['status']=='published' and not t.get('assets')
+            stages=sum((j.get('stages',[]) for j in t.get('journeys',[])),[]); assert stages
+            types={b.get('type') for s in stages for b in s.get('blocks',[])}
+            assert {'tafsir','thematic_link'}<=types and ('reflection' in types or 'practical_action' in types)
+            T[tid]=t
+          cp=R/'library/categories.json'; C=json.loads(cp.read_text()); targets={'human-soul',*groups}
+          for c in C:
+            if c['id'] in targets: c['version']=c.get('version',0)+1;c['preparationStatus']='content-complete-no-opening-images';c['openingImagesStatus']='deferred'
+          assert targets<={c['id'] for c in C}; dump(cp,C)
+          ip=R/'library/topics/index.json'; I=json.loads(ip.read_text()); M={x['id']:x for x in I['topics']}
+          for sub,lst in groups.items():
+            for n,tid in enumerate(lst,1):
+              t=T[tid];p=R/'library/topics'/f'{tid}.json';M[tid]={'id':tid,'version':t.get('version',1),'status':'published','categoryId':'human-soul','subCategoryId':sub,'title':t['title'],'path':f'library/topics/{tid}.json','sha256':hs(p),'updatedAt':t.get('updatedAt',now),'displayOrder':n*10}
+          I['libraryVersion']=ver;I['topics']=list(M.values());dump(ip,I)
+          mp=R/'library/manifest.json';A=json.loads(mp.read_text()); old={x['id'] for x in A['items'] if x.get('entityType')=='topic'}; IM={(x.get('entityType'),x.get('id')):x for x in A['items']}; changed=[]
+          for tid in ids:
+            t=T[tid];p=R/'library/topics'/f'{tid}.json';x={'entityType':'topic','id':tid,'version':t.get('version',1),'path':f'library/topics/{tid}.json','sha256':hs(p),'bytes':len(rb(p)),'updatedAt':t.get('updatedAt',now)};IM[('topic',tid)]=x;changed.append(x)
+          cv=A['categoriesVersion']+1; ci={'entityType':'categories','id':'categories','version':cv,'path':'library/categories.json','sha256':hs(cp),'bytes':len(rb(cp)),'updatedAt':now};IM[('categories','categories')]=ci
+          A.update(libraryVersion=ver,publishedAt=now,categoriesVersion=cv,contentVersion=A['contentVersion']+1,items=list(IM.values()),changedItems=[ci]+changed)
+          A['summary']={'newTopics':sum(x not in old for x in ids),'updatedTopics':sum(x in old for x in ids),'newJourneys':sum(x not in old for x in ids),'newInsights':0,'newAssets':0,'updatedAssets':0,'message':'إكمال النصوص الفعلية لقسم «النفس الإنسانية في القرآن» في 20 موضوعًا، مع الفصل بين التفسير والدلالة والاستنباط، دون صور افتتاحية.'};A['totalItems']=len(A['items']);A['catalog']={'categories':{'path':'library/categories.json','sha256':hs(cp),'bytes':len(rb(cp))},'topicsIndex':{'path':'library/topics/index.json','sha256':hs(ip),'bytes':len(rb(ip))}}
+          A['checksum']=hashlib.sha256('\n'.join(sorted(x['path']+':'+x['sha256'] for x in A['items'])).encode()).hexdigest();dump(mp,A)
+          Q=json.loads(mp.read_text());assert Q['totalItems']==len(Q['items']);assert Q['checksum']==hashlib.sha256('\n'.join(sorted(x['path']+':'+x['sha256'] for x in Q['items'])).encode()).hexdigest()
+          for x in Q['changedItems']:
+            p=R/x['path'];assert hs(p)==x['sha256'] and len(rb(p))==x['bytes']
+          print('VERIFIED',ver,len(ids),Q['totalItems'],Q['checksum'])
+          PY
+          git config user.name nmg200101-collab
+          git config user.email nmg200101@gmail.com
+          git rm .github/workflows/finalize-human-soul.yml .github/workflows/finalize-human-soul-v2.yml
+          git add library/categories.json library/topics/index.json library/manifest.json
+          git commit -m 'library: complete human-soul section v1.3.4'
+          git push origin main
