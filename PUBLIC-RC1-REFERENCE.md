@@ -1,39 +1,66 @@
-# BASAIR-QURAN PUBLIC-RC1 — RECOVERY B223
+# BASAIR-QURAN PUBLIC-RC1 — TILAWA FINAL STABLE B224
 
 - Date: 2026-09-22
-- Version: `1.2.0-rc1.10`
-- versionCode: `223`
+- Version: `1.2.0-rc1.11`
+- versionCode: `224`
 - package/application id: `app.basair.rc20s`
 - launch activity: `app.basair.quran.Rc1Activity`
 - minSdk: `23`
 - targetSdk / compileSdk: `36`
 
-## Recovery status
-Builds **221 and 222 are invalidated** for startup testing.
+## Stable base
+Built directly on field-opening Recovery B223.
 
-Build 223 is rebuilt from the known field-opening Build 220 payload.
+Builds 221 and 222 remain invalidated.
+No JavaScript layer was added in B224.
 
-## Root cause direction
-Build 222 still loaded the V5 Tilawa script on application startup and started a page-wide MutationObserver at DOMContentLoaded. Even though Mushaf DOM mutations were deferred, the observer itself could process the heavy startup mutation stream and stall WebView before leaving the splash screen.
+## Final Tilawa layout correction
+- Word meaning card is fixed at the top center of the screen.
+- Opening/closing the meaning card does not participate in Mushaf layout flow and therefore does not move the Quran page.
+- Word + meaning remain on one compact row when possible; long meanings wrap and increase card height within a capped area.
+- Source text is hidden in compact mode.
+- Missing meaning-pack download is a separate compact action.
+- Bottom Mushaf dock is normalized and real clear space is reserved below reader content.
+- Font + Reading Size is forced into a real compact grid using selectors that override the legacy `display:initial` rule.
+- Automatic font presets are also forced into compact rows.
+- Recitation, audio, reciters, sequence engine, navigation and Quran data are unchanged.
 
-## Recovery guarantee
-Build 223 removes the V5 CSS/JS layer completely.
+## Protection
+- `classes.dex`:
+  `c87a3a22b8125e1305e1933cc0a869c8956c077223674eb2eb091e378063077f`
+- `classes2.dex`:
+  `ec071b458e6d60662e68d7703153fc22414d2caf1238e04b86641ad27160cabf`
+- `mushaf-data.js`:
+  `dc2b22fe3925a08ecf9ee2c32392a681362219b7339c627b8cc500190ef64650`
 
-Binary comparison Build 220 -> Build 223:
-- ZIP entry set: identical
-- All non-signature payload files: identical except `AndroidManifest.xml`
-- Manifest difference: versionCode/versionName only
-- Protected `classes.dex`: unchanged
-- Protected `classes2.dex`: unchanged
-- Quran data: unchanged
-- All web app assets: unchanged
+## B223 -> B224 payload diff
+Exactly 3 expected changes:
+- AndroidManifest.xml — version bump only
+- assets/www/index.html — stylesheet link only
+- assets/www/tilawa-final-layout-b224.css — new CSS-only correction
 
-## APK
-- SHA-256: `113c7242978344d3d4532b9eca0119e9d120b3240f550d8d15c916bea16eeabc`
+Unexpected differences: **0**
+
+## APK QA
 - v1/v2/v3 signature: PASS
-- signer SHA-256: `606d3692df3a6932e0cbe0f0094bd370f99827899cba8e284547cfb840c2443d`
+- signer certificate SHA-256:
+  `606d3692df3a6932e0cbe0f0094bd370f99827899cba8e284547cfb840c2443d`
+- package identity: `app.basair.rc20s`
+- targetSdk 36: PASS
+
+## Artifact hashes
+- APK:
+  `c59ce39055e7d0364b4296771d3f40fc56a6af2b7b39d4998a64074ab99e6d77`
+- Source ZIP:
+  `c764fe144345d93fbc4f5a43ea2110a2a7bb5d2da60b61199cbc5872137dfbea`
 
 ## Field gate
-Install B223 directly over B222 without clearing data.
-Test cold startup first.
-If B223 opens normally, all further Tilawa visual work must branch from B223/Build 220 behavior and must not use a global MutationObserver during application startup.
+Install B224 directly over B223 without clearing data.
+Verify cold startup first, then:
+1. meaning card stays at top and the Quran page remains fixed;
+2. long meaning wraps cleanly;
+3. final Quran line can be reached above the dock;
+4. Font + Reading Size appears as compact rows;
+5. audio, reciters, sequential recitation and navigation remain unchanged.
+
+After successful real-device acceptance, lock Tilawa and move to Tafsir audit.
