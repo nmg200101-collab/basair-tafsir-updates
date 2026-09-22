@@ -1,0 +1,55 @@
+name: Basair PUBLIC RC1 Toolchain Export
+
+on:
+  push:
+    branches:
+      - basair-quran-public-rc1
+    paths:
+      - ".github/workflows/public-rc1-toolchain-export.yml"
+  workflow_dispatch:
+
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Android 36 platform
+        shell: bash
+        run: |
+          set -euo pipefail
+          yes | sdkmanager --licenses >/dev/null || true
+          sdkmanager "platforms;android-36"
+          echo "ANDROID_HOME=$ANDROID_HOME"
+          ls -1 "$ANDROID_HOME/build-tools" | sort -V
+
+      - name: Prepare Android toolchain subset
+        shell: bash
+        run: |
+          set -euo pipefail
+          BT="$(ls -1 "$ANDROID_HOME/build-tools" | sort -V | tail -1)"
+          mkdir -p rc1-toolchain/build-tools rc1-toolchain/platforms
+          cp -a "$ANDROID_HOME/build-tools/$BT" "rc1-toolchain/build-tools/$BT"
+          cp -a "$ANDROID_HOME/platforms/android-36" rc1-toolchain/platforms/android-36
+          printf '%s\n' "$BT" > rc1-toolchain/BUILD_TOOLS_VERSION.txt
+          printf '%s\n' "36" > rc1-toolchain/TARGET_API.txt
+
+      - name: Export current Quran Library snapshot
+        shell: bash
+        run: |
+          set -euo pipefail
+          cp -a library rc1-library-snapshot
+
+      - name: Upload toolchain
+        uses: actions/upload-artifact@v4
+        with:
+          name: BASAIR-PUBLIC-RC1-ANDROID36-TOOLCHAIN
+          path: rc1-toolchain/
+          compression-level: 6
+
+      - name: Upload library snapshot
+        uses: actions/upload-artifact@v4
+        with:
+          name: BASAIR-PUBLIC-RC1-LIBRARY-SNAPSHOT
+          path: rc1-library-snapshot/
+          compression-level: 6
