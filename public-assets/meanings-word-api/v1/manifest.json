@@ -1,0 +1,11 @@
+{
+  "schema": "basair-word-meaning-range-api-v1",
+  "version": 1,
+  "records": 77432,
+  "surahs": 114,
+  "data": "words.ndjson",
+  "indexPattern": "index/{surah3}.json",
+  "dataBytes": 10041910,
+  "sha256": "d192f636f88c7533d6d77936270fbbae7df0e2a724a464414e979053165e0954",
+  "sourceBundleSha256": "db6025c825fda31a9b2c195ecf7d4eb812a8e3898a7bd8569e23ca0d18c387f3"
+}
