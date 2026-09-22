@@ -1,66 +1,94 @@
-# BASAIR-QURAN PUBLIC-RC1 — TILAWA FINAL STABLE B224
+# BASAIR-QURAN PUBLIC-RC1 — TILAWA FINAL LOCK CANDIDATE B225
 
 - Date: 2026-09-22
-- Version: `1.2.0-rc1.11`
-- versionCode: `224`
-- package/application id: `app.basair.rc20s`
-- launch activity: `app.basair.quran.Rc1Activity`
-- minSdk: `23`
-- targetSdk / compileSdk: `36`
+- VersionName: `1.2.0-rc1.12`
+- VersionCode: `225`
+- Package: `app.basair.rc20s`
+- Launch activity: `app.basair.quran.Rc1Activity`
+- Min SDK: `23`
+- Target/Compile SDK: `36`
+- Base: field-opening `BASAIR-QURAN-PUBLIC-RC1-TILAWA-FINAL-STABLE-B224`
 
-## Stable base
-Built directly on field-opening Recovery B223.
+## Scope
+Final Tilawa layout-only correction. No new JavaScript was added.
 
-Builds 221 and 222 remain invalidated.
-No JavaScript layer was added in B224.
+### Meaning strip
+- Fixed top overlay; it does not participate in Mushaf layout flow.
+- Word and meaning are separate framed boxes on one compact row.
+- Long meaning is capped at three lines.
+- Source / more / alternatives are hidden in compact state.
+- When the meanings pack is missing, the legacy sentence is not shown as the meaning. The existing real download action becomes a compact `تنزيل المعاني ↓` meaning frame.
 
-## Final Tilawa layout correction
-- Word meaning card is fixed at the top center of the screen.
-- Opening/closing the meaning card does not participate in Mushaf layout flow and therefore does not move the Quran page.
-- Word + meaning remain on one compact row when possible; long meanings wrap and increase card height within a capped area.
-- Source text is hidden in compact mode.
-- Missing meaning-pack download is a separate compact action.
-- Bottom Mushaf dock is normalized and real clear space is reserved below reader content.
-- Font + Reading Size is forced into a real compact grid using selectors that override the legacy `display:initial` rule.
-- Automatic font presets are also forced into compact rows.
-- Recitation, audio, reciters, sequence engine, navigation and Quran data are unchanged.
+### Bottom dock
+- Six equal compact columns.
+- Dock height normalized to 56px.
+- Legacy 82px page/wrap bottom padding is overridden to 0.
+- Reader reserves only dock height + a small gap.
+- Sequence button geometry remains equal to the other controls.
+
+### Font + Reading Size
+- Parent is forced to a true full-width block to defeat legacy narrow-column layout.
+- Font choices are 3 columns; 2 only on very narrow screens.
+- Size controls are horizontal.
+- Reset is compact.
+- Automatic font presets are also forced into horizontal rows.
 
 ## Protection
-- `classes.dex`:
+- `classes.dex` SHA-256:
   `c87a3a22b8125e1305e1933cc0a869c8956c077223674eb2eb091e378063077f`
-- `classes2.dex`:
+- `classes2.dex` SHA-256:
   `ec071b458e6d60662e68d7703153fc22414d2caf1238e04b86641ad27160cabf`
-- `mushaf-data.js`:
+- `mushaf-data.js` SHA-256:
   `dc2b22fe3925a08ecf9ee2c32392a681362219b7339c627b8cc500190ef64650`
+- `resources.arsc` SHA-256:
+  `cc7b3efd55d9d67a131c168477f1cca4edf8e203e0982a68d7fd8bec59a34b37`
+  (byte-identical to B224)
+- Protected Tilawa inline blocks: **42/42 byte-identical to B224**
+- Library manifest items: **180/180 SHA-256 PASS**
 
-## B223 -> B224 payload diff
-Exactly 3 expected changes:
-- AndroidManifest.xml — version bump only
-- assets/www/index.html — stylesheet link only
-- assets/www/tilawa-final-layout-b224.css — new CSS-only correction
+## B224 -> B225 APK payload diff
+Exactly 3 changes (signature files excluded):
+1. `AndroidManifest.xml` — versionCode/versionName only; package remains `app.basair.rc20s`.
+2. `assets/www/index.html` — one final stylesheet link appended only.
+3. `assets/www/tilawa-final-lock-b225.css` — new layout-only stylesheet.
 
-Unexpected differences: **0**
+Unexpected payload differences: **0**
 
-## APK QA
-- v1/v2/v3 signature: PASS
-- signer certificate SHA-256:
+## Package QA
+- APK ZIP integrity: PASS
+- APK v1/v2/v3 signature: PASS
+- Field APK signer certificate SHA-256:
   `606d3692df3a6932e0cbe0f0094bd370f99827899cba8e284547cfb840c2443d`
-- package identity: `app.basair.rc20s`
-- targetSdk 36: PASS
+- AAB upload signing: PASS
+- Bundletool validate: PASS
+- AAB-derived Universal APK generation: PASS
+- CSS parser errors: 0
+- New JavaScript files: 0
+- New MutationObservers: 0
+- New startup timers: 0
 
 ## Artifact hashes
 - APK:
-  `c59ce39055e7d0364b4296771d3f40fc56a6af2b7b39d4998a64074ab99e6d77`
+  `d923503b9f1662a4820952f3e2f7c94faf1c3bff4d13f0e561e5d17b1997cec4`
+- AAB:
+  `1caae9dee8771a8610643b215ae10450c5f52afb674049f4d39225c0f0c12cc9`
 - Source ZIP:
-  `c764fe144345d93fbc4f5a43ea2110a2a7bb5d2da60b61199cbc5872137dfbea`
+  `4dc3fec0c63ae8f6b5e8a308f136059f3913214beccda7d890e74fc3541775d0`
+- Backup ZIP:
+  `3c9483ac3134fd9e4da46adc1c79d3dac2918635b0b9e69f8e2d211e208f95ea`
 
 ## Field gate
-Install B224 directly over B223 without clearing data.
-Verify cold startup first, then:
-1. meaning card stays at top and the Quran page remains fixed;
-2. long meaning wraps cleanly;
-3. final Quran line can be reached above the dock;
-4. Font + Reading Size appears as compact rows;
-5. audio, reciters, sequential recitation and navigation remain unchanged.
+B225 is **not yet FINAL LOCKED** until real-device acceptance.
 
-After successful real-device acceptance, lock Tilawa and move to Tafsir audit.
+Required:
+1. Cold start passes splash.
+2. Word + meaning appear as two compact framed boxes in one row at the top.
+3. Long meaning wraps without moving the Quran page.
+4. Missing pack shows compact Download Meanings action only.
+5. Closing meaning leaves the page at the same position.
+6. Final Quran line is reachable above the dock without a large white gap.
+7. Six dock controls remain equal and functional.
+8. Font choices appear as rows (3+3; 2 columns only on very narrow screens).
+9. Font selection, +/- size, reset, audio, reciters, sequential recitation, search, index, tafsir, page turning and back all remain functional.
+
+After user acceptance on a real Android phone, mark Tilawa FINAL LOCKED and do not modify it during Tafsir/Hifz/Library audit unless a true regression is demonstrated.
