@@ -1,0 +1,55 @@
+name: B231 Android Tooling
+
+on:
+  push:
+    branches:
+      - b231-tooling-temp-20260923
+
+permissions:
+  contents: read
+
+jobs:
+  pack:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install Android 36 tooling
+        shell: bash
+        run: |
+          set -euo pipefail
+          yes | sdkmanager --licenses >/dev/null || true
+          sdkmanager "platforms;android-36" "build-tools;36.0.0" "platform-tools"
+          mkdir -p out
+          cp -a "$ANDROID_HOME/build-tools/36.0.0" out/build-tools
+          cp "$ANDROID_HOME/platforms/android-36/android.jar" out/android.jar
+          BUNDLE_URL="$(python3 - <<'PY'
+import json, urllib.request
+with urllib.request.urlopen('https://api.github.com/repos/google/bundletool/releases/latest') as r:
+    data=json.load(r)
+for a in data.get('assets', []):
+    n=a.get('name','')
+    if n.startswith('bundletool-all-') and n.endswith('.jar'):
+        print(a['browser_download_url'])
+        break
+else:
+    raise SystemExit('bundletool asset not found')
+PY
+)"
+          curl -fL "$BUNDLE_URL" -o out/bundletool.jar
+          test -s out/build-tools/d8
+          test -s out/build-tools/apksigner
+          test -s out/build-tools/zipalign
+          test -s out/android.jar
+          test -s out/bundletool.jar
+
+      - name: Upload B231 tooling
+        uses: actions/upload-artifact@v4
+        with:
+          name: b231-android-tooling
+          path: out
+          if-no-files-found: error
+          retention-days: 1
