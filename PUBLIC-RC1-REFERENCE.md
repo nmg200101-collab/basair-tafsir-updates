@@ -154,3 +154,78 @@ Critical APK storage remains field-proven:
 
 ## Field gate
 B229 is a **Tafsir UI field candidate**, not a Tafsir final lock yet. Install over B228 without clearing data and verify: Home/cold start, Tafsir index, unified search from both entry points, one Library action, text-size controls, Library management, four layouts, save/copy/share/open-in-Tilawa, Back sequence, night mode, and unchanged B228 Tilawa behavior.
+
+---
+
+# B229 STATUS — REJECTED / NOT ADOPTED
+
+B229 was field-reviewed on 2026-09-23 and explicitly rejected by the user. It is retained in history only and MUST NOT be used as a baseline.
+
+The active Tafsir UI baseline returns to **B228**.
+
+---
+
+# TAFSIR STABLE UI B230 — FIELD CANDIDATE
+
+- Date: 2026-09-23
+- VersionName: `1.2.0-rc1.17`
+- VersionCode: `230`
+- Package: `app.basair.rc20s`
+- Base: **B228 directly**. B229 files are not present in B230 source.
+- Tilawa remains FINAL LOCKED on B228.
+
+## Requested Tafsir UI scope
+- Keep the existing fixed Tafsir toolbar unchanged.
+- Tapping any Tafsir ayah/card shows an inline contextual row for that ayah only: Share / Copy / Compare / Favorite.
+- Remove the secondary Surah reader header.
+- Use the main app top header as the single Tafsir reader header:
+  - right: `السور`
+  - center: larger/coordinated Basair logo/brand
+  - left: Night + 3-step Tafsir font size
+- Tafsir font steps: small (B228 baseline), medium (larger/heavier), large (larger/heavier).
+- Font step persists locally.
+- No changes to Tafsir content engines, Quran text, audio, Tilawa, Hifz, or Library engines.
+
+## B228 -> B230 APK diff
+Exactly four expected non-signature payload differences:
+1. `AndroidManifest.xml` — version only (228 -> 230).
+2. `assets/www/index.html` — B230 CSS/JS links only.
+3. `assets/www/tafsir-ui-final-b230.css` — added.
+4. `assets/www/tafsir-ui-final-b230.js` — added.
+
+Unexpected payload differences: **0**.
+Removed payload files: **0**.
+
+## Protected B228 hashes unchanged
+- `classes.dex`: `c87a3a22b8125e1305e1933cc0a869c8956c077223674eb2eb091e378063077f`
+- `classes2.dex`: `ec071b458e6d60662e68d7703153fc22414d2caf1238e04b86641ad27160cabf`
+- `resources.arsc`: `cc7b3efd55d9d67a131c168477f1cca4edf8e203e0982a68d7fd8bec59a34b37`
+- `mushaf-data.js`: `dc2b22fe3925a08ecf9ee2c32392a681362219b7339c627b8cc500190ef64650`
+
+Critical APK storage remains field-proven:
+- classes.dex: STORED
+- classes2.dex: STORED
+- resources.arsc: STORED
+
+## QA
+- B230 JavaScript syntax: PASS.
+- New setInterval: 0.
+- Global document/body MutationObserver: 0.
+- One local MutationObserver is restricted to the `#tafsirReader` class attribute only.
+- APK ZIP integrity: PASS.
+- zipalign: PASS.
+- APK signatures v1/v2/v3: PASS.
+- Field signer SHA-256: `606d3692df3a6932e0cbe0f0094bd370f99827899cba8e284547cfb840c2443d`.
+- AAB production upload signing: PASS.
+- bundletool validate: PASS.
+- AAB-derived universal APK package/version parse: PASS.
+- Quran Library: 180/180 SHA-256 PASS.
+
+## Artifact hashes
+- APK: `896f77665003b11ad94e3932788a27f6d7e332a8951a5dbb5ef6c100430e083b`
+- AAB: `beb0f3bc00f130d047ca31c7b236a296a080f1b4ddde14cd889c70ec1c4e7598`
+- Source ZIP: `8d5f2433c4abc709914712727f2696de34908df8e391663de7b89e3979200400`
+- Backup ZIP: `9dfd8545e01275ab118009bc1b4105d9adead0244d8fef5f5b93449752a0dfc2`
+
+## Field gate
+B230 is a Tafsir **field candidate**, not final-locked yet. Final lock requires real-device acceptance of the header, three font steps, ayah contextual actions, fixed toolbar preservation, Back behavior, and unchanged B228 Tilawa behavior.
