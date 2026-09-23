@@ -13,11 +13,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
       - name: Set up Android SDK
         uses: android-actions/setup-android@v3
-
-      - name: Install Android 36 tooling
+      - name: Install and pack public Android tools
         shell: bash
         run: |
           set -euo pipefail
@@ -26,26 +24,13 @@ jobs:
           mkdir -p out
           cp -a "$ANDROID_HOME/build-tools/36.0.0" out/build-tools
           cp "$ANDROID_HOME/platforms/android-36/android.jar" out/android.jar
-          BUNDLE_URL="$(python3 - <<'PY'
-import json, urllib.request
-with urllib.request.urlopen('https://api.github.com/repos/google/bundletool/releases/latest') as r:
-    data=json.load(r)
-for a in data.get('assets', []):
-    n=a.get('name','')
-    if n.startswith('bundletool-all-') and n.endswith('.jar'):
-        print(a['browser_download_url'])
-        break
-else:
-    raise SystemExit('bundletool asset not found')
-PY
-)"
+          BUNDLE_URL="$(curl -fsSL https://api.github.com/repos/google/bundletool/releases/latest | python3 -c "import sys,json; d=json.load(sys.stdin); print(next(a['browser_download_url'] for a in d['assets'] if a['name'].startswith('bundletool-all-') and a['name'].endswith('.jar')))")"
           curl -fL "$BUNDLE_URL" -o out/bundletool.jar
           test -s out/build-tools/d8
           test -s out/build-tools/apksigner
           test -s out/build-tools/zipalign
           test -s out/android.jar
           test -s out/bundletool.jar
-
       - name: Upload B231 tooling
         uses: actions/upload-artifact@v4
         with:
