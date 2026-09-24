@@ -1,0 +1,56 @@
+name: Library Publish B234
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'library/categories.json'
+      - 'library/topics/**'
+      - '!library/topics/index.json'
+      - 'library/assets/**'
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    if: "!contains(github.event.head_commit.message || '', '[library-manifest]')"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Build and validate library manifest
+        run: |
+          set -euo pipefail
+          python tools/build_library_manifest.py
+          python - <<'PY'
+          import json, hashlib
+          from pathlib import Path
+          root=Path('.')
+          m=json.loads((root/'library/manifest.json').read_text())
+          assert m['schema']=='basair-quran-library-manifest-v1'
+          assert len(m['packages']['categories']) > 0
+          for item in m['items']:
+              p=root/item['path']
+              assert p.exists(), item['path']
+              assert hashlib.sha256(p.read_bytes()).hexdigest()==item['sha256'], item['path']
+          print('library publish validation PASS')
+          PY
+          git diff --check
+      - name: Commit generated catalog
+        run: |
+          set -euo pipefail
+          if git diff --quiet -- library/manifest.json library/topics/index.json; then
+            echo "No generated changes"
+            exit 0
+          fi
+          git config user.name "basair-library-publisher"
+          git config user.email "actions@users.noreply.github.com"
+          git add library/manifest.json library/topics/index.json
+          git commit -m "library: refresh manifest and packages [library-manifest]"
+          git push
