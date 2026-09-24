@@ -74,6 +74,14 @@ pre=[cat_item]+[it for _,it in topics]+assets
 old_non_index={k:v for k,v in old.items() if k!="library-topic-index"}
 changed_pre=any(not old_non_index.get(x["id"]) or old_non_index[x["id"]].get("sha256")!=x["sha256"] for x in pre)
 deleted_pre=any(k not in {x["id"] for x in pre} for k in old_non_index)
+
+# A publisher run caused only by a probe/manual dispatch must not rewrite timestamps,
+# reformat the topic index, or manufacture an update when the actual library bytes
+# are unchanged. Existing B234 package metadata is therefore a stable no-op boundary.
+if not changed_pre and not deleted_pre and oldm.get("packages",{}).get("categories"):
+    print(f"libraryVersion={oldm.get('libraryVersion')} content unchanged; manifest/index unchanged")
+    raise SystemExit(0)
+
 libver=bump(oldm.get("libraryVersion","1.0.0")) if (changed_pre or deleted_pre) else oldm.get("libraryVersion","1.0.0")
 
 index_obj={"schema":"basair-quran-library-topic-index-v1","schemaVersion":1,"libraryVersion":libver,"topics":[]}
