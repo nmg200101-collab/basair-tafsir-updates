@@ -173,8 +173,8 @@ for p in topic_files:
     rel = p.relative_to(ROOT).as_posix()
     route = effective_route(t, rel)
     routing_entries.append(route)
-    published = route["status"] == "published" and route["visible"] is not False
-    if not published:
+    is_published = route["status"] == "published" and route["visible"] is not False
+    if not is_published:
         continue
     if t.get("status") not in ("published","approved"):
         raise SystemExit(f"Route publishes non-publishable topic {t['id']} with file status {t.get('status')}")
