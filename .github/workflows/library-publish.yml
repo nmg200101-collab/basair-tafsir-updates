@@ -3,7 +3,7 @@ name: Library Publish B234
 on:
   workflow_dispatch:
   push:
-    branches: [main]
+    branches: [main, b235-server-driven-test-temp]
     paths:
       - 'library/categories.json'
       - 'library/topics/**'
