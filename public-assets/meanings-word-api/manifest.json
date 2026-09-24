@@ -1,0 +1,11 @@
+{
+  "schema": "basair-word-meaning-api-manifest-v1",
+  "version": 1,
+  "content_version": "2026.09.22.001",
+  "revision": "029a332809bac1160967c6490be8b130c30e4046",
+  "base_path": "public-assets/meanings-word-api/v1",
+  "index_pattern": "index/{surah3}.json",
+  "data_file": "words.ndjson",
+  "range_required": true,
+  "fallback_revision": "029a332809bac1160967c6490be8b130c30e4046"
+}
