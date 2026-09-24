@@ -51,7 +51,9 @@ jobs:
           mkdir -p build/tools/lib build/tools/lib64
           cp "$BT/apksigner" build/tools/
           cp "$BT/lib/apksigner.jar" build/tools/lib/
-          cp "$BT/lib64/libc++.so" build/tools/lib64/
+          LIBCPP="$(find "$ANDROID_HOME" -name libc++.so -type f | head -n 1)"
+          test -n "$LIBCPP"
+          cp "$LIBCPP" build/tools/lib64/
           cp "$BT/zipalign" build/tools/
           cp "$BT/aapt2" build/tools/
           cp "$BT/aapt" build/tools/ || true
