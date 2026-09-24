@@ -1,0 +1,77 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://basair.local/library/schema/library-manifest.schema.json",
+  "title": "Basair Quran Library Manifest V1 + Distribution Packages",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema","schemaVersion","libraryVersion","publishedAt","minimumAppVersion","categoriesVersion","contentVersion","assetsVersion","totalItems","items","changedItems","deletedItems","checksum"],
+  "properties": {
+    "schema": {"const": "basair-quran-library-manifest-v1"},
+    "schemaVersion": {"const": 1},
+    "libraryVersion": {"type": "string"},
+    "publishedAt": {"type": "string"},
+    "minimumAppVersion": {"type": "string"},
+    "categoriesVersion": {"type": "integer"},
+    "contentVersion": {"type": "integer"},
+    "assetsVersion": {"type": "integer"},
+    "totalItems": {"type": "integer"},
+    "summary": {"type": "object"},
+    "distributionVersion": {"type": "integer", "minimum": 1},
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["entityType","id","version","path","sha256","bytes"],
+        "additionalProperties": true,
+        "properties": {
+          "entityType": {"enum": ["topic","categories","asset","catalog"]},
+          "id": {"type": "string"},
+          "version": {"type": "integer", "minimum": 1},
+          "path": {"type": "string"},
+          "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+          "bytes": {"type": "integer", "minimum": 0},
+          "updatedAt": {"type": "string"},
+          "assetKind": {"type": "string"},
+          "ownerType": {"type": "string"},
+          "ownerId": {"type": "string"},
+          "mimeType": {"type": "string"},
+          "required": {"type": "boolean"}
+        }
+      }
+    },
+    "changedItems": {"type": "array"},
+    "deletedItems": {"type": "array"},
+    "catalog": {"type": "object"},
+    "packages": {
+      "type": "object",
+      "required": ["schema","version","all","categories"],
+      "properties": {
+        "schema": {"const": "basair-quran-library-packages-v1"},
+        "version": {"const": 1},
+        "all": {"$ref": "#/$defs/package"},
+        "categories": {"type": "array", "items": {"$ref": "#/$defs/package"}}
+      }
+    },
+    "packagesChecksum": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "checksum": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  },
+  "$defs": {
+    "package": {
+      "type": "object",
+      "required": ["id","title","version","itemIds","bytes"],
+      "additionalProperties": true,
+      "properties": {
+        "id": {"type": "string"},
+        "categoryId": {"type": "string"},
+        "title": {"type": "string"},
+        "version": {"type": ["integer","string"]},
+        "categoryIds": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "topicIds": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "assetIds": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "itemIds": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "bytes": {"type": "integer", "minimum": 0},
+        "updatedAt": {"type": "string"}
+      }
+    }
+  }
+}
