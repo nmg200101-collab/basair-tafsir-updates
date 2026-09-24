@@ -43,3 +43,21 @@ jobs:
             build/dex/classes.dex
             build/classes2.sha256
           if-no-files-found: error
+      - name: Collect Android packaging tools
+        shell: bash
+        run: |
+          set -euo pipefail
+          BT="$ANDROID_HOME/build-tools/36.0.0"
+          mkdir -p build/tools/lib
+          cp "$BT/apksigner" build/tools/
+          cp "$BT/lib/apksigner.jar" build/tools/lib/
+          cp "$BT/zipalign" build/tools/
+          cp "$BT/aapt2" build/tools/
+          cp "$BT/aapt" build/tools/ || true
+          curl -fL --retry 3 -o build/tools/bundletool.jar "https://github.com/google/bundletool/releases/download/1.18.2/bundletool-all-1.18.2.jar"
+          chmod +x build/tools/apksigner build/tools/zipalign build/tools/aapt2
+      - uses: actions/upload-artifact@v4
+        with:
+          name: B231-android-tools
+          path: build/tools
+          if-no-files-found: error
