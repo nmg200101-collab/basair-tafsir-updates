@@ -7,7 +7,6 @@ on:
     paths:
       - 'library/categories.json'
       - 'library/topics/**'
-      - '!library/topics/index.json'
       - 'library/assets/**'
 
 permissions:
