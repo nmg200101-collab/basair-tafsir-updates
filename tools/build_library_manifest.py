@@ -111,16 +111,80 @@ for c in published:
 roots = sorted([c for c in published if not c.get("parentId")], key=lambda c: c.get("order", 0))
 
 idx = json.loads(INDEX.read_text("utf-8"))
-canonical = idx.get("topics", [])
+control_by_id = {x["id"]: x for x in idx.get("topics", []) if x.get("id")}
+old_index_input_sha = sha(INDEX)
+allowed_route_status = {"published","hidden","archived","draft","review","deprecated"}
+
+def category_root(category_id):
+    seen=set()
+    c=cat_by.get(category_id)
+    while c and c.get("parentId") and c["id"] not in seen:
+        seen.add(c["id"])
+        c=cat_by.get(c["parentId"])
+    return c["id"] if c else None
+
+def effective_route(topic, path):
+    ctrl = control_by_id.get(topic["id"], {})
+    status = str(ctrl.get("status", topic.get("status", "published")))
+    if status not in allowed_route_status:
+        status = "hidden"
+    visible = ctrl.get("visible", topic.get("visible", True))
+    category_id = ctrl.get("categoryId", topic.get("categoryId"))
+    sub_id = ctrl["subCategoryId"] if "subCategoryId" in ctrl else topic.get("subCategoryId")
+    order = int(ctrl.get("displayOrder", topic.get("displayOrder", 0)) or 0)
+    title = ctrl.get("title") or topic.get("title")
+    if not category_id or category_id not in cat_by:
+        raise SystemExit(f"Unknown category for {topic['id']}: {category_id}")
+    root = category_root(sub_id or category_id)
+    if sub_id:
+        sub = cat_by.get(sub_id)
+        if not sub or not sub.get("parentId"):
+            raise SystemExit(f"Invalid subcategory for {topic['id']}: {sub_id}")
+        if root != category_id:
+            raise SystemExit(f"Cross-category route for {topic['id']}: {category_id} / {sub_id}")
+    return {
+        "id": topic["id"],
+        "version": int(topic.get("version", 1)),
+        "status": status,
+        "visible": bool(visible),
+        "categoryId": category_id,
+        "subCategoryId": sub_id,
+        "title": title,
+        "path": path,
+        "displayOrder": order,
+        "updatedAt": ctrl.get("updatedAt") or topic.get("updatedAt") or topic.get("publishedAt") or now(),
+    }
+
 topics = []
 topic_by = {}
-for ent in canonical:
-    p = ROOT / ent["path"]
-    if not p.exists():
-        raise SystemExit(f"Missing canonical topic: {ent['path']}")
+routing_entries = []
+seen_topic_ids = set()
+topic_files = sorted(
+    p for p in (LIB / "topics").glob("*.json")
+    if p.name != "index.json"
+)
+for p in topic_files:
     t = json.loads(p.read_text("utf-8"))
-    if t.get("status") != "published" or t.get("id") != ent.get("id"):
-        raise SystemExit(f"Invalid canonical topic: {ent['id']}")
+    if t.get("schema") != "basair-quran-library-topic-v1" or not t.get("id"):
+        raise SystemExit(f"Invalid topic schema: {p.relative_to(ROOT).as_posix()}")
+    if t["id"] in seen_topic_ids:
+        raise SystemExit(f"Duplicate topic id: {t['id']}")
+    seen_topic_ids.add(t["id"])
+    rel = p.relative_to(ROOT).as_posix()
+    route = effective_route(t, rel)
+    routing_entries.append(route)
+    published = route["status"] == "published" and route["visible"] is not False
+    if not published:
+        continue
+    if t.get("status") not in ("published","approved"):
+        raise SystemExit(f"Route publishes non-publishable topic {t['id']} with file status {t.get('status')}")
+    effective = dict(t)
+    effective["categoryId"] = route["categoryId"]
+    effective["subCategoryId"] = route.get("subCategoryId")
+    effective["displayOrder"] = route["displayOrder"]
+    effective["title"] = route["title"]
+    effective["status"] = "published"
+    effective["visible"] = True
     digest = sha(p)
     ver = item_version(old_by_id, t["id"], digest, t.get("version"))
     old = old_by_id.get(t["id"], {})
@@ -128,13 +192,21 @@ for ent in canonical:
         "entityType": "topic",
         "id": t["id"],
         "version": ver,
-        "path": ent["path"],
+        "path": rel,
         "sha256": digest,
         "bytes": p.stat().st_size,
         "updatedAt": t.get("updatedAt") or old.get("updatedAt") or now(),
     }
-    topics.append((t, item))
-    topic_by[t["id"]] = t
+    topics.append((effective, item))
+    topic_by[t["id"]] = effective
+
+# Keep explicit control records only for files that still exist. A missing published
+# file is an error; missing hidden/archived records are simply removed from the index.
+for cid, ctrl in control_by_id.items():
+    if cid in seen_topic_ids:
+        continue
+    if str(ctrl.get("status","published")) == "published" and ctrl.get("visible", True) is not False:
+        raise SystemExit(f"Published topic index entry has no file: {cid}")
 
 cat_digest = sha(CATEGORIES)
 cat_ver = item_version(old_by_id, "library-categories", cat_digest)
@@ -256,14 +328,17 @@ old_non_index = {k: v for k, v in old_by_id.items() if k != "library-topic-index
 new_pre_ids = {x["id"] for x in pre}
 changed_pre = any(not old_non_index.get(x["id"]) or old_non_index[x["id"]].get("sha256") != x["sha256"] for x in pre)
 deleted_pre = any(k not in new_pre_ids for k in old_non_index)
+old_index_item = old_by_id.get("library-topic-index", {})
+structural_input_changed = bool(old_index_item and old_index_input_sha != old_index_item.get("sha256"))
 
 # True no-op: a harmless workflow probe/manual dispatch must not reformat files,
-# mutate timestamps or manufacture a library update.
-if not changed_pre and not deleted_pre and old_packages.get("categories"):
+# mutate timestamps or manufacture a library update. Structural index edits are
+# intentionally not a no-op: they can move/reorder/hide topics without APK changes.
+if not changed_pre and not deleted_pre and not structural_input_changed and old_packages.get("categories"):
     print(f"libraryVersion={oldm.get('libraryVersion')} content unchanged; manifest/index unchanged")
     raise SystemExit(0)
 
-libver = bump_semver(oldm.get("libraryVersion", "1.0.0")) if (changed_pre or deleted_pre) else oldm.get("libraryVersion", "1.0.0")
+libver = bump_semver(oldm.get("libraryVersion", "1.0.0")) if (changed_pre or deleted_pre or structural_input_changed) else oldm.get("libraryVersion", "1.0.0")
 
 index_obj = {
     "schema": "basair-quran-library-topic-index-v1",
@@ -271,19 +346,14 @@ index_obj = {
     "libraryVersion": libver,
     "topics": [],
 }
-for t, it in topics:
-    index_obj["topics"].append({
-        "id": t["id"],
-        "version": it["version"],
-        "status": "published",
-        "categoryId": t.get("categoryId"),
-        "subCategoryId": t.get("subCategoryId"),
-        "title": t.get("title"),
-        "path": it["path"],
-        "sha256": it["sha256"],
-        "updatedAt": t.get("updatedAt") or it["updatedAt"],
-        "displayOrder": int(t.get("displayOrder", 0)),
-    })
+published_items_by_id = {it["id"]: it for _, it in topics}
+for route in sorted(routing_entries, key=lambda x: (str(x.get("categoryId","")), str(x.get("subCategoryId") or ""), int(x.get("displayOrder",0)), str(x.get("title","")))):
+    p = ROOT / route["path"]
+    digest = sha(p)
+    out = dict(route)
+    out["sha256"] = digest
+    out["version"] = int(json.loads(p.read_text("utf-8")).get("version", route.get("version",1)))
+    index_obj["topics"].append(out)
 INDEX.write_text(json.dumps(index_obj, ensure_ascii=False, separators=(",", ":")), "utf-8")
 
 idx_digest = sha(INDEX)
@@ -382,18 +452,22 @@ checksum = hashlib.sha256(
 new_ids = {x["id"] for x in items}
 changed = [x for x in items if not old_by_id.get(x["id"]) or old_by_id[x["id"]].get("sha256") != x["sha256"]]
 deleted = []
+old_topic_root = {}
+for op in oldm.get("packages",{}).get("categories",[]):
+    for tid in op.get("topicIds",[]):
+        old_topic_root.setdefault(tid, op.get("categoryId"))
 for item_id, old in old_by_id.items():
     if item_id not in new_ids:
         deleted.append({
             "entityType": old.get("entityType", "topic"),
             "id": item_id,
-            "categoryId": old.get("categoryId"),
+            "categoryId": old.get("categoryId") or old_topic_root.get(item_id),
             "ownerId": old.get("ownerId"),
         })
 
 topic_changed = any(x["entityType"] == "topic" for x in changed) or any(x.get("entityType") == "topic" for x in deleted)
 asset_changed = any(x["entityType"] == "asset" for x in changed) or any(x.get("entityType") == "asset" for x in deleted)
-content_version = next_int(oldm.get("contentVersion", 0)) if topic_changed else int(oldm.get("contentVersion", idx_ver))
+content_version = next_int(oldm.get("contentVersion", 0)) if topic_changed else int(oldm.get("contentVersion", 1))
 assets_version = next_int(oldm.get("assetsVersion", 0)) if asset_changed else int(oldm.get("assetsVersion", 1))
 
 summary = {
