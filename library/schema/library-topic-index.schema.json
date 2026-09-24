@@ -1,0 +1,31 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "$id":"https://basair.local/library/schema/library-topic-index.schema.json",
+  "title":"Basair Quran Library Topic Index V1",
+  "type":"object",
+  "additionalProperties":false,
+  "required":["schema","schemaVersion","libraryVersion","topics"],
+  "properties":{
+    "schema":{"const":"basair-quran-library-topic-index-v1"},
+    "schemaVersion":{"const":1},
+    "libraryVersion":{"type":"string"},
+    "topics":{"type":"array","items":{"$ref":"#/$defs/route"}}
+  },
+  "$defs":{"route":{
+    "type":"object","additionalProperties":true,
+    "required":["id","version","status","categoryId","title","path","displayOrder"],
+    "properties":{
+      "id":{"type":"string","pattern":"^[a-z0-9][a-z0-9-]{1,79}$"},
+      "version":{"type":"integer","minimum":1},
+      "status":{"enum":["published","hidden","archived","draft","review","deprecated"]},
+      "visible":{"type":"boolean"},
+      "categoryId":{"type":"string"},
+      "subCategoryId":{"type":["string","null"]},
+      "title":{"type":"string","minLength":1},
+      "path":{"type":"string","pattern":"^library/topics/[^/]+\\.json$"},
+      "sha256":{"type":"string","pattern":"^[0-9a-f]{64}$"},
+      "updatedAt":{"type":"string"},
+      "displayOrder":{"type":"integer","minimum":0}
+    }
+  }}
+}
