@@ -23,3 +23,19 @@
 
 ## النشر الآلي
 Workflow الخادم `.github/workflows/library-publish.yml` يعمل عند تغيير الأقسام أو الموضوعات أو الصور. يشغل `tools/build_library_manifest.py`، يتحقق من المسارات والبصمات، يبني حزم الأقسام، ثم يحدث `manifest.json` و`topics/index.json`. أي ملف يتيم أو مرجع غير صالح يفشل النشر بدل نشر Manifest مكسور.
+
+
+## B237 — اعتماد صور الأقسام قبل إظهارها
+صور الأقسام القديمة/التجريبية لا تُعرض لمجرد وجود الملف. التطبيق يعرض صورة القسم فقط بعد اعتمادها من الخادم.
+
+لإظهار صورة قسم حقيقية:
+1. ارفع الصورة الصحيحة وحدّث `coverImage.path` عند الحاجة.
+2. اجعل `openingImagesStatus` أو `imageStatus` أو `coverStatus` إحدى القيم:
+   - `published`
+   - `approved`
+   - `ready`
+   - `complete`
+   - `live`
+3. بديلًا عن ذلك يمكن وسم مرجع الصورة نفسه بـ `approved: true` أو `status: "approved"`.
+
+إذا كانت الحالة `deferred` أو `existing-category-cover-only` أو لم توجد حالة اعتماد، فلا ينشئ التطبيق مساحة للصورة أصلًا. هذا يسمح برفع الصور لاحقًا من الخادم دون إصدار APK جديد.
