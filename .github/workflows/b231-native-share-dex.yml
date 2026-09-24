@@ -50,7 +50,8 @@ jobs:
           BT="$ANDROID_HOME/build-tools/36.0.0"
           mkdir -p build/tools/lib build/tools/lib64
           cp "$BT/apksigner" build/tools/
-          cp "$BT/lib/apksigner.jar" build/tools/lib/\n          cp "$BT/lib64/libc++.so" build/tools/lib64/
+          cp "$BT/lib/apksigner.jar" build/tools/lib/
+          cp "$BT/lib64/libc++.so" build/tools/lib64/
           cp "$BT/zipalign" build/tools/
           cp "$BT/aapt2" build/tools/
           cp "$BT/aapt" build/tools/ || true
