@@ -1,0 +1,18 @@
+{
+  "schema": "basair-word-meaning-sources-v1",
+  "version": 1,
+  "defaultSource": "seraj-quranenc",
+  "sourceBundleSha256": "db6025c825fda31a9b2c195ecf7d4eb812a8e3898a7bd8569e23ca0d18c387f3",
+  "sources": [
+    {
+      "id": "seraj-quranenc",
+      "name": "السراج في بيان غريب القرآن",
+      "provider": "QuranEnc",
+      "translationKey": "arabic_seraj",
+      "browseUrlPattern": "https://quranenc.com/ar/browse/arabic_seraj/{surah}",
+      "providerUrl": "https://quranenc.com/ar",
+      "verifiedAt": "2026-09-25",
+      "display": "المصدر: السراج في بيان غريب القرآن · QuranEnc"
+    }
+  ]
+}
