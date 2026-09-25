@@ -1,0 +1,80 @@
+name: Basair Muyassar Package
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/basair-muyassar-pack.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Fetch and normalize QuranEnc Muyassar
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json, urllib.request, pathlib, hashlib, time
+          counts=[7,286,200,176,120,165,206,75,129,109,123,111,43,52,99,128,111,110,98,135,112,78,118,64,77,227,93,88,69,60,34,30,73,54,45,83,182,88,75,85,54,53,89,59,37,35,38,29,18,45,60,49,62,55,78,96,29,22,24,13,14,11,11,18,12,12,30,52,52,44,28,28,20,56,40,31,50,40,46,42,29,19,36,25,22,17,19,26,30,20,15,21,11,8,8,19,5,8,8,11,11,8,3,9,5,4,7,3,6,3,5,4,5,6]
+          root=pathlib.Path('public-assets/tafsir-muyassar/v1')
+          sdir=root/'surahs'; sdir.mkdir(parents=True,exist_ok=True)
+          opener=urllib.request.build_opener()
+          opener.addheaders=[('User-Agent','BasairQuran/1.0 (+content package builder)')]
+          entries=[]
+          for su,count in enumerate(counts,1):
+              url=f'https://quranenc.com/api/v1/translation/sura/arabic_moyassar/{su}'
+              last=None
+              for attempt in range(4):
+                  try:
+                      with opener.open(url,timeout=40) as r:
+                          j=json.loads(r.read().decode('utf-8'))
+                      break
+                  except Exception as e:
+                      last=e
+                      if attempt==3: raise
+                      time.sleep(2+attempt)
+              arr=j if isinstance(j,list) else j.get('result') or j.get('data') or j.get('translations') or []
+              if isinstance(arr,dict):
+                  arr=arr.get('result') or arr.get('data') or []
+              ayahs=['']*count
+              for i,x in enumerate(arr):
+                  if not isinstance(x,dict): continue
+                  a=int(x.get('aya') or x.get('ayah') or x.get('aya_number') or x.get('number') or i+1)
+                  t=str(x.get('translation') or x.get('text') or '').strip()
+                  if 1<=a<=count: ayahs[a-1]=t
+              non=sum(bool(x) for x in ayahs)
+              if non != count:
+                  raise SystemExit(f'surah {su}: expected {count}, got {non}')
+              obj={
+                'schema':'basair-muyassar-surah-v1','version':1,
+                'source':{'name':'التفسير الميسر','provider':'QuranEnc','key':'arabic_moyassar','url':url},
+                's':su,'ayah_count':count,'ayahs':ayahs
+              }
+              raw=(json.dumps(obj,ensure_ascii=False,separators=(',',':'))+'\n').encode()
+              fp=sdir/f'{su:03d}.json'; fp.write_bytes(raw)
+              entries.append({'s':su,'file':f'surahs/{su:03d}.json','ayah_count':count,'bytes':len(raw),'sha256':hashlib.sha256(raw).hexdigest()})
+          manifest={'schema':'basair-muyassar-package-v1','version':1,'source':{'name':'التفسير الميسر','provider':'QuranEnc','key':'arabic_moyassar','api':'https://quranenc.com/api/v1/translation/sura/arabic_moyassar/{surah}','browse':'https://quranenc.com/ar/browse/arabic_moyassar/{surah}/{ayah}'},'surahs':114,'ayahs':sum(counts),'entries':entries}
+          (root/'manifest.json').write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+          print('OK',len(entries),sum(counts))
+          PY
+      - name: Commit normalized package
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'basair-automation'
+          git config user.email 'actions@users.noreply.github.com'
+          git add public-assets/tafsir-muyassar/v1
+          if git diff --cached --quiet; then
+            echo "No package changes"
+            exit 0
+          fi
+          git commit -m 'content: publish verified Muyassar package v1'
+          git push origin HEAD:main
