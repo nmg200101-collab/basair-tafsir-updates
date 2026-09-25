@@ -7,5 +7,8 @@
   "index_pattern": "index/{surah3}.json",
   "data_file": "words.ndjson",
   "range_required": true,
-  "fallback_revision": "029a332809bac1160967c6490be8b130c30e4046"
+  "fallback_revision": "029a332809bac1160967c6490be8b130c30e4046",
+  "source_bundle_sha256": "db6025c825fda31a9b2c195ecf7d4eb812a8e3898a7bd8569e23ca0d18c387f3",
+  "default_source": "seraj-quranenc",
+  "sources_file": "sources.json"
 }
