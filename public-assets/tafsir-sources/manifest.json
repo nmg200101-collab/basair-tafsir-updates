@@ -1,0 +1,61 @@
+{
+  "schema": "basair-tafsir-sources-v1",
+  "version": 1,
+  "updatedAt": "2026-09-25",
+  "attributionMode": "verified-only",
+  "editorialNote": "تفسير بصائر القرآن صياغة تحريرية مستقلة، ولا تُنسب مادة آية إلى تفسير بعينه إلا إذا ثبتت المراجعة في بيانات الآية.",
+  "generalSources": [
+    {
+      "id": "quran",
+      "name": "القرآن الكريم",
+      "role": "الأصل الذي تُبنى عليه مادة التفسير",
+      "linkType": "internal"
+    },
+    {
+      "id": "muyassar",
+      "name": "التفسير الميسر",
+      "role": "المرجع التفسيري الأساسي/الاحتياطي المثبت في بنية المشروع",
+      "linkType": "ayah",
+      "urlPattern": "https://quranenc.com/ar/browse/arabic_moyassar/{surah}/{ayah}"
+    }
+  ],
+  "comparisonReferences": [
+    {
+      "id": "saadi",
+      "name": "تفسير السعدي",
+      "status": "comparison-only-unless-verified-per-ayah"
+    },
+    {
+      "id": "ibn_kathir",
+      "name": "تفسير ابن كثير",
+      "status": "comparison-only-unless-verified-per-ayah"
+    },
+    {
+      "id": "baghawi",
+      "name": "تفسير البغوي",
+      "status": "comparison-only-unless-verified-per-ayah"
+    },
+    {
+      "id": "qurtubi",
+      "name": "تفسير القرطبي",
+      "status": "comparison-only-unless-verified-per-ayah"
+    },
+    {
+      "id": "jalalayn",
+      "name": "تفسير الجلالين",
+      "status": "comparison-only-unless-verified-per-ayah"
+    },
+    {
+      "id": "tahrir",
+      "name": "التحرير والتنوير",
+      "status": "comparison-only-unless-verified-per-ayah"
+    },
+    {
+      "id": "muharrar",
+      "name": "التفسير المحرر",
+      "status": "comparison-only-unless-verified-per-ayah",
+      "officialUrl": "https://dorar.net/tafseer/"
+    }
+  ],
+  "perAyah": {}
+}
