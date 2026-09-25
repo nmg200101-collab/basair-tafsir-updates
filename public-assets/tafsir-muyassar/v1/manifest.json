@@ -1,0 +1,813 @@
+{
+  "schema": "basair-muyassar-package-v1",
+  "version": 1,
+  "source": {
+    "name": "التفسير الميسر",
+    "provider": "QuranEnc",
+    "key": "arabic_moyassar",
+    "api": "https://quranenc.com/api/v1/translation/sura/arabic_moyassar/{surah}",
+    "browse": "https://quranenc.com/ar/browse/arabic_moyassar/{surah}/{ayah}"
+  },
+  "surahs": 114,
+  "ayahs": 6236,
+  "entries": [
+    {
+      "s": 1,
+      "file": "surahs/001.json",
+      "ayah_count": 7,
+      "bytes": 3924,
+      "sha256": "1e4eb0f72facbf950b0c180cacd662ce517fcc194f6465afe5375633eb6fecdf"
+    },
+    {
+      "s": 2,
+      "file": "surahs/002.json",
+      "ayah_count": 286,
+      "bytes": 153711,
+      "sha256": "eafb2c00b1fd57f4d7b411623715804b2ed53fb62e1e77695c0487e13efe4a3c"
+    },
+    {
+      "s": 3,
+      "file": "surahs/003.json",
+      "ayah_count": 200,
+      "bytes": 86627,
+      "sha256": "b94f79b5a344f83028aa9fd9353577e9fd052a55e6d2e0fa3ce8ca7b5a9f4295"
+    },
+    {
+      "s": 4,
+      "file": "surahs/004.json",
+      "ayah_count": 176,
+      "bytes": 86108,
+      "sha256": "8292159258dbda9c557787abea1d534dde22ba210c0ad4cddc8e5f540bad2a9c"
+    },
+    {
+      "s": 5,
+      "file": "surahs/005.json",
+      "ayah_count": 120,
+      "bytes": 66269,
+      "sha256": "f46facb822065061c99dcddb478ad72f6b657d1996bf3050e4548d52bac2f46c"
+    },
+    {
+      "s": 6,
+      "file": "surahs/006.json",
+      "ayah_count": 165,
+      "bytes": 78490,
+      "sha256": "8fc730c97707e3b29271dcc687851dd7cfd3fd10cf7c29fba066bb061217d8b2"
+    },
+    {
+      "s": 7,
+      "file": "surahs/007.json",
+      "ayah_count": 206,
+      "bytes": 86390,
+      "sha256": "9c2e5d4bf5390cf82b7dba26a201fcfcf531e5d470ddf0af5ff3c466f2e1d99e"
+    },
+    {
+      "s": 8,
+      "file": "surahs/008.json",
+      "ayah_count": 75,
+      "bytes": 32660,
+      "sha256": "dd2103c334f2174726bfa9142d4b76b6434f2d1d2611bef22db066041b8a8e25"
+    },
+    {
+      "s": 9,
+      "file": "surahs/009.json",
+      "ayah_count": 129,
+      "bytes": 60337,
+      "sha256": "0162ea352cd9074534cc00e73615ed85a8949e98495e63b7202d22cf1aa6dd71"
+    },
+    {
+      "s": 10,
+      "file": "surahs/010.json",
+      "ayah_count": 109,
+      "bytes": 45166,
+      "sha256": "6480d8f86758d42e148634205065a590ca077178fcdda56daa4365de2a9a1afd"
+    },
+    {
+      "s": 11,
+      "file": "surahs/011.json",
+      "ayah_count": 123,
+      "bytes": 46972,
+      "sha256": "f0d9ca9ea884ab527a396df7ff0361cd670a36eba8816d406b9c48fdfef2a10c"
+    },
+    {
+      "s": 12,
+      "file": "surahs/012.json",
+      "ayah_count": 111,
+      "bytes": 38823,
+      "sha256": "35f269652fd052c0a5a154176eff3cc33eb6a2c086eeadaf19b75dd2aadac753"
+    },
+    {
+      "s": 13,
+      "file": "surahs/013.json",
+      "ayah_count": 43,
+      "bytes": 20444,
+      "sha256": "4ea1395582f5330572a7c793ea2a87cb09b6c82e5a0e0dd6be13a43d130de596"
+    },
+    {
+      "s": 14,
+      "file": "surahs/014.json",
+      "ayah_count": 52,
+      "bytes": 21367,
+      "sha256": "b7e35cdb3df5c9325e213b496b7411445c02159c8dba897abab5a968e357db34"
+    },
+    {
+      "s": 15,
+      "file": "surahs/015.json",
+      "ayah_count": 99,
+      "bytes": 28817,
+      "sha256": "c50fc685f46ef02bb01b9edc2df8c309f167f7dbf42bbe8c10c87ad9e1e517c0"
+    },
+    {
+      "s": 16,
+      "file": "surahs/016.json",
+      "ayah_count": 128,
+      "bytes": 51437,
+      "sha256": "f84b48636813323e98ffe5bcf0f086328e112a20d6f446e2cd90729e8d8f66b9"
+    },
+    {
+      "s": 17,
+      "file": "surahs/017.json",
+      "ayah_count": 111,
+      "bytes": 40588,
+      "sha256": "b7e9ee82ccc1ec5962fcada0ca2c6ad162fc2e40bb150c8b15aeced38ec3550c"
+    },
+    {
+      "s": 18,
+      "file": "surahs/018.json",
+      "ayah_count": 110,
+      "bytes": 37999,
+      "sha256": "c3d528945540980bd11d54fc48e3328982f6c013df2de15cef3862e8d5fb36d8"
+    },
+    {
+      "s": 19,
+      "file": "surahs/019.json",
+      "ayah_count": 98,
+      "bytes": 22806,
+      "sha256": "d934feb0f490995215d74ad189b88eabbc299dff505b264e24971b8ec22d2c29"
+    },
+    {
+      "s": 20,
+      "file": "surahs/020.json",
+      "ayah_count": 135,
+      "bytes": 39834,
+      "sha256": "04c25fe3619913e867ef06173dc55c8dd1968f2b6cc97c5d03986466e1d14ab1"
+    },
+    {
+      "s": 21,
+      "file": "surahs/021.json",
+      "ayah_count": 112,
+      "bytes": 33620,
+      "sha256": "0f7e2efb670e0e43a6a498b063ba5d308d087e6362498e1fc42efcc940b19355"
+    },
+    {
+      "s": 22,
+      "file": "surahs/022.json",
+      "ayah_count": 78,
+      "bytes": 43794,
+      "sha256": "d28c5ab137515832ff19117845e827900861f38bc16cd53955b0b73dd426215e"
+    },
+    {
+      "s": 23,
+      "file": "surahs/023.json",
+      "ayah_count": 118,
+      "bytes": 26721,
+      "sha256": "10a301d5974c76c52e99774bbdc6e7402a9a33428548bfdbda57d5ce3ea7075b"
+    },
+    {
+      "s": 24,
+      "file": "surahs/024.json",
+      "ayah_count": 64,
+      "bytes": 30954,
+      "sha256": "a45910eaee4516194d1760e812d3afdfe660f3d405796b4585363bbc0c21f580"
+    },
+    {
+      "s": 25,
+      "file": "surahs/025.json",
+      "ayah_count": 77,
+      "bytes": 31961,
+      "sha256": "fd3c920e0a8fbacac1754483e4e03de84763f1bc052ff7413816730d0b5f84e2"
+    },
+    {
+      "s": 26,
+      "file": "surahs/026.json",
+      "ayah_count": 227,
+      "bytes": 80374,
+      "sha256": "9de77353489f028c16a50f4d1dee65e26c0ef5e8a5110d0212491121f287a7cf"
+    },
+    {
+      "s": 27,
+      "file": "surahs/027.json",
+      "ayah_count": 93,
+      "bytes": 41469,
+      "sha256": "7aee5bb55f8197f6f79f0e597dc2ca8a089cc5425980f8ab82162daf23df368f"
+    },
+    {
+      "s": 28,
+      "file": "surahs/028.json",
+      "ayah_count": 88,
+      "bytes": 31923,
+      "sha256": "f6f6f1ce4612c4ed3e611e690e3ce630338ed9153f7ff04d6268102178737224"
+    },
+    {
+      "s": 29,
+      "file": "surahs/029.json",
+      "ayah_count": 69,
+      "bytes": 26518,
+      "sha256": "a4f67c939e08d94695c4e66dd0531fc08ae753b2e351cdff32b6aba4870a5689"
+    },
+    {
+      "s": 30,
+      "file": "surahs/030.json",
+      "ayah_count": 60,
+      "bytes": 24091,
+      "sha256": "31d9274ba5c79a943a2e4dcd04a57ea3f0bc84e000574c3bb78950a71d5650f1"
+    },
+    {
+      "s": 31,
+      "file": "surahs/031.json",
+      "ayah_count": 34,
+      "bytes": 12637,
+      "sha256": "b0a8248c661198b1a4e3e35a61114f0e6c51061551f8176edfad84bc14b12e58"
+    },
+    {
+      "s": 32,
+      "file": "surahs/032.json",
+      "ayah_count": 30,
+      "bytes": 10435,
+      "sha256": "90d0a2f01f0fa7d9d40745dccfe2ae78dbc4ffc8e67b73923d156f1aca4cca2e"
+    },
+    {
+      "s": 33,
+      "file": "surahs/033.json",
+      "ayah_count": 73,
+      "bytes": 36929,
+      "sha256": "30af7e4388b4ed56b0ba466c090343bae1fb3b44e43ae293c8e0b2eacc7b8073"
+    },
+    {
+      "s": 34,
+      "file": "surahs/034.json",
+      "ayah_count": 54,
+      "bytes": 22346,
+      "sha256": "06d35f337d55e923f529f4ef8dea0be164ae560f85cd75aa1a5e61a6835eb308"
+    },
+    {
+      "s": 35,
+      "file": "surahs/035.json",
+      "ayah_count": 45,
+      "bytes": 24576,
+      "sha256": "bef1191955d7bcf58f15b709616a4eee9f5a8f0fb36055fadeb6487fdc2be0ac"
+    },
+    {
+      "s": 36,
+      "file": "surahs/036.json",
+      "ayah_count": 83,
+      "bytes": 23060,
+      "sha256": "c503eab841068f5393de6c0c681083b02934154b2528e5188c6c229cf0a1da1f"
+    },
+    {
+      "s": 37,
+      "file": "surahs/037.json",
+      "ayah_count": 182,
+      "bytes": 44005,
+      "sha256": "062acb4fbb85c3aa455ccdff23f83858a7290a2daf790d8e68c29f01627075b5"
+    },
+    {
+      "s": 38,
+      "file": "surahs/038.json",
+      "ayah_count": 88,
+      "bytes": 26902,
+      "sha256": "14180cdcb597b7a2dd74bb3ebbe68da23202afc6970dbdd3386dfff1417894db"
+    },
+    {
+      "s": 39,
+      "file": "surahs/039.json",
+      "ayah_count": 75,
+      "bytes": 33252,
+      "sha256": "0cd718689395b0ecfaa543db2f5fb3273cb39148a7bba01baea1430994b633fe"
+    },
+    {
+      "s": 40,
+      "file": "surahs/040.json",
+      "ayah_count": 85,
+      "bytes": 34008,
+      "sha256": "76f790f0c72256dddaec19d377fdb97a49e946fe097a6724737a313c15a89b90"
+    },
+    {
+      "s": 41,
+      "file": "surahs/041.json",
+      "ayah_count": 54,
+      "bytes": 23321,
+      "sha256": "845f08e8da9627dae0a558e2286c28429df1fbdd6bb4db3f09fcd41603b5ff62"
+    },
+    {
+      "s": 42,
+      "file": "surahs/042.json",
+      "ayah_count": 53,
+      "bytes": 23837,
+      "sha256": "e3dd46108503c5fa349628ef7a89801ee2efb13e2dfb0011f72cc8750dcc582e"
+    },
+    {
+      "s": 43,
+      "file": "surahs/043.json",
+      "ayah_count": 89,
+      "bytes": 31001,
+      "sha256": "ba470c4961d61abd30d01fc3c4287d4546c9c0a2bc578a74ad8d69048e42b707"
+    },
+    {
+      "s": 44,
+      "file": "surahs/044.json",
+      "ayah_count": 59,
+      "bytes": 24618,
+      "sha256": "52e4636c5e7a0a3d89e27079e98f056b940d91a1ddf400f9d54fb14ec5b65127"
+    },
+    {
+      "s": 45,
+      "file": "surahs/045.json",
+      "ayah_count": 37,
+      "bytes": 13064,
+      "sha256": "e3599092505d99348c31598dd6351b0030fc0de1747f084928ebae238f861a5e"
+    },
+    {
+      "s": 46,
+      "file": "surahs/046.json",
+      "ayah_count": 35,
+      "bytes": 13901,
+      "sha256": "8344a5b6652fd205a72bfc980ca6f088eb10a424bbc4a7bfd1e0fcb7608d197d"
+    },
+    {
+      "s": 47,
+      "file": "surahs/047.json",
+      "ayah_count": 38,
+      "bytes": 18237,
+      "sha256": "58df81021de5e2abf2f3a2b61ca23f116dd15bdd62ec614f0a9a1f8c6d1886ff"
+    },
+    {
+      "s": 48,
+      "file": "surahs/048.json",
+      "ayah_count": 29,
+      "bytes": 19205,
+      "sha256": "52b682f084b1f1f26f85886f6a31c27bc17e8c1c3a76f839a0037068f675c4a0"
+    },
+    {
+      "s": 49,
+      "file": "surahs/049.json",
+      "ayah_count": 18,
+      "bytes": 8183,
+      "sha256": "f849ec257ad1179e50f2cb806ddc435d0f2cff81df76c834aa7bd5ff78738e67"
+    },
+    {
+      "s": 50,
+      "file": "surahs/050.json",
+      "ayah_count": 45,
+      "bytes": 12868,
+      "sha256": "2fe4a09c57ed382734b0ed9c3c416ea8981fcc4077ef92729d1495387f381f53"
+    },
+    {
+      "s": 51,
+      "file": "surahs/051.json",
+      "ayah_count": 60,
+      "bytes": 17728,
+      "sha256": "71af89b86b22beeb25fdc45bdbb831ecc4c5937a74ff4145862bbfb7d4120913"
+    },
+    {
+      "s": 52,
+      "file": "surahs/052.json",
+      "ayah_count": 49,
+      "bytes": 17473,
+      "sha256": "7254d25d7bf8a4e721940e993262c3e852fa183ecb33964363ac6524d1d19813"
+    },
+    {
+      "s": 53,
+      "file": "surahs/053.json",
+      "ayah_count": 62,
+      "bytes": 30119,
+      "sha256": "6245d608d7b66a1b1e425c0f356e86b577c183395096a9f5eecb7074860d9d82"
+    },
+    {
+      "s": 54,
+      "file": "surahs/054.json",
+      "ayah_count": 55,
+      "bytes": 13735,
+      "sha256": "6474258f2128c14037fa3dd7d3a67b05e531d6d190469eae489880427f69290c"
+    },
+    {
+      "s": 55,
+      "file": "surahs/055.json",
+      "ayah_count": 78,
+      "bytes": 13339,
+      "sha256": "f93ef16481d7bd1c79a8f5f804e1373b742bf9a31385f427151275c22efa7391"
+    },
+    {
+      "s": 56,
+      "file": "surahs/056.json",
+      "ayah_count": 96,
+      "bytes": 25787,
+      "sha256": "e9d813979a78a1587620b158e6723b3c2b0c91f0a1a780dc3f3c158d9ec48198"
+    },
+    {
+      "s": 57,
+      "file": "surahs/057.json",
+      "ayah_count": 29,
+      "bytes": 13132,
+      "sha256": "0a1ba9def6b3eff67a03a6c0d6e045ac7830bd6ed32d4980dca5ade92d1b1043"
+    },
+    {
+      "s": 58,
+      "file": "surahs/058.json",
+      "ayah_count": 22,
+      "bytes": 11413,
+      "sha256": "a26fab195cd54c8e873004b92f5f5e089dc548f07dbd94e418ef477efa57f7f6"
+    },
+    {
+      "s": 59,
+      "file": "surahs/059.json",
+      "ayah_count": 24,
+      "bytes": 11487,
+      "sha256": "ff79ad8a1ba2b83f5705565e4c9bdbc63f4c2bc319fe235f97b538afa420ae5b"
+    },
+    {
+      "s": 60,
+      "file": "surahs/060.json",
+      "ayah_count": 13,
+      "bytes": 7990,
+      "sha256": "17751a9de466454407913882302a3debc40a07403972e4ac56d433add78fc4f5"
+    },
+    {
+      "s": 61,
+      "file": "surahs/061.json",
+      "ayah_count": 14,
+      "bytes": 5661,
+      "sha256": "0cdf88dffb4539d5646b22d438abba86560bc1e02a5bb7a430a5f19378c9e917"
+    },
+    {
+      "s": 62,
+      "file": "surahs/062.json",
+      "ayah_count": 11,
+      "bytes": 5111,
+      "sha256": "cadaa612f438a76ec5b20510d2b9d944847cb71798df9a76fe59e45a4425d744"
+    },
+    {
+      "s": 63,
+      "file": "surahs/063.json",
+      "ayah_count": 11,
+      "bytes": 5176,
+      "sha256": "36fc23a068c4a40e6184e672c84b2314ac820e5dcf07df77d3a30d7d1e1f494a"
+    },
+    {
+      "s": 64,
+      "file": "surahs/064.json",
+      "ayah_count": 18,
+      "bytes": 6444,
+      "sha256": "30d7413ac3e3c6400ac7240301b7cb20e893a06700d4c3d55ac4ef99310e8514"
+    },
+    {
+      "s": 65,
+      "file": "surahs/065.json",
+      "ayah_count": 12,
+      "bytes": 8808,
+      "sha256": "b60ced8955796ac62934fac76d06cfbca9aef78197ccf339b8a9c7f6be3e37a6"
+    },
+    {
+      "s": 66,
+      "file": "surahs/066.json",
+      "ayah_count": 12,
+      "bytes": 6279,
+      "sha256": "4607c7cb52c245a7b156596e201058d1a804fd4b4e4dee43dc4f37c03b8e0683"
+    },
+    {
+      "s": 67,
+      "file": "surahs/067.json",
+      "ayah_count": 30,
+      "bytes": 12028,
+      "sha256": "2b3b9ff76b1b6c1da3522651dd1357b000367adefa0717275b56608dd3969b18"
+    },
+    {
+      "s": 68,
+      "file": "surahs/068.json",
+      "ayah_count": 52,
+      "bytes": 31268,
+      "sha256": "24fbf5ea8b3c6b72d5d74dfd6a3a5d299ad7d8cd7e842f63eaba2984e9e6f4b0"
+    },
+    {
+      "s": 69,
+      "file": "surahs/069.json",
+      "ayah_count": 52,
+      "bytes": 26545,
+      "sha256": "96ac28a6c0b6bcc8aae9efbea6ec2b33238bec2710e51d56ef332f8a1a32c6aa"
+    },
+    {
+      "s": 70,
+      "file": "surahs/070.json",
+      "ayah_count": 44,
+      "bytes": 27115,
+      "sha256": "ef9b2e9a7a8516f8a18c0406f691e70402e65deb986505f7a74d7f0985ddd756"
+    },
+    {
+      "s": 71,
+      "file": "surahs/071.json",
+      "ayah_count": 28,
+      "bytes": 27307,
+      "sha256": "65a71b1e41b9d5256dd33dab15e300f3a23e0395d6f3f32dcf65139fe13e18e4"
+    },
+    {
+      "s": 72,
+      "file": "surahs/072.json",
+      "ayah_count": 28,
+      "bytes": 12877,
+      "sha256": "cc210489e3e8a6e7433fe1199e4cd8c4f7b14749d525a9082027ce9377557b2e"
+    },
+    {
+      "s": 73,
+      "file": "surahs/073.json",
+      "ayah_count": 20,
+      "bytes": 7340,
+      "sha256": "14742f6a82a928768cde5e372b028ac4cfe305cf62a40497e7b105a60592c426"
+    },
+    {
+      "s": 74,
+      "file": "surahs/074.json",
+      "ayah_count": 56,
+      "bytes": 35224,
+      "sha256": "128bea36121797f2429fbfb932ac8a8d323f8cd7f56249aa2196eec330978830"
+    },
+    {
+      "s": 75,
+      "file": "surahs/075.json",
+      "ayah_count": 40,
+      "bytes": 16019,
+      "sha256": "374cf1a4682dac0baad41e61f9143905c549a814a79dadd77ccf874be33cad9d"
+    },
+    {
+      "s": 76,
+      "file": "surahs/076.json",
+      "ayah_count": 31,
+      "bytes": 16499,
+      "sha256": "f3c02a557b3bf992e2af2410217957ceed4dee62beae449880750325eb43e316"
+    },
+    {
+      "s": 77,
+      "file": "surahs/077.json",
+      "ayah_count": 50,
+      "bytes": 24174,
+      "sha256": "2f1752e454a29c999d02fc102e6d90566ca3e2a0b585aea6f4d13ca3bc319d2a"
+    },
+    {
+      "s": 78,
+      "file": "surahs/078.json",
+      "ayah_count": 40,
+      "bytes": 13558,
+      "sha256": "03ffd022d2b60067312adc302e9ca084416a2f6fb7dc821c65e750d9c610cb07"
+    },
+    {
+      "s": 79,
+      "file": "surahs/079.json",
+      "ayah_count": 46,
+      "bytes": 21128,
+      "sha256": "96a401d1464de48f46a2e58fb66b617f52ff61cd7794233633a87b3b0f1d092a"
+    },
+    {
+      "s": 80,
+      "file": "surahs/080.json",
+      "ayah_count": 42,
+      "bytes": 19463,
+      "sha256": "2158e657962c20a2945c152549d36440f641cd7dbca1c61762e78a72d5522373"
+    },
+    {
+      "s": 81,
+      "file": "surahs/081.json",
+      "ayah_count": 29,
+      "bytes": 22280,
+      "sha256": "ac19d90a6d8ad2e1ec42ccdae427103192b2b617db35035da11f17dbe179c2e8"
+    },
+    {
+      "s": 82,
+      "file": "surahs/082.json",
+      "ayah_count": 19,
+      "bytes": 6659,
+      "sha256": "c736f029b2ed9fb4696f460e0fb6d306f7bd36d75eb0dc24932df2853871e0d5"
+    },
+    {
+      "s": 83,
+      "file": "surahs/083.json",
+      "ayah_count": 36,
+      "bytes": 22784,
+      "sha256": "8a07c06a7ef4d77b78b8c34935b8b7466c3bd36c2fcdb7a4e518f0691edc7583"
+    },
+    {
+      "s": 84,
+      "file": "surahs/084.json",
+      "ayah_count": 25,
+      "bytes": 13165,
+      "sha256": "0930a3b4bdee00841e344b1919208bbbf9a6bdd97ab4c80ea50d748648be845e"
+    },
+    {
+      "s": 85,
+      "file": "surahs/085.json",
+      "ayah_count": 22,
+      "bytes": 16929,
+      "sha256": "0396c0f21b0931b0b5b960bec27f66369c2b2c703b616aa1cbcb2a7423315d0b"
+    },
+    {
+      "s": 86,
+      "file": "surahs/086.json",
+      "ayah_count": 17,
+      "bytes": 6645,
+      "sha256": "49563c1b9700e75c358b1c58212f2bfbec656c471c1e9112f0752217ca85c82e"
+    },
+    {
+      "s": 87,
+      "file": "surahs/087.json",
+      "ayah_count": 19,
+      "bytes": 5960,
+      "sha256": "2958b939c057afdd7e81551f876deb9410afcc198551069ec103c550f9a5a868"
+    },
+    {
+      "s": 88,
+      "file": "surahs/088.json",
+      "ayah_count": 26,
+      "bytes": 9694,
+      "sha256": "1086a56b975adc65c17fdab0ed11a9d87f3daea15362389ffbf89f1cae3382ab"
+    },
+    {
+      "s": 89,
+      "file": "surahs/089.json",
+      "ayah_count": 30,
+      "bytes": 9527,
+      "sha256": "19e9ac62d986c974c0d8454b0502e135c1d0aabd9ae2643e5931f08efe54a14f"
+    },
+    {
+      "s": 90,
+      "file": "surahs/090.json",
+      "ayah_count": 20,
+      "bytes": 4401,
+      "sha256": "516198aa48dc7a861a3e2f6559eb41fe6ea73b322daa46e92b9d08ba2f904b27"
+    },
+    {
+      "s": 91,
+      "file": "surahs/091.json",
+      "ayah_count": 15,
+      "bytes": 10689,
+      "sha256": "393266bcb4e114f00fc4ae89d163cd8212549d0160b0311056838133981731d6"
+    },
+    {
+      "s": 92,
+      "file": "surahs/092.json",
+      "ayah_count": 21,
+      "bytes": 6146,
+      "sha256": "86ec8fc316b150d569457b91a0b83833a2c2de13fbdf54bf293a75d11c56d1dc"
+    },
+    {
+      "s": 93,
+      "file": "surahs/093.json",
+      "ayah_count": 11,
+      "bytes": 3628,
+      "sha256": "f9cf7c4b81400660abd5b16620717585cd46ffd205b01b3356d73c58c1b213fa"
+    },
+    {
+      "s": 94,
+      "file": "surahs/094.json",
+      "ayah_count": 8,
+      "bytes": 1854,
+      "sha256": "f24b14f744d7f4956d53d6a9e4014f22468f26c4335c38f46a982d6bc2ed5b1c"
+    },
+    {
+      "s": 95,
+      "file": "surahs/095.json",
+      "ayah_count": 8,
+      "bytes": 4274,
+      "sha256": "7f5309d6b92c02ee3e12f96a1eb550b50d963a59a089054181769eeab8d1b81b"
+    },
+    {
+      "s": 96,
+      "file": "surahs/096.json",
+      "ayah_count": 19,
+      "bytes": 15591,
+      "sha256": "062b687972bc4d1afcbd677616d5fac235553ce34898aecf3dffaf2862fc8914"
+    },
+    {
+      "s": 97,
+      "file": "surahs/097.json",
+      "ayah_count": 5,
+      "bytes": 823,
+      "sha256": "560b93d9d82880b67194cbfb0ccfa5d09aa3eb035bf45c8e58423a657c3166f7"
+    },
+    {
+      "s": 98,
+      "file": "surahs/098.json",
+      "ayah_count": 8,
+      "bytes": 2295,
+      "sha256": "41d98226c1cf6ac99f13bc7a82155a415630fb88d9739e149c7a71aa3bfabf8f"
+    },
+    {
+      "s": 99,
+      "file": "surahs/099.json",
+      "ayah_count": 8,
+      "bytes": 1770,
+      "sha256": "18d54c320d9fccf0d7f3f49e3280471825c207e19c2d3b5846fbbcaead02a23d"
+    },
+    {
+      "s": 100,
+      "file": "surahs/100.json",
+      "ayah_count": 11,
+      "bytes": 1571,
+      "sha256": "af5f880092a286ae0e072a16272640972c0421152cca037ca5f7e9593c0edef7"
+    },
+    {
+      "s": 101,
+      "file": "surahs/101.json",
+      "ayah_count": 11,
+      "bytes": 1278,
+      "sha256": "e56970801b9351e63384a0181bdbe2dbc36d475687dad0597e6c13a8ff016031"
+    },
+    {
+      "s": 102,
+      "file": "surahs/102.json",
+      "ayah_count": 8,
+      "bytes": 2126,
+      "sha256": "9ccfec0d881d839979f9965037324b7492a598e79ea5068c422b6ebfec153fbe"
+    },
+    {
+      "s": 103,
+      "file": "surahs/103.json",
+      "ayah_count": 3,
+      "bytes": 930,
+      "sha256": "0f52bdb497f2f78414a8bc1d99aea47c6f041561bc994fd1a1384508161bdefc"
+    },
+    {
+      "s": 104,
+      "file": "surahs/104.json",
+      "ayah_count": 9,
+      "bytes": 1220,
+      "sha256": "13040651bf446f11d6b4e0691118e6b67fe68ee413a3d17d8ee0f7279974ac66"
+    },
+    {
+      "s": 105,
+      "file": "surahs/105.json",
+      "ayah_count": 5,
+      "bytes": 892,
+      "sha256": "3d779e195baddc595351bb1c17023ff74f721e451fa8c5ad102a132a590a2f0c"
+    },
+    {
+      "s": 106,
+      "file": "surahs/106.json",
+      "ayah_count": 4,
+      "bytes": 1085,
+      "sha256": "0000152db1d8ec6aabc67248f8c5c2ac8bf9e3658df48c378a374ad60b0b5db7"
+    },
+    {
+      "s": 107,
+      "file": "surahs/107.json",
+      "ayah_count": 7,
+      "bytes": 1227,
+      "sha256": "cd22bf848aa0ee9f40d95c889d2079d013b1c950803ede1640e853b6c885e7bc"
+    },
+    {
+      "s": 108,
+      "file": "surahs/108.json",
+      "ayah_count": 3,
+      "bytes": 733,
+      "sha256": "3ed6a107da2a2de03c5ddfdd5c154c50fcb41c8bf752e9bacb5d5e81180e75f8"
+    },
+    {
+      "s": 109,
+      "file": "surahs/109.json",
+      "ayah_count": 6,
+      "bytes": 1012,
+      "sha256": "71fe2f01d3237a18f5ea54819ecbd53b5446c1e5ca0599aea31624afda004d61"
+    },
+    {
+      "s": 110,
+      "file": "surahs/110.json",
+      "ayah_count": 3,
+      "bytes": 755,
+      "sha256": "4ddbcc2f28320a50eb29d42b985b34efec5243cf79f845cc015aabbcc95b9389"
+    },
+    {
+      "s": 111,
+      "file": "surahs/111.json",
+      "ayah_count": 5,
+      "bytes": 1123,
+      "sha256": "f7c9228e6823f592115a789f84d6e60ee5573b860473051e1291d204335c8cdd"
+    },
+    {
+      "s": 112,
+      "file": "surahs/112.json",
+      "ayah_count": 4,
+      "bytes": 842,
+      "sha256": "f6baa48e88efaeaec2d4392d7c7529331bea13a60772257f3db159e56a60b479"
+    },
+    {
+      "s": 113,
+      "file": "surahs/113.json",
+      "ayah_count": 5,
+      "bytes": 807,
+      "sha256": "5c9cb8c4dd333103eca27e19486c1d341b4e94ffbe7031a6f8dc1adbeaaf1054"
+    },
+    {
+      "s": 114,
+      "file": "surahs/114.json",
+      "ayah_count": 6,
+      "bytes": 753,
+      "sha256": "b071a5a0736a7f6919192678487b4a1c8a82d8cd1e048a1c374a6bff231136d4"
+    }
+  ]
+}
