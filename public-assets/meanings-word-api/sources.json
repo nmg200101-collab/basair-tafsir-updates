@@ -9,7 +9,7 @@
       "name": "السراج في بيان غريب القرآن",
       "provider": "QuranEnc",
       "translationKey": "arabic_seraj",
-      "browseUrlPattern": "https://quranenc.com/ar/browse/arabic_seraj/{surah}",
+      "browseUrlPattern": "https://quranenc.com/ar/browse/arabic_seraj/{surah}/{ayah}",
       "providerUrl": "https://quranenc.com/ar",
       "verifiedAt": "2026-09-25",
       "display": "المصدر: السراج في بيان غريب القرآن · QuranEnc"
