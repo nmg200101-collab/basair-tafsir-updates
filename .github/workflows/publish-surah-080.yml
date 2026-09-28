@@ -30,7 +30,7 @@ jobs:
               if [a.get('ayah') for a in o['ayahs']]!=list(range(o['from'],o['to']+1)): raise SystemExit('sequence failure')
               for a in o['ayahs']:
                 for k in ('meaning','bayan','tadabbur','summary'):
-                  v=a.get(k); 
+                  v=a.get(k)
                   if not isinstance(v,str) or not v.strip() or re.search(r'placeholder|todo|tbd',v,re.I): raise SystemExit(f'field failure {a.get("ayah")} {k}')
               name=name or o['name']; ay+=o['ayahs']; parts.append({'from':o['from'],'to':o['to'],'file':p.as_posix(),'sha256':h(b),'bytes':len(b)}); exp=o['to']+1
             for k in ('meaning','bayan','tadabbur','summary'):
@@ -55,3 +55,4 @@ jobs:
           git commit -m 'Publish Basair tafsir Surah Abasa 80'
           git pull --rebase origin main
           git push
+          # validated publisher trigger
