@@ -5,6 +5,7 @@ on:
   push:
     branches: [main]
     paths:
+      - '.github/workflows/library-publish.yml'
       - 'library/categories.json'
       - 'library/topics/**'
       - 'library/assets/**'
@@ -23,6 +24,28 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+      - name: Close completed text sections
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path('library/categories.json')
+          cats=json.loads(p.read_text('utf-8'))
+          roots={c['id']:c for c in cats if not c.get('parentId')}
+          for root_id, root in roots.items():
+              children=[c for c in cats if c.get('parentId')==root_id]
+              plans=[t for c in children for t in c.get('topicPlan',[])]
+              if not plans:
+                  continue
+              complete=all((Path('library/topics')/f"{t['id']}.json").exists() for t in plans)
+              if not complete:
+                  continue
+              for c in [root]+children:
+                  c['preparationStatus']='content-complete-no-opening-images'
+                  c['openingImagesStatus']='deferred'
+          p.write_text(json.dumps(cats,ensure_ascii=False,separators=(',',':'))+'\n','utf-8')
+          PY
       - name: Build and validate library manifest
         run: |
           set -euo pipefail
@@ -44,12 +67,12 @@ jobs:
       - name: Commit generated catalog
         run: |
           set -euo pipefail
-          if git diff --quiet -- library/manifest.json library/topics/index.json; then
+          if git diff --quiet -- library/categories.json library/manifest.json library/topics/index.json; then
             echo "No generated changes"
             exit 0
           fi
           git config user.name "basair-library-publisher"
           git config user.email "actions@users.noreply.github.com"
-          git add library/manifest.json library/topics/index.json
+          git add library/categories.json library/manifest.json library/topics/index.json
           git commit -m "library: refresh manifest and packages [library-manifest]"
           git push
