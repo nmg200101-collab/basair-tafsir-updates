@@ -3,7 +3,9 @@ name: Basair Tafsir Generic Publisher
 on:
   push:
     paths:
+      - 'surah-*/001/part-*.json'
       - 'publish-queue/tafsir-surah-*-001.json'
+      - '.github/workflows/basair-tafsir-generic-publisher.yml'
 
 permissions:
   contents: write
@@ -20,16 +22,66 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Resolve publish request
+      - name: Resolve target surah
         shell: bash
         run: |
           git pull --rebase origin main
-          marker="$(git diff-tree --no-commit-id --name-only -r "$GITHUB_SHA" | grep -E '^publish-queue/tafsir-surah-[0-9]{3}-001\.json$' | head -n 1)"
-          if [ -z "$marker" ]; then
-            echo "No Tafsir publish request marker found in trigger commit."
-            exit 1
-          fi
-          echo "MARKER=$marker" >> "$GITHUB_ENV"
+          python - <<'PY'
+          import json, pathlib, re, os, subprocess
+
+          ROOT = pathlib.Path('.')
+          manifest = json.loads((ROOT/'basair-tafsir-manifest.json').read_text(encoding='utf-8'))
+          if manifest.get('schema') != 'basair-tafsir-update-v2':
+              raise SystemExit('Manifest schema changed; refusing publish')
+
+          first_missing = next((x for x in range(80,115) if str(x) not in manifest.get('surahs',{})), None)
+          if first_missing is None:
+              raise SystemExit('All surahs 80..114 are already published')
+
+          changed = subprocess.check_output(
+              ['git','diff-tree','--no-commit-id','--name-only','-r',os.environ['GITHUB_SHA']],
+              text=True
+          ).splitlines()
+
+          part_surahs = sorted({
+              int(m.group(1))
+              for p in changed
+              for m in [re.match(r'^surah-([0-9]{3})/001/part-.*\.json$', p)]
+              if m
+          })
+          marker_surahs = sorted({
+              int(m.group(1))
+              for p in changed
+              for m in [re.match(r'^publish-queue/tafsir-surah-([0-9]{3})-001\.json$', p)]
+              if m
+          })
+
+          if part_surahs:
+              if len(part_surahs) != 1:
+                  raise SystemExit(f'Multiple surahs staged in one commit: {part_surahs}')
+              n = part_surahs[0]
+              source = 'staged-part'
+          elif marker_surahs:
+              if len(marker_surahs) != 1:
+                  raise SystemExit(f'Multiple publish markers in one commit: {marker_surahs}')
+              n = marker_surahs[0]
+              source = 'legacy-marker'
+          elif '.github/workflows/basair-tafsir-generic-publisher.yml' in changed:
+              n = first_missing
+              source = 'workflow-bootstrap'
+              if not (ROOT/f'surah-{n:03d}'/'001').exists():
+                  raise SystemExit(f'Bootstrap found no staged directory for Surah {n}')
+          else:
+              raise SystemExit('No supported Tafsir publish trigger found')
+
+          if n != first_missing:
+              raise SystemExit(f'Out-of-order request: expected Surah {first_missing}, got {n}')
+
+          with open(os.environ['GITHUB_ENV'],'a',encoding='utf-8') as f:
+              f.write(f'TARGET_SURAH={n}\n')
+              f.write(f'TRIGGER_SOURCE={source}\n')
+          print(f'TARGET_SURAH={n} source={source}')
+          PY
 
       - name: Validate staged surah and update manifest
         shell: bash
@@ -39,7 +91,6 @@ jobs:
 
           ROOT = pathlib.Path('.')
           MANIFEST = ROOT / 'basair-tafsir-manifest.json'
-          marker_path = ROOT / os.environ['MARKER']
 
           expected_counts = {
             80:42,81:29,82:19,83:36,84:25,85:22,86:17,87:19,88:26,
@@ -67,10 +118,7 @@ jobs:
           def norm(s):
               return re.sub(r'\s+', ' ', s).strip()
 
-          req = json.loads(marker_path.read_text(encoding='utf-8'))
-          if req.get('schema') != 'basair-tafsir-publish-request-v1':
-              raise SystemExit('Bad publish request schema')
-          n = int(req.get('surah', 0))
+          n = int(os.environ['TARGET_SURAH'])
           if n not in expected_counts:
               raise SystemExit(f'Surah {n} outside allowed range 80..114')
 
@@ -79,10 +127,8 @@ jobs:
               raise SystemExit('Manifest schema changed; refusing publish')
 
           first_missing = next((x for x in range(80,115) if str(x) not in manifest.get('surahs',{})), None)
-          if first_missing is None:
-              raise SystemExit('All surahs 80..114 are already published')
           if n != first_missing:
-              raise SystemExit(f'Out-of-order request: expected Surah {first_missing}, got {n}')
+              raise SystemExit(f'Out-of-order publish: expected Surah {first_missing}, got {n}')
           if str(n) in manifest.get('surahs',{}):
               raise SystemExit(f'Surah {n} already published; refusing overwrite')
           if str(n-1) not in manifest.get('surahs',{}):
@@ -178,7 +224,7 @@ jobs:
           }
           MANIFEST.write_text(json.dumps(manifest, ensure_ascii=False, separators=(',', ':')), encoding='utf-8')
 
-          print(f'QA=PASS surah={n} name={name} ayahs={len(ayahs)} parts={len(parts)}')
+          print(f'QA=PASS surah={n} name={name} ayahs={len(ayahs)} parts={len(parts)} source={os.environ.get("TRIGGER_SOURCE")}')
           print(f'canonical_recipe={recipe}')
           print(f'canonical_sha256={canonical}')
           print('parts=' + json.dumps(parts, ensure_ascii=False))
@@ -190,7 +236,7 @@ jobs:
           git config user.name 'basair-publisher'
           git config user.email 'actions@users.noreply.github.com'
           git add basair-tafsir-manifest.json
-          git commit -m "Publish Basair tafsir from $MARKER"
+          git commit -m "Publish Basair tafsir Surah $TARGET_SURAH"
           git pull --rebase origin main
           git push origin HEAD:main
 
@@ -200,8 +246,7 @@ jobs:
           python - <<'PY'
           import json, pathlib, os, subprocess, urllib.request, time
 
-          marker = json.loads(pathlib.Path(os.environ['MARKER']).read_text(encoding='utf-8'))
-          n = int(marker['surah'])
+          n = int(os.environ['TARGET_SURAH'])
           sha = subprocess.check_output(['git','rev-parse','HEAD'], text=True).strip()
           base = f'https://raw.githubusercontent.com/nmg200101-collab/basair-tafsir-updates/{sha}'
 
