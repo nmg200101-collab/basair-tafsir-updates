@@ -34,9 +34,15 @@ jobs:
           if manifest.get('schema') != 'basair-tafsir-update-v2':
               raise SystemExit('Manifest schema changed; refusing publish')
 
-          first_missing = next((x for x in range(80,115) if str(x) not in manifest.get('surahs',{})), None)
+          def next_target():
+              core = next((x for x in range(80,115) if str(x) not in manifest.get('surahs',{})), None)
+              if core is not None:
+                  return core
+              return next((x for x in (1,2,12) if str(x) not in manifest.get('surahs',{})), None)
+
+          first_missing = next_target()
           if first_missing is None:
-              raise SystemExit('All surahs 80..114 are already published')
+              raise SystemExit('All target surahs are already published')
 
           changed = subprocess.check_output(
               ['git','diff-tree','--no-commit-id','--name-only','-r',os.environ['GITHUB_SHA']],
@@ -93,12 +99,14 @@ jobs:
           MANIFEST = ROOT / 'basair-tafsir-manifest.json'
 
           expected_counts = {
+            1:7,2:286,12:111,
             80:42,81:29,82:19,83:36,84:25,85:22,86:17,87:19,88:26,
             89:30,90:20,91:15,92:21,93:11,94:8,95:8,96:19,97:5,
             98:8,99:8,100:11,101:11,102:8,103:3,104:9,105:5,106:4,
             107:7,108:3,109:6,110:3,111:5,112:4,113:5,114:6
           }
           expected_names = {
+            1:'الفاتحة',2:'البقرة',12:'يوسف',
             80:'عبس',81:'التكوير',82:'الانفطار',83:'المطففين',84:'الانشقاق',
             85:'البروج',86:'الطارق',87:'الأعلى',88:'الغاشية',89:'الفجر',
             90:'البلد',91:'الشمس',92:'الليل',93:'الضحى',94:'الشرح',
@@ -118,21 +126,32 @@ jobs:
           def norm(s):
               return re.sub(r'\s+', ' ', s).strip()
 
-          n = int(os.environ['TARGET_SURAH'])
-          if n not in expected_counts:
-              raise SystemExit(f'Surah {n} outside allowed range 80..114')
-
           manifest = json.loads(MANIFEST.read_text(encoding='utf-8'))
           if manifest.get('schema') != 'basair-tafsir-update-v2':
               raise SystemExit('Manifest schema changed; refusing publish')
 
-          first_missing = next((x for x in range(80,115) if str(x) not in manifest.get('surahs',{})), None)
+          def next_target():
+              core = next((x for x in range(80,115) if str(x) not in manifest.get('surahs',{})), None)
+              if core is not None:
+                  return core
+              return next((x for x in (1,2,12) if str(x) not in manifest.get('surahs',{})), None)
+
+          n = int(os.environ['TARGET_SURAH'])
+          if n not in expected_counts:
+              raise SystemExit(f'Surah {n} is outside the approved publisher targets')
+
+          first_missing = next_target()
           if n != first_missing:
               raise SystemExit(f'Out-of-order publish: expected Surah {first_missing}, got {n}')
           if str(n) in manifest.get('surahs',{}):
               raise SystemExit(f'Surah {n} already published; refusing overwrite')
-          if str(n-1) not in manifest.get('surahs',{}):
-              raise SystemExit(f'Previous Surah {n-1} is not published')
+
+          if n in (1,2,12):
+              if any(str(x) not in manifest.get('surahs',{}) for x in range(80,115)):
+                  raise SystemExit('Legacy completion is blocked until Surahs 80..114 are complete')
+              expected_legacy = next((x for x in (1,2,12) if str(x) not in manifest.get('surahs',{})), None)
+              if n != expected_legacy:
+                  raise SystemExit(f'Legacy order violation: expected Surah {expected_legacy}, got {n}')
 
           placeholder = re.compile(r'placeholder|todo|tbd|xxx', re.I)
 
@@ -190,8 +209,6 @@ jobs:
 
               return name, ayahs, raws, parts
 
-          prev_name, prev_ayahs, prev_raws, prev_parts = load_surah(n-1)
-          target = manifest['surahs'][str(n-1)]['canonical_sha256']
           candidates = {
               'ayahs_compact': lambda num,name,a,r,p: compact(a),
               'surah_ayahs_compact': lambda num,name,a,r,p: compact({'surah':num,'ayahs':a}),
@@ -202,9 +219,15 @@ jobs:
               'part_hashes_json': lambda num,name,a,r,p: compact([x['sha256'] for x in p]),
               'parts_meta_compact': lambda num,name,a,r,p: compact(p),
           }
-          recipe = next((k for k,f in candidates.items() if sha256(f(n-1,prev_name,prev_ayahs,prev_raws,prev_parts)) == target), None)
+
+          anchor = 114 if n == 1 else n - 1
+          if str(anchor) not in manifest.get('surahs',{}):
+              raise SystemExit(f'Canonical anchor Surah {anchor} is not published')
+          anchor_name, anchor_ayahs, anchor_raws, anchor_parts = load_surah(anchor)
+          target = manifest['surahs'][str(anchor)]['canonical_sha256']
+          recipe = next((k for k,f in candidates.items() if sha256(f(anchor,anchor_name,anchor_ayahs,anchor_raws,anchor_parts)) == target), None)
           if recipe is None:
-              raise SystemExit('Could not infer canonical SHA recipe from previous published surah')
+              raise SystemExit(f'Could not infer canonical SHA recipe from anchor Surah {anchor}')
 
           name, ayahs, raws, parts = load_surah(n)
           if name != expected_names[n]:
@@ -244,7 +267,7 @@ jobs:
         shell: bash
         run: |
           python - <<'PY'
-          import json, pathlib, os, subprocess, urllib.request, time
+          import json, os, subprocess, urllib.request, time
 
           n = int(os.environ['TARGET_SURAH'])
           sha = subprocess.check_output(['git','rev-parse','HEAD'], text=True).strip()
