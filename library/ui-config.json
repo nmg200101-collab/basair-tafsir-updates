@@ -1,0 +1,21 @@
+{
+  "schema": "basair-quran-library-ui-config-v1",
+  "schemaVersion": 1,
+  "revision": 1,
+  "display": {
+    "density": "compact",
+    "showStats": false,
+    "showStatus": true,
+    "defaultCategoryLayout": "list"
+  },
+  "tools": [
+    "favorites",
+    "continue",
+    "downloads",
+    "settings"
+  ],
+  "categories": {},
+  "messages": {
+    "librarySubtitle": "موضوعات القرآن ومعانيه"
+  }
+}
