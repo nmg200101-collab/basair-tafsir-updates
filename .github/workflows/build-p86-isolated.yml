@@ -56,7 +56,7 @@ jobs:
           test -f p86-runtime-lab/src/main/assets/www/index.html
           test "$(find p86-runtime-lab/src/main/assets -type f | wc -l)" -eq 1
           grep -q 'p86.runtime.lab.visual' p86-runtime-lab/build.gradle
-          ! find p86-runtime-lab -iname '*.apk' -o -iname '*.keystore' -o -iname '*.p12'
+          test -z "$(find p86-runtime-lab -type f \( -iname '*.apk' -o -iname '*.keystore' -o -iname '*.p12' \) -print -quit)"
       - name: Build P86.8 generic visual host (no protected assets)
         run: gradle -p p86-runtime-lab --no-daemon --stacktrace assembleDebug
       - name: Publish generic host to be populated with owner's V655 assets LOCALLY
