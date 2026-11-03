@@ -219,7 +219,7 @@ public final class V655VisualLabActivity extends Activity {
         if(alreadyReady){
             // Warm return must prove that the preserved runtime is still active.
             v.evaluateJavascript(
-                "(function(){var x=document.querySelector('.view.active');"
+                "(function(){try{var x=document.querySelector('.view.active');"
                 +"return !!(x&&x.id==='mushafReader')}catch(e){return false})()",
                 r -> {if("true".equals(r))show(target,true);
                     else fail("القارئ المحفوظ لم يعد جاهزًا؛ رفض العرض");});
@@ -275,7 +275,7 @@ public final class V655VisualLabActivity extends Activity {
     private static String trustedFile(int slot,Uri uri){
         if(uri==null||!"https".equalsIgnoreCase(uri.getScheme()))return null;
         if(!HOSTS[slot].equalsIgnoreCase(uri.getHost()))return null;
-        if(uri.getPort()!=-1||uri.getUserInfo()!=null)return null;
+        if(uri.getPort()!=-1||uri.getEncodedAuthority().contains("@"))return null;
         String p=uri.getPath();
         if(p==null||!p.startsWith("/")||p.contains("\\")||p.indexOf('\0')>=0)return null;
         if(p.length()==1)return "index.html";
