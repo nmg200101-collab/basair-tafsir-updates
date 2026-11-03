@@ -220,7 +220,7 @@ public final class V655VisualLabActivity extends Activity {
             // Warm return must prove that the preserved runtime is still active.
             v.evaluateJavascript(
                 "(function(){try{var x=document.querySelector('.view.active');"
-                +"return !!(x&&x.id==='mushafReader')}catch(e){return false})()",
+                +"return !!(x&&x.id==='mushafReader')}catch(e){return false}})()",
                 r -> {if("true".equals(r))show(target,true);
                     else fail("القارئ المحفوظ لم يعد جاهزًا؛ رفض العرض");});
         }else show(target,false);
