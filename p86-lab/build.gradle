@@ -1,0 +1,18 @@
+plugins {
+    id 'com.android.application' version '8.5.2'
+}
+android {
+    namespace 'p86.lab'
+    compileSdk 35
+    defaultConfig {
+        applicationId 'p86.lab.isolated.synthetic'
+        minSdk 26
+        targetSdk 32
+        versionCode 1
+        versionName 'p86-lab.1'
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}
