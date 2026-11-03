@@ -1,0 +1,16 @@
+plugins { id 'com.android.application' version '8.5.2' }
+android {
+  namespace 'p86.runtime.lab'
+  compileSdk 35
+  defaultConfig {
+    applicationId 'p86.runtime.lab.visual'
+    minSdk 26
+    targetSdk 32
+    versionCode 1
+    versionName 'p86.8-visual-lab'
+  }
+  compileOptions {
+    sourceCompatibility JavaVersion.VERSION_17
+    targetCompatibility JavaVersion.VERSION_17
+  }
+}
