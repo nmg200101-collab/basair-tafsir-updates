@@ -5,6 +5,7 @@ on:
       - p86-lab-isolated
     paths:
       - 'p86-lab/**'
+      - 'p86-runtime-lab/**'
       - '.github/workflows/build-p86-isolated.yml'
   workflow_dispatch:
 
@@ -48,4 +49,19 @@ jobs:
         with:
           name: P86-SYNTHETIC-DEBUG-APK-NOT-BASAIR
           path: p86-lab/build/outputs/apk/debug/*.apk
+          if-no-files-found: error
+
+      - name: Check P86.8 offline host has only placeholder assets
+        run: |
+          test -f p86-runtime-lab/src/main/assets/www/index.html
+          test "$(find p86-runtime-lab/src/main/assets -type f | wc -l)" -eq 1
+          grep -q 'p86.runtime.lab.visual' p86-runtime-lab/build.gradle
+          ! find p86-runtime-lab -iname '*.apk' -o -iname '*.keystore' -o -iname '*.p12'
+      - name: Build P86.8 generic visual host (no protected assets)
+        run: gradle -p p86-runtime-lab --no-daemon --stacktrace assembleDebug
+      - name: Publish generic host to be populated with owner's V655 assets LOCALLY
+        uses: actions/upload-artifact@v4
+        with:
+          name: P86-8-EMPTY-OFFLINE-HOST-NO-V655
+          path: p86-runtime-lab/build/outputs/apk/debug/*.apk
           if-no-files-found: error
