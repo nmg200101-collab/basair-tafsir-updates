@@ -1,0 +1,25 @@
+/* BASAIR P93.0 — original/blue image recovery only.
+ * The live print choice on BODY overrides stale V686 HTML prepaint intent.
+ * This patch never changes Tajweed's ready/loading/hidden behavior.
+ * The blue option still uses the original raster, pending authentic Ottoman art.
+ */
+html body[data-v144-print="original"]:not(.stableDigital):not(.h25-hifz):not(.h90-review):not(.h100-teacher) #mushafReader#mushafReader#mushafReader#mushafReader .localPageStage > img[data-mushaf-page],
+html body[data-v144-print="original"]:not(.stableDigital):not(.h25-hifz):not(.h90-review):not(.h100-teacher) #mushafReader#mushafReader#mushafReader#mushafReader .continuousImagePage > img[data-mushaf-page],
+html body[data-v144-print="blue"]:not(.stableDigital):not(.h25-hifz):not(.h90-review):not(.h100-teacher) #mushafReader#mushafReader#mushafReader#mushafReader .localPageStage > img[data-mushaf-page],
+html body[data-v144-print="blue"]:not(.stableDigital):not(.h25-hifz):not(.h90-review):not(.h100-teacher) #mushafReader#mushafReader#mushafReader#mushafReader .continuousImagePage > img[data-mushaf-page] {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+}
+/* Any stale Tajweed DOM child must not cover the restored original page. */
+html body[data-v144-print="original"]:not(.stableDigital):not(.h25-hifz):not(.h90-review):not(.h100-teacher) #mushafReader#mushafReader#mushafReader#mushafReader .rc18TajwidRaster,
+html body[data-v144-print="original"]:not(.stableDigital):not(.h25-hifz):not(.h90-review):not(.h100-teacher) #mushafReader#mushafReader#mushafReader#mushafReader .rc18TajwidLoading,
+html body[data-v144-print="original"]:not(.stableDigital):not(.h25-hifz):not(.h90-review):not(.h100-teacher) #mushafReader#mushafReader#mushafReader#mushafReader .rc18TajwidOrnament,
+html body[data-v144-print="original"]:not(.stableDigital):not(.h25-hifz):not(.h90-review):not(.h100-teacher) #mushafReader#mushafReader#mushafReader#mushafReader .rc18TajwidLabels,
+html body[data-v144-print="blue"]:not(.stableDigital):not(.h25-hifz):not(.h90-review):not(.h100-teacher) #mushafReader#mushafReader#mushafReader#mushafReader .rc18TajwidRaster,
+html body[data-v144-print="blue"]:not(.stableDigital):not(.h25-hifz):not(.h90-review):not(.h100-teacher) #mushafReader#mushafReader#mushafReader#mushafReader .rc18TajwidLoading,
+html body[data-v144-print="blue"]:not(.stableDigital):not(.h25-hifz):not(.h90-review):not(.h100-teacher) #mushafReader#mushafReader#mushafReader#mushafReader .rc18TajwidOrnament,
+html body[data-v144-print="blue"]:not(.stableDigital):not(.h25-hifz):not(.h90-review):not(.h100-teacher) #mushafReader#mushafReader#mushafReader#mushafReader .rc18TajwidLabels {
+  display: none !important;
+}
