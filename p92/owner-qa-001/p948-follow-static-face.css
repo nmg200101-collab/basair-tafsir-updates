@@ -1,0 +1,414 @@
+/* BASAIR P93.6 owner QA008: compact night print brightness, clearer bell inbox and verified-restart CTA.
+   Scoped to existing WebView UI; does not touch Quran artwork, audio or Android. */
+#p935NightControls.p936-refined {
+ box-sizing:border-box!important;position:relative!important;overflow:hidden!important;
+ margin:9px 0 1px!important;padding:12px 13px 10px!important;border-radius:16px!important;
+ border:1px solid #88af9a!important;background:linear-gradient(140deg,#edf8f2,#f9faf5)!important;
+ box-shadow:0 2px 12px #071b1421!important;color:#1b4a39!important;
+}
+#p935NightControls.p936-refined[hidden]{display:none!important}
+#p935NightControls.p936-refined .p935-night-heading{display:flex!important;align-items:center!important;gap:10px!important;margin:0 0 7px!important;}
+#p935NightControls.p936-refined .p936-title-group{display:flex;align-items:center;gap:9px;flex:1;min-width:0;}
+#p935NightControls.p936-refined .p936-moon-icon{flex:0 0 30px;width:30px;height:30px;display:grid;place-items:center;border-radius:11px;background:#d4ebe0;color:#246c50;font-size:21px;line-height:1;}
+#p935NightControls.p936-refined .p936-title-copy{display:flex;flex-direction:column;gap:1px;min-width:0;}
+#p935NightControls.p936-refined .p936-title-copy strong{color:inherit;font-size:14px!important;line-height:1.35;font-weight:800;}
+#p935NightControls.p936-refined .p936-title-copy small{font-size:10.5px!important;color:#577466;line-height:1.3;}
+#p935NightControls.p936-refined output{margin-inline-start:auto;min-width:54px;border:1px solid #b9dfcc;border-radius:9px;padding:5px 7px;background:#deeee5!important;color:#125037!important;font-size:14px!important;font-weight:800;font-variant-numeric:tabular-nums;}
+#p935NightControls.p936-refined .p935-night-row{display:grid!important;grid-template-columns:36px minmax(0,1fr) 36px!important;gap:10px!important;align-items:center!important;direction:ltr!important;margin:3px 0 5px!important}
+#p935NightControls.p936-refined .p935-night-row button{height:37px!important;min-height:37px!important;width:36px!important;min-width:36px!important;display:grid!important;place-items:center!important;font:700 23px/1 system-ui!important;padding:0!important;border-radius:10px!important;border:1px solid #92b9a4!important;background:#fff!important;color:#235b46!important;box-shadow:0 1px 3px #103c2a18!important}
+#p935NightControls.p936-refined .p935-night-row button:active{transform:scale(.96)}
+#p935NightControls.p936-refined input[type="range"]{width:100%!important;min-width:0!important;max-width:100%!important;accent-color:#2e9473!important;height:28px!important;margin:0!important;cursor:pointer}
+#p935NightControls.p936-refined input[type="range"]::-webkit-slider-runnable-track{height:7px;border-radius:9px;background:#bdd9ca;}
+#p935NightControls.p936-refined input[type="range"]::-webkit-slider-thumb{margin-top:-5px;}
+#p935NightControls.p936-refined .p935-night-foot{display:flex!important;align-items:center!important;gap:8px!important;margin-top:5px!important;font-size:10px!important;color:#526e60!important}
+#p935NightControls.p936-refined .p935-night-foot span{flex:1;line-height:1.35;}
+#p935NightControls.p936-refined .p935-night-foot button{border-radius:8px!important;padding:5px 10px!important;min-height:29px!important;font:700 11px system-ui!important;border:1px solid #b4d1c3!important;background:#f0f6f1!important;color:#295e49!important}
+body.dark #p935NightControls.p936-refined, body.night #p935NightControls.p936-refined{
+ background:linear-gradient(135deg,#143b30,#102d28)!important;border-color:#497c69!important;color:#eff8ed!important;box-shadow:0 6px 20px #0002!important
+}
+body.dark #p935NightControls.p936-refined .p936-moon-icon,body.night #p935NightControls.p936-refined .p936-moon-icon{background:#255644;color:#f1d9a3}
+body.dark #p935NightControls.p936-refined .p936-title-copy small,body.night #p935NightControls.p936-refined .p936-title-copy small{color:#bdd6c7!important}
+body.dark #p935NightControls.p936-refined output,body.night #p935NightControls.p936-refined output{background:#285945!important;color:#f6fff7!important;border-color:#518d73!important}
+body.dark #p935NightControls.p936-refined .p935-night-row button,body.night #p935NightControls.p936-refined .p935-night-row button{background:#235242!important;color:#eef9ef!important;border-color:#578f76!important}
+body.dark #p935NightControls.p936-refined .p935-night-foot,body.night #p935NightControls.p936-refined .p935-night-foot{color:#bfd6c9!important}
+body.dark #p935NightControls.p936-refined .p935-night-foot button,body.night #p935NightControls.p936-refined .p935-night-foot button{background:#235041!important;color:#effaf3!important;border-color:#53816c!important}
+/* Notifications: a compact inbox, not a second More menu. */
+#bqNoticesSheet.p936-notices .bq-dialog-body{box-sizing:border-box!important;padding:15px 16px 18px!important;}
+#bqNoticesSheet .p936-notice-heading{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:3px 0 10px;margin:0 0 9px;border-bottom:1px solid #d6ddcf;}
+#bqNoticesSheet .p936-notice-heading strong{font-size:14px!important;color:inherit}
+#bqNoticesSheet .p936-notice-counter{background:#dcefe4;color:#1b5c43;border-radius:20px;padding:4px 10px;font:700 11px system-ui;white-space:nowrap}
+#bqNoticesSheet .p936-notice-toolbar{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.85fr) minmax(0,.75fr);gap:7px;margin:0 0 13px;}
+#bqNoticesSheet .p936-notice-toolbar button{box-sizing:border-box!important;width:100%!important;margin:0!important;min-height:39px;padding:6px!important;display:grid;place-items:center;border-radius:10px!important;font:700 12px system-ui!important;border:1px solid #b8d0c0!important;background:#f4f9f2!important;color:#1b573d!important;cursor:pointer}
+#bqNoticesSheet .p936-notice-toolbar #p935OpenUpdates{background:#1e7355!important;color:white!important;border-color:#1e7355!important}
+#bqNoticesSheet.p936-notices .bq-live-notices{display:grid!important;gap:8px!important;margin-top:5px;max-height:min(42vh,370px);overflow-y:auto;overscroll-behavior:contain;padding:0 2px 3px}
+#bqNoticesSheet.p936-notices .bq-notice-item{position:relative;display:grid!important;gap:3px!important;margin:0!important;padding:12px 12px 11px!important;border:1px solid #d5dfd4!important;border-radius:13px!important;background:#fdfdf8!important;box-shadow:0 1px 5px #102c1b0a!important}
+#bqNoticesSheet.p936-notices .bq-notice-item.p936-unread{border-inline-start:4px solid #23936e!important;background:#f1f9f3!important}
+#bqNoticesSheet.p936-notices .bq-notice-item strong{font-size:13px!important;line-height:1.5;color:#1b4b39!important}
+#bqNoticesSheet.p936-notices .bq-notice-item small{font-size:10px!important;line-height:1.55;color:#617d6c!important}
+#bqNoticesSheet.p936-notices .bq-notice-item p{font-size:11px!important;line-height:1.6!important;color:#466251!important;margin:2px 0 0!important}
+#bqNoticesSheet.p936-notices .bq-feed-box{padding:10px 2px 0!important;margin-top:9px!important;border-top:1px solid #d5dfd4!important}
+#bqNoticesSheet.p936-notices .bq-feed-box>p:first-child{display:none!important}
+#bqNoticesSheet.p936-notices .bq-feed-status{font-size:10px!important;line-height:1.6!important}
+body.dark #bqNoticesSheet .p936-notice-counter{background:#28634d!important;color:#eaf7ed!important}
+body.dark #bqNoticesSheet .p936-notice-heading{border-color:#416858!important}
+body.dark #bqNoticesSheet .p936-notice-toolbar button{background:#1c4939!important;border-color:#5b8572!important;color:#f5faf2!important}
+body.dark #bqNoticesSheet .p936-notice-toolbar #p935OpenUpdates{background:#27785a!important;border-color:#278465!important;color:white!important}
+body.dark #bqNoticesSheet.p936-notices .bq-notice-item{background:#193a31!important;border-color:#406a57!important}
+body.dark #bqNoticesSheet.p936-notices .bq-notice-item.p936-unread{background:#1d4939!important;border-inline-start-color:#69c9a4!important}
+body.dark #bqNoticesSheet.p936-notices .bq-notice-item strong{color:#f3f9ef!important}
+body.dark #bqNoticesSheet.p936-notices .bq-notice-item p{color:#cbdfd0!important}
+/* Restart prompt appears only after a successfully staged and locally verified update. */
+#basairP92Dialog .p936-restart-offer{display:grid;gap:8px;padding:11px;margin:12px 0 0;border:1px solid #8cb49e;border-radius:12px;background:#edf8f0;color:#173e2d;direction:rtl}
+#basairP92Dialog .p936-restart-offer[hidden]{display:none!important}
+#basairP92Dialog .p936-restart-offer strong{font-size:13px;line-height:1.5}
+#basairP92Dialog .p936-restart-offer p{margin:0;font-size:11px;line-height:1.65;color:#456655}
+#basairP92Dialog .p936-restart-actions{display:flex;flex-wrap:wrap;gap:8px}
+#basairP92Dialog .p936-restart-actions button{min-height:40px;padding:8px 12px;border:0;border-radius:9px;background:#247252;color:white;font:700 12px system-ui}
+#basairP92Dialog .p936-restart-actions .p936-later{background:#deebe2;color:#235640;border:1px solid #a9ccba}
+@media(max-width:360px){#bqNoticesSheet .p936-notice-toolbar{gap:5px}#bqNoticesSheet .p936-notice-toolbar button{font-size:11px!important}#p935NightControls.p936-refined .p936-night-heading{gap:6px}}
+/* BASAIR P94 compact recovery only after a genuine follow stall. Hidden otherwise. */
+#p94FollowRecover[hidden]{display:none!important}
+#p94FollowRecover{position:fixed;z-index:2147483050;bottom:calc(76px + env(safe-area-inset-bottom,0px));right:12px;left:12px;max-width:520px;margin:auto;padding:10px 12px;border:1px solid #86bca9;border-radius:15px;box-shadow:0 6px 20px #0003;background:#f7fbf8;color:#154e3c;direction:rtl;font:600 14px system-ui,Arial,sans-serif;line-height:1.7}
+#p94FollowRecover strong,#p94FollowRecover span{display:block}
+#p94FollowRecover span{font-size:12px;font-weight:400;color:#37685c}
+#p94FollowRecover .p94-follow-actions{display:flex;gap:6px;margin-top:8px;align-items:center}
+#p94FollowRecover button{border:0;border-radius:10px;padding:8px 12px;background:#1d7056;color:#fff;font-weight:700;font-size:13px}
+#p94FollowRecover #p94FollowBack{background:#e3ede8;color:#16523d}
+#p94FollowRecover #p94FollowDismiss{margin-inline-start:auto;padding:6px 11px;background:transparent;color:#185540;font-size:18px}
+body.night #p94FollowRecover,body.night-mode #p94FollowRecover{background:#142e27;border-color:#336c56;color:#d8f1e6}
+body.night #p94FollowRecover span,body.night-mode #p94FollowRecover span{color:#a5c8bb}
+
+/* Basair Quran P94.2 QA012 — follow settings and a soft noninteractive reading guide. */
+#sequenceSheetV10 #bq942Options{box-sizing:border-box;margin:9px 12px 10px;padding:11px;border:1px solid rgba(77,140,121,.33);border-radius:17px;background:linear-gradient(150deg,rgba(34,105,79,.09),rgba(224,210,160,.07));color:var(--ink,#214d3e);direction:rtl;text-align:right;font-size:14px}
+#sequenceSheetV10 #bq942Options *{box-sizing:border-box}
+#bq942Options .bq942-top{display:flex;align-items:center;justify-content:space-between;gap:10px}
+#bq942Options .bq942-title{display:flex;flex-direction:column;gap:3px;min-width:0}
+#bq942Options .bq942-title b{font-size:15px;line-height:1.4;color:inherit}
+#bq942Options .bq942-title small{font-size:11px;color:var(--muted,#667c6f);line-height:1.4}
+#bq942Options .bq942-switch{display:flex;flex-shrink:0;align-items:center;gap:7px;cursor:pointer;font-weight:700;background:rgba(46,125,93,.09);padding:8px 10px;border-radius:100px}
+#bq942Options input[type=checkbox]{accent-color:#258465;width:19px;height:19px;margin:0;cursor:pointer}
+#bq942More{margin-top:9px;border-top:1px solid rgba(64,118,96,.18);padding-top:8px}
+#bq942More>summary{font-weight:700;color:#33806a;cursor:pointer;list-style:none;display:flex;align-items:center;justify-content:space-between;line-height:1.6;font-size:13px}
+#bq942More>summary::-webkit-details-marker{display:none}
+#bq942More[open]>summary span{transform:rotate(180deg)}
+#bq942More .bq942-more{display:grid;gap:10px;margin-top:10px}
+#bq942More .bq942-label,#bq942More .bq942-range>span{font-weight:700;font-size:13px;display:flex;justify-content:space-between;align-items:center;gap:8px}
+#bq942Options .bq942-colors{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+#bq942Options .bq942-colors button{min-height:38px;font-family:inherit;font-size:12px;font-weight:600;line-height:1.35;border-radius:10px;border:1px solid rgba(54,112,89,.23);background:rgba(255,255,255,.45);color:inherit;padding:4px;white-space:normal}
+#bq942Options .bq942-colors button.selected{border:2px solid #208264;background:rgba(29,132,100,.15);color:#166c52}
+#bq942Options .bq942-range{display:grid;gap:7px}
+#bq942Options .bq942-range output{font-variant-numeric:tabular-nums;font-size:12px;color:#28806a}
+#bq942Options .bq942-range input{accent-color:#228769;width:100%;height:24px;cursor:pointer}
+#bq942Options .bq942-hint{margin:0;font-size:11px;line-height:1.7;color:var(--muted,#64756b)}
+#bq942Options .bq942-reset{justify-self:start;border:1px solid #b5cfc1;background:transparent;color:#246c56;border-radius:10px;padding:7px 11px;font-size:12px;font-family:inherit;cursor:pointer}
+body.dark #bq942Options,body.night #bq942Options{color:#deefe9!important;background:linear-gradient(150deg,#1a3a30,#1b332d)!important;border-color:#3e6859!important}
+body.dark #bq942Options .bq942-title small,body.dark #bq942Options .bq942-hint{color:#b0c8be!important}
+body.dark #bq942Options .bq942-colors button{background:#203b31;color:#e6f3ec}
+body.dark #bq942Options .bq942-colors button.selected{background:#2a5545;color:#fff}
+/* Only the new guide, not Quran ink, is tinted. */
+#b345NormalStack .bq942-guide{position:absolute!important;display:block;left:10%;right:10%;width:80%;height:4.7%;z-index:9;pointer-events:none!important;border:1px solid rgba(var(--bq942-rgb,20,146,117),.15);border-radius:8px;box-shadow:0 1px 6px rgba(var(--bq942-rgb,20,146,117),.13);background:rgba(var(--bq942-rgb,20,146,117),var(--bq942-strength,.18));transition:top .20s linear;mix-blend-mode:multiply}
+#b345NormalStack .bq942-guide[hidden],body.bq942-guide-off #b345NormalStack .bq942-guide{display:none!important}
+body.bq942-guide-off #b345NormalStack .b345ExactPage .quranWord.current{background:transparent!important;box-shadow:none!important}
+body.bq942-guide-on #b345NormalStack .b345ExactPage .quranWord.current{background:rgba(var(--bq942-rgb,20,146,117),var(--bq942-strength,.18))!important}
+body.dark #b345NormalStack .bq942-guide{mix-blend-mode:normal;border-color:rgba(var(--bq942-rgb,20,146,117),.3)}
+/* A single explicit resume action when font recreation ends a running session. */
+#mushafReader #bq942Resume{position:fixed;bottom:calc(77px + env(safe-area-inset-bottom));right:8px;left:8px;z-index:220;display:flex;gap:8px;align-items:center;justify-content:space-between;direction:rtl;border-radius:15px;border:1px solid #81b29d;background:#f4faf7;box-shadow:0 10px 30px #0003;padding:10px;font-size:12px;color:#154d3b}
+#mushafReader #bq942Resume[hidden]{display:none!important}
+#mushafReader #bq942ResumeMsg{flex:1;line-height:1.5;font-weight:600}
+#mushafReader #bq942Resume button{border:0;border-radius:9px;padding:8px 10px;font-size:12px;font-family:inherit;cursor:pointer}
+#mushafReader #bq942ResumeButton{background:#186b50;color:white;font-weight:700}
+#mushafReader #bq942ResumeClose{background:#e2eee7;color:#154d3b}
+body.dark #mushafReader #bq942Resume{background:#193a30;color:#ebf8f0;border-color:#3e816a}
+
+
+/* BASAIR P94.3 / QA014 — compact readable Follow settings, true R95 highlight control. */
+#sequenceSheetV10.open {display:block!important;touch-action:auto!important;}
+#sequenceSheetV10 .sequencePanelV10{
+  box-sizing:border-box!important;position:absolute!important;left:6px!important;right:6px!important;
+  bottom:calc(59px + env(safe-area-inset-bottom,0px))!important;
+  width:auto!important;max-width:580px!important;
+  max-height:min(80dvh,700px)!important;overflow-x:hidden!important;overflow-y:auto!important;
+  overscroll-behavior:contain!important;scrollbar-width:thin!important;
+  border-radius:19px!important;padding:6px 9px 12px!important;
+  -webkit-overflow-scrolling:touch!important;
+}
+#sequenceSheetV10 .sequenceTitleV10{
+  position:sticky!important;top:-6px!important;z-index:6!important;
+  padding:8px 4px 9px!important;margin:0 0 8px!important;
+  background:var(--paper,#f9fbfa)!important;border-bottom:1px solid rgba(66,120,102,.16)!important;
+}
+#sequenceSheetV10 .sequenceTitleV10 b{font-size:1.03rem!important;line-height:1.35!important}
+#sequenceSheetV10 .sequenceTitleV10 small{font-size:.70rem!important;line-height:1.25!important}
+#sequenceSheetV10 #sequenceCloseV10{min-width:42px!important;min-height:42px!important;font-size:1.5rem!important;border-radius:12px!important;touch-action:manipulation!important;pointer-events:auto!important}
+#sequenceSheetV10 .v170ReciterBlock{margin:2px 0 8px!important;padding:7px 9px!important;border-radius:13px!important;gap:3px!important}
+#sequenceSheetV10 .v170ReciterBlock select{min-height:43px!important;margin:2px 0 0!important;font-size:.87rem!important}
+#sequenceSheetV10 .v170SequenceSettings{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:7px!important;margin:0!important}
+#sequenceSheetV10 .v170SequenceSettings>label{box-sizing:border-box!important;min-width:0!important;min-height:0!important;margin:0!important;padding:7px 8px!important;display:grid!important;align-content:start!important;gap:4px!important;border-radius:12px!important}
+#sequenceSheetV10 .v170SequenceSettings>label:last-child:nth-child(odd){grid-column:1/-1!important}
+#sequenceSheetV10 .v170SequenceSettings>label:last-child:nth-child(even){grid-column:auto!important}
+#sequenceSheetV10 .v170SequenceSettings label span{font-size:.82rem!important;line-height:1.3!important;margin:0!important}
+#sequenceSheetV10 .v170SequenceSettings select{box-sizing:border-box!important;min-height:39px!important;margin:0!important;font-size:.86rem!important;max-width:100%!important}
+#sequenceSheetV10 #bq942Options{margin:8px 0!important;padding:10px 11px!important;box-shadow:none!important;border-radius:14px!important}
+#sequenceSheetV10 #bq942Options .bq942-top{gap:8px!important}
+#sequenceSheetV10 #bq942Options .bq942-switch{min-height:40px!important;min-width:94px!important;justify-content:center!important;border-radius:12px!important}
+#sequenceSheetV10 #bq942Options .bq942-title b{font-size:14px!important}
+#sequenceSheetV10 #bq942Options .bq942-title small{font-size:11px!important}
+#sequenceSheetV10 #bq942More>summary{min-height:39px!important;display:flex!important;align-items:center!important;cursor:pointer!important;touch-action:manipulation!important;user-select:none!important}
+#sequenceSheetV10 .sequenceModeV10{margin:8px 0!important;gap:7px!important}
+#sequenceSheetV10 .sequenceModeV10 button{min-height:46px!important}
+#sequenceSheetV10 #v194s4FinalNote{margin:5px 0!important;padding:5px 8px!important;font-size:11px!important;line-height:1.4!important;border-radius:10px!important}
+body.dark #sequenceSheetV10 .sequenceTitleV10,body.night #sequenceSheetV10 .sequenceTitleV10{background:#102c25!important}
+@media(max-width:370px){#sequenceSheetV10 .sequencePanelV10{left:4px!important;right:4px!important;padding-left:7px!important;padding-right:7px!important}#sequenceSheetV10 .v170SequenceSettings{gap:6px!important}}
+/* Enforce a visual OFF for all B345 + R95 Follow overlays. Never remove Quran text. */
+body.bq944-shade-off #mushafReader #b345NormalStack .bq942-guide,
+body.bq944-shade-off #mushafReader #b345NormalStack .quranWord.current,
+body.bq944-shade-off #mushafReader #b345NormalStack .b441FollowAyah,
+body.bq944-shade-off #mushafReader #b345NormalStack .b441FollowWord,
+body.bq944-shade-off #mushafReader #b345NormalStack .b441FollowHit,
+body.bq944-shade-off #mushafReader #b274LargeTextHost .b441FollowAyah,
+body.bq944-shade-off #mushafReader #b274LargeTextHost .b441FollowWord,
+body.bq944-shade-off #mushafReader #stableDigitalHost .b441FollowAyah,
+body.bq944-shade-off #mushafReader #stableDigitalHost .b441FollowWord,
+body.bq944-shade-off #mushafReader #mushafText .b441FollowAyah,
+body.bq944-shade-off #mushafReader #mushafText .b441FollowWord{
+  background:transparent!important;box-shadow:none!important;outline:none!important;text-shadow:inherit!important;
+}
+body.bq944-shade-off #mushafReader #b345NormalStack .bq942-guide{display:none!important}
+/* Color/opacity apply to the actual R95 highlight layer, not only to a decorative guide. */
+body.bq944-shade-on #mushafReader .b441FollowAyah,
+body.bq944-shade-on #mushafReader .quranWord.current,
+body.bq944-shade-on #mushafReader .bq942-guide{
+  background:rgba(var(--bq944-rgb,20,146,117),var(--bq944-alpha,.18))!important;
+  box-shadow:inset 0 0 0 1px rgba(var(--bq944-rgb,20,146,117),.20)!important;
+  border-radius:.2em!important;
+}
+body.bq944-shade-on #mushafReader .b441FollowWord{
+  background:rgba(var(--bq944-rgb,20,146,117),var(--bq944-word-alpha,.3))!important;
+  box-shadow:0 0 .3em rgba(var(--bq944-rgb,20,146,117),.18)!important;
+}
+
+
+/* BASAIR P94.4 QA015 — one authoritative OFF gate for native R95 Follow markings.
+   Visual-only; do not hide text, selection targets, or touch layers. */
+html[data-bq945-shade="off"] body :is(#mushafReader,#b345NormalStack,#b274LargeTextHost,#stableDigitalHost,#mushafText,#printEditionViewport,.localPageStage) :is(.b441FollowAyah,.b441FollowWord,.b441FollowHit),
+html[data-bq945-shade="off"] body #mushafReader .quranWord.current {
+  background:none!important;
+  background-color:transparent!important;
+  background-image:none!important;
+  box-shadow:none!important;
+  outline:0!important;
+  border-color:transparent!important;
+}
+html[data-bq945-shade="off"] body .bq942-guide,
+html[data-bq945-shade="off"] body #b345NormalStack .bq942-guide {
+  display:none!important;
+  visibility:hidden!important;
+}
+/* Make the checkbox state legible without hiding the user's existing controls. */
+html[data-bq945-shade="off"] #bq942Options .bq942-switch {
+  opacity:.86;
+}
+
+
+/* P94.5 / owner QA015 — one compact Follow dialog, visible page above it.
+   Only geometry and existing controls; no Quran, audio or Back engine changes. */
+#sequenceSheetV10.open {display:block!important;touch-action:auto!important}
+#sequenceSheetV10.open .sequenceShadeV10 {
+  background:rgba(10,31,27,.42)!important;backdrop-filter:blur(1px);
+}
+#sequenceSheetV10.open .sequencePanelV10 {
+  position:absolute!important;box-sizing:border-box!important;
+  left:0!important;right:0!important;top:auto!important;
+  bottom:calc(12px + env(safe-area-inset-bottom,0px))!important;
+  width:calc(100% - 26px)!important;max-width:560px!important;
+  max-height:min(70dvh,650px)!important;min-height:0!important;
+  margin:0 auto!important;padding:0 12px 12px!important;
+  overflow-y:auto!important;overflow-x:hidden!important;
+  overscroll-behavior:contain!important;-webkit-overflow-scrolling:touch!important;
+  scrollbar-width:thin!important;scrollbar-color:#a2c5b7 transparent;
+  background:#fbfdfc!important;color:#173e32!important;
+  border:1px solid #bbd3c9!important;border-radius:23px!important;
+  box-shadow:0 18px 55px rgba(6,31,24,.26)!important;
+  direction:rtl!important;text-align:right!important;
+}
+#sequenceSheetV10 .sequencePanelV10.bq946-compact {scroll-padding-top:72px;scroll-padding-bottom:80px;}
+#sequenceSheetV10 .sequenceGrabV10 {width:44px!important;height:4px!important;margin:9px auto 2px!important;background:#98bfb3!important;border-radius:9px!important}
+#sequenceSheetV10 .sequenceTitleV10 {
+  position:sticky!important;top:0!important;z-index:8!important;
+  display:flex!important;align-items:center!important;gap:8px!important;
+  margin:0 -12px 10px!important;padding:9px 13px 10px!important;
+  background:rgba(251,253,252,.98)!important;border-bottom:1px solid #dae8e1!important;
+  border-radius:18px 18px 0 0!important;backdrop-filter:blur(6px);
+}
+#sequenceSheetV10 .sequenceTitleV10 b{font-size:17px!important;color:#164c3d!important;line-height:1.3!important}
+#sequenceSheetV10 .sequenceTitleV10 small {display:block!important;font-size:11px!important;color:#6c8077!important;line-height:1.45!important;margin-top:2px!important}
+#sequenceSheetV10 #sequenceCloseV10 {width:39px!important;height:39px!important;min-width:39px!important;min-height:39px!important;border-radius:12px!important;border:1px solid #d7e5dd!important;background:#f0f7f3!important;color:#164d3e!important;font-size:24px!important;line-height:1!important;cursor:pointer!important}
+#sequenceSheetV10 .v170ReciterBlock {margin:0 0 8px!important;padding:9px 10px!important;border:1px solid #dce8e2!important;background:#f5faf7!important;border-radius:14px!important;box-shadow:none!important}
+#sequenceSheetV10 .v170ReciterBlock label {margin:0!important;padding:0!important}
+#sequenceSheetV10 .v170ReciterBlock b {font-size:13px!important}
+#sequenceSheetV10 .v170ReciterBlock small {display:none!important}
+#sequenceSheetV10 .v170ReciterBlock select {width:100%!important;min-height:40px!important;font-size:13px!important;margin:4px 0 0!important;border-radius:11px!important;background:white!important;color:#183e32!important}
+#sequenceSheetV10 .v170SequenceSettings {
+  display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:8px!important;margin:0 0 7px!important;padding:0!important;
+}
+#sequenceSheetV10 .v170SequenceSettings > label {
+  min-width:0!important;min-height:0!important;margin:0!important;
+  padding:8px 9px!important;gap:4px!important;
+  border:1px solid #dce9e2!important;border-radius:13px!important;
+  background:#f7faf8!important;box-shadow:none!important;
+}
+#sequenceSheetV10 .v170SequenceSettings > label span{font-size:12px!important;font-weight:650!important;color:#56766a!important;line-height:1.25!important}
+#sequenceSheetV10 .v170SequenceSettings select{font-size:13px!important;min-height:39px!important;border-radius:10px!important;background:white!important;color:#164034!important;max-width:100%!important}
+#sequenceSheetV10 .v170SequenceSettings .v194s4RepeatHint{display:none!important}
+#sequenceSheetV10 .r107RepeatHint {padding:4px 8px!important;margin:3px 0!important;font-size:11px!important;line-height:1.4!important;opacity:.75!important}
+#sequenceSheetV10 #bq942Options {
+  margin:8px 0!important;padding:8px 10px!important;border-radius:14px!important;
+  background:#eef6f1!important;border:1px solid #bfdacb!important;
+  box-shadow:none!important;
+}
+#sequenceSheetV10 #bq942Options .bq942-top {gap:6px!important}
+#sequenceSheetV10 #bq942Options .bq942-title b {font-size:14px!important}
+#sequenceSheetV10 #bq942Options .bq942-title small {font-size:11px!important}
+#sequenceSheetV10 #bq942Options .bq942-switch {padding:6px 8px!important;min-height:38px!important;min-width:91px!important;background:white!important;border:1px solid #bfd9ce!important}
+#sequenceSheetV10 #bq942More {margin-top:6px!important;padding-top:5px!important}
+#sequenceSheetV10 #bq942More > summary {font-size:12px!important;min-height:31px!important;color:#25735c!important}
+#sequenceSheetV10 .bq946-advanced {
+  margin:7px 0!important;padding:0 9px!important;border-radius:13px!important;
+  border:1px solid #dae8e0!important;background:#f6f9f7!important;
+}
+#sequenceSheetV10 .bq946-advanced > summary {
+  list-style:none!important;cursor:pointer!important;touch-action:manipulation!important;
+  padding:10px 2px!important;display:flex!important;align-items:center!important;
+  justify-content:space-between!important;gap:6px!important;min-height:41px!important;
+  color:#22624f!important;font-size:13px!important;font-weight:700!important;
+}
+#sequenceSheetV10 .bq946-advanced > summary::-webkit-details-marker {display:none!important}
+#sequenceSheetV10 .bq946-advanced > summary .bq946-arrow {transition:transform .2s}
+#sequenceSheetV10 .bq946-advanced[open] > summary .bq946-arrow {transform:rotate(180deg)}
+#sequenceSheetV10 .bq946-advanced-body {display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important;padding:0 0 9px!important}
+#sequenceSheetV10 .bq946-advanced-body > label {display:grid!important;align-content:start!important;gap:5px!important;margin:0!important;padding:8px!important;min-width:0!important;border:1px solid #dae7df!important;background:#fff!important;border-radius:12px!important}
+#sequenceSheetV10 .bq946-advanced-body > label > span {font-size:12px!important;color:#54776a!important;font-weight:650!important}
+#sequenceSheetV10 .bq946-advanced-body select {max-width:100%!important;min-height:40px!important;font-size:12px!important;border-radius:10px!important}
+#sequenceSheetV10 .bq946-advanced-body .v194s3VolumeLabel{grid-column:1/-1!important}
+#sequenceSheetV10 .bq946-advanced-body .v194s3VolumeRow{display:flex!important;align-items:center!important;gap:9px!important}
+#sequenceSheetV10 .bq946-advanced-body .v194s3VolumeRow input{flex:1!important;min-width:0!important}
+#sequenceSheetV10 #v194s4FinalNote{display:none!important}
+#sequenceSheetV10 .sequenceStartV10 {margin:5px 2px!important;padding:0!important;font-size:11px!important;color:#59796e!important;line-height:1.35!important}
+#sequenceSheetV10 .sequenceHintV10 {margin:2px 2px!important;padding:0!important;font-size:10px!important;line-height:1.35!important;color:#80978a!important}
+#sequenceSheetV10 .sequenceModeV10 {
+  position:sticky!important;bottom:-12px!important;z-index:6!important;
+  display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:9px!important;padding:9px 1px 12px!important;margin:7px -1px 0!important;
+  background:linear-gradient(to bottom,rgba(251,253,252,.91),#fbfdfc 26%)!important;
+  border-top:1px solid #e1ebe5!important;
+}
+#sequenceSheetV10 .sequenceModeV10 button {min-height:49px!important;border-radius:13px!important;padding:8px!important;box-shadow:none!important}
+#sequenceSheetV10 .sequenceModeV10 button b{font-size:13px!important}
+#sequenceSheetV10 .sequenceModeV10 button small{font-size:10px!important;line-height:1.2!important}
+#sequenceSheetV10 .sequenceModeV10 button span{font-size:15px!important}
+/* Default closed Foldout; all native controls and IDs stay intact. */
+#sequenceSheetV10 .bq946-advanced:not([open]) .bq946-advanced-body{display:none!important}
+body.dark #sequenceSheetV10 .sequencePanelV10,body.night #sequenceSheetV10 .sequencePanelV10{background:#102b25!important;color:#e4f6eb!important;border-color:#476e60!important}
+body.dark #sequenceSheetV10 .sequenceTitleV10,body.night #sequenceSheetV10 .sequenceTitleV10{background:#102b25!important;border-color:#375b4f!important}
+body.dark #sequenceSheetV10 .sequenceTitleV10 b,body.night #sequenceSheetV10 .sequenceTitleV10 b{color:#e4f6eb!important}
+body.dark #sequenceSheetV10 .v170ReciterBlock,body.night #sequenceSheetV10 .v170ReciterBlock,
+body.dark #sequenceSheetV10 .v170SequenceSettings>label,body.night #sequenceSheetV10 .v170SequenceSettings>label,
+body.dark #sequenceSheetV10 .bq946-advanced,body.night #sequenceSheetV10 .bq946-advanced{background:#18392f!important;border-color:#426a5b!important}
+body.dark #sequenceSheetV10 .v170SequenceSettings>label span,body.night #sequenceSheetV10 .v170SequenceSettings>label span{color:#b9d8ca!important}
+body.dark #sequenceSheetV10 select,body.night #sequenceSheetV10 select,
+body.dark #sequenceSheetV10 .bq946-advanced-body>label,body.night #sequenceSheetV10 .bq946-advanced-body>label{background:#1c4035!important;color:#f3fff8!important;border-color:#42695b!important}
+body.dark #sequenceSheetV10 #bq942Options,body.night #sequenceSheetV10 #bq942Options{background:#1a3d31!important;border-color:#446f5b!important}
+body.dark #sequenceSheetV10 .bq946-advanced>summary,body.night #sequenceSheetV10 .bq946-advanced>summary{color:#c9ead8!important}
+body.dark #sequenceSheetV10 .sequenceModeV10,body.night #sequenceSheetV10 .sequenceModeV10{background:linear-gradient(to bottom,rgba(16,43,37,.9),#102b25 26%)!important;border-color:#395b4f!important}
+@media (max-width:380px) {#sequenceSheetV10.open .sequencePanelV10{width:calc(100% - 14px)!important;padding-left:9px!important;padding-right:9px!important}#sequenceSheetV10 .sequenceTitleV10{margin-left:-9px!important;margin-right:-9px!important}#sequenceSheetV10 .v170SequenceSettings{gap:5px!important}#sequenceSheetV10 .v170SequenceSettings>label{padding:6px!important}}
+@media (max-height:650px) {#sequenceSheetV10.open .sequencePanelV10{max-height:73dvh!important}#sequenceSheetV10 .sequenceTitleV10{padding-top:6px!important;padding-bottom:6px!important}}
+
+/* BASAIR P94.6 QA016 — low-overhead compact Follow panel and native shade OFF. */
+#sequenceSheetV10.open .sequenceShadeV10 {backdrop-filter:none!important;-webkit-backdrop-filter:none!important;background:rgba(8,29,24,.39)!important;}
+#sequenceSheetV10.open .sequencePanelV10 {scroll-behavior:auto!important;touch-action:pan-y!important;overscroll-behavior-y:contain!important;-webkit-overflow-scrolling:touch!important;}
+#sequenceSheetV10 .sequenceTitleV10 {backdrop-filter:none!important;-webkit-backdrop-filter:none!important;}
+#sequenceSheetV10 .v170SequenceSettings select,#sequenceSheetV10 .v170ReciterBlock select {touch-action:manipulation!important}
+#sequenceSheetV10 #bq942Options .bq942-top {align-items:center!important}
+html[data-bq916-ready="1"] #sequenceSheetV10 #bq942Options .bq942-switch {display:none!important}
+#sequenceSheetV10 #bq916Toggle {min-height:40px;min-width:140px;display:inline-flex;align-items:center;justify-content:center;gap:7px;flex:none;padding:8px 11px;border-radius:12px;border:1px solid #6ab29d;background:#daefe5;color:#18533f;font:750 12px/1.3 system-ui,Arial,sans-serif;cursor:pointer;touch-action:manipulation}
+#sequenceSheetV10 #bq916Toggle[aria-pressed="false"] {background:#f7f9f8;border-color:#b5c9c1;color:#536b61}
+#sequenceSheetV10 #bq916Toggle span {font-size:14px;line-height:1}
+#sequenceSheetV10 #bq916Toggle:focus-visible {outline:2px solid #2b8b6c;outline-offset:2px}
+body.dark #sequenceSheetV10 #bq916Toggle,body.night #sequenceSheetV10 #bq916Toggle{background:#245343;color:#fff;border-color:#559a7d}
+body.dark #sequenceSheetV10 #bq916Toggle[aria-pressed="false"],body.night #sequenceSheetV10 #bq916Toggle[aria-pressed="false"]{background:#21382f;color:#b9d3c6;border-color:#466457}
+/* One lightweight reading-line guide. Only the visual layer is animated, never the audio scroll engine. */
+#b345NormalStack .bq916-reading-line {position:absolute!important;z-index:11!important;left:9%!important;right:9%!important;width:82%!important;pointer-events:none!important;border-radius:7px!important;border:1px solid rgba(34,138,101,.19)!important;background:rgba(26,141,108,.13)!important;box-shadow:0 1px 7px rgba(21,121,88,.12)!important;transition:top .26s ease-out,opacity .14s ease-out!important;will-change:top;}
+#b345NormalStack .bq916-reading-line[hidden]{display:none!important}
+/* The former approximate overlay is replaced only while QA016 is active. */
+html[data-bq916-ready="1"] body #b345NormalStack .bq942-guide{display:none!important}
+/* Explicit OFF applies to R95 native gradient/word paint and the optional guide.
+   Restrict to reading surfaces, never hide Quran text, hit targets or teaching marks. */
+html[data-bq916-shade="off"] body #mushafReader :is(.b441FollowAyah,.b441FollowWord,.b441FollowHit,.quranWord.current),
+html[data-bq916-shade="off"] body #b345NormalStack :is(.b441FollowAyah,.b441FollowWord,.b441FollowHit,.quranWord.current),
+html[data-bq916-shade="off"] body #b274LargeTextHost :is(.b441FollowAyah,.b441FollowWord,.b441FollowHit),
+html[data-bq916-shade="off"] body #stableDigitalHost :is(.b441FollowAyah,.b441FollowWord,.b441FollowHit),
+html[data-bq916-shade="off"] body #printEditionViewport :is(.b441FollowAyah,.b441FollowWord,.b441FollowHit),
+html[data-bq916-shade="off"] body .localPageStage :is(.b441FollowAyah,.b441FollowWord,.b441FollowHit) {
+ background:transparent!important;background-color:transparent!important;background-image:none!important;box-shadow:none!important;outline:0!important;
+}
+html[data-bq916-shade="off"] body #b345NormalStack .bq916-reading-line,
+html[data-bq916-shade="off"] body #b345NormalStack .bq942-guide {display:none!important;visibility:hidden!important;}
+@media(prefers-reduced-motion:reduce){#b345NormalStack .bq916-reading-line{transition:none!important}}
+@media(max-width:360px){#sequenceSheetV10 #bq916Toggle{min-width:116px;padding:7px 8px;font-size:11px}}
+#sequenceSheetV10.open .sequencePanelV10{max-height:min(68dvh,610px)!important}
+@media(max-height:650px){#sequenceSheetV10.open .sequencePanelV10{max-height:69dvh!important}}
+
+/* BASAIR P94.7 — restore R95 ayah/word emphasis, remove QA016 synthetic line slab.
+ * Never alters Quran glyphs/verse content, audio, R95 ownership or print artwork. */
+#b345NormalStack .bq916-reading-line,
+#b345NormalStack .bq942-guide {
+  display:none!important; visibility:hidden!important; opacity:0!important;
+  box-shadow:none!important;animation:none!important;transition:none!important;
+}
+/* Original R95 semantics: calm emerald marks the ayah and warm gold marks the word.
+   These apply ONLY when the owner's Follow shade switch is ON. */
+html[data-bq916-shade="on"] body #b345NormalStack .b441FollowAyah,
+html[data-bq916-shade="on"] body #b274LargeTextHost .b441FollowAyah,
+html[data-bq916-shade="on"] body #stableDigitalHost .b441FollowAyah {
+  background:linear-gradient(180deg,transparent 8%,rgba(33,152,126,.19) 8%,rgba(33,152,126,.19) 92%,transparent 92%)!important;
+  box-shadow:inset 0 0 0 1px rgba(25,123,102,.34),0 1px 4px rgba(18,87,70,.12)!important;
+  border-radius:.2em!important;
+}
+html[data-bq916-shade="on"] body #b345NormalStack .b441FollowWord,
+html[data-bq916-shade="on"] body #b274LargeTextHost .b441FollowWord,
+html[data-bq916-shade="on"] body #stableDigitalHost .b441FollowWord {
+  background:linear-gradient(180deg,transparent 5%,rgba(254,185,45,.42) 5%,rgba(254,185,45,.42) 95%,transparent 95%)!important;
+  box-shadow:inset 0 0 0 1.2px rgba(173,115,20,.38),0 0 5px rgba(173,115,20,.16)!important;
+  outline:1px solid rgba(182,123,26,.28)!important;outline-offset:0!important;
+  border-radius:.23em!important;
+}
+html[data-bq916-shade="on"] body #b345NormalStack .ayahHit.b441FollowHit,
+html[data-bq916-shade="on"] body #printEditionViewport .ayahHit.b441FollowHit {
+  background:rgba(35,158,127,.12)!important;
+  box-shadow:inset 0 0 0 1.4px rgba(21,130,103,.39)!important;
+  border-radius:6px!important;
+}
+html[data-bq916-shade="on"] body.night #b345NormalStack .b441FollowAyah,
+html[data-bq916-shade="on"] body.dark #b345NormalStack .b441FollowAyah {
+  background:linear-gradient(180deg,transparent 8%,rgba(84,196,169,.25) 8%,rgba(84,196,169,.25) 92%,transparent 92%)!important;
+}
+html[data-bq916-shade="on"] body.night #b345NormalStack .b441FollowWord,
+html[data-bq916-shade="on"] body.dark #b345NormalStack .b441FollowWord {
+  background:linear-gradient(180deg,transparent 5%,rgba(255,196,74,.52) 5%,rgba(255,196,74,.52) 95%,transparent 95%)!important;
+}
+/* Continuation-page typography: lighter optical weight, unchanged 15-row geometry,
+   Quran glyphs, internal layout and decorative frame. Font-size parity is checked
+   independently against the static 100% page before any bounded adjustment. */
+body.reader-active.stableDigital #b345NormalStack .b345ExactPage.bq947-font-parity .b327UnicodeLine {
+  font-weight:400!important;font-synthesis:none!important;
+  text-shadow:none!important;-webkit-text-stroke-width:0!important;
+}
+
+/* P94.8: B345 owns the 15 original rows and page frame. No global font,
+   line-height, fixed font-size, scrolling, or verse coloring changes. */
+body[data-b345-sequence-surface="normal"] #b345NormalStack .b345ExactPage[data-bq948-status="fixed"] .b327UnicodeLine{
+ font-synthesis:none!important;
+ text-shadow:none!important;
+ -webkit-text-stroke:0!important;
+}
