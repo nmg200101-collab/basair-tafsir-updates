@@ -29,5 +29,7 @@ jobs:
           node --check p92/owner-qa-001/P962-QA022-AUDIO-TEST.mjs
       - name: Old bug and eleven audio fallback scenarios
         run: node p92/owner-qa-001/P962-QA022-AUDIO-TEST.mjs
+      - name: Verify all eight owner-QA assets and seven unchanged QA021 files
+        run: node p92/owner-qa-001/P962-QA022-VERIFY.mjs
       - name: Signed patch hash input (not a signature)
         run: sha256sum p92/owner-qa-001/p962-audio-error-recovery.js
