@@ -813,7 +813,7 @@
   var index=selectedLine>=0?selectedLine:(natural>=0?natural:conservativeIndex(a,s,lines.length));
   var approximate=selectedLine>=0||natural<0;
   var sameMode=anchor&&anchor.classList.contains('bq963-fallback')===approximate;
-  if(index===lastRendered&&anchor&&anchor.isConnected&&pageReady&&sameMode&&anchor.hidden===(natural>=0))return true;
+  if(index===lastRendered&&anchor&&anchor.isConnected&&pageReady&&sameMode&&anchor.hidden===(!approximate))return true;
   var loc=lineGeometry(card,index);if(!loc)return false;
   var element=ensureGuide(card),cr=card.getBoundingClientRect(),lr=loc.line.getBoundingClientRect();
   if(cr.height<=0||lr.height<=0){element.hidden=true;pageReady=false;retryMount();return false;}
