@@ -1,0 +1,33 @@
+name: BASAIR P96.4 QA024 Ayah & Meaning Lifecycle QA (no publish)
+
+on:
+  push:
+    branches:
+      - fix/p96-qa024-ayah-meaning-lifecycle-20261108
+    paths:
+      - 'p92/owner-qa-001/p964-*'
+      - 'p92/owner-qa-001/P964-*'
+      - '.github/workflows/p96-qa024-ayah-meaning-guard.yml'
+  pull_request:
+    paths:
+      - 'p92/owner-qa-001/p964-*'
+      - 'p92/owner-qa-001/P964-*'
+      - '.github/workflows/p96-qa024-ayah-meaning-guard.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  reader-lifecycle:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: JavaScript syntax check
+        run: |
+          node --check p92/owner-qa-001/p964-ayah-meaning.js
+          node --check p92/owner-qa-001/P964-QA024-REGRESSION-TEST.mjs
+      - name: Test real word overlay lifecycle and native ayah acknowledgement
+        run: node p92/owner-qa-001/P964-QA024-REGRESSION-TEST.mjs
+      - name: Record candidate checksums (NOT release or signing)
+        run: sha256sum p92/owner-qa-001/p964-ayah-meaning.js p92/owner-qa-001/p964-ayah-meaning.css
