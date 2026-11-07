@@ -808,7 +808,8 @@
   var exact=!!(s.exactAyahAudio||s.rasterTimedFollow||s.specialReciter);
   var natural=exact?actualLineIndex(card):-1;
   var index=natural>=0?natural:conservativeIndex(a,s,lines.length);
-  if(index===lastRendered&&anchor&&anchor.isConnected&&!anchor.hidden)return true;
+  var sameMode=anchor&&anchor.classList.contains('bq963-fallback')===(natural<0);
+  if(index===lastRendered&&anchor&&anchor.isConnected&&pageReady&&sameMode&&anchor.hidden===(natural>=0))return true;
   var loc=lineGeometry(card,index);if(!loc)return false;
   var element=ensureGuide(card),cr=card.getBoundingClientRect(),lr=loc.line.getBoundingClientRect();
   if(cr.height<=0||lr.height<=0){element.hidden=true;pageReady=false;retryMount();return false;}
