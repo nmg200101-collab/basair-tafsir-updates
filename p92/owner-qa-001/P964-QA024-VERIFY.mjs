@@ -1,0 +1,45 @@
+// BASAIR P96.4 QA024 — manifest & protected baseline static verification, no signing.
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+import {createHash} from 'node:crypto';
+import {dirname,join} from 'node:path';
+import {fileURLToPath} from 'node:url';
+const home=dirname(fileURLToPath(import.meta.url));
+const data=x=>readFileSync(join(home,x));
+const sha=b=>createHash('sha256').update(b).digest('hex');
+const published=JSON.parse(data('release.json').toString('utf8'));
+const old=JSON.parse(Buffer.from(published.payload,'base64').toString('utf8'));
+const next=JSON.parse(data('P964-QA024-UNSIGNED-PAYLOAD-DRAFT.json').toString('utf8'));
+assert.equal(old.id,'P96-FOLLOW-PAGE-SHADE-STABILITY-023');
+assert.equal(old.sequence,23);
+assert.equal(next.id,'P96-AYAH-JUMP-MEANING-CLEANUP-024');
+assert.equal(next.sequence,24);
+assert.equal(next.channel,'owner-qa');
+assert.equal(next.minAppVersion,690);
+assert.equal(next.assets.length,8);
+assert.equal(new Set(next.assets.map(a=>a.path)).size,8);
+assert.equal(next.assets.filter(a=>a.kind==='css').length,4);
+assert.equal(next.assets.filter(a=>a.kind==='js').length,4);
+const untouched=old.assets.filter(a=>next.assets.some(b=>a.path===b.path&&a.kind===b.kind&&a.size===b.size&&a.sha256===b.sha256));
+assert.equal(untouched.length,6,'six QA023 assets must stay unchanged');
+assert.equal(next.assets.some(a=>a.path==='p963-follow-page-shade.js'),false,'QA024 replaces, never double-runs QA023 JS');
+assert.equal(next.assets.some(a=>a.path==='p963-follow-page-shade.css'),false,'QA024 CSS must replace QA023 CSS');
+for(const asset of next.assets){
+ assert.match(asset.path,/^[A-Za-z0-9_-]+\.(?:js|css)$/);
+ const bytes=data(asset.path);
+ assert.equal(bytes.length,asset.size,asset.path+' bytes');
+ assert.equal(sha(bytes),asset.sha256,asset.path+' SHA-256');
+}
+const js=data('p964-ayah-meaning.js').toString('utf8');
+const css=data('p964-ayah-meaning.css').toString('utf8');
+const oldJS=data('p963-follow-page-shade.js').toString('utf8');
+const oldCSS=data('p963-follow-page-shade.css').toString('utf8');
+assert.ok(css.startsWith(oldCSS),'QA023 font/print CSS preserved byte-for-byte');
+assert.ok(js.includes("P96.4 / QA024: life-cycle cleanup"));
+assert.ok(js.includes('if(ok){pendingSelection=Date.now();stats.retarget++;try{var jump='));
+assert.ok(!js.includes("line.style.setProperty('font-size'"),'Quran printed font not changed');
+assert.ok(!css.includes('@font-face'),'no font loading or new typeface');
+assert.ok(js.includes('p94Recovered:true'),'QA022 recovery remains intact');
+assert.ok(js.includes('var natural=actualLineIndex(card);'),'QA023 native priority preserved');
+assert.equal(next.assets.filter(a=>a.path.includes('p964-')).length,2,'only two new QA024 assets');
+console.log('PASS QA024 manifest: eight asset hashes valid, six QA023 unchanged, printed font and native highlight preserved, no OTA publishing.');
