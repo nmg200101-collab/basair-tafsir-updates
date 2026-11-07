@@ -1,0 +1,21 @@
+/* P93.5 owner QA007: compact night-only controls in the live printed-edition selector.
+   All selectors local to print quick tools and notification bell. */
+#p935NightControls{box-sizing:border-box;display:block!important;width:100%;margin:8px 0 0!important;padding:9px 10px;border:1px solid #6a9d89;border-radius:11px;background:#edf5ee;color:#1d533f;direction:rtl;font-family:inherit;box-shadow:0 2px 8px #0000000c}
+#p935NightControls[hidden]{display:none!important}
+#p935NightControls .p935-night-heading{display:flex;justify-content:space-between;align-items:center;gap:6px;margin-bottom:7px}
+#p935NightControls strong{font-size:.77rem;line-height:1.35}
+#p935NightControls output{background:#d5e9de;color:#144731;border-radius:8px;padding:3px 7px;min-width:40px;text-align:center;font-size:.71rem;font-weight:800;direction:ltr}
+#p935NightControls .p935-night-row{display:grid;grid-template-columns:35px minmax(0,1fr) 35px;direction:ltr;align-items:center;gap:7px}
+#p935NightControls input[type="range"]{width:100%;min-width:0;accent-color:#238269;touch-action:pan-x;height:27px}
+#p935NightControls button{min-height:35px;min-width:34px;border-radius:9px;background:#fbfdfa;color:#1b5541;border:1px solid #a0c4b1;font-size:1.04rem;font-weight:700;cursor:pointer}
+#p935NightControls .p935-night-foot{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:6px;font-size:.57rem;color:#668075}
+#p935NightControls .p935-night-foot button{font-size:.57rem;min-height:28px;padding:4px 8px}
+body.dark #p935NightControls,body.night #p935NightControls{background:#16382d!important;border-color:#639b82!important;color:#effcf5!important}
+body.dark #p935NightControls button,body.night #p935NightControls button{background:#1f4b3a!important;color:#f5fff9!important;border-color:#568874!important}
+body.dark #p935NightControls output,body.night #p935NightControls output{background:#285e48;color:#fff!important}
+body.dark #p935NightControls .p935-night-foot,body.night #p935NightControls .p935-night-foot{color:#c7dfd1}
+body.dark.reader-active:not(.stableDigital):not(.h25-hifz):not(.h90-review):not(.h100-teacher) #mushafReader .localPageStage,body.night.reader-active:not(.stableDigital):not(.h25-hifz):not(.h90-review):not(.h100-teacher) #mushafReader .localPageStage,body.dark.reader-active:not(.stableDigital):not(.h25-hifz):not(.h90-review):not(.h100-teacher) #mushafReader .continuousImagePage:not(.v172DigitalContinuous){filter:brightness(var(--p933-night-page-brightness,1))!important}
+#v521Home .p935-notice-anchor{position:relative!important}
+#v521Home .p935-notice-anchor .p935-notice-badge{position:absolute;top:-1px;right:0;transform:translate(25%,-22%);min-width:17px;height:17px;padding:0 3px;box-sizing:border-box;border-radius:12px;background:#c64735;color:white;font:700 11px/17px system-ui;text-align:center;z-index:4;box-shadow:0 0 0 2px #f6f4e9}
+#v521Home .p935-notice-anchor .p935-notice-badge[hidden]{display:none!important}
+#bqNoticesSheet #p935OpenUpdates{display:block;width:calc(100% - 40px);margin:8px 20px 3px;padding:10px 8px;border:1px solid #80ab96;border-radius:10px;background:#246b52;color:white;font:700 14px system-ui;cursor:pointer;direction:rtl}
