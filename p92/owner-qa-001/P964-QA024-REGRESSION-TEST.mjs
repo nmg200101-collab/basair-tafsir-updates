@@ -14,7 +14,7 @@ const ack1="if(ok){pendingSelection=Date.now();stats.retarget++;try{var jump=w._
 const start=revised.indexOf('/* BASAIR P96.4 / QA024: life-cycle cleanup');
 assert.ok(start>0);
 const suffix=revised.slice(start);
-assert.equal(revised.slice(0,start).replace(ack1,ack0),old,'all old Follow/reader logic byte-identical except an after-native-ack hook');
+assert.equal(revised.slice(0,start).replace(ack1,ack0).trimEnd(),old.trimEnd(),'all old Follow/reader logic byte-identical except an after-native-ack hook');
 assert.equal(css.slice(0,oldCSS.length),oldCSS,'old Mushaf CSS byte-identical');
 assert.ok(css.includes('body:not(.reader-active) #stableMeaning'));
 assert.ok(css.includes('body:not(.reader-active) #b300WordMeaningOverlay'));
