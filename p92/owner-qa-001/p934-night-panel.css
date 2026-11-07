@@ -1,0 +1,88 @@
+/* BASAIR P93.3 — Night brightness for printed Tilawa editions only.
+   Visual filter is applied to the page stage (not Quran asset pixels or layout).
+   Leaves daylight, digital text, Hifz, audio and Quran scripts untouched. */
+#v144OriginalPrintsPinned .v144PrintGrid{
+  display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:8px!important;margin:2px 0 0!important;align-items:stretch!important;
+}
+#v144OriginalPrintsPinned .v144PrintCard{
+  min-width:0!important;min-height:81px!important;border-radius:13px!important;
+  padding:8px 6px!important;gap:3px!important;box-shadow:0 1px 3px rgba(0,0,0,.055)!important;
+}
+#v144OriginalPrintsPinned .v144PrintCard .v144Mini{width:39px!important;height:46px!important;flex-shrink:0}
+#v144OriginalPrintsPinned .v144PrintCard b{font-size:.70rem!important;line-height:1.35!important}
+#v144OriginalPrintsPinned .v144PrintCard small{font-size:.53rem!important;line-height:1.5!important;max-width:100%}
+#v144OriginalPrintsPinned .v144PrintCard.on{border-color:#54aa99!important;outline:2px solid rgba(62,154,136,.55)!important;outline-offset:-1px}
+/* One wide, low-profile Tajwid card beneath the original and learner variants. */
+#v144OriginalPrintsPinned .v144PrintCard[data-v129-print="tajwid"]{
+  grid-column:1/-1!important;display:grid!important;
+  grid-template-columns:minmax(0,1fr) 45px!important;grid-template-rows:auto auto!important;
+  align-content:center!important;align-items:center!important;text-align:right!important;
+  direction:rtl!important;min-height:66px!important;padding:7px 11px!important;
+  column-gap:11px!important;row-gap:3px!important;
+}
+#v144OriginalPrintsPinned .v144PrintCard[data-v129-print="tajwid"] .v144Mini{grid-column:2!important;grid-row:1/3!important;width:40px!important;height:49px!important}
+#v144OriginalPrintsPinned .v144PrintCard[data-v129-print="tajwid"] b{grid-column:1!important;grid-row:1!important}
+#v144OriginalPrintsPinned .v144PrintCard[data-v129-print="tajwid"] small{grid-column:1!important;grid-row:2!important}
+
+/* Accessible night-only control directly after the editions grid. */
+#v144OriginalPrintsPinned .p933NightBrightness{
+  display:none!important;direction:rtl;margin:10px 0 3px;padding:10px 11px 9px;
+  border:1px solid rgba(90,166,151,.48);border-radius:13px;
+  background:linear-gradient(145deg,rgba(40,115,99,.075),rgba(99,147,132,.038));
+  color:var(--ink,#20483d);box-sizing:border-box;
+}
+body.dark.reader-active:not(.stableDigital):not(.h25-hifz):not(.h90-review):not(.h100-teacher) #v144OriginalPrintsPinned .p933NightBrightness,
+body.night.reader-active:not(.stableDigital):not(.h25-hifz):not(.h90-review):not(.h100-teacher) #v144OriginalPrintsPinned .p933NightBrightness{display:block!important}
+.p933NightBrightness .p933Head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:7px}
+.p933NightBrightness .p933Title{font-size:.74rem;font-weight:800;color:var(--green,#1c624e)}
+.p933NightBrightness .p933Percent{font-size:.70rem;font-weight:800;direction:ltr;unicode-bidi:isolate;font-variant-numeric:tabular-nums;color:var(--ink,#234c40);background:rgba(75,139,123,.12);border-radius:8px;padding:3px 7px;min-width:45px;text-align:center}
+.p933NightBrightness .p933Row{display:grid;grid-template-columns:35px minmax(0,1fr) 35px;align-items:center;gap:8px;direction:ltr}
+.p933NightBrightness button{appearance:none;border:1px solid rgba(72,136,119,.42);background:var(--paper2,#f3f7f2);color:var(--ink,#174a3b);border-radius:9px;min-height:34px;min-width:34px;font-size:1.16rem;font-weight:700;line-height:1;cursor:pointer}
+.p933NightBrightness button:active{background:rgba(65,153,124,.18)}
+.p933NightBrightness button:focus-visible,.p933NightBrightness input:focus-visible{outline:2px solid #57b49b;outline-offset:2px}
+.p933NightBrightness input[type="range"]{width:100%;height:28px;accent-color:#278368;min-width:0;cursor:pointer;touch-action:pan-x}
+.p933NightBrightness .p933Footer{display:flex;gap:8px;justify-content:space-between;align-items:center;margin-top:5px;direction:rtl}
+.p933NightBrightness .p933Hint{color:var(--muted,#6f8079);font-size:.53rem;line-height:1.6}
+.p933NightBrightness .p933Reset{min-height:26px;padding:3px 8px;font-size:.57rem;white-space:nowrap}
+body.dark #v144OriginalPrintsPinned .p933NightBrightness,body.night #v144OriginalPrintsPinned .p933NightBrightness{background:linear-gradient(140deg,#122e28,#142923);border-color:#4b7d70;color:#e1eee7}
+body.dark .p933NightBrightness .p933Percent,body.night .p933NightBrightness .p933Percent{background:#244b3f;color:#e6f9ed}
+body.dark .p933NightBrightness button,body.night .p933NightBrightness button{background:#1e4538;color:#e4f4e8;border-color:#507968}
+/* Apply to the complete printed page, preserving its existing image filters and borders.
+   No opacity/visibility changes; no impact on positioning or touch targets. */
+body.dark.reader-active:not(.stableDigital):not(.h25-hifz):not(.h90-review):not(.h100-teacher) #mushafReader .localPageStage,
+body.dark.reader-active:not(.stableDigital):not(.h25-hifz):not(.h90-review):not(.h100-teacher) #mushafReader .continuousImagePage:not(.v172DigitalContinuous),
+body.night.reader-active:not(.stableDigital):not(.h25-hifz):not(.h90-review):not(.h100-teacher) #mushafReader .localPageStage,
+body.night.reader-active:not(.stableDigital):not(.h25-hifz):not(.h90-review):not(.h100-teacher) #mushafReader .continuousImagePage:not(.v172DigitalContinuous){
+  filter:brightness(var(--p933-night-page-brightness,1))!important;
+}
+body.dark .p933NightBrightness .p933Title,body.night .p933NightBrightness .p933Title{color:#e1f3e9!important}
+body.dark .p933NightBrightness .p933Hint,body.night .p933NightBrightness .p933Hint{color:#b7d3c6!important}
+
+/* P93.4 follow-up: actual visible print panel */
+/* BASAIR P93.4: place night dimmer beneath the live RC20 print grid. */
+#ayahSideRail.rc20ToolsRail #v14PrintQuick .p934VisibleNightBrightness{
+ display:none!important;box-sizing:border-box;margin:9px 0 1px;padding:9px 10px 8px;
+ border:1px solid rgba(82,153,133,.5);border-radius:11px;
+ background:linear-gradient(130deg,#edf7ef,#e6f2eb);color:#215443;
+ direction:rtl;max-width:100%;font-family:inherit;
+}
+body.dark:not(.h25-hifz):not(.h90-review):not(.h100-teacher):not(.stableDigital) #ayahSideRail.rc20ToolsRail #v14PrintQuick .p934VisibleNightBrightness:not([hidden]),
+body.night:not(.h25-hifz):not(.h90-review):not(.h100-teacher):not(.stableDigital) #ayahSideRail.rc20ToolsRail #v14PrintQuick .p934VisibleNightBrightness:not([hidden]){
+ display:block!important;
+}
+#v14PrintQuick .p934VisibleNightBrightness .p934Head{display:flex;justify-content:space-between;align-items:center;gap:7px;margin-bottom:6px}
+#v14PrintQuick .p934VisibleNightBrightness b{font-size:.67rem;font-weight:800;line-height:1.5}
+#v14PrintQuick .p934VisibleNightBrightness output{font-size:.68rem;font-weight:800;direction:ltr;unicode-bidi:isolate;min-width:43px;text-align:center;background:#cee5d9;color:#215443;border-radius:7px;padding:2px 5px}
+#v14PrintQuick .p934VisibleNightBrightness .p934Adjust{display:grid;grid-template-columns:34px minmax(0,1fr) 34px;align-items:center;direction:ltr;gap:7px}
+#v14PrintQuick .p934VisibleNightBrightness input{min-width:0;width:100%;accent-color:#2c8067;cursor:pointer;touch-action:pan-x}
+#v14PrintQuick .p934VisibleNightBrightness button{min-width:32px;min-height:32px;border:1px solid #a9c7b6;border-radius:9px;background:#f8fcf9;color:#215443;font-size:1.05rem;cursor:pointer}
+#v14PrintQuick .p934VisibleNightBrightness .p934Foot{display:flex;justify-content:space-between;align-items:center;gap:7px;margin-top:5px}
+#v14PrintQuick .p934VisibleNightBrightness .p934Foot span{font-size:.55rem;color:#637f72}
+#v14PrintQuick .p934VisibleNightBrightness .p934Foot button{font-size:.55rem;min-height:26px;padding:3px 8px}
+body.dark #v14PrintQuick .p934VisibleNightBrightness,body.night #v14PrintQuick .p934VisibleNightBrightness{background:#17362c!important;border-color:#548a74!important;color:#e5f8e9!important}
+body.dark #v14PrintQuick .p934VisibleNightBrightness output,body.night #v14PrintQuick .p934VisibleNightBrightness output{background:#285846!important;color:#f0fff4!important}
+body.dark #v14PrintQuick .p934VisibleNightBrightness button,body.night #v14PrintQuick .p934VisibleNightBrightness button{background:#204b3b!important;border-color:#487968!important;color:#f2fbf2!important}
+body.dark #v14PrintQuick .p934VisibleNightBrightness .p934Foot span,body.night #v14PrintQuick .p934VisibleNightBrightness .p934Foot span{color:#bfdacc!important}
+#v14PrintQuick .p934VisibleNightBrightness[hidden]{display:none!important}
+
