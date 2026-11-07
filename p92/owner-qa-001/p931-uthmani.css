@@ -1,0 +1,32 @@
+/* P93.1 independent Uthmani artwork, PDF/SVG-like page image only.
+   Nothing changes original and Tajweed modes; no rendering until SVG load. */
+body[data-v144-print="blue"]:not(.h25-hifz):not(.h90-review):not(.h100-teacher):not(.stableDigital) #mushafReader .localPageStage,
+body[data-v144-print="blue"]:not(.h25-hifz):not(.h90-review):not(.h100-teacher):not(.stableDigital) #mushafReader .continuousImagePage {position:relative!important}
+#mushafReader .localPageStage>.p931SvgRaster,
+#mushafReader .continuousImagePage>.p931SvgRaster{
+  display:none!important;visibility:hidden!important;opacity:0!important;pointer-events:none!important;
+}
+body:not([data-v144-print="blue"]) #mushafReader .p931SvgRaster,
+body.h25-hifz #mushafReader .p931SvgRaster,
+body.h90-review #mushafReader .p931SvgRaster,
+body.h100-teacher #mushafReader .p931SvgRaster,
+body.stableDigital #mushafReader .p931SvgRaster {display:none!important;visibility:hidden!important}
+body[data-v144-print="blue"]:not(.h25-hifz):not(.h90-review):not(.h100-teacher):not(.stableDigital) #mushafReader .localPageStage.p931-uthmani-ready>.p931SvgRaster,
+body[data-v144-print="blue"]:not(.h25-hifz):not(.h90-review):not(.h100-teacher):not(.stableDigital) #mushafReader .continuousImagePage.p931-uthmani-ready>.p931SvgRaster{
+  display:block!important;visibility:visible!important;opacity:1!important;
+  position:absolute!important;inset:0!important;width:100%!important;height:100%!important;
+  object-fit:contain!important;object-position:center!important;
+  background:#f5fbfd!important;z-index:5!important;
+  pointer-events:none!important;transition:none!important;animation:none!important;
+}
+html body[data-v144-print="blue"]:not(.h25-hifz):not(.h90-review):not(.h100-teacher):not(.stableDigital) #mushafReader#mushafReader#mushafReader#mushafReader .localPageStage.p931-uthmani-ready>img[data-mushaf-page],
+html body[data-v144-print="blue"]:not(.h25-hifz):not(.h90-review):not(.h100-teacher):not(.stableDigital) #mushafReader#mushafReader#mushafReader#mushafReader .continuousImagePage.p931-uthmani-ready>img[data-mushaf-page]{
+  opacity:0!important;visibility:hidden!important;pointer-events:none!important;
+}
+body[data-v144-print="blue"] #mushafReader .localPageStage>.p931Notice,
+body[data-v144-print="blue"] #mushafReader .continuousImagePage>.p931Notice{
+  position:absolute;z-index:7;bottom:1%;right:5%;left:5%;padding:4px 7px;
+  display:block;background:rgba(247,252,254,.95);color:#235568;border:1px solid #9fc7d2;
+  border-radius:7px;line-height:1.5;font:600 10px Tahoma,Arial,sans-serif;
+  pointer-events:none;text-align:center;
+}
