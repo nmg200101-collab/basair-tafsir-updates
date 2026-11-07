@@ -1,0 +1,33 @@
+name: BASAIR P96.5 QA025 Selected Ayah & Scroll Stability (no publish)
+
+on:
+  push:
+    branches:
+      - fix/p96-qa025-selection-shade-no-scroll-20261108
+    paths:
+      - 'p92/owner-qa-001/p965-*'
+      - 'p92/owner-qa-001/P965-*'
+      - '.github/workflows/p96-qa025-selection-stability.yml'
+  pull_request:
+    paths:
+      - 'p92/owner-qa-001/p965-*'
+      - 'p92/owner-qa-001/P965-*'
+      - '.github/workflows/p96-qa025-selection-stability.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  selection-stability:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - name: Syntax verification
+        run: |
+          node --check p92/owner-qa-001/p965-selected-ayah-no-scroll.js
+          node --check p92/owner-qa-001/P965-QA025-REGRESSION-TEST.mjs
+      - name: Simulate selected-ayah initial shade and check no competing smooth scroll
+        run: node p92/owner-qa-001/P965-QA025-REGRESSION-TEST.mjs
+      - name: Record SHA256 for owner-signed candidate (never sign or publish in Actions)
+        run: sha256sum p92/owner-qa-001/p965-selected-ayah-no-scroll.js p92/owner-qa-001/p965-selected-ayah-no-scroll.css
