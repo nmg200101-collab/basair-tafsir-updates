@@ -80,7 +80,7 @@ assert.equal(x.overlays.b300WordMeaningOverlay.attrs['aria-hidden'],'true');
 // Reenter reader: recover normal meaning cards, do not delete/disable them persistently.
 x.reader.classList.add('active');x.body.classList.add('reader-active');x.body.className='reader-active';
 x.api.sync();
-assert.equal(x.overlays.stableMeaning.style.getPropertyValue('display'),'');
+assert.equal(x.overlays.stableMeaning.style.getPropertyValue('display'),'none','old meaning card stays suppressed by B249 while reading');
 assert.equal(x.overlays.b300WordMeaningOverlay.style.getPropertyValue('display'),'');
 const beforeHifz=x.closureCount();
 x.reader.classList.remove('active');x.body.className='h25-hifz';x.body.classList.add('h25-hifz');
