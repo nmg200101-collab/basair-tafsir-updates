@@ -1,0 +1,33 @@
+name: BASAIR P96.2 QA022 Audio Recovery Static Guard (no publish)
+
+on:
+  push:
+    branches:
+      - fix/p96-qa022-audio-error-recovery-20261108
+    paths:
+      - 'p92/owner-qa-001/p962-*'
+      - 'p92/owner-qa-001/P962-*'
+      - '.github/workflows/p96-qa022-audio-guard.yml'
+  pull_request:
+    paths:
+      - 'p92/owner-qa-001/p962-*'
+      - 'p92/owner-qa-001/P962-*'
+      - '.github/workflows/p96-qa022-audio-guard.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  audio-safety:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: JavaScript syntax without execution in native app
+        run: |
+          node --check p92/owner-qa-001/p962-audio-error-recovery.js
+          node --check p92/owner-qa-001/P962-QA022-AUDIO-TEST.mjs
+      - name: Old bug and eleven audio fallback scenarios
+        run: node p92/owner-qa-001/P962-QA022-AUDIO-TEST.mjs
+      - name: Signed patch hash input (not a signature)
+        run: sha256sum p92/owner-qa-001/p962-audio-error-recovery.js
