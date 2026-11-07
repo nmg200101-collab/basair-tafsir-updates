@@ -1,0 +1,12 @@
+/* BASAIR P93.2 — owner QA-004: temporarily suspend the unverified Uthmani PRINT.
+   This CSS only hides Tilawa printed-edition controls; digital Uthmani fonts and Hifz stay untouched. */
+body.reader-active:not(.h25-hifz):not(.h90-review):not(.h100-teacher) #stableAppearance [data-v129-print="blue"],
+body.reader-active:not(.h25-hifz):not(.h90-review):not(.h100-teacher) #ayahSideRail [data-v14-print="blue"],
+body.reader-active:not(.h25-hifz):not(.h90-review):not(.h100-teacher) .v144PrintGrid [data-v129-print="blue"],
+body.reader-active:not(.h25-hifz):not(.h90-review):not(.h100-teacher) .v14PrintQuickGrid [data-v14-print="blue"]{
+  display:none!important;visibility:hidden!important;pointer-events:none!important;
+}
+body.reader-active:not(.h25-hifz):not(.h90-review):not(.h100-teacher) .v144PrintGrid{
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+}
+/* No markup coloring, no image filtering: Quran rasters remain byte-identical. */
