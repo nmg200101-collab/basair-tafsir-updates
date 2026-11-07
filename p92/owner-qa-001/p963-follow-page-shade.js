@@ -805,8 +805,8 @@
   if(!lines.length)lines=Array.prototype.slice.call(card.querySelectorAll(':scope > .exactLine'));
   if(!lines.length){pageReady=false;if(anchor)anchor.hidden=true;retryMount();return false;}
   if(!(Number(a.duration)>0)){pageReady=false;if(anchor)anchor.hidden=true;retryMount();return false;}
-  var exact=!!(s.exactAyahAudio||s.rasterTimedFollow||s.specialReciter);
-  var natural=exact?actualLineIndex(card):-1;
+  // Native marked ayah/word takes precedence whenever it exists on the current rendered page.
+  var natural=actualLineIndex(card);
   var index=natural>=0?natural:conservativeIndex(a,s,lines.length);
   var sameMode=anchor&&anchor.classList.contains('bq963-fallback')===(natural<0);
   if(index===lastRendered&&anchor&&anchor.isConnected&&pageReady&&sameMode&&anchor.hidden===(natural>=0))return true;
