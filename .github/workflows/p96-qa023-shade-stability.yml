@@ -1,0 +1,36 @@
+name: BASAIR P96.3 QA023 Follow Page & Shade Static QA (no publish)
+
+on:
+  push:
+    branches:
+      - fix/p96-qa023-follow-page-shade-stability-20261108
+    paths:
+      - 'p92/owner-qa-001/p963-*'
+      - 'p92/owner-qa-001/P963-*'
+      - '.github/workflows/p96-qa023-shade-stability.yml'
+  pull_request:
+    paths:
+      - 'p92/owner-qa-001/p963-*'
+      - 'p92/owner-qa-001/P963-*'
+      - '.github/workflows/p96-qa023-shade-stability.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  visual-follow-stability:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check new Follow JavaScript syntax
+        run: |
+          node --check p92/owner-qa-001/p963-follow-page-shade.js
+          node --check p92/owner-qa-001/P963-QA023-TRANSITION-TEST.mjs
+          node --check p92/owner-qa-001/P963-QA023-VERIFY.mjs
+      - name: Simulate late page / shadow / reciter transition
+        run: node p92/owner-qa-001/P963-QA023-TRANSITION-TEST.mjs
+      - name: Validate all 8 SHA256 assets and 6 unchanged QA022 files
+        run: node p92/owner-qa-001/P963-QA023-VERIFY.mjs
+      - name: Record candidate asset digests (NOT OTA signature)
+        run: sha256sum p92/owner-qa-001/p963-follow-page-shade.js p92/owner-qa-001/p963-follow-page-shade.css

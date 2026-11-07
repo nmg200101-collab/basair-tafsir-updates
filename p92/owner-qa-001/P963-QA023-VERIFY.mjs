@@ -1,0 +1,40 @@
+// BASAIR P96.3 QA023: verify all candidate assets without signing or publishing.
+import assert from 'node:assert/strict';
+import {createHash} from 'node:crypto';
+import {readFileSync} from 'node:fs';
+import {dirname,join} from 'node:path';
+import {fileURLToPath} from 'node:url';
+const root=dirname(fileURLToPath(import.meta.url));
+const read=n=>readFileSync(join(root,n));
+const hash=b=>createHash('sha256').update(b).digest('hex');
+const live=JSON.parse(read('release.json').toString('utf8'));
+const prev=JSON.parse(Buffer.from(live.payload,'base64').toString('utf8'));
+const draft=JSON.parse(read('P963-QA023-UNSIGNED-PAYLOAD-DRAFT.json').toString('utf8'));
+assert.equal(prev.id,'P96-FOLLOW-AUDIO-RECOVERY-022','protect deployed QA022');
+assert.equal(prev.sequence,22);
+assert.equal(draft.id,'P96-FOLLOW-PAGE-SHADE-STABILITY-023');
+assert.equal(draft.sequence,23);
+assert.equal(draft.channel,'owner-qa');
+assert.equal(draft.minAppVersion,690);
+assert.equal(draft.assets.length,8);
+assert.equal(new Set(draft.assets.map(a=>a.path)).size,8);
+assert.equal(draft.assets.filter(a=>a.kind==='css').length,4);
+assert.equal(draft.assets.filter(a=>a.kind==='js').length,4);
+assert.equal(prev.assets.filter(a=>draft.assets.some(b=>b.path===a.path&&b.size===a.size&&b.sha256===a.sha256)).length,6,'six QA022 files byte-identical');
+assert.equal(draft.assets.some(a=>a.path==='p962-audio-error-recovery.js'),false,'old JS must not double execute');
+assert.equal(draft.assets.some(a=>a.path==='p951-font-restored-header.css'),false,'old CSS must not override follow recovery');
+for(const a of draft.assets){
+ assert.match(a.path,/^[A-Za-z0-9_-]+\.(?:js|css)$/);
+ let bytes=read(a.path);
+ assert.equal(bytes.length,a.size,a.path+' length');
+ assert.equal(hash(bytes),a.sha256,a.path+' SHA256');
+}
+const css=read('p963-follow-page-shade.css').toString('utf8');
+const js=read('p963-follow-page-shade.js').toString('utf8');
+assert.ok(css.includes('QA023 — visible, noninteractive fallback guide'),'fallback source present');
+assert.ok(css.startsWith(read('p951-font-restored-header.css').toString('utf8')),'original CSS byte-for-byte preserved');
+assert.ok(js.startsWith(read('p962-audio-error-recovery.js').toString('utf8').split('(function (w,d) {').slice(0,-1).join('(function (w,d) {')),'previous audio and Uthmani code stays unchanged');
+assert.ok(js.includes('var natural=actualLineIndex(card);'),'native text mark takes priority');
+assert.ok(js.includes('setInterval(function(){if(!enabled()||!followActive())return;'),'page/sound guard only while active');
+assert.ok(!css.includes('@font-face'),'no typeface changes');
+console.log('PASS QA023: 8/8 SHA256 asset matches; six QA022 files untouched; no OTA release, no APK.');
