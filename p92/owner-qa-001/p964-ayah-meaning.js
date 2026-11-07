@@ -885,7 +885,10 @@
    return active;
   }finally{busy=false}
  }
- function restoreMeaning(){['stableMeaning','b300WordMeaningOverlay'].forEach(function(id){var n=E(id);if(n&&n.style&&n.style.getPropertyValue('display')==='none')n.style.removeProperty('display')})}
+ function restoreMeaning(){var official=E('b300WordMeaningOverlay');if(official&&official.style&&official.style.getPropertyValue('display')==='none')official.style.removeProperty('display');
+  // The old stableMeaning is deliberately hidden by B249 when reading; do not resurrect a duplicate card.
+  var hideLegacy=w.__BASAIR_B249_HIDE_LEGACY_MEANING__;if(typeof hideLegacy==='function')try{hideLegacy()}catch(_e){}
+ }
  function sync(){
   if(reader()){restoreMeaning();return}
   if(focus){focus.classList.remove('bq964-ayah-focus');focus=null}
