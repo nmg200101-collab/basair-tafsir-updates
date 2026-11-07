@@ -1,0 +1,121 @@
+/* BASAIR P93.6 owner QA008: compact night print brightness, clearer bell inbox and verified-restart CTA.
+   Scoped to existing WebView UI; does not touch Quran artwork, audio or Android. */
+#p935NightControls.p936-refined {
+ box-sizing:border-box!important;position:relative!important;overflow:hidden!important;
+ margin:9px 0 1px!important;padding:12px 13px 10px!important;border-radius:16px!important;
+ border:1px solid #88af9a!important;background:linear-gradient(140deg,#edf8f2,#f9faf5)!important;
+ box-shadow:0 2px 12px #071b1421!important;color:#1b4a39!important;
+}
+#p935NightControls.p936-refined[hidden]{display:none!important}
+#p935NightControls.p936-refined .p935-night-heading{display:flex!important;align-items:center!important;gap:10px!important;margin:0 0 7px!important;}
+#p935NightControls.p936-refined .p936-title-group{display:flex;align-items:center;gap:9px;flex:1;min-width:0;}
+#p935NightControls.p936-refined .p936-moon-icon{flex:0 0 30px;width:30px;height:30px;display:grid;place-items:center;border-radius:11px;background:#d4ebe0;color:#246c50;font-size:21px;line-height:1;}
+#p935NightControls.p936-refined .p936-title-copy{display:flex;flex-direction:column;gap:1px;min-width:0;}
+#p935NightControls.p936-refined .p936-title-copy strong{color:inherit;font-size:14px!important;line-height:1.35;font-weight:800;}
+#p935NightControls.p936-refined .p936-title-copy small{font-size:10.5px!important;color:#577466;line-height:1.3;}
+#p935NightControls.p936-refined output{margin-inline-start:auto;min-width:54px;border:1px solid #b9dfcc;border-radius:9px;padding:5px 7px;background:#deeee5!important;color:#125037!important;font-size:14px!important;font-weight:800;font-variant-numeric:tabular-nums;}
+#p935NightControls.p936-refined .p935-night-row{display:grid!important;grid-template-columns:36px minmax(0,1fr) 36px!important;gap:10px!important;align-items:center!important;direction:ltr!important;margin:3px 0 5px!important}
+#p935NightControls.p936-refined .p935-night-row button{height:37px!important;min-height:37px!important;width:36px!important;min-width:36px!important;display:grid!important;place-items:center!important;font:700 23px/1 system-ui!important;padding:0!important;border-radius:10px!important;border:1px solid #92b9a4!important;background:#fff!important;color:#235b46!important;box-shadow:0 1px 3px #103c2a18!important}
+#p935NightControls.p936-refined .p935-night-row button:active{transform:scale(.96)}
+#p935NightControls.p936-refined input[type="range"]{width:100%!important;min-width:0!important;max-width:100%!important;accent-color:#2e9473!important;height:28px!important;margin:0!important;cursor:pointer}
+#p935NightControls.p936-refined input[type="range"]::-webkit-slider-runnable-track{height:7px;border-radius:9px;background:#bdd9ca;}
+#p935NightControls.p936-refined input[type="range"]::-webkit-slider-thumb{margin-top:-5px;}
+#p935NightControls.p936-refined .p935-night-foot{display:flex!important;align-items:center!important;gap:8px!important;margin-top:5px!important;font-size:10px!important;color:#526e60!important}
+#p935NightControls.p936-refined .p935-night-foot span{flex:1;line-height:1.35;}
+#p935NightControls.p936-refined .p935-night-foot button{border-radius:8px!important;padding:5px 10px!important;min-height:29px!important;font:700 11px system-ui!important;border:1px solid #b4d1c3!important;background:#f0f6f1!important;color:#295e49!important}
+body.dark #p935NightControls.p936-refined, body.night #p935NightControls.p936-refined{
+ background:linear-gradient(135deg,#143b30,#102d28)!important;border-color:#497c69!important;color:#eff8ed!important;box-shadow:0 6px 20px #0002!important
+}
+body.dark #p935NightControls.p936-refined .p936-moon-icon,body.night #p935NightControls.p936-refined .p936-moon-icon{background:#255644;color:#f1d9a3}
+body.dark #p935NightControls.p936-refined .p936-title-copy small,body.night #p935NightControls.p936-refined .p936-title-copy small{color:#bdd6c7!important}
+body.dark #p935NightControls.p936-refined output,body.night #p935NightControls.p936-refined output{background:#285945!important;color:#f6fff7!important;border-color:#518d73!important}
+body.dark #p935NightControls.p936-refined .p935-night-row button,body.night #p935NightControls.p936-refined .p935-night-row button{background:#235242!important;color:#eef9ef!important;border-color:#578f76!important}
+body.dark #p935NightControls.p936-refined .p935-night-foot,body.night #p935NightControls.p936-refined .p935-night-foot{color:#bfd6c9!important}
+body.dark #p935NightControls.p936-refined .p935-night-foot button,body.night #p935NightControls.p936-refined .p935-night-foot button{background:#235041!important;color:#effaf3!important;border-color:#53816c!important}
+/* Notifications: a compact inbox, not a second More menu. */
+#bqNoticesSheet.p936-notices .bq-dialog-body{box-sizing:border-box!important;padding:15px 16px 18px!important;}
+#bqNoticesSheet .p936-notice-heading{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:3px 0 10px;margin:0 0 9px;border-bottom:1px solid #d6ddcf;}
+#bqNoticesSheet .p936-notice-heading strong{font-size:14px!important;color:inherit}
+#bqNoticesSheet .p936-notice-counter{background:#dcefe4;color:#1b5c43;border-radius:20px;padding:4px 10px;font:700 11px system-ui;white-space:nowrap}
+#bqNoticesSheet .p936-notice-toolbar{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.85fr) minmax(0,.75fr);gap:7px;margin:0 0 13px;}
+#bqNoticesSheet .p936-notice-toolbar button{box-sizing:border-box!important;width:100%!important;margin:0!important;min-height:39px;padding:6px!important;display:grid;place-items:center;border-radius:10px!important;font:700 12px system-ui!important;border:1px solid #b8d0c0!important;background:#f4f9f2!important;color:#1b573d!important;cursor:pointer}
+#bqNoticesSheet .p936-notice-toolbar #p935OpenUpdates{background:#1e7355!important;color:white!important;border-color:#1e7355!important}
+#bqNoticesSheet.p936-notices .bq-live-notices{display:grid!important;gap:8px!important;margin-top:5px;max-height:min(42vh,370px);overflow-y:auto;overscroll-behavior:contain;padding:0 2px 3px}
+#bqNoticesSheet.p936-notices .bq-notice-item{position:relative;display:grid!important;gap:3px!important;margin:0!important;padding:12px 12px 11px!important;border:1px solid #d5dfd4!important;border-radius:13px!important;background:#fdfdf8!important;box-shadow:0 1px 5px #102c1b0a!important}
+#bqNoticesSheet.p936-notices .bq-notice-item.p936-unread{border-inline-start:4px solid #23936e!important;background:#f1f9f3!important}
+#bqNoticesSheet.p936-notices .bq-notice-item strong{font-size:13px!important;line-height:1.5;color:#1b4b39!important}
+#bqNoticesSheet.p936-notices .bq-notice-item small{font-size:10px!important;line-height:1.55;color:#617d6c!important}
+#bqNoticesSheet.p936-notices .bq-notice-item p{font-size:11px!important;line-height:1.6!important;color:#466251!important;margin:2px 0 0!important}
+#bqNoticesSheet.p936-notices .bq-feed-box{padding:10px 2px 0!important;margin-top:9px!important;border-top:1px solid #d5dfd4!important}
+#bqNoticesSheet.p936-notices .bq-feed-box>p:first-child{display:none!important}
+#bqNoticesSheet.p936-notices .bq-feed-status{font-size:10px!important;line-height:1.6!important}
+body.dark #bqNoticesSheet .p936-notice-counter{background:#28634d!important;color:#eaf7ed!important}
+body.dark #bqNoticesSheet .p936-notice-heading{border-color:#416858!important}
+body.dark #bqNoticesSheet .p936-notice-toolbar button{background:#1c4939!important;border-color:#5b8572!important;color:#f5faf2!important}
+body.dark #bqNoticesSheet .p936-notice-toolbar #p935OpenUpdates{background:#27785a!important;border-color:#278465!important;color:white!important}
+body.dark #bqNoticesSheet.p936-notices .bq-notice-item{background:#193a31!important;border-color:#406a57!important}
+body.dark #bqNoticesSheet.p936-notices .bq-notice-item.p936-unread{background:#1d4939!important;border-inline-start-color:#69c9a4!important}
+body.dark #bqNoticesSheet.p936-notices .bq-notice-item strong{color:#f3f9ef!important}
+body.dark #bqNoticesSheet.p936-notices .bq-notice-item p{color:#cbdfd0!important}
+/* Restart prompt appears only after a successfully staged and locally verified update. */
+#basairP92Dialog .p936-restart-offer{display:grid;gap:8px;padding:11px;margin:12px 0 0;border:1px solid #8cb49e;border-radius:12px;background:#edf8f0;color:#173e2d;direction:rtl}
+#basairP92Dialog .p936-restart-offer[hidden]{display:none!important}
+#basairP92Dialog .p936-restart-offer strong{font-size:13px;line-height:1.5}
+#basairP92Dialog .p936-restart-offer p{margin:0;font-size:11px;line-height:1.65;color:#456655}
+#basairP92Dialog .p936-restart-actions{display:flex;flex-wrap:wrap;gap:8px}
+#basairP92Dialog .p936-restart-actions button{min-height:40px;padding:8px 12px;border:0;border-radius:9px;background:#247252;color:white;font:700 12px system-ui}
+#basairP92Dialog .p936-restart-actions .p936-later{background:#deebe2;color:#235640;border:1px solid #a9ccba}
+@media(max-width:360px){#bqNoticesSheet .p936-notice-toolbar{gap:5px}#bqNoticesSheet .p936-notice-toolbar button{font-size:11px!important}#p935NightControls.p936-refined .p936-night-heading{gap:6px}}
+/* BASAIR P94 compact recovery only after a genuine follow stall. Hidden otherwise. */
+#p94FollowRecover[hidden]{display:none!important}
+#p94FollowRecover{position:fixed;z-index:2147483050;bottom:calc(76px + env(safe-area-inset-bottom,0px));right:12px;left:12px;max-width:520px;margin:auto;padding:10px 12px;border:1px solid #86bca9;border-radius:15px;box-shadow:0 6px 20px #0003;background:#f7fbf8;color:#154e3c;direction:rtl;font:600 14px system-ui,Arial,sans-serif;line-height:1.7}
+#p94FollowRecover strong,#p94FollowRecover span{display:block}
+#p94FollowRecover span{font-size:12px;font-weight:400;color:#37685c}
+#p94FollowRecover .p94-follow-actions{display:flex;gap:6px;margin-top:8px;align-items:center}
+#p94FollowRecover button{border:0;border-radius:10px;padding:8px 12px;background:#1d7056;color:#fff;font-weight:700;font-size:13px}
+#p94FollowRecover #p94FollowBack{background:#e3ede8;color:#16523d}
+#p94FollowRecover #p94FollowDismiss{margin-inline-start:auto;padding:6px 11px;background:transparent;color:#185540;font-size:18px}
+body.night #p94FollowRecover,body.night-mode #p94FollowRecover{background:#142e27;border-color:#336c56;color:#d8f1e6}
+body.night #p94FollowRecover span,body.night-mode #p94FollowRecover span{color:#a5c8bb}
+
+/* Basair Quran P94.2 QA012 — follow settings and a soft noninteractive reading guide. */
+#sequenceSheetV10 #bq942Options{box-sizing:border-box;margin:9px 12px 10px;padding:11px;border:1px solid rgba(77,140,121,.33);border-radius:17px;background:linear-gradient(150deg,rgba(34,105,79,.09),rgba(224,210,160,.07));color:var(--ink,#214d3e);direction:rtl;text-align:right;font-size:14px}
+#sequenceSheetV10 #bq942Options *{box-sizing:border-box}
+#bq942Options .bq942-top{display:flex;align-items:center;justify-content:space-between;gap:10px}
+#bq942Options .bq942-title{display:flex;flex-direction:column;gap:3px;min-width:0}
+#bq942Options .bq942-title b{font-size:15px;line-height:1.4;color:inherit}
+#bq942Options .bq942-title small{font-size:11px;color:var(--muted,#667c6f);line-height:1.4}
+#bq942Options .bq942-switch{display:flex;flex-shrink:0;align-items:center;gap:7px;cursor:pointer;font-weight:700;background:rgba(46,125,93,.09);padding:8px 10px;border-radius:100px}
+#bq942Options input[type=checkbox]{accent-color:#258465;width:19px;height:19px;margin:0;cursor:pointer}
+#bq942More{margin-top:9px;border-top:1px solid rgba(64,118,96,.18);padding-top:8px}
+#bq942More>summary{font-weight:700;color:#33806a;cursor:pointer;list-style:none;display:flex;align-items:center;justify-content:space-between;line-height:1.6;font-size:13px}
+#bq942More>summary::-webkit-details-marker{display:none}
+#bq942More[open]>summary span{transform:rotate(180deg)}
+#bq942More .bq942-more{display:grid;gap:10px;margin-top:10px}
+#bq942More .bq942-label,#bq942More .bq942-range>span{font-weight:700;font-size:13px;display:flex;justify-content:space-between;align-items:center;gap:8px}
+#bq942Options .bq942-colors{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+#bq942Options .bq942-colors button{min-height:38px;font-family:inherit;font-size:12px;font-weight:600;line-height:1.35;border-radius:10px;border:1px solid rgba(54,112,89,.23);background:rgba(255,255,255,.45);color:inherit;padding:4px;white-space:normal}
+#bq942Options .bq942-colors button.selected{border:2px solid #208264;background:rgba(29,132,100,.15);color:#166c52}
+#bq942Options .bq942-range{display:grid;gap:7px}
+#bq942Options .bq942-range output{font-variant-numeric:tabular-nums;font-size:12px;color:#28806a}
+#bq942Options .bq942-range input{accent-color:#228769;width:100%;height:24px;cursor:pointer}
+#bq942Options .bq942-hint{margin:0;font-size:11px;line-height:1.7;color:var(--muted,#64756b)}
+#bq942Options .bq942-reset{justify-self:start;border:1px solid #b5cfc1;background:transparent;color:#246c56;border-radius:10px;padding:7px 11px;font-size:12px;font-family:inherit;cursor:pointer}
+body.dark #bq942Options,body.night #bq942Options{color:#deefe9!important;background:linear-gradient(150deg,#1a3a30,#1b332d)!important;border-color:#3e6859!important}
+body.dark #bq942Options .bq942-title small,body.dark #bq942Options .bq942-hint{color:#b0c8be!important}
+body.dark #bq942Options .bq942-colors button{background:#203b31;color:#e6f3ec}
+body.dark #bq942Options .bq942-colors button.selected{background:#2a5545;color:#fff}
+/* Only the new guide, not Quran ink, is tinted. */
+#b345NormalStack .bq942-guide{position:absolute!important;display:block;left:10%;right:10%;width:80%;height:4.7%;z-index:9;pointer-events:none!important;border:1px solid rgba(var(--bq942-rgb,20,146,117),.15);border-radius:8px;box-shadow:0 1px 6px rgba(var(--bq942-rgb,20,146,117),.13);background:rgba(var(--bq942-rgb,20,146,117),var(--bq942-strength,.18));transition:top .20s linear;mix-blend-mode:multiply}
+#b345NormalStack .bq942-guide[hidden],body.bq942-guide-off #b345NormalStack .bq942-guide{display:none!important}
+body.bq942-guide-off #b345NormalStack .b345ExactPage .quranWord.current{background:transparent!important;box-shadow:none!important}
+body.bq942-guide-on #b345NormalStack .b345ExactPage .quranWord.current{background:rgba(var(--bq942-rgb,20,146,117),var(--bq942-strength,.18))!important}
+body.dark #b345NormalStack .bq942-guide{mix-blend-mode:normal;border-color:rgba(var(--bq942-rgb,20,146,117),.3)}
+/* A single explicit resume action when font recreation ends a running session. */
+#mushafReader #bq942Resume{position:fixed;bottom:calc(77px + env(safe-area-inset-bottom));right:8px;left:8px;z-index:220;display:flex;gap:8px;align-items:center;justify-content:space-between;direction:rtl;border-radius:15px;border:1px solid #81b29d;background:#f4faf7;box-shadow:0 10px 30px #0003;padding:10px;font-size:12px;color:#154d3b}
+#mushafReader #bq942Resume[hidden]{display:none!important}
+#mushafReader #bq942ResumeMsg{flex:1;line-height:1.5;font-weight:600}
+#mushafReader #bq942Resume button{border:0;border-radius:9px;padding:8px 10px;font-size:12px;font-family:inherit;cursor:pointer}
+#mushafReader #bq942ResumeButton{background:#186b50;color:white;font-weight:700}
+#mushafReader #bq942ResumeClose{background:#e2eee7;color:#154d3b}
+body.dark #mushafReader #bq942Resume{background:#193a30;color:#ebf8f0;border-color:#3e816a}
