@@ -42,7 +42,7 @@ const section='/* Continuation-page typography:';
 const header='/* BASAIR P95 / owner QA019';
 const begin=oldCSS.indexOf(section),end=oldCSS.indexOf(header,begin);
 eq(begin>0&&end>begin,'recognize existing QA017 typography block');
-const reconstructed=oldCSS.slice(0,begin).trimEnd()+'\\n\\n'+oldCSS.slice(end);
+const reconstructed=oldCSS.slice(0,begin).trimEnd()+'\n\n'+oldCSS.slice(end);
 eq(css===reconstructed,'only QA017 typography block removed; QA019 header unchanged');
 eq(!css.includes('.b345ExactPage.bq947-font-parity .b327UnicodeLine'),'no QA017 font-weight override');
 eq(css.includes('body #b345NormalStack .b441FollowAyah')&&css.includes('body #b345NormalStack .b441FollowWord'),'Follow ayah/word highlights intact');
