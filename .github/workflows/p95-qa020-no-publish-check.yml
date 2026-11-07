@@ -1,0 +1,24 @@
+name: P95 QA020 Font Restore Static Guard (no publish)
+
+on:
+  pull_request:
+    paths:
+      - 'p92/owner-qa-001/p951-*'
+      - 'p92/owner-qa-001/QA020-*'
+      - '.github/workflows/p95-qa020-no-publish-check.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  static-qa020:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate JavaScript syntax only
+        run: |
+          node --check p92/owner-qa-001/p951-font-restored-follow.js
+          node --check p92/owner-qa-001/QA020-VERIFY.mjs
+      - name: Verify signed-baseline parity and all eight candidate SHA-256 assets
+        run: node p92/owner-qa-001/QA020-VERIFY.mjs
