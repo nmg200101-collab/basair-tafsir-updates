@@ -886,8 +886,7 @@
   }finally{busy=false}
  }
  function restoreMeaning(){var official=E('b300WordMeaningOverlay');if(official&&official.style&&official.style.getPropertyValue('display')==='none')official.style.removeProperty('display');
-  // The old stableMeaning is deliberately hidden by B249 when reading; do not resurrect a duplicate card.
-  var hideLegacy=w.__BASAIR_B249_HIDE_LEGACY_MEANING__;if(typeof hideLegacy==='function')try{hideLegacy()}catch(_e){}
+  // B249 already owns legacy stableMeaning inside reader: never resurrect or re-close it here.
  }
  function sync(){
   if(reader()){restoreMeaning();return}
