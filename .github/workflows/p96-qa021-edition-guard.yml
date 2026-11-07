@@ -29,5 +29,7 @@ jobs:
           node --check p92/owner-qa-001/P961-EDITION-STATE-TEST.mjs
       - name: Reproduce prior stale-intent race and test guard
         run: node p92/owner-qa-001/P961-EDITION-STATE-TEST.mjs
+      - name: Verify exact 8-asset QA021 candidate, preserving QA020
+        run: node p92/owner-qa-001/P961-QA021-VERIFY.mjs
       - name: Record checksum for signing candidate
         run: sha256sum p92/owner-qa-001/p961-uthmani-hold-safe.js
