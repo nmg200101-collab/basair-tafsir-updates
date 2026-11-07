@@ -1,0 +1,35 @@
+name: BASAIR P96.1 QA021 Edition State Guard (no publish)
+
+on:
+  push:
+    branches:
+      - fix/p96-qa021-edition-stale-blue-guard-20261108
+    paths:
+      - 'p92/owner-qa-001/p961-*'
+      - 'p92/owner-qa-001/P961-*'
+      - '.github/workflows/p96-qa021-edition-guard.yml'
+  pull_request:
+    paths:
+      - 'p92/owner-qa-001/p961-*'
+      - 'p92/owner-qa-001/P961-*'
+      - '.github/workflows/p96-qa021-edition-guard.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  safe-state-guard:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Syntax check (no code execution in Quran engine)
+        run: |
+          node --check p92/owner-qa-001/p961-uthmani-hold-safe.js
+          node --check p92/owner-qa-001/P961-EDITION-STATE-TEST.mjs
+      - name: Reproduce prior stale-intent race and test guard
+        run: node p92/owner-qa-001/P961-EDITION-STATE-TEST.mjs
+      - name: Verify exact 8-asset QA021 candidate, preserving QA020
+        run: node p92/owner-qa-001/P961-QA021-VERIFY.mjs
+      - name: Record checksum for signing candidate
+        run: sha256sum p92/owner-qa-001/p961-uthmani-hold-safe.js
