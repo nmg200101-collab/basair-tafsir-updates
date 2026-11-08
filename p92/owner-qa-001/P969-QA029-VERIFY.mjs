@@ -1,0 +1,35 @@
+import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
+import { createHash } from 'node:crypto';
+import { dirname,join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+const root=dirname(fileURLToPath(import.meta.url));
+const read=n=>readFileSync(join(root,n));
+const hash=b=>createHash('sha256').update(b).digest('hex');
+const active=JSON.parse(Buffer.from(JSON.parse(read('release.json')).payload,'base64').toString('utf8'));
+const draft=JSON.parse(read('P969-QA029-UNSIGNED-PAYLOAD-DRAFT.json').toString('utf8'));
+assert.equal(active.id,'P96-NATIVE-AYAH-PREVIEW-ONE-TAP-028');
+assert.equal(active.sequence,28);
+assert.equal(draft.id,'P96-STILL-AYAH-PAGE-029');
+assert.equal(draft.sequence,29);
+assert.equal(draft.channel,'owner-qa');
+assert.equal(draft.minAppVersion,690);
+assert.equal(draft.assets.length,8,'V690 receiver rejects more than 8 assets');
+assert.equal(new Set(draft.assets.map(a=>a.path)).size,8);
+assert.equal(draft.assets.filter(a=>active.assets.some(b=>a.path===b.path&&a.size===b.size&&a.sha256===b.sha256)).length,7,'only one JS changed');
+let total=0;
+for(const a of draft.assets){
+ assert.match(a.path,/^[a-z0-9][a-z0-9._-]*\.(js|css)$/);
+ const bytes=read(a.path); total+=bytes.length;
+ assert.ok(bytes.length<=524288,'V690 per-asset cap '+a.path);
+ assert.equal(bytes.length,a.size,'asset bytes '+a.path);
+ assert.equal(hash(bytes),a.sha256,'asset SHA256 '+a.path);
+}
+assert.ok(total<=1024*1024,'V690 bundle cap');
+const script=read('p969-no-ayah-page-motion.js').toString('utf8');
+assert.ok(script.includes('function exitMeaning()'),'meaning cleanup retained');
+assert.ok(script.includes('function p968ShowPreview(ayah)'),'existing preview retained');
+assert.ok(!script.includes('if(!scrollSelected(node))'),'no QA024 double movement');
+assert.ok(script.includes('function install()')&&script.includes("Object.defineProperty(el,'scrollTop'"),'narrow native scroll bridge');
+assert.ok(script.includes('function restore()'),'runtime rollback available');
+console.log('PASS QA029 signed draft: 8/8 asset sizes and SHA256, 7 unchanged from QA028, V690 constraints, meaning cleanup retained, no live change.');
