@@ -22,5 +22,6 @@ jobs:
       - run: node --check p92/owner-qa-001/p969-no-ayah-page-motion.js
       - run: node --check p92/owner-qa-001/P969-QA029-STILL-PAGE-TEST.mjs
       - run: node p92/owner-qa-001/P969-QA029-STILL-PAGE-TEST.mjs
+      - run: node p92/owner-qa-001/P969-QA029-VERIFY.mjs
       - run: sha256sum p92/owner-qa-001/p969-no-ayah-page-motion.js
       - run: wc -c p92/owner-qa-001/p969-no-ayah-page-motion.js
