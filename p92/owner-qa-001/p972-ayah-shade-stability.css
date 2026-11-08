@@ -537,7 +537,6 @@ html[data-bq916-shade="on"][data-bq945-shade="on"] body.reader-active:not(.h25-h
   background:rgba(35,147,116,.19)!important;
   box-shadow:inset 0 0 0 1.5px rgba(28,130,99,.58)!important;
   border-radius:5px!important;
-  pointer-events:auto!important;
   transition:none!important;
 }
 html[data-bq916-shade="on"][data-bq945-shade="on"] body.reader-active.night
