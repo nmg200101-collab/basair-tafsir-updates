@@ -557,7 +557,7 @@ body:not(.reader-active) .ayahHit.bq972-shade-hold {
 
 
 /* BASAIR P98 — landing-only polish; no Mushaf reader, Quran font or audio selectors. */
-#bqP98TilawaDownloads { display:none!important; }
+#bqUnifiedSectionHeaderP26 #bqP98TilawaDownloads { display:none!important; }
 body.bq-p98-tilawa-head #bqUnifiedSectionHeaderP26 #bqP26More,
 body.bq-p98-tilawa-head #bqUnifiedSectionHeaderP26 #bqP26Menu { display:none!important; }
 body.bq-p98-tilawa-head #bqUnifiedSectionHeaderP26 #bqP98TilawaDownloads {
