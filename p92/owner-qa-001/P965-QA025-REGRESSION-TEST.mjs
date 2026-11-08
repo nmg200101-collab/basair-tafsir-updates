@@ -132,6 +132,23 @@ assert.equal(z.api.accept(ref,w2),true);z.flush();
 assert.equal(z.api.diagnostics().scrollAligned,0,'100% fixed printed page must not be forced to scroll');
 assert.equal(w2.classList.contains('bq964-ayah-focus'),true);
 assert.equal(w2.classList.contains('bq965-ayah-selected'),true,'fixed page displays first-ayah shadow without scrolling');
+// Selecting an earlier ayah must not be canceled by a stale native mark from the later verse.
+const stale=makeEnv();stale.flush();
+const older=el('oldAyah'),oldLine=el('oldLine',['exactLine']);
+const oldCard=el('oldCard');oldCard.isConnected=true;older.isConnected=true;
+older.closest=sel=>sel.includes('data-b345')?oldCard:sel==='.exactLine'?oldLine:null;
+let currentNative={closest:()=>({getAttribute:k=>k==='data-s'?'2':k==='data-selectayah'?'260':k==='data-g'?'305':null})};
+oldCard.querySelector=sel=>sel.includes('b441Follow')?currentNative:older;
+oldCard.querySelectorAll=sel=>sel.includes('exactLine')?[oldLine]:[older];
+const earlier={page:3,s:2,a:250,g:290,progress:.1};
+assert.equal(stale.api.accept(earlier,older),true);
+stale.flush();
+assert.equal(stale.api.selectedLine(oldCard,3),0,'stale later-verse native mark cannot cancel newly selected earlier ayah');
+assert.equal(older.classList.contains('bq965-ayah-selected'),true);
+currentNative={closest:()=>({getAttribute:k=>k==='data-s'?'2':k==='data-selectayah'?'250':k==='data-g'?'290':null})};
+assert.equal(stale.api.selectedLine(oldCard,3),-1,'fresh native mark at selected earlier ayah ends provisional highlight');
+assert.equal(older.classList.contains('bq965-ayah-selected'),false);
+
 // No retarget without running/paused native sequence.
 const q=makeEnv();q.s.running=false;q.s.paused=false;q.flush();
 assert.equal(q.api.accept(ref,word),false);
