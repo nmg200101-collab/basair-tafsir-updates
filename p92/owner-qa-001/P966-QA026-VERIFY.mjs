@@ -1,0 +1,41 @@
+// BASAIR P96.6 owner-QA candidate verifier; no publication or signing.
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+import {createHash} from 'node:crypto';
+import {dirname,join} from 'node:path';
+import {fileURLToPath} from 'node:url';
+const root=dirname(fileURLToPath(import.meta.url));
+const read=n=>readFileSync(join(root,n));
+const hash=b=>createHash('sha256').update(b).digest('hex');
+const live=JSON.parse(read('release.json').toString('utf8'));
+const current=JSON.parse(Buffer.from(live.payload,'base64').toString('utf8'));
+const draft=JSON.parse(read('P966-QA026-UNSIGNED-PAYLOAD-DRAFT.json').toString('utf8'));
+assert.equal(current.id,'P96-AYAH-FIRST-SHADE-NO-JITTER-025');
+assert.equal(current.sequence,25);
+assert.equal(draft.id,'P96-NATIVE-SINGLE-RETARGET-026');
+assert.equal(draft.sequence,26);
+assert.equal(draft.channel,'owner-qa');
+assert.equal(draft.minAppVersion,690);
+assert.equal(draft.assets.length,8);
+assert.equal(new Set(draft.assets.map(x=>x.path)).size,8);
+assert.equal(draft.assets.filter(x=>x.kind==='js').length,4);
+assert.equal(draft.assets.filter(x=>x.kind==='css').length,4);
+assert.equal(current.assets.filter(a=>draft.assets.some(b=>a.path===b.path&&a.size===b.size&&a.sha256===b.sha256)).length,6);
+assert.equal(draft.assets.some(x=>x.path==='p965-selected-ayah-no-scroll.js'),false,'old QA025 JS must not double execute');
+assert.equal(draft.assets.some(x=>x.path==='p965-selected-ayah-no-scroll.css'),false,'old QA025 CSS must not double execute');
+for(const a of draft.assets){
+ assert.match(a.path,/^[A-Za-z0-9_-]+\.(?:js|css)$/);
+ const content=read(a.path);
+ assert.equal(content.length,a.size,'asset byte size '+a.path);
+ assert.equal(hash(content),a.sha256,'SHA256 '+a.path);
+}
+const js=read('p966-native-retarget-dedupe.js').toString('utf8');
+const css=read('p966-native-retarget-dedupe.css').toString('utf8');
+assert.ok(css.startsWith(read('p965-selected-ayah-no-scroll.css').toString('utf8')),'approved QA025 CSS is retained');
+assert.ok(js.includes("function exitMeaning()"),'successful QA024 word meaning cleanup retained');
+assert.ok(js.includes("stats.nativeClickDeduplicated"),'double native click guard present');
+assert.ok(js.includes("nativeImageHandoff"),'native image ayah highlight handoff present');
+assert.ok(js.includes("function gestureEndObserve(ev)"),'gesture update follows R33 pointerup');
+assert.ok(!js.slice(js.indexOf('/* BASAIR P96.4 / QA024')).includes('scrollTo('),'no duplicated scrollTo');
+assert.ok(!css.includes('@font-face'),'no additional font face');
+console.log('PASS QA026 manifest: 8/8 SHA256, 6 QA025 assets unchanged, native gesture dedup + word meaning preserved, no OTA publish.');
