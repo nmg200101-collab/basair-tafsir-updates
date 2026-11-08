@@ -1211,7 +1211,7 @@ window.__BASAIR_P968_DIAGNOSTICS__={version:'P96.8-QA028',snapshot:function(){va
  'use strict';
  var API='__BASAIR_P971_AUDIO_PACE__';if(w[API])return;
  var reader=null, priorOwn=null, nativeScroll=null, audio=null, binder=0, idleTimer=0, token=0,raf=0;
- var pulseUntil=0,pulsePage=0,manualUntil=0,target=null,motion=null;
+ var pulseUntil=0,pulsePage=0,pulseSerial=0,manualUntil=0,target=null,motion=null;
  var stats={ticks:0,armed:0,coalesced:0,visibleHeld:0,animated:0,completed:0,
    passed:0,disabledBySettings:0,manualCancels:0,failOpen:0,restores:0,errors:0};
  function E(id){return d.getElementById(id)}
@@ -1324,10 +1324,10 @@ window.__BASAIR_P968_DIAGNOSTICS__={version:'P96.8-QA028',snapshot:function(){va
   if(!sp||now()<=manualUntil||!active(r,s)){if(!sp)stats.disabledBySettings++;restore(true);return}
   pulsePage=Number(s.page);pulseUntil=now()+65;
   if(!arm(r,s,sp))return;
-  var serial=++token;
+  var serial=++pulseSerial;
   // Setter interception is short; the in-flight animation can finish normally.
   if(idleTimer)w.clearTimeout(idleTimer);
-  idleTimer=w.setTimeout(function(){if(serial===token)restore(false)},72);
+  idleTimer=w.setTimeout(function(){if(serial===pulseSerial)restore(false)},72);
  }
  function gesture(){manualUntil=now()+1000;stats.manualCancels++;restore(true)}
  function clear(){restore(true)}
