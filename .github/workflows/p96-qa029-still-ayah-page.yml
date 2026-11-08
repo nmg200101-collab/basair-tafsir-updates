@@ -1,0 +1,26 @@
+name: BASAIR P96.9 QA029 Still Ayah Page Safety (no publish)
+on:
+  push:
+    branches: [fix/p969-qa029-still-ayah-page-20261108]
+    paths:
+      - 'p92/owner-qa-001/p969-*'
+      - 'p92/owner-qa-001/P969-*'
+      - '.github/workflows/p96-qa029-still-ayah-page.yml'
+  pull_request:
+    paths:
+      - 'p92/owner-qa-001/p969-*'
+      - 'p92/owner-qa-001/P969-*'
+      - '.github/workflows/p96-qa029-still-ayah-page.yml'
+permissions:
+  contents: read
+jobs:
+  qa029:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - run: node --check p92/owner-qa-001/p969-no-ayah-page-motion.js
+      - run: node --check p92/owner-qa-001/P969-QA029-STILL-PAGE-TEST.mjs
+      - run: node p92/owner-qa-001/P969-QA029-STILL-PAGE-TEST.mjs
+      - run: sha256sum p92/owner-qa-001/p969-no-ayah-page-motion.js
+      - run: wc -c p92/owner-qa-001/p969-no-ayah-page-motion.js
