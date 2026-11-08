@@ -1,0 +1,24 @@
+name: Basair P96.8 QA028 Native Ayah Single Tap Safety (no publish)
+on:
+  push:
+    branches: [fix/p968-qa028-native-gesture-preview-20261108]
+    paths:
+      - 'p92/owner-qa-001/p968-*'
+      - 'p92/owner-qa-001/P968-*'
+      - '.github/workflows/p96-qa028-native-ayah-safety.yml'
+  pull_request:
+    paths:
+      - 'p92/owner-qa-001/p968-*'
+      - 'p92/owner-qa-001/P968-*'
+      - '.github/workflows/p96-qa028-native-ayah-safety.yml'
+permissions:
+  contents: read
+jobs:
+  qa028:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - run: node --check p92/owner-qa-001/p968-native-gesture-preview.js
+      - run: node --check p92/owner-qa-001/P968-QA028-NATIVE-TEST.mjs
+      - run: node p92/owner-qa-001/P968-QA028-NATIVE-TEST.mjs
