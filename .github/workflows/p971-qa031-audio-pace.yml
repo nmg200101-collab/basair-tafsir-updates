@@ -1,0 +1,31 @@
+name: BASAIR P97.1 QA031 Audio Follow Pace Safety (never publish)
+on:
+  push:
+    branches:
+      - fix/p971-audio-follow-settings-pace-20261108
+  pull_request:
+    paths:
+      - 'p92/owner-qa-001/p971-*'
+      - 'p92/owner-qa-001/P971-*'
+      - '.github/workflows/p971-qa031-audio-pace.yml'
+permissions:
+  contents: read
+jobs:
+  qa031-pacing-regression:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - name: JavaScript syntax
+        run: |
+          node --check p92/owner-qa-001/p971-audio-pace-settings.js
+          node --check p92/owner-qa-001/P971-QA031-PACE-TEST.mjs
+      - name: Verified behavior tests
+        run: node p92/owner-qa-001/P971-QA031-PACE-TEST.mjs
+      - name: Confirm candidate does not replace signed owner QA030 release
+        run: |
+          node -e 'const fs=require("fs");const p="p92/owner-qa-001/";const a=JSON.parse(fs.readFileSync(p+"release.json"));const x=JSON.parse(Buffer.from(a.payload,"base64"));if(x.sequence!==30||x.id!=="P97-NATURAL-FOLLOW-RESTORE-030"||!a.signature)throw Error("unexpected published state");const b=fs.readFileSync(p+"p970-audio-follow-visibility-guard.js","utf8");const c=fs.readFileSync(p+"p971-audio-pace-settings.js","utf8");if(!c.startsWith(b.trimEnd()))throw Error("QA030 base modified");console.log("PASS: QA030 remains published; QA031 candidate only")'
+      - name: SHA256 and size for eventual secured signing
+        run: |
+          sha256sum p92/owner-qa-001/p971-audio-pace-settings.js
+          wc -c p92/owner-qa-001/p971-audio-pace-settings.js
