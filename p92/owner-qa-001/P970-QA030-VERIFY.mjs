@@ -1,0 +1,43 @@
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+import {createHash} from 'node:crypto';
+import {dirname,join} from 'node:path';
+import {fileURLToPath} from 'node:url';
+const root=dirname(fileURLToPath(import.meta.url));
+const read=name=>readFileSync(join(root,name));
+const sha=b=>createHash('sha256').update(b).digest('hex');
+const decode=name=>{
+ const signed=JSON.parse(read(name).toString('utf8'));
+ assert.ok(signed.signature&&signed.signature.length>=500,'signed owner rollback/published state');
+ return JSON.parse(Buffer.from(signed.payload,'base64').toString('utf8'));
+};
+const published=decode('release.json');
+const previous=decode('release-qa-028-before-qa029-20261108.json');
+const draft=JSON.parse(read('P970-QA030-UNSIGNED-PAYLOAD-DRAFT.json').toString('utf8'));
+assert.equal(published.sequence,29,'QA029 remains published, no write to release.json');
+assert.equal(published.id,'P96-STILL-AYAH-PAGE-029');
+assert.equal(previous.sequence,28,'signed QA028 rollback retained');
+assert.equal(previous.id,'P96-NATIVE-AYAH-PREVIEW-ONE-TAP-028');
+assert.equal(draft.sequence,30);
+assert.equal(draft.id,'P97-NATURAL-FOLLOW-RESTORE-030');
+assert.equal(draft.channel,'owner-qa');
+assert.equal(draft.minAppVersion,690);
+assert.equal(draft.assets.length,8,'V690 rejects >8 assets');
+assert.equal(new Set(draft.assets.map(x=>x.path)).size,8);
+assert.equal(draft.assets.filter(a=>previous.assets.some(b=>a.path===b.path&&a.sha256===b.sha256&&a.size===b.size)).length,7,'7 QA028 assets identical');
+let bytes=0;
+for(const asset of draft.assets){
+ assert.match(asset.path,/^[a-z0-9][a-z0-9._-]*\.(js|css)$/);
+ const data=read(asset.path);bytes+=data.length;
+ assert.ok(data.length<=524288,'V690 per asset limit');
+ assert.equal(data.length,asset.size,'byte length '+asset.path);
+ assert.equal(sha(data),asset.sha256,'sha '+asset.path);
+}
+assert.ok(bytes<=1048576,'V690 combined asset cap');
+const code=read('p970-audio-follow-visibility-guard.js').toString('utf8');
+assert.ok(code.includes("old.disable()"),'old QA029 bridge actively released');
+assert.ok(code.includes("a.addEventListener('timeupdate',tick,true)"),'only audio update source');
+assert.ok(code.includes('function visible(r,s)'), 'visibility gate');
+assert.ok(code.includes('function restore()'),'temporary bridge restores native setter');
+assert.ok(!code.includes('transitionWrites>=3'),'failing QA029 limiter removed');
+console.log('PASS QA030: all 8 assets hash+size, 7 QA028 files unchanged, QA028 signed rollback intact, QA029 published manifest untouched, unsigned candidate only.');
