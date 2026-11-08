@@ -427,8 +427,12 @@
   var pos=0;try{var tr=t.getBoundingClientRect(),cr=card&&card.getBoundingClientRect();if(cr&&cr.height)pos=num((tr.top+tr.height/2-cr.top)/cr.height,0,1,0)}catch(e){}
   return {page:p,s:s,a:a,g:Number(t.getAttribute('data-g'))||0,progress:pos};
  }
- function retargetClick(ev){if(!activeAudio()||state()?.paused)return;var t=targetAt(ev);if(!t)return;
-  if(lastNativeGesture&&lastNativeGesture.handled&&Date.now()-lastNativeGesture.at<900&&lastNativeGesture.s===t.s&&lastNativeGesture.a===t.a&&lastNativeGesture.page===t.page){stats.nativeClickDeduplicated=(stats.nativeClickDeduplicated||0)+1;return;}
+ function retargetClick(ev){if(!activeAudio()||state()?.paused)return;
+  // The original pointerup can change visible DOM before the synthetic click.
+  // Dedupe by the physical tap coordinates, not a now-stale verse node/page.
+  var g=lastNativeGesture,near=g&&ev&&ev.detail!==0&&isFinite(Number(ev.clientX))&&isFinite(Number(ev.clientY))&&Math.abs(Number(ev.clientX)-g.x)<=16&&Math.abs(Number(ev.clientY)-g.y)<=16;
+  if(g&&g.handled&&near&&Date.now()-g.at<900){stats.nativeClickDeduplicated=(stats.nativeClickDeduplicated||0)+1;return;}
+  var t=targetAt(ev);if(!t)return;
   var ctrl=c(),method=isPrinted()?'retargetPrintAyah':'retargetDigitalAyah';if(!ctrl||typeof ctrl[method]!=='function')return;
   var ok=false;try{ok=ctrl[method](t)===true}catch(e){}
   if(ok){pendingSelection=Date.now();stats.retarget++;try{var jump=w.__BASAIR_P964_AYAH_MEANING__;if(jump&&typeof jump.accept==='function')jump.accept(t,ev.target)}catch(_e){}ev.preventDefault();ev.stopImmediatePropagation();ev.stopPropagation()}
