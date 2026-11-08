@@ -28,9 +28,12 @@ jobs:
           node --check p92/owner-qa-001/p965-selected-ayah-no-scroll.js
           node --check p92/owner-qa-001/P965-QA025-REGRESSION-TEST.mjs
           node --check p92/owner-qa-001/P965-QA025-SHADE-TEST.mjs
+          node --check p92/owner-qa-001/P965-QA025-VERIFY.mjs
       - name: Simulate selected-ayah initial shade and check no competing smooth scroll
         run: node p92/owner-qa-001/P965-QA025-REGRESSION-TEST.mjs
       - name: Actual Follow shade renderer selected-ayah and native handoff regression
         run: node p92/owner-qa-001/P965-QA025-SHADE-TEST.mjs
+      - name: Validate all eight QA025 asset hashes and six retained QA024 files
+        run: node p92/owner-qa-001/P965-QA025-VERIFY.mjs
       - name: Record SHA256 for owner-signed candidate (never sign or publish in Actions)
         run: sha256sum p92/owner-qa-001/p965-selected-ayah-no-scroll.js p92/owner-qa-001/p965-selected-ayah-no-scroll.css
