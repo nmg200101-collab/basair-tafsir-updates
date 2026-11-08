@@ -91,5 +91,5 @@ api.disable();assert.equal(Object.getOwnPropertyDescriptor(reader,'scrollTop'),u
 assert.equal(rAF.size,0,'disable cancels remaining work');
 assert.equal(win.__BASAIR_P971_AUDIO_PACE__,undefined);
 assert.equal(audio.playbackRate,1.1,'do not alter audio pace');
-assert.equal(saveCount,0,'do not override user's settings');
+assert.equal(saveCount,0,"do not override user's settings");
 console.log('PASS QA031: QA030 exact prefix; settings-driven gradual zoom, no jump, natural page transitions, printed 100%, manual, pause, invalid setting, disable and audio rate all preserved.');
