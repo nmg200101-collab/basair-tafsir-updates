@@ -1,0 +1,25 @@
+name: BASAIR P96.7 QA027 QA024 Restore Integrity (no publish)
+
+on:
+  push:
+    branches:
+      - recovery/p96-qa027-qa024-baseline-20261108
+    paths:
+      - 'p92/owner-qa-001/P967-*'
+      - '.github/workflows/p96-qa027-restore-integrity.yml'
+  pull_request:
+    paths:
+      - 'p92/owner-qa-001/P967-*'
+      - '.github/workflows/p96-qa027-restore-integrity.yml'
+permissions:
+  contents: read
+jobs:
+  restore-guard:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - name: Static JavaScript syntax
+        run: node --check p92/owner-qa-001/P967-QA027-VERIFY.mjs
+      - name: Verify original QA024 assets and forward-only sequence
+        run: node p92/owner-qa-001/P967-QA027-VERIFY.mjs
