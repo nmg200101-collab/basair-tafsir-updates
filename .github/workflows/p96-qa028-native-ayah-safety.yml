@@ -22,3 +22,4 @@ jobs:
       - run: node --check p92/owner-qa-001/p968-native-gesture-preview.js
       - run: node --check p92/owner-qa-001/P968-QA028-NATIVE-TEST.mjs
       - run: node p92/owner-qa-001/P968-QA028-NATIVE-TEST.mjs
+      - run: node p92/owner-qa-001/P968-QA028-VERIFY.mjs
