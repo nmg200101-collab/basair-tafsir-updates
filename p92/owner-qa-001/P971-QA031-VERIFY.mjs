@@ -1,0 +1,44 @@
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+import {createHash} from 'node:crypto';
+import {dirname,join} from 'node:path';
+import {fileURLToPath} from 'node:url';
+const root=dirname(fileURLToPath(import.meta.url));
+const read=f=>readFileSync(join(root,f));
+const sha=b=>createHash('sha256').update(b).digest('hex');
+const signed=f=>{
+ const v=JSON.parse(read(f).toString('utf8'));
+ assert.ok(v.signature&&v.signature.length===512,'signed '+f);
+ return JSON.parse(Buffer.from(v.payload,'base64').toString('utf8'));
+};
+const old=signed('release.json');
+const backup28=signed('release-qa-028-before-qa029-20261108.json');
+const backup29=signed('release-qa-029-before-qa030-20261108.json');
+assert.equal(old.sequence,30,'QA030 live state unchanged');
+assert.equal(backup28.sequence,28);
+assert.equal(backup29.sequence,29);
+const m=JSON.parse(read('P971-QA031-UNSIGNED-PAYLOAD-DRAFT.json').toString('utf8'));
+assert.equal(m.sequence,31);
+assert.equal(m.id,'P97-AUDIO-FOLLOW-SETTINGS-PACE-031');
+assert.equal(m.channel,'owner-qa');
+assert.equal(m.minAppVersion,690);
+assert.equal(m.assets.length,8,'limit 8');
+assert.equal(new Set(m.assets.map(a=>a.path)).size,8);
+assert.equal(m.assets.filter(a=>old.assets.some(b=>b.path===a.path&&b.size===a.size&&b.sha256===a.sha256)).length,7,'seven prior assets unchanged');
+let total=0;
+for(const a of m.assets){
+ assert.match(a.path,/^[a-z0-9][a-z0-9._-]*\.(css|js)$/);
+ const bytes=read(a.path);total+=bytes.length;
+ assert.equal(bytes.length,a.size,a.path+' size');
+ assert.equal(sha(bytes),a.sha256,a.path+' SHA256');
+ assert.ok(bytes.length<=524288,'per file size');
+}
+assert.ok(total<=1048576,'combined asset size');
+const code=read('p971-audio-pace-settings.js').toString('utf8');
+const prior=read('p970-audio-follow-visibility-guard.js').toString('utf8');
+assert.ok(code.startsWith(prior.trimEnd()),'existing QA030 guard exact prefix');
+assert.match(code,/getItem\('v170Speed'\)/,'saved user speed read');
+assert.match(code,/sequenceSpeedV10/,'existing UI setting read');
+assert.match(code,/s.scaleMode!=='normal'/,'100% never intercepted');
+assert.match(code,/function gesture\(\)/,'manual scroll preserved');
+console.log('PASS QA031: QA030 live unchanged, QA028/029 rollbacks preserved; 8 assets SHA/size and bounded zoom-only follow pace.');

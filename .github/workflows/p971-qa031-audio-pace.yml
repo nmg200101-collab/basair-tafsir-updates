@@ -1,0 +1,55 @@
+name: BASAIR P97.1 QA031 Audio Follow Pace Safety (never publish)
+on:
+  push:
+    branches:
+      - fix/p971-audio-follow-settings-pace-20261108
+  pull_request:
+    paths:
+      - 'p92/owner-qa-001/p971-*'
+      - 'p92/owner-qa-001/P971-*'
+      - '.github/workflows/p971-qa031-audio-pace.yml'
+permissions:
+  contents: read
+jobs:
+  qa031-pacing-regression:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - name: JavaScript syntax
+        run: |
+          node --check p92/owner-qa-001/p971-audio-pace-settings.js
+          node --check p92/owner-qa-001/P971-QA031-PACE-TEST.mjs
+      - name: Verified behavior tests
+        run: node p92/owner-qa-001/P971-QA031-PACE-TEST.mjs
+      - name: Verify all 8 release assets SHA256 and preserve QA028/029/030
+        run: node p92/owner-qa-001/P971-QA031-VERIFY.mjs
+      - name: Confirm candidate does not replace signed owner QA030 release
+        run: |
+          node -e 'const fs=require("fs");const p="p92/owner-qa-001/";const a=JSON.parse(fs.readFileSync(p+"release.json"));const x=JSON.parse(Buffer.from(a.payload,"base64"));if(x.sequence!==30||x.id!=="P97-NATURAL-FOLLOW-RESTORE-030"||!a.signature)throw Error("unexpected published state");const b=fs.readFileSync(p+"p970-audio-follow-visibility-guard.js","utf8");const c=fs.readFileSync(p+"p971-audio-pace-settings.js","utf8");if(!c.startsWith(b.trimEnd()))throw Error("QA030 base modified");console.log("PASS: QA030 remains published; QA031 candidate only")'
+      - name: SHA256 and size for eventual secured signing
+        run: |
+          sha256sum p92/owner-qa-001/p971-audio-pace-settings.js
+          wc -c p92/owner-qa-001/p971-audio-pace-settings.js
+
+      - name: Assemble QA031 private-key-free staging candidate
+        run: |
+          node - <<'NODE'
+          const fs=require('fs'),path=require('path'),p='p92/owner-qa-001/';
+          const m=JSON.parse(fs.readFileSync(p+'P971-QA031-UNSIGNED-PAYLOAD-DRAFT.json'));
+          const dest=p+'QA031-STAGING-ASSETS-NO-PUBLISH';fs.mkdirSync(dest,{recursive:true});
+          for(const a of m.assets)fs.copyFileSync(p+a.path,path.join(dest,a.path));
+          fs.copyFileSync(p+'P971-QA031-UNSIGNED-PAYLOAD-DRAFT.json',path.join(dest,'QA031-UNSIGNED-MANIFEST.json'));
+          fs.writeFileSync(path.join(dest,'README-STAGING.txt'),'QA031 P97.1 / Eight verified assets. Staging only. NOT signed or published. Do not activate before owner approval and on-device QA.\n');
+          console.log('QA031 staging complete',m.assets.length);
+          NODE
+          cd p92/owner-qa-001
+          zip -q -r QA031-STAGING-ONLY.zip QA031-STAGING-ASSETS-NO-PUBLISH
+          unzip -t QA031-STAGING-ONLY.zip
+      - name: Temporary candidate artifact, never a GitHub release
+        uses: actions/upload-artifact@v4
+        with:
+          name: basair-qa031-eight-assets-candidate-no-publish
+          path: p92/owner-qa-001/QA031-STAGING-ONLY.zip
+          if-no-files-found: error
+          retention-days: 7
