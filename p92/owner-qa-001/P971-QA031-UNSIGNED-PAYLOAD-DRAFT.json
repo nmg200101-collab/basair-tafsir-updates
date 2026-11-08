@@ -1,0 +1,58 @@
+{
+  "schema": 1,
+  "channel": "owner-qa",
+  "sequence": 31,
+  "id": "P97-AUDIO-FOLLOW-SETTINGS-PACE-031",
+  "title": "تثبيت سرعة التمرير مع المتابعة الصوتية بحسب زمن الصفحة المضبوط ومنع القفزات عند التكبير",
+  "minAppVersion": 690,
+  "assets": [
+    {
+      "path": "p93-original-return.css",
+      "kind": "css",
+      "size": 2772,
+      "sha256": "ea3616639e38313c912acd45b583257716ca5052b643a1fafc9a6945e808da33"
+    },
+    {
+      "path": "p932-uthmani-hold.css",
+      "kind": "css",
+      "size": 954,
+      "sha256": "ec4d36b0fb05832f75d850655e02c0f817b6afb643fb1abecd89f1adfa880cb8"
+    },
+    {
+      "path": "p935-night-notices.css",
+      "kind": "css",
+      "size": 3203,
+      "sha256": "c9203c0e04637e08aa02ee049dc94be85cf9dffc668f364bd6434a240fed86fe"
+    },
+    {
+      "path": "p968-native-gesture-preview.css",
+      "kind": "css",
+      "size": 48722,
+      "sha256": "bfffc7418a0577310b35660781989c48c4bc4d74637b63dbb7d6f33b29916a4e"
+    },
+    {
+      "path": "p93-original-return.js",
+      "kind": "js",
+      "size": 1004,
+      "sha256": "e2009a464188b35226dd3e81df6dc86af9d11eb1777a7820b9dacf16542295ac"
+    },
+    {
+      "path": "p961-uthmani-hold-safe.js",
+      "kind": "js",
+      "size": 3542,
+      "sha256": "226e29f0c981b2c27e955c829d0045e0badfd3574c9d21394f488a823dbf4e27"
+    },
+    {
+      "path": "p935-night-notices.js",
+      "kind": "js",
+      "size": 8806,
+      "sha256": "55d1c95acae7947ff4fdd042e06408ad89e4ee5a721469aeaf44443e4b33daee"
+    },
+    {
+      "path": "p971-audio-pace-settings.js",
+      "kind": "js",
+      "size": 87694,
+      "sha256": "0481f5df5d80d09e213ba01844123faa2b81b885edb71c0d1ea58c52f236d541"
+    }
+  ]
+}
