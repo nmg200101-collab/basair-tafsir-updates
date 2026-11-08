@@ -27,3 +27,17 @@ jobs:
       - run: wc -c p92/owner-qa-001/p970-audio-follow-visibility-guard.js
       - run: node p92/owner-qa-001/P970-QA030-VERIFY.mjs
       - run: test "$(git show HEAD:p92/owner-qa-001/release.json | wc -c)" -gt 1000
+      - run: node p92/owner-qa-001/P970-QA030-STAGING-PACK.mjs
+      - name: Archive verified eight-asset candidate
+        run: |
+          cd p92/owner-qa-001
+          zip -q -r QA030-STAGING-EIGHT-ASSETS-NO-PUBLISH.zip QA030-STAGING-ASSETS-NO-PUBLISH
+          unzip -t QA030-STAGING-EIGHT-ASSETS-NO-PUBLISH.zip
+      - name: Store temporary staging-only artifact (not a release)
+        uses: actions/upload-artifact@v4
+        with:
+          name: basair-qa030-eight-assets-staging-no-publish
+          path: p92/owner-qa-001/QA030-STAGING-EIGHT-ASSETS-NO-PUBLISH.zip
+          retention-days: 7
+          if-no-files-found: error
+
