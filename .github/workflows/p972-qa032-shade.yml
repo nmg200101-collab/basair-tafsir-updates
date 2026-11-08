@@ -1,0 +1,38 @@
+name: BASAIR QA032 Native Ayah Shade Continuity (no publish)
+on:
+  push:
+    branches:
+      - fix/p972-qa032-stable-ayah-shade-20261108
+  pull_request:
+    paths:
+      - 'p92/owner-qa-001/p972-*'
+      - 'p92/owner-qa-001/P972-*'
+      - '.github/workflows/p972-qa032-shade.yml'
+permissions:
+  contents: read
+jobs:
+  shade-regression:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - run: node --check p92/owner-qa-001/p972-ayah-shade-stability.js
+      - run: node --check p92/owner-qa-001/P972-QA032-SHADE-TEST.mjs
+      - run: node p92/owner-qa-001/P972-QA032-SHADE-TEST.mjs
+      - name: Published QA031 must remain unchanged and signed
+        run: |
+          node - <<'NODE'
+          const fs=require('fs'),p='p92/owner-qa-001/';
+          const live=JSON.parse(fs.readFileSync(p+'release.json'));
+          const payload=JSON.parse(Buffer.from(live.payload,'base64').toString('utf8'));
+          if(payload.sequence!==31||payload.id!=='P97-AUDIO-FOLLOW-SETTINGS-PACE-031'||live.signature.length!==512)throw Error('Live release changed unexpectedly');
+          for(const n of [28,29,30]){
+            const files=fs.readdirSync(p).filter(x=>x.includes('release-qa-0'+n+'-before'));
+            if(files.length!==1)throw Error('Missing rollback '+n);
+          }
+          console.log('PASS: live signed QA031 untouched, rollbacks preserved');
+          NODE
+      - run: |
+          sha256sum p92/owner-qa-001/p972-ayah-shade-stability.js
+          sha256sum p92/owner-qa-001/p972-ayah-shade-stability.css
+          wc -c p92/owner-qa-001/p972-ayah-shade-stability.js p92/owner-qa-001/p972-ayah-shade-stability.css
