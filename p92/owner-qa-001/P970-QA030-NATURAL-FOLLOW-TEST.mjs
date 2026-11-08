@@ -54,6 +54,18 @@ assert.equal(reader.scrollTop,330,'new page position allowed immediately (QA029 
 state.page=4;hit.rect={top:900,bottom:920};reader.scrollTop=550;
 assert.equal(reader.scrollTop,550,'offscreen ayah can be revealed even after pulse');
 hit.rect={top:160,bottom:195};
+audio.currentTime=9.8;audio.fire('timeupdate');
+reader.scrollTop=555;assert.equal(reader.scrollTop,555,'end-of-page audio movement is never blocked');
+audio.currentTime=3;
+const tapped={getBoundingClientRect(){return hit.rect},closest(sel){
+ if(sel.startsWith('.ayahHit'))return this;
+ if(sel.startsWith('.r33PrintShell'))return {getAttribute:()=>String(state.page)};
+ return null;
+}};
+docListeners.get('pointerup')({target:tapped});
+reader.scrollTop=560;assert.equal(reader.scrollTop,555,'printed ayah tap does not force extra movement');
+state.page=6;reader.scrollTop=565;assert.equal(reader.scrollTop,565,'tap bridge cannot freeze following page');
+state.page=4;
 docListeners.get('touchmove')();
 assert.equal(Object.getOwnPropertyDescriptor(reader,'scrollTop'),undefined,'touch gesture restores native descriptor');
 reader.scrollTop=570;assert.equal(reader.scrollTop,570,'manual gesture permitted');
