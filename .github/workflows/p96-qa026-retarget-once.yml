@@ -24,7 +24,10 @@ jobs:
         run: |
           node --check p92/owner-qa-001/p966-native-retarget-dedupe.js
           node --check p92/owner-qa-001/P966-QA026-RETARGET-TEST.mjs
+          node --check p92/owner-qa-001/P966-QA026-VERIFY.mjs
       - name: Reproduce double native pointerup plus synthetic click; assert exactly once
         run: node p92/owner-qa-001/P966-QA026-RETARGET-TEST.mjs
+      - name: Validate every candidate asset and preserve signed QA025 baseline
+        run: node p92/owner-qa-001/P966-QA026-VERIFY.mjs
       - name: Record candidate SHA256 without signing or publishing
         run: sha256sum p92/owner-qa-001/p966-native-retarget-dedupe.js p92/owner-qa-001/p966-native-retarget-dedupe.css
