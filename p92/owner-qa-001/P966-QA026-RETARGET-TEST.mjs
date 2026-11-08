@@ -33,9 +33,10 @@ function extract(source,name){
  return source.slice(p,end);
 }
 function classes(){const s=new Set();return{add:x=>s.add(x),remove:x=>s.delete(x),contains:x=>s.has(x)}}
-function simulate(code,nativeHandled){
+function simulate(code,nativeHandled,domMovesBeforeClick=false){
  const event={clientX:44,clientY:110,target:{closest:()=>({})},preventDefault(){},stopImmediatePropagation(){},stopPropagation(){}};
  const target={page:3,s:2,a:255,g:292,progress:.5};
+ const clickTarget=domMovesBeforeClick?{...target,a:256}:target;
  const stateObj={running:true,paused:false,mode:'audio',page:3,scaleMode:'normal',printRetargets:0},stats={};
  const hit={classList:classes(),isConnected:true};
  const card={querySelector:q=>q.includes('.ayahHit')?hit:null};
@@ -46,7 +47,7 @@ function simulate(code,nativeHandled){
  };
  const accepted=[];
  const engine={retargetPrintAyah(t){stateObj.printRetargets++;w.selectedSurah=t.s;w.selectedTilawaAyah=t.a;w.selectedGlobal=t.g;return true}};
- const env={w,stats,lastNativeGesture:null,activeAudio:()=>true,state:()=>stateObj,c:()=>engine,targetAt:()=>target,isPrinted:()=>true,page:()=>stateObj.page,E:()=>({querySelector:()=>card}),Date,Number};
+ const env={w,stats,lastNativeGesture:null,activeAudio:()=>true,state:()=>stateObj,c:()=>engine,targetAt:()=>clickTarget,isPrinted:()=>true,page:()=>stateObj.page,E:()=>({querySelector:()=>card}),Date,Number};
  const names=code===old?['retargetClick']:['nativePrintAvailable','gestureStartObserve','nativeHitFor','gestureEndObserve','retargetClick'];
  const parts=names.map(name=>extract(code,name)).join('\n')+'\nreturn { '+names.join(',')+' };';
  const methods=vm.runInNewContext('(function(){'+parts+'})',env,{timeout:3000})();
@@ -56,8 +57,10 @@ function simulate(code,nativeHandled){
  return {count:stateObj.printRetargets,stats,accepted};
 }
 assert.equal(simulate(old,true).count,2,'QA025 makes two retarget calls for one pointerup+click');
+assert.equal(simulate(old,true,true).count,2,'QA025 also retargets a wrong new verse after DOM shifts');
 const safe=simulate(now,true);
 assert.equal(safe.count,1,'QA026 makes exactly one retarget for one tap');
+assert.equal(simulate(now,true,true).count,1,'QA026 blocks duplicate even if native scroll changes click target to another verse');
 assert.equal(safe.stats.nativeClickDeduplicated,1,'duplicate click was guarded');
 assert.equal(safe.accepted.length,1,'native accepted selection is passed to visual preview');
 assert.equal(safe.accepted[0].ayah.a,255);
