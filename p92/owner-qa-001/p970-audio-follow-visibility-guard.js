@@ -1076,8 +1076,8 @@ window.__BASAIR_P968_DIAGNOSTICS__={version:'P96.8-QA028',snapshot:function(){va
  // Release the QA029 bridge if its script is still loaded in this WebView.
  try{var old=w.__BASAIR_P969_STILL_AYAH_PAGE__;if(old&&typeof old.disable==='function')old.disable()}catch(_){}
  var el=null, own=null, access=null, audio=null, timer=0, serial=0, bindTimer=0;
- var pulsePage=0, pulseUntil=0, manualUntil=0;
- var stats={audioTicks:0,armed:0,suppressed:0,passed:0,failOpen:0,restored:0,errors:0};
+ var pulsePage=0, pulseUntil=0, manualUntil=0, pulseSource='',tapTarget=null;
+ var stats={audioTicks:0,ayahTaps:0,armed:0,suppressed:0,passed:0,failOpen:0,restored:0,errors:0};
  function E(id){return d.getElementById(id)}
  function state(){var c=w.__BASAIR_B345_SEQUENCE__||w.B345SequenceController;return c&&c.state||null}
  function eligible(r,s){return !!(r&&s&&s.running&&s.mode==='audio'&&!s.surfaceBusy&&s.scaleMode==='normal'&&
@@ -1095,6 +1095,10 @@ window.__BASAIR_P968_DIAGNOSTICS__={version:'P96.8-QA028',snapshot:function(){va
   if(!shell)return false;
   var hit=shell.querySelector('.ayahHit.b441FollowHit');
   if(!hit||!hit.getBoundingClientRect)return false;
+  return visibleTarget(r,hit);
+ }
+ function visibleTarget(r,hit){
+  if(!r||!hit||!r.getBoundingClientRect||!hit.getBoundingClientRect)return false;
   var hr=hit.getBoundingClientRect(),rr=r.getBoundingClientRect(),pad=6;
   if(!isFinite(hr.top)||!isFinite(hr.bottom)||!isFinite(rr.top)||!isFinite(rr.bottom))return false;
   if(hr.bottom-hr.top<1||rr.bottom-rr.top<80||hr.top<rr.top+pad||hr.bottom>rr.bottom-pad)return false;
@@ -1134,7 +1138,7 @@ window.__BASAIR_P968_DIAGNOSTICS__={version:'P96.8-QA028',snapshot:function(){va
      // No blanket scroll lock: only an audio tick, same rendered page,
      // unzoomed Follow, current ayah fully visible, and no touch gesture.
      if(now<=pulseUntil&&now>manualUntil&&Number(st&&st.page)===pulsePage&&
-        eligible(r,st)&&!nearEnd(audio)&&visible(r,st)){
+        eligible(r,st)&&(pulseSource==='tap'?visibleTarget(r,tapTarget):(!nearEnd(audio)&&visible(r,st)))){
       stats.suppressed++;return;
      }
      stats.passed++;x.set.call(r,next);
@@ -1149,10 +1153,22 @@ window.__BASAIR_P968_DIAGNOSTICS__={version:'P96.8-QA028',snapshot:function(){va
   if(Date.now()<=manualUntil||!eligible(r,s)||nearEnd(audio)||!visible(r,s)){
    restore();stats.failOpen++;return;
   }
-  pulsePage=Number(s.page);pulseUntil=Date.now()+56;
+  pulseSource='audio';tapTarget=null;pulsePage=Number(s.page);pulseUntil=Date.now()+56;
   if(!arm(r,s)){pulseUntil=0;return}
   var token=++serial;
   w.setTimeout(function(){if(token===serial)restore()},64);
+ }
+ function tap(ev){
+  if(!ev||Date.now()<=manualUntil||!ev.target||!ev.target.closest)return;
+  var target=ev.target.closest('.ayahHit[data-selectayah][data-s]');
+  if(!target||!target.closest)return;
+  var card=target.closest('.r33PrintShell[data-r33-print-page]'),s=state(),r=E('mushafReader');
+  if(!card||!eligible(r,s)||Number(card.getAttribute('data-r33-print-page'))!==Number(s.page)||
+     !visibleTarget(r,target))return;
+  pulseSource='tap';tapTarget=target;pulsePage=Number(s.page);pulseUntil=Date.now()+56;
+  if(!arm(r,s)){pulseUntil=0;return}
+  stats.ayahTaps++;
+  var token=++serial;w.setTimeout(function(){if(token===serial)restore()},64);
  }
  function gesture(){manualUntil=Date.now()+900;restore()}
  function bind(){
@@ -1167,11 +1183,13 @@ window.__BASAIR_P968_DIAGNOSTICS__={version:'P96.8-QA028',snapshot:function(){va
   if(bindTimer){w.clearInterval(bindTimer);bindTimer=0}
   if(audio){audio.removeEventListener('timeupdate',tick,true);
    ['ended','pause','seeking'].forEach(function(k){audio.removeEventListener(k,restore,true)})}
+  ['pointerup','touchend','click'].forEach(function(k){d.removeEventListener(k,tap,true)});
   d.removeEventListener('touchmove',gesture,true);
   d.removeEventListener('wheel',gesture,true);
   w.removeEventListener('pagehide',restore);
   audio=null;restore();delete w[API];
  }
+ ['pointerup','touchend','click'].forEach(function(k){d.addEventListener(k,tap,true)});
  d.addEventListener('touchmove',gesture,{capture:true,passive:true});
  d.addEventListener('wheel',gesture,{capture:true,passive:true});
  w.addEventListener('pagehide',restore);
