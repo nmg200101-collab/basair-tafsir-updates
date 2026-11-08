@@ -1439,7 +1439,10 @@ window.__BASAIR_P968_DIAGNOSTICS__={version:'P96.8-QA028',snapshot:function(){va
  function schedule(){if(disabled||raf)return;raf=w.requestAnimationFrame(function(){raf=0;sync()})}
  function updatePage(pg){
   if(page===pg)return;
-  page=pg;pending=null;lastNative=null;clear();stats.changes++;
+  page=pg;
+  // Keep a just-accepted retarget if its target page has now rendered.
+  if(!pending||pending.page!==pg||Date.now()-pending.at>3200)pending=null;
+  lastNative=null;clear();stats.changes++;
  }
  function sync(){
   if(disabled)return;
@@ -1458,7 +1461,7 @@ window.__BASAIR_P968_DIAGNOSTICS__={version:'P96.8-QA028',snapshot:function(){va
   if(native){
    // Native paint is authoritative. Do not introduce a competing
    // artificial shadow on top of it.
-   if(!lastNative||key(native)!==key(lastNative))lastNative=Object.assign({at:t},native);
+   lastNative=Object.assign({at:t},native);
    if(pending&&key(pending)===key(native)){pending=null;stats.nativeHandoffs++}
    // A newly advanced native ayah invalidates any stale retarget request.
    else if(pending&&t-pending.at>900&&key(native)!==key(pending)){pending=null}
@@ -1469,7 +1472,7 @@ window.__BASAIR_P968_DIAGNOSTICS__={version:'P96.8-QA028',snapshot:function(){va
    clear();return;
   }
   stats.missingNative++;
-  if(pending&&t-pending.at<=3200&&key(pending).split('|')[0]===String(p)){
+  if(pending&&t-pending.at<=3200&&pending.page===p){
    if(apply(shell,pending))return;
   }
   if(pending&&t-pending.at>3200){pending=null;stats.expired++}
@@ -1486,7 +1489,7 @@ window.__BASAIR_P968_DIAGNOSTICS__={version:'P96.8-QA028',snapshot:function(){va
   if(ok&&v&&Number(v.page)>=1&&Number(v.page)<=604&&
    Number(v.s)>=1&&Number(v.s)<=114&&Number(v.a)>=1&&Number(v.a)<=286){
    var st=state();
-   if(readerOn(st)&&Number(st.page)===Number(v.page)){
+   if(readerOn(st)){
     pending={page:Number(v.page),s:Number(v.s),a:Number(v.a),at:Date.now()};
     stats.accepted++;schedule();
    }
