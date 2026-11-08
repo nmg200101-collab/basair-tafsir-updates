@@ -945,7 +945,8 @@
   if(!words.length&&node&&node.isConnected)words=[node];
   words.forEach(function(x){if(x&&x.classList)x.classList.add('bq965-ayah-selected')});
   selectedNodes=words;
-  selected={page:pg,s:s,a:a,g:Number(ayah.g)||0,at:Date.now(),node:node};
+  selected={page:pg,s:s,a:a,g:Number(ayah.g)||0,at:Date.now(),node:node,
+   nativeAtTap:card&&card.querySelector&&card.querySelector('.b441FollowWord,.b441FollowAyah,.b441FollowHit')};
   counts.previewStarted=(counts.previewStarted||0)+1;
   return true;
  }
@@ -962,7 +963,8 @@
   var rs=Number(ref&&ref.getAttribute&&ref.getAttribute('data-s'))||0;
   var ra=Number(ref&&ref.getAttribute&&ref.getAttribute('data-selectayah'))||0;
   var rg=Number(ref&&ref.getAttribute&&ref.getAttribute('data-g'))||0;
-  if((rs===v.s&&ra===v.a)||(v.g>0&&rg>=v.g)||(rs===v.s&&ra>v.a)){
+  var stillOldNative=native&&native===v.nativeAtTap&&!(rs===v.s&&ra===v.a);
+  if(!stillOldNative&&((rs===v.s&&ra===v.a)||(v.g>0&&rg>=v.g)||(rs===v.s&&ra>v.a))){
    clearSelection();counts.nativeHandoff=(counts.nativeHandoff||0)+1;return -1;
   }
   var node=v.node;
