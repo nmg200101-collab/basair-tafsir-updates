@@ -19,6 +19,21 @@ jobs:
       - run: node --check p92/owner-qa-001/p972-ayah-shade-stability.js
       - run: node --check p92/owner-qa-001/P972-QA032-SHADE-TEST.mjs
       - run: node p92/owner-qa-001/P972-QA032-SHADE-TEST.mjs
+      - run: node p92/owner-qa-001/P972-QA032-VERIFY.mjs
+      - name: Assemble eight assets without secrets
+        run: |
+          node p92/owner-qa-001/P972-QA032-STAGING-PACK.mjs
+          cd p92/owner-qa-001
+          zip -q -r QA032-STAGING-NO-PUBLISH.zip QA032-STAGING-ASSETS-NO-PUBLISH
+          unzip -t QA032-STAGING-NO-PUBLISH.zip
+      - name: Preserve staging ZIP as temporary CI artifact only
+        uses: actions/upload-artifact@v4
+        with:
+          name: basair-qa032-eight-assets-staging-no-publish
+          path: p92/owner-qa-001/QA032-STAGING-NO-PUBLISH.zip
+          retention-days: 7
+          if-no-files-found: error
+
       - name: Published QA031 must remain unchanged and signed
         run: |
           node - <<'NODE'
