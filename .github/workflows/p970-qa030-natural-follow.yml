@@ -23,7 +23,7 @@ jobs:
       - run: node --check p92/owner-qa-001/p970-audio-follow-visibility-guard.js
       - run: node --check p92/owner-qa-001/P970-QA030-NATURAL-FOLLOW-TEST.mjs
       - run: node p92/owner-qa-001/P970-QA030-NATURAL-FOLLOW-TEST.mjs
-      - run: node p92/owner-qa-001/P970-QA030-VERIFY.mjs
       - run: sha256sum p92/owner-qa-001/p970-audio-follow-visibility-guard.js
       - run: wc -c p92/owner-qa-001/p970-audio-follow-visibility-guard.js
+      - run: node p92/owner-qa-001/P970-QA030-VERIFY.mjs
       - run: test "$(git show HEAD:p92/owner-qa-001/release.json | wc -c)" -gt 1000
