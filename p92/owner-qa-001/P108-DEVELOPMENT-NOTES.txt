@@ -1,0 +1,31 @@
+P108 / QA043 — INTERNAL DRAFT, NOT READY FOR PUBLICATION
+
+Goal:
+- Preserve signed QA042 and the exact working Masad playback path.
+- Add a compact Basair-styled More Reciters catalog for the Way2Quran public directory.
+- Show explicit source attribution and current online status.
+- Use a validated public catalog generated from visible /ar/reciters pages;
+  NEVER call /api/ routes. Site robots.txt disallows /api/.
+- Only display source-backed names and canonical profile URLs.
+- Never claim playable MP3 for a profile with no tested track audio URL.
+
+Current: index generator, manual-only workflow and frontend overlay are staged.
+- Public site currently reports ~1312 reciters but there is NO verified live
+  JSON index from the site in the project yet.
+- In-app rendering tested with synthetic 1015-entry catalog ONLY.
+- Some profiles expose download MP3 links, but we have not established a
+  general reliable audio link resolver, allowed CORS, or native WebView bridge.
+- Site playback working in Chrome on the owner's phone does not prove that
+  the original WebView can render or play the same stream.
+
+STRICT NO-GO for signed QA043 until:
+  1. Run manual sync (after permitted) and verify >=1000 real canonical links,
+     correct Arabic names and nonmissing profile pages.
+  2. Confirm origin/CORS/SSL and catalog cache on actual signed V690 WebView.
+  3. Validate direct audio tracks on owner phone or establish supported browser
+     opening; no guessed URL or API endpoint.
+  4. Test Back, offline behavior, list search, scrolling, download, and Masad.
+  5. Obtain explicit owner approval before touching main/release.json.
+
+Safety: Do not upload signing key, private passwords or large copyrighted media.
+Source credits: Way2Quran, https://way2quran.com/ar/reciters
