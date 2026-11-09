@@ -2993,13 +2993,22 @@ window.__BASAIR_P968_DIAGNOSTICS__={version:'P96.8-QA028',snapshot:function(){va
  function isReaderList(){var s=S(),sheet=E('r108Sheet');return !!(s&&s.active&&s.screen==='readers'&&sheet&&!sheet.hidden)}
  function style(){if(E('p109QA044Style'))return;
   var e=d.createElement('style');e.id='p109QA044Style';
-  e.textContent='#r108Sheet #p109MoreReaders{display:flex;align-items:center;justify-content:center;box-sizing:border-box;min-height:43px;margin:4px 0 9px;padding:8px 11px;background:#eef6ee;border:1px solid #c7aa78;border-radius:12px;color:#154c3b;text-align:center;font-size:.82rem;font-weight:750;text-decoration:none;direction:rtl}#r108Sheet #p109MoreReaders:focus-visible{outline:3px solid #c6a15a;outline-offset:2px}#r108Sheet.p109-amer-held #r108List .r109Track .r91Primary,#r108Sheet.p109-amer-held #r108MediaArea{display:none!important}#bqP108MoreButton,#bqP108Overlay{display:none!important}';
+  e.textContent='#r108Sheet #p109MoreReaders{width:100%;cursor:pointer;display:flex;align-items:center;justify-content:center;box-sizing:border-box;min-height:43px;margin:4px 0 9px;padding:8px 11px;background:#eef6ee;border:1px solid #c7aa78;border-radius:12px;color:#154c3b;text-align:center;font-size:.82rem;font-weight:750;text-decoration:none;direction:rtl}#r108Sheet #p109MoreReaders:focus-visible{outline:3px solid #c6a15a;outline-offset:2px}#r108Sheet.p109-amer-held #r108List .r109Track .r91Primary,#r108Sheet.p109-amer-held #r108MediaArea{display:none!important}#bqP108MoreButton,#bqP108Overlay{display:none!important}';
   (d.head||d.documentElement).appendChild(e)}
  function link(){if(!isReaderList())return;var host=E('r108List');if(!host)return;
-  var a=E('p109MoreReaders');if(!a){a=d.createElement('a');a.id='p109MoreReaders';a.href=URL;a.target='_self';a.rel='noreferrer';a.textContent='المزيد من القراء — الطريق إلى القرآن';
-   a.setAttribute('aria-label','فتح الموقع الأصلي الطريق إلى القرآن');a.addEventListener('click',function(){clicks++})}
-  // A real user-tapped HTTPS link, never iframe, cached catalogue or popup.
-  // Android may route through WebViewClient to browser, or navigate in-place.
+  var a=E('p109MoreReaders');if(!a){a=d.createElement('button');a.type='button';a.id='p109MoreReaders';a.dataset.externalUrl=URL;a.textContent='المزيد من القراء — الطريق إلى القرآن';
+   a.setAttribute('aria-label','فتح موقع الطريق إلى القرآن في متصفح الهاتف الخارجي');
+   a.addEventListener('click',function(){
+    clicks++;
+    var bridge=w.BasairExternalBrowser;
+    if(bridge&&typeof bridge.openExternalUrl==='function'){
+     try{bridge.openExternalUrl(URL);return}catch(e){errors.push('android-bridge-error')}
+    }
+    var status=E('r108Status');
+    if(status)status.textContent='فتح المتصفح الخارجي يتطلب دعمًا من نسخة أندرويد. لم يتم فتح الموقع داخل التطبيق.';
+    errors.push('native-external-browser-bridge-unavailable');
+   })}
+  // Browser-only ACTION_VIEW contract; deliberately no in-WebView fallback.
   if(!a.isConnected)host.insertBefore(a,host.firstChild)}
  function hold(){var sheet=E('r108Sheet'),list=E('r108List'),s=S();if(!sheet||!list)return;
   list.querySelectorAll('.r91ReaderCard').forEach(function(card){if(!isAmerCard(card)||card.dataset.p109Hidden==='1')return;
@@ -3023,6 +3032,6 @@ window.__BASAIR_P968_DIAGNOSTICS__={version:'P96.8-QA028',snapshot:function(){va
  function boot(){if(E('r108List'))attach();else if(w.MutationObserver){var wait=new MutationObserver(function(){if(E('r108List')){wait.disconnect();attach()}});wait.observe(d.documentElement||d,{childList:true,subtree:true})}}
  if(d.readyState==='loading')d.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
  w.__BASAIR_P109_QA044__={version:'P109-QA044-STAGING',source:URL,sync:sync,diagnostics:function(){return{
-  directLink:!!(E('p109MoreReaders')&&E('p109MoreReaders').isConnected),readerDirectoryInstalled:!!w.__BASAIR_P108_MORE_READERS__,
+  directLink:!!(E('p109MoreReaders')&&E('p109MoreReaders').isConnected),externalBrowserBridge:!!(w.BasairExternalBrowser&&typeof w.BasairExternalBrowser.openExternalUrl==='function'),readerDirectoryInstalled:!!w.__BASAIR_P108_MORE_READERS__,
   amerHidden:hides,amerBlocks:blocks,linkClicks:clicks,errors:errors.slice()}}};
 })(window,document);
