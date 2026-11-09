@@ -52,5 +52,7 @@ jobs:
           git add p92/owner-qa-001/way2quran-tracks
           if ! git diff --cached --quiet; then
             git commit -m 'data(basair): verified public MP3 metadata (QA043 draft only)'
+            git fetch origin "${GITHUB_REF_NAME}"
+            git rebase "origin/${GITHUB_REF_NAME}"
             git push origin "HEAD:${GITHUB_REF_NAME}"
           fi
