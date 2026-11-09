@@ -1,8 +1,9 @@
-# Owner review for frozen QA050 Tilawa assets and release policies.
+# BASAIR Tilawa owner lock — operational only when branch rules require owner review.
 /p92/ @nmg200101-collab
-/app-update-manifest.json @nmg200101-collab
-/basair-tajweed-* @nmg200101-collab
+/p93/ @nmg200101-collab
+/security/tilawa-lock/ @nmg200101-collab
 /.github/workflows/ @nmg200101-collab
-/ci/tilawa_* @nmg200101-collab
-/ci/tilawa-* @nmg200101-collab
 /.github/CODEOWNERS @nmg200101-collab
+/app-update-manifest.json @nmg200101-collab
+/basair-tajweed-dedicated-manifest-v2.json @nmg200101-collab
+/basair-tajweed-reference-manifest.json @nmg200101-collab

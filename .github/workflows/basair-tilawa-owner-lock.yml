@@ -1,0 +1,47 @@
+name: Tilawa Owner Lock
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  merge_group:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  protect:
+    name: Protect Tilawa
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - name: Checkout complete history
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Validate freeze, owner signature and protected path changes
+        shell: bash
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_BASE: ${{ github.event.pull_request.base.sha }}
+          PREVIOUS_SHA: ${{ github.event.before }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          base="${PR_BASE:-${PREVIOUS_SHA:-}}"
+          if [ -n "$base" ] && git cat-file -e "${base}^{commit}" 2>/dev/null; then
+            # Verify with the *trusted base* verifier, never a modified PR verifier.
+            if git cat-file -e "$base:security/tilawa-lock/verify.py" 2>/dev/null; then
+              git show "$base:security/tilawa-lock/verify.py" > /tmp/basair-tilawa-verify.py
+            else
+              # First bootstrap: verifier exists only on this change; owner approval is mandatory.
+              cp security/tilawa-lock/verify.py /tmp/basair-tilawa-verify.py
+            fi
+            python /tmp/basair-tilawa-verify.py --root . --base "$base" --event "$EVENT_NAME" --pr "${PR_NUMBER:-}"
+          else
+            # Manual verification or first source checkout; baseline must still pass.
+            python security/tilawa-lock/verify.py --root . --event "$EVENT_NAME"
+          fi

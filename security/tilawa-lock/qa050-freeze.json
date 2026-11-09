@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "module": "tilawa",
+  "appVersion": 690,
+  "channel": "owner-qa",
+  "baselineSequence": 50,
+  "baselineId": "P116-QA050-PRINT-ZOOM-SMART-FOLLOW",
+  "baselineReleasePath": "p92/owner-qa-001/release.json",
+  "baselineReleaseBlobSha1": "a9b85a34d11a3f31fb3b7b61235d3670d03fa54d",
+  "ownerKDF": {"name": "scrypt", "salt_b64": "T/eDsILGbLVyRSOnYZoRvv4s++pSfZJK", "n": 32768, "r": 8, "p": 1, "dklen": 32},
+  "approvalPublicKeyPath": "security/tilawa-lock/owner-approval-public.pem",
+  "rsaDeliveryPublicKeyPath": "security/tilawa-lock/v690-ota-rsa-public.pem",
+  "assets": [
+    {"path": "p93-original-return.css", "kind": "css", "size": 2772, "sha256": "ea3616639e38313c912acd45b583257716ca5052b643a1fafc9a6945e808da33"},
+    {"path": "p932-uthmani-hold.css", "kind": "css", "size": 954, "sha256": "ec4d36b0fb05832f75d850655e02c0f817b6afb643fb1abecd89f1adfa880cb8"},
+    {"path": "p935-night-notices.css", "kind": "css", "size": 3203, "sha256": "c9203c0e04637e08aa02ee049dc94be85cf9dffc668f364bd6434a240fed86fe"},
+    {"path": "p98-qa033-tilawa-home-with-qa032.css", "kind": "css", "size": 53190, "sha256": "29bc8b19518da0d8a0f8db930ab49bd383216257967c2f3f0a21b00f6b319d1d"},
+    {"path": "p93-original-return.js", "kind": "js", "size": 1004, "sha256": "e2009a464188b35226dd3e81df6dc86af9d11eb1777a7820b9dacf16542295ac"},
+    {"path": "p961-uthmani-hold-safe.js", "kind": "js", "size": 3542, "sha256": "226e29f0c981b2c27e955c829d0045e0badfd3574c9d21394f488a823dbf4e27"},
+    {"path": "p935-night-notices.js", "kind": "js", "size": 8806, "sha256": "55d1c95acae7947ff4fdd042e06408ad89e4ee5a721469aeaf44443e4b33daee"},
+    {"path": "p116-qa050-qa045-with-print-zoom-smart-follow.js", "kind": "js", "size": 231351, "sha256": "42f91b09f46182561dbf68138d937b3f13764dc9396e29598d423284f971d8fe"}
+  ],
+  "protectedPrefixes": [
+    "p92/", "p93/", ".github/workflows/", "security/tilawa-lock/"
+  ],
+  "protectedExactPaths": [
+    "app-update-manifest.json",
+    "basair-tajweed-dedicated-manifest-v2.json",
+    "basair-tajweed-reference-manifest.json",
+    ".github/CODEOWNERS"
+  ],
+  "policy": "Any change to a protected file requires an Ed25519 approval signed with the owner's locally entered Tilawa lock password. Signed app OTA RSA delivery is a separate mandatory check. Unrelated tafsir/library JSON updates are permitted when the active Tilawa baseline and protected files are unmodified."
+}
