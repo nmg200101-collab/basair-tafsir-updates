@@ -2993,7 +2993,7 @@ window.__BASAIR_P968_DIAGNOSTICS__={version:'P96.8-QA028',snapshot:function(){va
  function isReaderList(){var s=S(),sheet=E('r108Sheet');return !!(s&&s.active&&s.screen==='readers'&&sheet&&!sheet.hidden)}
  function style(){if(E('p109QA044Style'))return;
   var e=d.createElement('style');e.id='p109QA044Style';
-  e.textContent='#r108Sheet #p109MoreReaders{display:flex;align-items:center;justify-content:center;box-sizing:border-box;min-height:43px;margin:4px 0 9px;padding:8px 11px;background:#eef6ee;border:1px solid #c7aa78;border-radius:12px;color:#154c3b;text-align:center;font-size:.82rem;font-weight:750;text-decoration:none;direction:rtl}#r108Sheet #p109MoreReaders:focus-visible{outline:3px solid #c6a15a;outline-offset:2px}#r108Sheet.p109-amer-held #r108List .r109Track .r91Primary,#r108Sheet.p109-amer-held #r108MediaArea{display:none!important}';
+  e.textContent='#r108Sheet #p109MoreReaders{display:flex;align-items:center;justify-content:center;box-sizing:border-box;min-height:43px;margin:4px 0 9px;padding:8px 11px;background:#eef6ee;border:1px solid #c7aa78;border-radius:12px;color:#154c3b;text-align:center;font-size:.82rem;font-weight:750;text-decoration:none;direction:rtl}#r108Sheet #p109MoreReaders:focus-visible{outline:3px solid #c6a15a;outline-offset:2px}#r108Sheet.p109-amer-held #r108List .r109Track .r91Primary,#r108Sheet.p109-amer-held #r108MediaArea{display:none!important}#bqP108MoreButton,#bqP108Overlay{display:none!important}';
   (d.head||d.documentElement).appendChild(e)}
  function link(){if(!isReaderList())return;var host=E('r108List');if(!host)return;
   var a=E('p109MoreReaders');if(!a){a=d.createElement('a');a.id='p109MoreReaders';a.href=URL;a.target='_self';a.rel='noreferrer';a.textContent='المزيد من القراء — الطريق إلى القرآن';
@@ -3009,7 +3009,7 @@ window.__BASAIR_P968_DIAGNOSTICS__={version:'P96.8-QA028',snapshot:function(){va
   if(selected){var note=E('r108Status');if(note&&note.dataset.p109Held!=='1'){
    note.textContent='محمد حسين عامر مخفي مؤقتًا حتى التحقق من مصدر يعمل. تسجيلاته لم تُحذف.';note.dataset.p109Held='1'}}
  }
- function sync(){try{style();hold();link()}catch(e){errors.push(String(e&&e.message||e).slice(0,90));if(errors.length>8)errors.shift()}}
+ function sync(){try{style();var prior=w.__BASAIR_P108_MORE_READERS__;if(prior&&typeof prior.hide==='function')prior.hide();hold();link()}catch(e){errors.push(String(e&&e.message||e).slice(0,90));if(errors.length>8)errors.shift()}}
  function schedule(){if(queued)return;queued=true;Promise.resolve().then(function(){queued=false;sync()})}
  function stop(e){blocks++;e.preventDefault();e.stopPropagation();e.stopImmediatePropagation();var n=E('r108Status');if(n)n.textContent='القارئ موقوف مؤقتًا حتى إصلاح مصدر الصوت.'}
  function guard(e){var t=e.target&&e.target.closest&&e.target.closest('#r108List .r91ReaderCard,#r108List .r109Track .r91Primary');if(!t)return;
