@@ -1,0 +1,10 @@
+{
+  "schema": 1,
+  "repo": "nmg200101-collab/basair-tafsir-updates",
+  "pr": 30,
+  "digest": "2f033a41d1cb769f0b0fb9639d3b2b5f55bd9af696ce29918adbcea30756d57c",
+  "purpose": "Owner-approved initial QA050 Tilawa stability freeze and verified protected release gate",
+  "created_at": "2026-11-09T20:20:45Z",
+  "expires_at": "2026-11-15T20:20:45Z",
+  "signature_b64": "OwLrh5GCPN/ZdNKUVSSAwmcdWgVlO29Yb4dW5DdoP0OlCHJ97WRNqdi6NkLvUDEaKl+2UqpO/O+y931k3f/uBw=="
+}
