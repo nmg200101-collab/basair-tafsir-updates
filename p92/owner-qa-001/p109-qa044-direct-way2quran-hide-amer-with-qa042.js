@@ -3002,11 +3002,19 @@ window.__BASAIR_P968_DIAGNOSTICS__={version:'P96.8-QA028',snapshot:function(){va
     clicks++;
     var bridge=w.BasairExternalBrowser;
     if(bridge&&typeof bridge.openExternalUrl==='function'){
-     try{bridge.openExternalUrl(URL);return}catch(e){errors.push('android-bridge-error')}
+     try{bridge.openExternalUrl(URL);return}catch(e){errors.push('native-bridge-error')}
+    }
+    // V690's original Rc1Activity registers BasairApp. Its openFile()
+    // dispatches Android ACTION_VIEW via a chooser rather than loading WebView.
+    // This is an EXTERNAL Android activity, not an in-app website.
+    var existing=w.BasairApp;
+    if(existing&&typeof existing.openFile==='function'){
+     try{if(existing.openFile(URL,'text/html')===true)return;
+       errors.push('external-view-rejected')}catch(e){errors.push('external-view-error')}
     }
     var status=E('r108Status');
-    if(status)status.textContent='فتح المتصفح الخارجي يتطلب دعمًا من نسخة أندرويد. لم يتم فتح الموقع داخل التطبيق.';
-    errors.push('native-external-browser-bridge-unavailable');
+    if(status)status.textContent='تعذر تشغيل المتصفح الخارجي من هذا الهاتف؛ لم يتم فتح الموقع داخل التطبيق.';
+    errors.push('native-external-browser-unavailable');
    })}
   // Browser-only ACTION_VIEW contract; deliberately no in-WebView fallback.
   if(!a.isConnected)host.insertBefore(a,host.firstChild)}
@@ -3032,6 +3040,6 @@ window.__BASAIR_P968_DIAGNOSTICS__={version:'P96.8-QA028',snapshot:function(){va
  function boot(){if(E('r108List'))attach();else if(w.MutationObserver){var wait=new MutationObserver(function(){if(E('r108List')){wait.disconnect();attach()}});wait.observe(d.documentElement||d,{childList:true,subtree:true})}}
  if(d.readyState==='loading')d.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
  w.__BASAIR_P109_QA044__={version:'P109-QA044-STAGING',source:URL,sync:sync,diagnostics:function(){return{
-  directLink:!!(E('p109MoreReaders')&&E('p109MoreReaders').isConnected),externalBrowserBridge:!!(w.BasairExternalBrowser&&typeof w.BasairExternalBrowser.openExternalUrl==='function'),readerDirectoryInstalled:!!w.__BASAIR_P108_MORE_READERS__,
+  directLink:!!(E('p109MoreReaders')&&E('p109MoreReaders').isConnected),externalBrowserBridge:!!(w.BasairExternalBrowser&&typeof w.BasairExternalBrowser.openExternalUrl==='function'),existingBasairAppView:!!(w.BasairApp&&typeof w.BasairApp.openFile==='function'),readerDirectoryInstalled:!!w.__BASAIR_P108_MORE_READERS__,
   amerHidden:hides,amerBlocks:blocks,linkClicks:clicks,errors:errors.slice()}}};
 })(window,document);
