@@ -16,6 +16,8 @@ from urllib.parse import urlparse
 SOURCE = 'https://way2quran.com/ar/reciters'
 ALLOWED_PATH = re.compile(r'^/ar/reciters/([a-z0-9-]+)(?:/[^?#]*)?$')
 ARABIC_WORD = re.compile(r'[\u0621-\u064a]')
+# Manually checked against the publicly visible reciter profile headings.
+VERIFIED_NAMES = {'mukhtar-al-hajj': 'مختار الحاج'}
 
 
 def normalize_link(link: str):
@@ -40,7 +42,7 @@ def choose_name(text: str, alt: str, slug: str) -> str:
             continue
         # Remove English transliteration and view-count suffixes.
         choice = re.split(r'(?=[A-Za-z]{2})|(?:مختار|[\U0001f1e6-\U0001f1ff])', choice)[0].strip(' .،·-')
-        if 3 <= len(choice) <= 75 and ARABIC_WORD.search(choice):
+        if 3 <= len(choice) <= 75 and ARABIC_WORD.search(choice) and not re.match(r'^[0-9٠-٩]+\s*(?:قراءة|تلاوة)', choice):
             return choice
     return ''
 
@@ -68,7 +70,7 @@ def sync(output: Path, max_pages: int = 70, min_records: int = 1000, *, url: str
                 if not url_data:
                     continue
                 href, slug = url_data
-                name = choose_name(row['text'], row['alt'], slug)
+                name = choose_name(row['text'], row['alt'], slug) or VERIFIED_NAMES.get(slug, '')
                 if not name:
                     continue
                 if slug not in records:
