@@ -1,0 +1,59 @@
+name: tilawa-owner-lock
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  guarded-change-check:
+    name: guarded-change-check
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - name: Checkout without any write credentials
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Verify protected paths using TRUSTED base-branch guard
+        env:
+          EVENT: ${{ github.event_name }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ "$EVENT" = "pull_request" ]; then
+            git fetch origin main:refs/remotes/origin/main
+            if git cat-file -e 'origin/main:ci/tilawa_lock_guard.py' 2>/dev/null; then
+              git show 'origin/main:ci/tilawa_lock_guard.py' > /tmp/basair-trusted-owner-lock.py
+              python3 /tmp/basair-trusted-owner-lock.py --base origin/main --head HEAD
+            else
+              echo 'First owner-lock installation: only governance files are allowed.'
+              git diff --no-renames --name-only origin/main...HEAD > /tmp/changed-paths
+              while IFS= read -r path; do
+                case "$path" in
+                  ci/tilawa_*|ci/tilawa-*|.github/CODEOWNERS|.github/workflows/tilawa-owner-lock.yml|BASAIR-TILAWA-QA050-LOCK-20261109.md) ;;
+                  *) echo "FAIL: bootstrap cannot change application content: $path"; exit 1 ;;
+                esac
+              done < /tmp/changed-paths
+              echo 'PASS: governance-only bootstrap.'
+            fi
+          elif [ "$EVENT" = "push" ]; then
+            if git cat-file -e 'HEAD^:ci/tilawa_lock_guard.py' 2>/dev/null; then
+              git show 'HEAD^:ci/tilawa_lock_guard.py' > /tmp/basair-trusted-owner-lock.py
+              python3 /tmp/basair-trusted-owner-lock.py --base HEAD^ --head HEAD
+            else
+              echo 'First governance-only installation. Future direct pushes audited.'
+            fi
+          else
+            python3 ci/tilawa_lock_guard.py --baseline-only
+          fi
+      - name: Guard unit tests
+        run: python3 -m unittest discover -s ci -p 'test_tilawa_lock_guard.py' -v
+      - name: Safety declaration
+        run: echo 'Verification only; no APK build, OTA publication or signer key access.'
