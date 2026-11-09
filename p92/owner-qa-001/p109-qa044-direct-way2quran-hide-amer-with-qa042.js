@@ -2993,7 +2993,7 @@ window.__BASAIR_P968_DIAGNOSTICS__={version:'P96.8-QA028',snapshot:function(){va
  function isReaderList(){var s=S(),sheet=E('r108Sheet');return !!(s&&s.active&&s.screen==='readers'&&sheet&&!sheet.hidden)}
  function style(){if(E('p109QA044Style'))return;
   var e=d.createElement('style');e.id='p109QA044Style';
-  e.textContent='#r108Sheet #p109MoreReaders{display:flex;align-items:center;justify-content:center;box-sizing:border-box;min-height:43px;margin:4px 0 9px;padding:8px 11px;background:#eef6ee;border:1px solid #c7aa78;border-radius:12px;color:#154c3b;text-align:center;font-size:.82rem;font-weight:750;text-decoration:none;direction:rtl}#r108Sheet #p109MoreReaders:focus-visible{outline:3px solid #c6a15a;outline-offset:2px}#r108Sheet.p109-amer-held #r108List .r109Track .r91Primary{display:none!important}';
+  e.textContent='#r108Sheet #p109MoreReaders{display:flex;align-items:center;justify-content:center;box-sizing:border-box;min-height:43px;margin:4px 0 9px;padding:8px 11px;background:#eef6ee;border:1px solid #c7aa78;border-radius:12px;color:#154c3b;text-align:center;font-size:.82rem;font-weight:750;text-decoration:none;direction:rtl}#r108Sheet #p109MoreReaders:focus-visible{outline:3px solid #c6a15a;outline-offset:2px}#r108Sheet.p109-amer-held #r108List .r109Track .r91Primary,#r108Sheet.p109-amer-held #r108MediaArea{display:none!important}';
   (d.head||d.documentElement).appendChild(e)}
  function link(){if(!isReaderList())return;var host=E('r108List');if(!host)return;
   var a=E('p109MoreReaders');if(!a){a=d.createElement('a');a.id='p109MoreReaders';a.href=URL;a.target='_self';a.rel='noreferrer';a.textContent='المزيد من القراء — الطريق إلى القرآن';
@@ -3002,8 +3002,8 @@ window.__BASAIR_P968_DIAGNOSTICS__={version:'P96.8-QA028',snapshot:function(){va
   // Android may route through WebViewClient to browser, or navigate in-place.
   if(!a.isConnected)host.insertBefore(a,host.firstChild)}
  function hold(){var sheet=E('r108Sheet'),list=E('r108List'),s=S();if(!sheet||!list)return;
-  list.querySelectorAll('.r91ReaderCard').forEach(function(card){if(!isAmerCard(card)||card.hidden)return;
-   card.hidden=true;card.setAttribute('aria-hidden','true');card.style.setProperty('display','none','important');hides++});
+  list.querySelectorAll('.r91ReaderCard').forEach(function(card){if(!isAmerCard(card)||card.dataset.p109Hidden==='1')return;
+   card.hidden=true;card.dataset.p109Hidden='1';card.setAttribute('aria-hidden','true');card.style.setProperty('display','none','important');hides++});
   var selected=!!(s&&s.active&&s.reader&&s.reader.id==='amer'&&s.screen!=='readers');
   sheet.classList.toggle('p109-amer-held',selected);
   if(selected){var note=E('r108Status');if(note&&note.dataset.p109Held!=='1'){
