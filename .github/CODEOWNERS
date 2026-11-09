@@ -1,0 +1,8 @@
+# Owner review for frozen QA050 Tilawa assets and release policies.
+/p92/ @nmg200101-collab
+/app-update-manifest.json @nmg200101-collab
+/basair-tajweed-* @nmg200101-collab
+/.github/workflows/ @nmg200101-collab
+/ci/tilawa_* @nmg200101-collab
+/ci/tilawa-* @nmg200101-collab
+/.github/CODEOWNERS @nmg200101-collab
