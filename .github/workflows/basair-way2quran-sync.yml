@@ -1,15 +1,20 @@
-name: Basair - verify Way2Quran public directory (manual only)
+name: Basair - verify Way2Quran public directory (P108 draft only)
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - draft/p108-qa043-way2quran-catalog-20261109
+    paths:
+      - .github/workflows/basair-way2quran-sync.yml
 permissions:
   contents: write
 concurrency:
-  group: basair-way2quran-manual-verification
+  group: basair-way2quran-p108-draft-sync
   cancel-in-progress: false
 jobs:
   sync:
     runs-on: ubuntu-latest
-    timeout-minutes: 16
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
