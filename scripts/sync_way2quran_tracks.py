@@ -56,7 +56,10 @@ def fetch_one(r, timeout=22):
 def write_shards(src:Path,out_dir:Path,max_readers:int=0,workers:int=3):
     catalog=json.loads(src.read_text(encoding='utf-8'))
     readers=catalog['readers']
-    if max_readers:readers=readers[:max_readers]
+    if max_readers:
+        priority={'muhammad-hussein-amer','islam-sobhi','abdul-rahman-musaad'}
+        readers=([r for r in readers if r['slug'] in priority]
+                +[r for r in readers if r['slug'] not in priority])[:max_readers]
     data={};failures={};time0=time.monotonic()
     with concurrent.futures.ThreadPoolExecutor(max_workers=workers) as pool:
         futures={pool.submit(fetch_one,rec):rec for rec in readers}
