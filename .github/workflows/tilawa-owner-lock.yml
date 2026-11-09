@@ -37,7 +37,7 @@ jobs:
               git diff --no-renames --name-only origin/main...HEAD > /tmp/changed-paths
               while IFS= read -r path; do
                 case "$path" in
-                  ci/tilawa_*|ci/tilawa-*|.github/CODEOWNERS|.github/workflows/tilawa-owner-lock.yml|BASAIR-TILAWA-QA050-LOCK-20261109.md) ;;
+                  ci/tilawa_*|ci/tilawa-*|ci/test_tilawa_lock_guard.py|.github/CODEOWNERS|.github/workflows/tilawa-owner-lock.yml|BASAIR-TILAWA-QA050-LOCK-20261109.md) ;;
                   *) echo "FAIL: bootstrap cannot change application content: $path"; exit 1 ;;
                 esac
               done < /tmp/changed-paths
