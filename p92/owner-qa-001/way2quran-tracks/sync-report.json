@@ -1,0 +1,25 @@
+{
+  "scanned": 1308,
+  "with_tracks": 1291,
+  "total_audio_links": 113052,
+  "failures": {
+    "ahmed-suleiman-al-saadani": "no-numbered-audio-links",
+    "atwal-omarah-walad-lmrabet": "no-numbered-audio-links",
+    "anas-ibrahim-musbah": "no-numbered-audio-links",
+    "ayman-al-sayed": "no-numbered-audio-links",
+    "badr-al-bwsyfy": "no-numbered-audio-links",
+    "hsam-al-shhwby": "no-numbered-audio-links",
+    "rashid-ayt-khater": "no-numbered-audio-links",
+    "zyrq-bin-isa": "no-numbered-audio-links",
+    "abdul-rahman-mjly": "no-numbered-audio-links",
+    "abdul-qadir-muammar-kendi": "no-numbered-audio-links",
+    "abdul-karim-fares": "no-numbered-audio-links",
+    "abdul-hamid-al-ghwyl": "no-numbered-audio-links",
+    "abdul-rahman-hrshh": "no-numbered-audio-links",
+    "abdul-fattah-al-shashaay": "no-numbered-audio-links",
+    "abdalwarth-al-abany": "no-numbered-audio-links",
+    "ali-al-swehli": "no-numbered-audio-links",
+    "ali-al-shhwby": "no-numbered-audio-links"
+  },
+  "synced_at": "2026-11-09T08:16:19+00:00"
+}
