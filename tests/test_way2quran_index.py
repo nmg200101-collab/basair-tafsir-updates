@@ -1,7 +1,7 @@
 from pathlib import Path
 import importlib.util
 
-spec = importlib.util.spec_from_file_location('sync_way2quran', Path(__file__).with_name('sync_way2quran.py'))
+spec = importlib.util.spec_from_file_location('sync_way2quran', Path(__file__).resolve().parents[1] / 'scripts' / 'sync_way2quran.py')
 m = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(m)
 
