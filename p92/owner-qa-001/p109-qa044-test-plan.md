@@ -1,39 +1,50 @@
-# BASAIR P109 — QA-044 staging / approval gate
+# BASAIR P109 / QA-044 — owner approved scope; NATIVE BROWSER GATE OPEN
 
-**Branch:** `fix/basair-p109-qa044-more-readers-amer-hold`  
-**Base:** `f6d4939dee0b21cf35ed62802f7aba1abdd33790` (QA-043)  
-**Current production/owner release:** QA-043; **no update published or signed**.  
-**Candidate script:** `p109-qa044-direct-way2quran-hide-amer-with-qa042.js`
+## Owner approval (2026-11-09)
+The owner approved the P109 repair and clarified that **More Readers must open the phone's external browser directly**, with no in-app website and no relationship to Basair's embedded WebView. This supersedes the earlier QA-044 draft that used a plain `target="_self"` link.
 
-## Verified code-level scope
-- Reuses the exact QA-042 cumulative JavaScript, with P109 UI-only extension. It omits QA-043's embedded Way2Quran directory, JSON index fetch, track sharding, cache, and all QA-043 Amer MP3 rewrites.
-- Inserts a single real HTTPS link in `#r108List` when R109 is on its reader list: **المزيد من القراء — الطريق إلى القرآن** → `https://way2quran.com/ar/reciters`.
-- Temporarily hides Amer card by DOM-only visibility and blocks Amer playback CTA if an already-open Amer screen is restored. Original audio data, favorites, files and source configuration remain unmodified.
-- Uses a normal `target="_self"` HTTPS anchor rather than an embedded reader index, iframe, or `target="_blank"` popup, which the V690 QA-042 code documents as unsupported.
-- Does not modify other reader URLs, especially عبدالرحمن مسعد and إسلام صبحي; does not edit R109 engine, native back bridge, Qur'an, tafsir, memorization, fonts, motion or overlays.
-- JavaScript syntax checked. The unchanged QA-042 prefix was compared before staging.
+**Staging PR:** #20  
+**Last owner-installed:** QA-043 / sequence 43.  
+**QA-044:** reserved; unissued, unpublished, unsigned.  
+**Protected main:** must remain unchanged until a fully working, signed, device-tested candidate exists.
 
-## External source investigation
-- QA-042 sends Amer surahs to an Internet Archive mirror, with an older fallback in P105.
-- QA-043 replaces the Amer tracks with guessed CDN-looking paths under `media.way2quran.com/muhammad-hussein-amer/hafs-an-asim/NNN.mp3`.
-- The official Way2Quran reciter page lists 114 surahs for Amer, **but a playable MP3 response could not be verified** using the available tools. Do not advertise internal Amer playback until Android device validation.
-- Conservative choice for QA-044: hide the **entry point** temporarily; preserve files and restore later only after proven HTTP 200/206 audio bytes plus real device playback.
+## Corrected QA-044 behavior
+1. The reader-list button is: «المزيد من القراء — الطريق إلى القرآن».
+2. Destination only: `https://way2quran.com/ar/reciters`.
+3. JavaScript calls an Android native function `BasairExternalBrowser.openExternalUrl(url)`. No WebView URL navigation is allowed, including error fallback.
+4. Android host performs system `Intent.ACTION_VIEW` in a **separate browser activity**; returning via Back or app switcher restores the original Basair WebView and its reader context.
+5. If no native bridge is installed, **fail closed** and show an in-app informative notice. Do not open the Way2Quran page inside the embedded WebView.
+6. Cancel embedded QA-043 reader overlay when present; no index loading/JSON/catalog caching or alternate embedded player.
+7. Preserve original QA-042 cumulative code, Masad, Sobhi, other readers; temporarily hide Amer card without editing its source records or downloaded media.
 
-## Acceptance — pending on Android owner handset
-1. Install signed QA-044 **only after explicit owner approval** through existing owner-qa mechanism.
-2. Open «التلاوات المختارة»; verify exactly one visible «المزيد من القراء — الطريق إلى القرآن».
-3. Tap the link; verify original Way2Quran catalog opens (not internal directory). Check Android Back and app's R109 screen/audio state. **Native external browser routing cannot be guaranteed from JavaScript-only OTA on V690**: if in-place navigation loses state or interrupts audio, reject QA-044 until native bridge is provided; do not claim PASS.
-4. Ensure Amer card is invisible in normal reader list/search. If the app was on Amer before update, confirm no dead play buttons are shown.
-5. Confirm عبدالرحمن مسعد plays; إسلام صبحي remains and plays; check at least two other readers and their downloads.
-6. Confirm reciter card sizes, Tafsir/Hifz/library, Mushaf fonts/motion/highlighting and Back behave as before.
-7. Verify no console errors; inspect `window.__BASAIR_P109_QA044__.diagnostics()`.
-8. Only after passing tests approve the signed release, then await field result before final adoption.
+## Verified facts / blockers
+- QA-042 source states explicitly: “This V690 APK does not expose a general ACTION_VIEW JavaScript bridge”.
+- QA-043 `location`/iframe/catalogue workarounds are unsuitable for this newly clarified requirement.
+- P109 candidate JavaScript now enforces browser-only opening, **but** V690 still lacks the required verified Android bridge. Native reference class staged in `p109-qa044-android-external-browser-bridge.java` is **NOT built into an APK** and is not loaded by JS OTA.
+- Existing GitHub repo does not contain the owner private OTA signing key. Earlier `release.json` signed QA-043 envelope cannot be reused for modified assets. No new signature is created.
+- Therefore **DO NOT PUBLISH QA-044** as a JS-only OTA at this stage: the user-approved browser button would not open the browser.
+- The APK source bundle and owner signing key must be supplied securely to an authorized Android build environment for a narrowly-scoped native bridge patch, preserving `app.basair.qurv2` package ID, original certificate and every protected V690/673 asset.
+- Do not move/build from old P88 debug/isolated project as a production substitute.
 
-## Publication / rollback
-- Do **not** modify `p92/owner-qa-001/release.json` or `main` until approval and signature from the existing owner signing process; do not fabricate a signature.
-- QA-043 exact signed release remains available on `main`; the earlier QA-042 signed envelope is archived in `release-qa-042-before-qa043-20261109.json`.
-- Use QA-044 sequence only after confirming that it remains unused and sign an envelope containing the audited cumulative file.
-- Branch is staging only; **do not merge automatically** or run release publishing jobs.
+## Static checks
+- JavaScript candidate syntax PASS.
+- Original QA-042 cumulative source prefix unchanged.
+- QA-043 embedded Way2Quran index absent from candidate.
+- P109 browser handler does not call `location.assign`, set an `href`, use iframe, `window.open` or navigate the embedded WebView.
+- P109 modifies only R109 reader list DOM and temporarily holds Amer; no reciter source object deletion or change.
+- QA-044 **not tested physically on an Android phone**; no claim of working external browser until instrumented/native field validation.
 
-## Known limitation
-The V690 WebView implementation has no verified `ACTION_VIEW` JS bridge. A normal HTTPS link will reach the site, but opening a separate browser and preserving in-memory state on return must be confirmed on the device. If Android keeps the link inside the WebView, a native host patch may be necessary to guarantee all navigation/audio requirements.
+## Device acceptance after a native signed build is available
+- Clicking button launches default external browser displaying the original Way2Quran readers page, never as an embedded Basair page or Custom Tab.
+- Press Android Back or switch to Basair; selected recitations screen remains intact without navigation reset. Check audio focus behavior; do not claim continued audio without verification.
+- Search/reader selection shows no dead Amer play button; stored recordings not removed.
+- Playback Masad, Sobhi and at least two more readers (with downloads) remains fully functional.
+- Check fonts, Quran highlighting, Quran navigation, Tafsir, Hifz, library, app state persist.
+- Sign a fresh QA-044 envelope using same trusted original RSA owner signer. Check SHA-256 of cumulative asset and RSA validation against app public key.
+- Save QA-043 signed release and QA-042 rollback. Publish only to owner-qa channel after all checks.
+- Observe owner field results; do not finally adopt before user confirms.
+
+## Rollback
+Current unchanged `main/p92/owner-qa-001/release.json` remains QA-043 / sequence 43.
+Exact signed prior QA-042 envelope is `release-qa-042-before-qa043-20261109.json`.
+No `release.json` mutation, merge, workflow dispatch or APK distribution is authorized by a failed/unmet gate.
