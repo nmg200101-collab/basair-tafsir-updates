@@ -1,0 +1,14 @@
+/* BASAIR P112 / QA-046: restore the blue Uthmani PRINT option only.
+ * Supersedes P93.2 hold; leaves Quran original, Tajweed, digital fonts and Hifz untouched.
+ * The ornamental page itself is rendered by the signed final cumulative JS. */
+body.reader-active:not(.h25-hifz):not(.h90-review):not(.h100-teacher) #stableAppearance .v144PrintGrid,
+body.reader-active:not(.h25-hifz):not(.h90-review):not(.h100-teacher) .v144PrintGrid{
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+}
+body.reader-active:not(.h25-hifz):not(.h90-review):not(.h100-teacher) #stableAppearance [data-v129-print="blue"],
+body.reader-active:not(.h25-hifz):not(.h90-review):not(.h100-teacher) #ayahSideRail [data-v14-print="blue"],
+body.reader-active:not(.h25-hifz):not(.h90-review):not(.h100-teacher) .v144PrintGrid [data-v129-print="blue"],
+body.reader-active:not(.h25-hifz):not(.h90-review):not(.h100-teacher) .v14PrintQuickGrid [data-v14-print="blue"]{
+  visibility:visible!important;
+  pointer-events:auto!important;
+}
