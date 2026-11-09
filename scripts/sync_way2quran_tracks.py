@@ -94,4 +94,4 @@ if __name__=='__main__':
     parser.add_argument('--workers',type=int,default=3)
     args=parser.parse_args()
     report=write_shards(Path(args.catalog),Path(args.output),args.max_readers,args.workers)
-    if report['with_tracks']<1:raise SystemExit('NO VERIFIED TRACKS: refuse publishing')
+    if report['with_tracks']<(1000 if not args.max_readers else 1):raise SystemExit('INCOMPLETE VERIFIED AUDIO DIRECTORY: keep last good data')
