@@ -33,7 +33,7 @@ html body.bq-tf117-index #bqTf118Topbar #bqTf117Type {
   display:block!important; box-sizing:border-box; border:0!important;
   width:100%!important; min-width:0!important; min-height:20px!important;
   height:23px!important; padding:0!important; margin:0!important;
-  font:750 11.2px/1.25 inherit!important; color:var(--green,#14553d)!important;
+  font-weight:750!important; font-size:11.2px!important; line-height:1.25!important; font-family:inherit!important; color:var(--green,#14553d)!important;
   background:transparent!important; text-overflow:ellipsis; white-space:nowrap;
   outline-offset:2px;
 }
@@ -54,7 +54,7 @@ html body.bq-tf117-index #bqTf118Last {
   min-height:44px!important; height:auto!important; box-sizing:border-box!important;
   border-radius:12px!important; padding:3px 5px!important;
   border:1px solid #d8cbb2!important; background:var(--paper,#fffefa)!important;
-  color:var(--green,#18533c)!important; font:750 10.1px/1.2 inherit!important;
+  color:var(--green,#18533c)!important; font-weight:750!important; font-size:10.1px!important; line-height:1.2!important; font-family:inherit!important;
   white-space:nowrap!important; overflow:hidden!important;
 }
 html body.bq-tf117-index #bqTf118Topbar .bq-tf117-actions button {
@@ -86,7 +86,7 @@ html body.bq-tf117-index #bqTf117Dashboard .bq-tf117-search-field {
 }
 html body.bq-tf117-index #bqTf117Dashboard #bqTf117Search {
   width:100%!important; height:38px!important; min-width:0!important;
-  font:500 11.2px/1.2 inherit!important; text-align:right!important; padding:2px 3px!important;
+  font-weight:500!important; font-size:11.2px!important; line-height:1.2!important; font-family:inherit!important; text-align:right!important; padding:2px 3px!important;
 }
 html body.bq-tf117-index #bqTf117Dashboard #bqTf117GlobalSearch {
   display:flex!important; width:25px!important; height:38px!important; flex:0 0 25px!important;
@@ -103,7 +103,7 @@ html body.bq-tf117-index #bqTf117Dashboard .bq-tf117-jumps button {
   border-left:1px solid #d6d3c4!important;
   background:var(--paper,#fffefa)!important;
   color:var(--green,#14533d)!important; padding:2px 3px!important;
-  font:760 10px/1.14 inherit!important; white-space:nowrap!important;
+  font-weight:760!important; font-size:10px!important; line-height:1.14!important; font-family:inherit!important; white-space:nowrap!important;
 }
 html body.bq-tf117-index #bqTf117Dashboard .bq-tf117-jumps button:last-child{border-left:0!important}
 html body.bq-tf117-index #tafsirIndex #v194T104SurahBrowser {
@@ -122,7 +122,7 @@ html body.bq-tf117-index #v194T104SurahBrowser .v194T104SurahHead>div:first-chil
   width:100%!important; flex-wrap:nowrap!important; gap:10px!important;
 }
 html body.bq-tf117-index #v194T104SurahBrowser .v194T104SurahHead b {
-  font:850 17px/1.2 inherit!important; color:var(--green,#114c37)!important;
+  font-weight:850!important; font-size:17px!important; line-height:1.2!important; font-family:inherit!important; color:var(--green,#114c37)!important;
   white-space:nowrap!important;
 }
 html body.bq-tf117-index #v194T104SurahBrowser .v194T104SurahHead b::before {
@@ -130,7 +130,7 @@ html body.bq-tf117-index #v194T104SurahBrowser .v194T104SurahHead b::before {
   color:#b89b54; margin-left:5px;
 }
 html body.bq-tf117-index #v194T104SurahBrowser .v194T104SurahHead small {
-  font:500 10px/1.3 inherit!important; color:#79857b!important;
+  font-weight:500!important; font-size:10px!important; line-height:1.3!important; font-family:inherit!important; color:#79857b!important;
   white-space:nowrap!important; margin:0!important;
 }
 html body.bq-tf117-index #tafsirIndex #v194T104SurahBrowser #v194T104SurahGrid {
@@ -151,19 +151,19 @@ html body.bq-tf117-index #tafsirIndex #v194T104SurahBrowser #v194T104SurahGrid .
   width:29px!important; height:29px!important; min-width:29px!important;
   border:1.4px solid #ac903f!important; border-radius:50%!important;
   margin:0!important; color:#846c27!important; background:transparent!important;
-  font:750 13px/1 inherit!important;
+  font-weight:750!important; font-size:13px!important; line-height:1!important; font-family:inherit!important;
 }
 html body.bq-tf117-index #tafsirIndex #v194T104SurahBrowser #v194T104SurahGrid .v194T104SurahCard > div {
   grid-column:2!important; text-align:right!important; min-width:0!important;
   line-height:1.13!important;
 }
 html body.bq-tf117-index #tafsirIndex #v194T104SurahBrowser #v194T104SurahGrid .v194T104SurahCard b {
-  display:block!important; font:800 13.4px/1.16 inherit!important;
+  display:block!important; font-weight:800!important; font-size:13.4px!important; line-height:1.16!important; font-family:inherit!important;
   margin:0!important; color:var(--green,#15543e)!important;
   overflow:hidden!important; text-overflow:ellipsis!important; white-space:nowrap!important;
 }
 html body.bq-tf117-index #tafsirIndex #v194T104SurahBrowser #v194T104SurahGrid .v194T104SurahCard small {
-  display:block!important; font:500 10px/1.25 inherit!important;
+  display:block!important; font-weight:500!important; font-size:10px!important; line-height:1.25!important; font-family:inherit!important;
   margin:2px 0 0!important; color:var(--muted,#66756c)!important;
   overflow:hidden!important; text-overflow:ellipsis!important; white-space:nowrap!important;
 }
