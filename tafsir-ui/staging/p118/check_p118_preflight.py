@@ -91,6 +91,12 @@ def main() -> int:
     check(len(fixed_font_longhands) == 9,
           "all nine invalid font declarations replaced by valid longhands", failures)
 
+    # A real V690 index.html test found 320px Surah heading overflow until
+    # its secondary subtitle was allowed to shrink inside the flex row.
+    check("min-width:0!important; flex:0 1 auto!important; overflow:hidden!important;"
+          " text-overflow:ellipsis!important; margin:0!important;" in css,
+          "narrow-screen surah subtitle shrinks without horizontal overflow", failures)
+
     candidate_file = P118_DIR / "P118-QA051-STAGING-CANDIDATE.json"
     check(candidate_file.is_file(), "staging candidate inventory exists", failures)
     if candidate_file.is_file():
