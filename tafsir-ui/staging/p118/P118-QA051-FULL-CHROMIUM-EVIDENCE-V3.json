@@ -1,0 +1,87 @@
+{
+  "schema": "basair-p118-full-source-chromium-evidence-v3",
+  "date": "2026-11-10",
+  "status": "STAGING_ONLY_NO_SIGNED_OTA",
+  "fixture": "Synthetic HTML and real P117 JS/CSS extracted locally from owner-signed V690 APK; full corrected P118 JavaScript with embedded CSS run unmodified in real headless Chromium.",
+  "apk": {
+    "package": "app.basair.qurv2",
+    "version_code": 690,
+    "sha256": "4f95dd781c23b04e27581ab8257cce2393a83bfe1a0ea2f31ea076a4262535fc",
+    "owner_signing_cert_sha256": "35066b87e4b854187b5c8fa8321676bacc2de8bef14624072afb33ebd506dc07",
+    "bytes_uploaded": false
+  },
+  "source": {
+    "p118_js_sha256": "82f8b8d08b97f478c8165f7bfbd23585bbda45c761e939f6c22e8922d4a06cb9",
+    "p118_css_sha256": "64623bde653c12693224c6b4578e8599b1fe586e055f183316c3d4139e897614",
+    "verified_byte_exact": true,
+    "full_js_css": true
+  },
+  "chromium": {
+    "browser": "chromium headless Playwright",
+    "viewports": [
+      320,
+      364,
+      390,
+      430
+    ],
+    "modes": [
+      "light",
+      "dark"
+    ],
+    "runs": 8,
+    "assertions_each": 13,
+    "passed": 104,
+    "total": 104,
+    "errors": 0,
+    "checks": [
+      "114 surah cards before and after re-entry",
+      "downloads header replaces more",
+      "no toolbar or last button duplicates",
+      "localStorage shim",
+      "no horizontal viewport overflow",
+      "no uncaught JS errors",
+      "Tafsir-only download dispatch",
+      "search forwards to original input",
+      "last position native open",
+      "jump to specified verse",
+      "resume event",
+      "Tilawa return restores header menu and test audio event",
+      "Tafsir reactivation"
+    ]
+  },
+  "stress": {
+    "width": 320,
+    "cycles_exit_reenter": 8,
+    "additional_timer_wait_ms": 4000,
+    "observations": 9,
+    "passed": 9,
+    "duplicate_toolbars": 0,
+    "duplicate_last_buttons": 0,
+    "missing_surahs": 0,
+    "uncaught_js_errors": 0,
+    "final_diagnostics": {
+      "arranged": 20,
+      "updates": 20,
+      "errors": 0,
+      "active": true
+    }
+  },
+  "visual": {
+    "sample_width": 390,
+    "screenshots_created_locally": true,
+    "day_and_dark_chromium_rendered": true,
+    "observed_horizontal_overflow": false,
+    "approved_reference_pixel_parity_verified": false
+  },
+  "not_verified": [
+    "Full actual APK index.html navigation under Android WebView",
+    "QA050 current phone OTA state and Android device/regression",
+    "real reader audio/tilawa performance",
+    "approved model pixel-perfect matching",
+    "dark mode all native theme variables in full app",
+    "owner Ed25519 approval for protected OTA diff",
+    "RSA-signed QA051 manifest and rollback",
+    "mandatory GitHub main rulesets"
+  ],
+  "decision": "Browser integration passed; owner-locked OTA still blocked and not published. Do not merge or activate based only on browser fixtures."
+}
