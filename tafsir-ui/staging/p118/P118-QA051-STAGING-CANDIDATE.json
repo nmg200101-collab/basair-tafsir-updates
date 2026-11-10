@@ -1,6 +1,6 @@
 {
   "schema": "basair-p118-staging-candidate-v1",
-  "status": "STAGING_ONLY_TYPOGRAPHY_FIXED_NOT_SIGNED_NOT_PUBLISHED",
+  "status": "STAGING_ONLY_REAL_APK_HTML_72_OF_72_NOT_SIGNED_NOT_PUBLISHED",
   "candidate": "P118-QA051-TAFSIR-VISUAL-MATCH",
   "createdDate": "2026-11-10",
   "sourceCommit": "aca95565ba7d1e3c341ee6f69ba1f43eb047abcc",
@@ -23,12 +23,12 @@
   "stagedFiles": [
     {
       "path": "tafsir-ui/staging/p118/p118-tafsir-visual-match.css",
-      "sha256": "64623bde653c12693224c6b4578e8599b1fe586e055f183316c3d4139e897614",
+      "sha256": "6446d97c315f4acd69a7072e15710fee186a3f994408160775bfa169a881b517",
       "role": "visual-reference-not-separated-OTA"
     },
     {
       "path": "tafsir-ui/staging/p118/p118-tafsir-visual-match.js",
-      "sha256": "82f8b8d08b97f478c8165f7bfbd23585bbda45c761e939f6c22e8922d4a06cb9",
+      "sha256": "30a87fc1897bf0c6820cf830d18408cb2a654121ca98af92feb086d4c85b5fb5",
       "role": "runtime-preview-only-not-active"
     }
   ],
@@ -47,10 +47,11 @@
   ],
   "releasePermit": {
     "ownerUserRequestUpload": "upload-to-staging-authorized",
-    "ownerProductionOrOwnerQAPublish": "NOT_PERMITTED_WHILE_CRYPTOGRAPHIC_GATES_FAIL",
+    "ownerProductionOrOwnerQAPublish": "BLOCKED_INDEPENDENT_ED25519_NOT_AVAILABLE",
     "ed25519OwnerApproval": "MISSING",
     "rsaOtaSignature": "NOT_CREATED",
     "publishReleaseManifest": false
   },
-  "notes": "Audit metadata, not an OTA manifest; readers MUST NOT present this as a signed release or install it. The private APK and private signing materials are never committed. Updated P118 typography: 9 invalid font shorthand declarations converted to individual CSS properties in CSS and embedded JS; test requirements unchanged."
+  "notes": "Audit metadata, not an OTA manifest; readers MUST NOT present this as a signed release or install it. The private APK and private signing materials are never committed. Updated P118 typography: 9 invalid font shorthand declarations converted to individual CSS properties in CSS and embedded JS; test requirements unchanged.",
+  "browserTest": "Full original V690 index.html and 64 packaged JS / 46 packaged styles, eight viewport/theme combinations, 72 of 72 P118 assertions PASS; baseline error count 3 per fixture from browser restrictions; this does not prove Android or QA050 OTA active state."
 }
