@@ -1,6 +1,6 @@
 {
   "schema": "basair-p118-staging-candidate-v1",
-  "status": "STAGING_ONLY_NOT_SIGNED_NOT_PUBLISHED",
+  "status": "STAGING_ONLY_TYPOGRAPHY_FIXED_NOT_SIGNED_NOT_PUBLISHED",
   "candidate": "P118-QA051-TAFSIR-VISUAL-MATCH",
   "createdDate": "2026-11-10",
   "sourceCommit": "aca95565ba7d1e3c341ee6f69ba1f43eb047abcc",
@@ -23,12 +23,12 @@
   "stagedFiles": [
     {
       "path": "tafsir-ui/staging/p118/p118-tafsir-visual-match.css",
-      "sha256": "b7f349b62c266e5d6a8468588d79301102967c5552d5039185e6c819d586fb67",
+      "sha256": "64623bde653c12693224c6b4578e8599b1fe586e055f183316c3d4139e897614",
       "role": "visual-reference-not-separated-OTA"
     },
     {
       "path": "tafsir-ui/staging/p118/p118-tafsir-visual-match.js",
-      "sha256": "1cf173d698435d73584c38e98587d223cde709d0ffd8a970d6c5c834802fed06",
+      "sha256": "82f8b8d08b97f478c8165f7bfbd23585bbda45c761e939f6c22e8922d4a06cb9",
       "role": "runtime-preview-only-not-active"
     }
   ],
@@ -52,5 +52,5 @@
     "rsaOtaSignature": "NOT_CREATED",
     "publishReleaseManifest": false
   },
-  "notes": "Audit metadata, not an OTA manifest; readers MUST NOT present this as a signed release or install it. The private APK and private signing materials are never committed."
+  "notes": "Audit metadata, not an OTA manifest; readers MUST NOT present this as a signed release or install it. The private APK and private signing materials are never committed. Updated P118 typography: 9 invalid font shorthand declarations converted to individual CSS properties in CSS and embedded JS; test requirements unchanged."
 }
