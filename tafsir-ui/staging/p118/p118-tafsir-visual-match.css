@@ -124,7 +124,7 @@ html body.bq-tf117-index #v194T104SurahBrowser .v194T104SurahHead b::before {
 }
 html body.bq-tf117-index #v194T104SurahBrowser .v194T104SurahHead small {
   font-weight:500!important; font-size:10px!important; line-height:1.3!important; font-family:inherit!important; color:#79857b!important;
-  white-space:nowrap!important; margin:0!important;
+  white-space:nowrap!important; min-width:0!important; flex:0 1 auto!important; overflow:hidden!important; text-overflow:ellipsis!important; margin:0!important;
 }
 html body.bq-tf117-index #tafsirIndex #v194T104SurahBrowser #v194T104SurahGrid {
   display:grid!important; grid-template-columns:1fr!important; gap:4px!important;
