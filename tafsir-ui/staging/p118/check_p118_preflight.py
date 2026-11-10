@@ -75,6 +75,32 @@ def main() -> int:
     ) if s in js]
     check(not bad_tokens, f"no direct storage/navigation/network/audio mutators {bad_tokens}", failures)
 
+    # The old P118 CSS used "font: 750 11px/1.2 inherit", which browsers
+    # reject: 'inherit' cannot be a family token within font shorthand.
+    invalid_font_shorthands = re.findall(
+        r"font\s*:\s*\d+\s+[\d.]+px/[\d.]+\s+inherit\s*!important",
+        css
+    )
+    check(not invalid_font_shorthands,
+          "no invalid CSS font shorthands (font family inherit)", failures)
+    fixed_font_longhands = re.findall(
+        r"font-weight:\d+!important;\s*font-size:[\d.]+px!important;"
+        r"\s*line-height:[\d.]+!important;\s*font-family:inherit!important;",
+        css
+    )
+    check(len(fixed_font_longhands) == 9,
+          "all nine invalid font declarations replaced by valid longhands", failures)
+
+    candidate_file = P118_DIR / "P118-QA051-STAGING-CANDIDATE.json"
+    check(candidate_file.is_file(), "staging candidate inventory exists", failures)
+    if candidate_file.is_file():
+        candidate = json.loads(candidate_file.read_text(encoding="utf-8"))
+        files = {str(f["path"]): str(f["sha256"]) for f in candidate.get("stagedFiles", [])}
+        for item in (js_path, css_path):
+            relative = item.relative_to(ROOT).as_posix()
+            check(files.get(relative) == sha256(item.read_bytes()),
+                  "staging SHA256 inventory matches: " + relative, failures)
+
     baseline = json.loads(BASELINE.read_text(encoding="utf-8"))
     manifest_path = ROOT / baseline["active_release"]
     check(manifest_path.is_file(), "QA050 reference manifest exists", failures)
