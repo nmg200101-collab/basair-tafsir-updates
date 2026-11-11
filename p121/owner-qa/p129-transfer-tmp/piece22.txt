@@ -1,0 +1,32 @@
+ fresh gesture.
+          syncManualSentinel();
+        }
+      });feedObserver.observe(host,{childList:true});
+    }
+    setTimeout(function(){synchronizeReaderMode();syncManualSentinel()},220);
+  }
+  function init(){
+    if(!E('tafsirReader'))return;
+    decorate();
+    var host=E('tafsirAyahs');if(host&&!observer&&window.MutationObserver){
+      observer=new MutationObserver(function(mutations){
+        // Text/labels do not need a rebuild. Only newly inserted/removed tools
+        // or articles should be decorated, once per frame.
+        for(var i=0;i<mutations.length;i++){
+          var m=mutations[i];if(m.type!=='childList')continue;
+          if(m.target&&m.target.closest&&m.target.closest('.basairB231AyahActions')&&!m.target.matches('.basairB231AyahActions'))continue;
+          if(m.addedNodes.length||m.removedNodes.length){scheduleDecorate();return;}
+        }
+      });observer.observe(host,{childList:true,subtree:true});
+    }
+    document.addEventListener('click',onClick,true);
+    document.addEventListener('pointerdown',gestureStart,true);
+    document.addEventListener('pointerdown',followDown,true);
+    document.addEventListener('pointerup',followEnd,true);
+    document.addEventListener('pointercancel',followEnd,true);
+    document.addEventListener('pointermove',followMove,true);
+    document.addEventListener('contextmenu',function(e){if(e.target&&e.target.closest&&e.target.closest('[data-p125-follow],[data-p125-copy]'))e.preventDefault();},true);
+    document.addEventListener('pointerup',gestureEnd,true);
+    document.addEventListener('pointercancel',gestureEnd,true);
+    document.addEventListener('pointermove',gestureMove,true);
+    window.addEventListene
