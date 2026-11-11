@@ -4,7 +4,7 @@
 #tafsirReader.active .p132NatiqButton{
  display:inline-flex;align-items:center;gap:5px;vertical-align:middle;
  min-height:33px;margin-inline:5px 0;padding:4px 11px;border:1px solid #b9d7c6;border-radius:999px;
- color:#195a41;background:#edf8f1;font:700 12px/1.35 inherit;cursor:pointer;
+ color:#195a41;background:#edf8f1;font-family:inherit;font-size:12px;font-weight:700;line-height:1.35;cursor:pointer;
  touch-action:manipulation;-webkit-tap-highlight-color:transparent;user-select:none;
 }
 #tafsirReader.active .p132NatiqButton.p132-on{
