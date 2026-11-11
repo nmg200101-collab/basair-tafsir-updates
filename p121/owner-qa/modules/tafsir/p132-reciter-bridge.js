@@ -18,6 +18,13 @@ function readerState(){
  return r&&r._test&&r._test.state||null;
 }
 function selected(){
+ // The real "متابعة التلاوة" follows v170Reciter/sequenceReciterV17, not the
+ // separate Selected Recitations (R109) sheet. Prefer that read-only choice.
+ var live=source();
+ if(live&&typeof live.selected==='function'){
+  var ch=live.selected();
+  return ch&&ch.id?{id:clean(ch.id),name:clean(ch.name)||clean(ch.id)}:null;
+ }
  var s=readerState();if(!s)return null;
  // R109 stores the chosen reader in state.reader. Do not treat a track
  // currently playing on a different reader as the user's new selection.
@@ -76,6 +83,11 @@ function playOne(request){
  var record=catalog.getExact(q);
  if(!validate(record,q)){stats.rejected++;throw new Error('مصدر الآية تغيّر أثناء التشغيل')}
  if(playing)playing.stop();
+ var urls=[record.url].concat(Array.isArray(record.alternates)?record.alternates:[])
+  .map(safeURL).filter(Boolean);
+ if(!urls.length){stats.rejected++;throw new Error('لا توجد روابط صالحة لتسجيل الآية')}
+ // Every alternate belongs to the SAME chosen reciter and ayah catalog.
+ // No fallback to Alafasy, a whole-surah file, or synthetic Quran audio.
  var audio=d.createElement('audio'),done=false,doneResolve,doneReject;
  var ended=new Promise(function(resolve,reject){doneResolve=resolve;doneReject=reject});
  // Some browser runtimes reject the audio.play() promise asynchronously.
@@ -97,15 +109,26 @@ function playOne(request){
  };
  audio.preload='auto';audio.playsInline=true;
  audio.onended=function(){finish(true)};
- audio.onerror=function(){finish(false,new Error('تعذر تشغيل تسجيل الآية الأصلي'))};
- audio.src=safeURL(record.url);
  playing=handle;stats.starts++;
- try{
-  var promise=audio.play();
-  if(promise&&typeof promise.catch==='function')
-   promise.catch(function(){finish(false,new Error('تعذر بدء صوت القارئ؛ تحقق من مصدر التسجيل أو سماح تشغيل الصوت'))});
- }catch(err){finish(false,new Error('فشل تشغيل التسجيل الصوتي'))}
- return handle;
+ var nextURL=0,attemptID=0;
+ function trySource(){
+  if(done)return;
+  if(nextURL>=urls.length){
+   finish(false,new Error('تعذر تشغيل تسجيل الآية بصوت القارئ المحدد؛ تحقق من الاتصال'));
+   return;
+  }
+  var run=++attemptID,url=urls[nextURL++];
+  try{
+   audio.pause();audio.src=url;audio.load();
+   audio.onerror=function(){if(!done&&run===attemptID)trySource()};
+   // First attempt is executed synchronously inside the user tap, retaining
+   // audio gesture permission; fallback uses the same unlocked audio element.
+   var promise=audio.play();
+   if(promise&&typeof promise.catch==='function')
+    promise.catch(function(){if(!done&&run===attemptID)trySource()});
+  }catch(_){if(!done&&run===attemptID)trySource()}
+ }
+ trySource();return handle;
 }
 function stop(){if(playing)playing.stop()}
 function diagnostics(){
