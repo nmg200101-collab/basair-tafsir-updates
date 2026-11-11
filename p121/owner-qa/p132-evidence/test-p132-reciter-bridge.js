@@ -84,7 +84,7 @@ async function main(){
  });
  await test('Blocked Android audio play propagates rejection',async()=>{
   const m=setup({failPlay:true}),h=m.api.playOne(req);
-  await assert.rejects(h.ended,/تعذر بدء/);
+  await assert.rejects(h.ended,/تعذر تشغيل/);
  });
  await test('Separate recording auto-stops prior recording',async()=>{
   const m=setup(),h1=m.api.playOne(req),h2=m.api.playOne(req);
