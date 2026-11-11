@@ -48,7 +48,7 @@ function mock({mode='both',catalog=true,record={},reader='masad',localVoice=true
  return {win,doc:document,row,events,audio,spoken,toasts,
   natiq:win.__BASAIR_TAFSIR_NATIQ_P132__,bridge:win.__BASAIR_TAFSIR_AYAH_RECITER_BRIDGE__};
 }
-const settle=async()=>{await new Promise(r=>setTimeout(r,0));await new Promise(r=>setTimeout(r,0))};
+const settle=async()=>{await new Promise(r=>setTimeout(r,250));await new Promise(r=>setTimeout(r,0))};
 async function main(){
  let passed=0;
  async function test(name,fn){await fn();passed++;console.log('PASS '+name)}
