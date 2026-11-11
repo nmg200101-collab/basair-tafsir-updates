@@ -9,6 +9,7 @@ if(w.__BASAIR_TAFSIR_NATIQ_P132__)return;
 var VERSION='P132.1-NATIQ-QA-NOT-LIVE', KEY='basair:tafsir:natiq:p132:prefs';
 var opts={mode:'both',sections:'all',rate:0.95,autoNext:false,preferLocal:true};
 var active=null,token=0,mountTimer=0,observer=null,longTimer=0,longPressUntil=0,press=null;
+var lastDrawnButton=null,lastLiveLabel=null;
 var stats={starts:0,stops:0,spokenChunks:0,skippedSymbols:0,sourceUnavailable:0,staleCancelled:0,errors:0};
 function E(id){return d.getElementById(id)}
 function tafsirOpen(){var x=E('tafsirReader');return !!(x&&x.classList.contains('active'))}
@@ -49,7 +50,7 @@ function segments(row){
  var out=[],parts=[],title='';
  function flush(){
   var body=normalize(parts.join(''));parts=[];
-  if(body)out.push({title:normalize(title),text:body});
+  if(body||normalize(title))out.push({title:normalize(title),text:body});
   title='';
  }
  function walk(node){
@@ -135,11 +136,23 @@ function bridge(){
 function stage(label){if(!active)return;active.stage=label;drawStatus(label)}
 function drawStatus(value){
  var el=E('p132NatiqStatus');if(el)el.textContent=value||'';
- var btns=d.querySelectorAll('.p132NatiqButton');
- for(var i=0;i<btns.length;i++){
-  var on=!!active;btns[i].setAttribute('aria-pressed',on?'true':'false');
-  btns[i].classList.toggle('p132-on',on);
-  var b=btns[i].querySelector('b');if(b)b.textContent=on?'إيقاف الناطق':'الناطق';
+ // P132.1 performance: touch only the active/previous button, not every
+ // rendered verse on every TTS chunk.
+ var current=active&&active.row&&active.row.querySelector('.p132NatiqButton');
+ if(lastDrawnButton&&lastDrawnButton!==current){
+  lastDrawnButton.classList.remove('p132-on');
+  lastDrawnButton.setAttribute('aria-pressed','false');
+  var oldText=lastDrawnButton.querySelector('b');if(oldText)oldText.textContent='الناطق';
+ }
+ if(lastLiveLabel&&(!active||lastLiveLabel!==active.row.querySelector('.p132NatiqLive'))){
+  lastLiveLabel.textContent='';lastLiveLabel.hidden=true;lastLiveLabel=null;
+ }
+ lastDrawnButton=current||null;
+ if(current){
+  current.setAttribute('aria-pressed','true');current.classList.add('p132-on');
+  var title=current.querySelector('b');if(title)title.textContent='إيقاف الناطق';
+  var live=active.row.querySelector('.p132NatiqLive');
+  if(live){live.hidden=false;if(live.textContent!==value)live.textContent=value||'';lastLiveLabel=live}
  }
 }
 function stop(reason,quiet){
@@ -291,12 +304,14 @@ function control(row){
  btn=d.createElement('button');btn.type='button';btn.className='p132NatiqButton';
  btn.setAttribute('aria-label','الناطق التفسيري — اضغط مطولًا للإعدادات');
  btn.innerHTML='<span aria-hidden="true">◖))</span><b>الناطق</b>';
- if(anchor&&anchor.parentElement){anchor.insertAdjacentElement('afterend',btn)}
+ var live=d.createElement('small');live.className='p132NatiqLive';live.hidden=true;
+ live.setAttribute('aria-live','polite');
+ if(anchor&&anchor.parentElement){anchor.insertAdjacentElement('afterend',btn);btn.insertAdjacentElement('afterend',live)}
  else{
   var head=row.querySelector('.v194T2Body');
   if(!head)return;
   var bar=d.createElement('div');bar.className='p132NatiqBar';
-  bar.appendChild(btn);head.parentElement.insertBefore(bar,head);
+  bar.appendChild(btn);bar.appendChild(live);head.parentElement.insertBefore(bar,head);
  }
 }
 function attach(){
