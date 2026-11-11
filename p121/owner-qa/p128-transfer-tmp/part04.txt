@@ -1,0 +1,148 @@
+);}
+      })();return true;
+    }
+    var ok=startFrom(r);synchronizeReaderMode();return ok;
+  }
+  function manualDisabled(){
+    if(!inTafsir())return true;
+    var reader=E('tafsirReader'),host=E('tafsirAyahs');
+    if(!reader||!host||getComputedStyle(host).display==='none')return true;
+    if(reader.getAttribute('data-basair-main-tab')&&reader.getAttribute('data-basair-main-tab')!=='tafsir')return true;
+    var f=api();return !!(f&&f.status&&f.status().running)||resetInFlight;
+  }
+  function manualRows(){
+    var host=E('tafsirAyahs');if(!host)return [];
+    return Array.prototype.filter.call(host.querySelectorAll('.v194T2Ayah:not(.b118CarryArticle)'),function(r){return r.getBoundingClientRect().height>0;});
+  }
+  function syncManualSentinel(){
+    var host=E('tafsirAyahs');if(!host)return;
+    var sentinel=E('v194T5Sentinel');
+    if(!sentinel)return;
+    if(!sentinel.querySelector('[data-p126-next]')){
+      var btn=document.createElement('button');btn.type='button';btn.setAttribute('data-p126-next','1');
+      btn.textContent='عرض الآية التالية ↓';btn.setAttribute('aria-label','تحميل الآية التالية في نفس صفحة التفسير');
+      sentinel.appendChild(btn);
+    }
+  }
+  function manualNearEnd(){
+    var rows=manualRows(),last=rows[rows.length-1];if(!last)return false;
+    var rect=last.getBoundingClientRect();
+    return rect.bottom<=(window.innerHeight||720)+Math.max(280,(window.innerHeight||720)*.55);
+  }
+  function readyFeed(){
+    var f=window.__BASAIR_TAFSIR_STEP5__;
+    return !!(f&&typeof f.loadNext==='function');
+  }
+  function maybeLoadNext(force){
+    synchronizeReaderMode();
+    if(manualDisabled()||feedBusy||!readyFeed())return false;
+    if(!force&&Date.now()-manualScrollAt>1700)return false;
+    if(!force&&!manualNearEnd())return false;
+    if(Date.now()<feedRetryAt)return false;
+    var list=manualRows(),last=list[list.length-1];if(!last)return false;
+    var oldCount=list.length, key=(last.getAttribute('data-t5-s')||'')+':'+(last.getAttribute('data-t5-a')||last.getAttribute('data-t2ayah')||'')+':'+oldCount;
+    if(key===feedKey && Date.now()<feedRetryAt+4500)return false;
+    // Strictly one request per tail position; native STEP5 may also be awaiting.
+    var existing=manualRows().some(function(el){return el.getAttribute('data-p128-pending-key')===key;});
+    if(existing)return false;
+    feedBusy=true;feedKey=key;last.setAttribute('data-p128-pending-key',key);
+    try{window.__BASAIR_TAFSIR_STEP5__.loadNext()}catch(_){feedBusy=false;feedRetryAt=Date.now()+3000;return false;}
+    clearTimeout(feedWaitTimer);
+    var started=Date.now();
+    (function waitResult(){
+      if(!inTafsir()){feedBusy=false;return;}
+      var nowCount=manualRows().length;
+      if(nowCount>oldCount){
+        last.removeAttribute('data-p128-pending-key');feedBusy=false;feedRetryAt=Date.now()+180;syncManualSentinel();scheduleDecorate();return;
+      }
+      if(Date.now()-started>8500){last.removeAttribute('data-p128-pending-key');feedBusy=false;feedRetryAt=Date.now()+4500;syncManualSentinel();return;}
+      feedWaitTimer=setTimeout(waitResult,120);
+    })();
+    return true;
+  }
+  function scheduleFeed(){
+    if(feedScheduled)return;
+    feedScheduled=true;
+    requestAnimationFrame(function(){feedScheduled=false;syncManualSentinel();maybeLoadNext(false)});
+  }
+  function setupManualFeed(){
+    var reader=E('tafsirReader');if(!reader)return;
+    reader.addEventListener('touchstart',function(ev){
+      if(ev.target.closest('button, input, select, textarea, .p124ExportDialog'))return;
+      var t=ev.touches&&ev.touches[0];manualPointer=t?{x:t.clientX,y:t.clientY}:null;
+    },{passive:true});
+    reader.addEventListener('touchmove',function(ev){
+      var t=ev.touches&&ev.touches[0];if(!t)return;
+      if(manualPointer&&Math.abs(t.clientY-manualPointer.y)>12){
+        // R114 handles fingerPaused on pointerdown/up; NEVER call stop().
+        manualPointer=null;
+      }
+      manualScrollAt=Date.now();synchronizeReaderMode();scheduleFeed();
+    },{passive:true});
+    reader.addEventListener('wheel',function(){
+      // User wheel motion changes position only; explicit Stop remains running authority.
+      manualScrollAt=Date.now();synchronizeReaderMode();scheduleFeed();
+    },{passive:true});
+    reader.addEventListener('scroll',function(){manualScrollAt=Date.now();scheduleFeed();},{passive:true});
+    window.addEventListener('scroll',function(){
+      if(!inTafsir())return;
+      manualScrollAt=Date.now();scheduleFeed();
+    },{passive:true});
+    reader.addEventListener('click',function(ev){
+      var btn=ev.target&&ev.target.closest&&ev.target.closest('[data-p126-next]');
+      if(!btn)return;
+      ev.preventDefault();ev.stopPropagation();manualScrollAt=Date.now();maybeLoadNext(true);
+    },true);
+    var host=E('tafsirAyahs');
+    if(host&&window.MutationObserver){
+      feedObserver=new MutationObserver(function(ms){
+        if(ms.some(function(m){return m.type==='childList'&&m.target===host;})){
+          syncManualSentinel();
+          // When a single short ayah is shorter than the viewport there is no
+          // touch-scroll event to reach the next ayah. Preload AT MOST one.
+          if(!prefillCount && !manualDisabled() && (document.documentElement.scrollHeight<=window.innerHeight+80)){
+            prefillCount=1;manualScrollAt=Date.now();scheduleFeed();
+          }
+        }
+      });feedObserver.observe(host,{childList:true});
+    }
+    setTimeout(function(){syncManualSentinel();},220);
+  }
+  function init(){
+    if(!E('tafsirReader'))return;
+    decorate();
+    var host=E('tafsirAyahs');if(host&&!observer&&window.MutationObserver){
+      observer=new MutationObserver(function(mutations){
+        // Text/labels do not need a rebuild. Only newly inserted/removed tools
+        // or articles should be decorated, once per frame.
+        for(var i=0;i<mutations.length;i++){
+          var m=mutations[i];if(m.type!=='childList')continue;
+          if(m.target&&m.target.closest&&m.target.closest('.basairB231AyahActions')&&!m.target.matches('.basairB231AyahActions'))continue;
+          if(m.addedNodes.length||m.removedNodes.length){scheduleDecorate();return;}
+        }
+      });observer.observe(host,{childList:true,subtree:true});
+    }
+    document.addEventListener('click',onClick,true);
+    document.addEventListener('pointerdown',gestureStart,true);
+    document.addEventListener('pointerdown',followDown,true);
+    document.addEventListener('pointerup',followEnd,true);
+    document.addEventListener('pointercancel',followEnd,true);
+    document.addEventListener('pointermove',followMove,true);
+    document.addEventListener('contextmenu',function(e){if(e.target&&e.target.closest&&e.target.closest('[data-p125-follow],[data-p125-copy]'))e.preventDefault();},true);
+    document.addEventListener('pointerup',gestureEnd,true);
+    document.addEventListener('pointercancel',gestureEnd,true);
+    document.addEventListener('pointermove',gestureMove,true);
+    window.addEventListener('pagehide',function(){intended=false;++autoStartToken;});
+    // Update play state without re-painting toolbar HTML.
+    setInterval(function(){monitor();renderButtons(false);},250);
+    if(window.MutationObserver){
+      var rdr=E('tafsirReader');
+      readerLifecycleObserver=new MutationObserver(function(){if(inTafsir())scheduleDecorate()});
+      readerLifecycleObserver.observe(rdr,{attributes:true,attributeFilter:['class']});
+    }
+    markExistingManualArticles();setupManualFeed();
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
+  window.__BASAIR_TAFSIR_P128__={version:VERSION,init:decorate,start:startFrom,stop:stopFromUser,settings:settings,exportVerse:exportVerseImage,
+    manualNext:function(){manualScrollAt=Date.now();return maybeLoadNext(true)},sync:synchronizeReaderMode,status:function(){return {intended:intended,tries:resumeAttempts,saved:saved(),lastObserved:lastObserved,manualStopAt:manualStopAt,exportBusy:exportBusy,feedBusy:feedBusy,manualScrollAt:manualScrollAt,mode:lastMode,cleanupCount:cleanupCount}}};
+})();
