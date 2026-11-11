@@ -1,0 +1,122 @@
+t(new Error('snapshot-unsupported'))};
+      image.src=uri;
+    });
+  }
+  // Fallback when Android WebView prohibits SVG foreignObject rasterization.
+  // Reproduce ONLY the Quran verse card; never capture adjacent verses or controls.
+  function canvasFallback(row){return new Promise(function(resolve,reject){
+    try{
+      var q=row.querySelector('.v194T2Qrow .qtext,.qtext');if(!q||!clean(q.textContent))throw Error('missing-text');
+      var verse=clean(q.textContent),num=row.querySelector('.v194T2Qrow .anum'),box=row.querySelector('.v194T2Qrow');
+      var font=getComputedStyle(q),padding=32,W=980,ratio=2,canvas=document.createElement('canvas');
+      var measure=document.createElement('canvas').getContext('2d');
+      var fontPx=Math.max(30,Math.min(57,(parseFloat(font.fontSize)||24)*W/Math.max(350,(box&&box.getBoundingClientRect().width)||380)));
+      var fam=font.fontFamily||'serif';measure.font=fontPx+'px '+fam;
+      var tokens=verse.split(/\s+/),lines=[],line='';
+      tokens.forEach(function(word){var cand=line?line+' '+word:word;if(line && measure.measureText(cand).width>W-2*padding){lines.push(line);line=word}else line=cand});if(line)lines.push(line);
+      var lh=Math.max(fontPx*2.05,65),H=Math.ceil(padding*2+lines.length*lh+52);canvas.width=W*ratio;canvas.height=H*ratio;
+      var ctx=canvas.getContext('2d');ctx.scale(ratio,ratio);
+      ctx.fillStyle='#f8f5e8';ctx.fillRect(0,0,W,H);ctx.strokeStyle='#d5c7a6';ctx.lineWidth=3;ctx.strokeRect(3,3,W-6,H-6);
+      ctx.direction='rtl';ctx.textAlign='right';ctx.textBaseline='middle';ctx.fillStyle='#57401c';ctx.font=fontPx+'px '+fam;
+      lines.forEach(function(l,i){ctx.fillText(l,W-padding,padding+lh*i+lh/2,W-2*padding)});
+      ctx.fillStyle='#937b4a';ctx.font='26px '+fam;ctx.textAlign='left';
+      ctx.fillText('﴿'+clean(num&&num.textContent||'')+'﴾',padding,H-26);
+      canvas.toBlob(function(b){b?resolve(b):reject(new Error('png-empty'))},'image/png');
+    }catch(e){reject(e)}
+  });}
+  function sharePreview(blob,row){
+    if(exportURL)try{URL.revokeObjectURL(exportURL)}catch(_){};
+    exportURL=URL.createObjectURL(blob);
+    var p=verseRecord(row),name='Basair-Ayah-'+p.s+'-'+p.a+'.png';
+    var dlg=E('basairP124ExportDialog');
+    if(!dlg){dlg=document.createElement('section');dlg.id='basairP124ExportDialog';dlg.className='p124ExportDialog';
+      dlg.innerHTML='<div class="p124Shade"></div><div class="p124ExportPanel" dir="rtl" role="dialog" aria-modal="true" aria-label="صورة الآية"><header><b>صورة الآية</b><button type="button" data-p124-close aria-label="إغلاق">×</button></header><img id="p124Image" alt="صورة الآية المحددة"><p>صورة الآية فقط دون الأدوات أو الآيات الأخرى.</p><footer><button type="button" data-p124-save>حفظ الصورة</button><button type="button" data-p124-share>مشاركة الصورة</button></footer></div>';
+      document.body.appendChild(dlg);
+      dlg.addEventListener('click',function(e){
+        if(e.target.closest('[data-p124-close],.p124Shade')){dlg.classList.remove('open');return;}
+        if(e.target.closest('[data-p124-save]')){
+          var a=document.createElement('a');a.href=exportURL;a.download=dlg.__p126Name;document.body.appendChild(a);a.click();a.remove();return;
+        }
+        if(e.target.closest('[data-p124-share]')){
+          if(navigator.share&&navigator.canShare){try{var f=new File([dlg.__p126Blob],dlg.__p126Name,{type:'image/png'});if(navigator.canShare({files:[f]})){
+            navigator.share({files:[f],title:'بصائر القرآن — صورة الآية'}).catch(function(){});return;
+          }}catch(_){}}
+          toast('احفظ الصورة ثم شاركها من معرض الصور');
+        }
+      });
+    }
+    dlg.__p126Blob=blob;dlg.__p126Name=name;E('p124Image').src=exportURL;dlg.classList.add('open');
+  }
+  function exportVerseImage(row){
+    if(exportBusy||!row||!row.isConnected)return;
+    exportBusy=true;toast('جارٍ تجهيز صورة الآية…');
+    var progress=E('p126ExportProgress');
+    if(!progress){progress=document.createElement('div');progress.id='p126ExportProgress';progress.setAttribute('role','status');progress.textContent='◌ جارٍ تجهيز الصورة…';document.body.appendChild(progress);}
+    progress.hidden=false;
+    // Yield one frame for the busy indicator to paint before costly
+    // SVG/Canvas rasterization; never rasterize whole Tafsir page.
+    requestAnimationFrame(function(){setTimeout(function(){
+      foreignObjectBlob(row).catch(function(){return canvasFallback(row)}).then(function(blob){sharePreview(blob,row)},function(){toast('تعذر إنشاء صورة الآية على هذا الهاتف')}).finally(function(){exportBusy=false;progress.hidden=true});
+    },18)});
+  }
+  // Deliberate Stop must stay stopped. No automatic restart watchdog:
+  // on a transient stop the user can tap Follow on the current verse.
+  function monitor(){
+    synchronizeReaderMode();
+    if(!inTafsir()){intended=false;return;}
+    var f=api(),st=f&&f.status&&f.status(),now=currentRecord();
+    if(st&&st.running){
+      if(valid(now)){var key=now.s+':'+now.a+':'+now.type;
+        if(key!==lastObserved)remember(now,position());}
+    }else if(intended){
+      // The original reader stopped (timer, content end or temporary failure).
+      intended=false;renderButtons();
+    }
+  }
+  function synchronizeReaderMode(){
+    var reader=E('tafsirReader'),f=api();
+    if(!reader||!inTafsir()) { followOwnsReader=false;return; }
+    var status=f&&f.status&&f.status(),running=!!(status&&status.running);
+    var tab=reader.getAttribute('data-basair-main-tab')||'tafsir';
+    // STEP5's original scroll listener checks this attribute. During R114
+    // following, it must not append a duplicate on scroll events from R114.
+    if(running && (tab==='tafsir'||tab==='p128-follow')){
+      if(tab!=='p128-follow')reader.setAttribute('data-basair-main-tab','p128-follow');
+      followOwnsReader=true;
+    }else if(!running && followOwnsReader && tab==='p128-follow'){
+      reader.setAttribute('data-basair-main-tab','tafsir');
+      followOwnsReader=false;
+    }else if(tab!=='p128-follow'){followOwnsReader=false;}
+    if(running){
+      // Any native STEP5 article inserted while Follow is active is a competing
+      // reader flow. P120 uses the real STEP2 ayah, not v194T5Generated.
+      var host=E('tafsirAyahs');
+      if(host)Array.prototype.forEach.call(host.querySelectorAll('.v194T5Generated'),function(node){
+        if(node.classList.contains('b118CarryArticle'))return;
+        if(node.getAttribute('data-p128-manual-preexisting')==='1')return;
+        node.remove();cleanupCount++;
+      });
+    }
+    lastMode=running?'auto':'manual';
+  }
+  function markExistingManualArticles(){
+    var host=E('tafsirAyahs');if(!host)return;
+    host.querySelectorAll('.v194T5Generated').forEach(function(el){el.setAttribute('data-p128-manual-preexisting','1');});
+  }
+  function startFromVisible(row){
+    var f=api(),t=step(),r=row?verseRecord(row):currentRecord(),host=E('tafsirAyahs');
+    if(!f||!valid(r))return false;
+    var rows=host&&host.querySelectorAll('.v194T2Ayah:not(.b118CarryArticle)');
+    if(rows&&rows.length>1&&t&&typeof t.open==='function'){
+      // R114 assumes one STEP2 verse at a time. Collapsing an old manual feed
+      // on a deliberate Follow tap prevents the first verse being played twice.
+      resetInFlight=true;intended=true;manualStopAt=0;var token=++autoStartToken;
+      try{t.open(r.s,r.a,r.type)}catch(_){resetInFlight=false;intended=false;return false;}
+      var tries=0;
+      (function ready(){
+        if(token!==autoStartToken||manualStopAt||!intended||!inTafsir()){resetInFlight=false;return;}
+        var st=state(),current=host&&host.querySelector('.v194T2Ayah[data-t2ayah]:not(.b118CarryArticle)');
+        if(st&&same(st,r)&&current){
+          resetInFlight=false;markExistingManualArticles();f.start();synchronizeReaderMode();renderButtons(true);return;
+        }
+        if(++tries<100)setTimeout(ready,60);else{resetInFlight=false;intended=false;toast('تعذر استئناف الآية المطلوبة'
