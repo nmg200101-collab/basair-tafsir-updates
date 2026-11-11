@@ -393,7 +393,7 @@ function observe(){
     }return false;
   }))mountSoon();
  });
- observer.observe(host,{childList:true,subtree:true,characterData:true});
+ observer.observe(host,{childList:true,subtree:true,characterData:true,attributes:true,attributeFilter:['data-t5-type','data-type','data-t2ayah']});
 }
 function init(){
  if(!E('tafsirReader'))return;
