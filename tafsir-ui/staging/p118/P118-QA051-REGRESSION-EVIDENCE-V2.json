@@ -1,0 +1,63 @@
+{
+  "schema": "basair-p118-regression-evidence-v2",
+  "date": "2026-11-10",
+  "scope": "STAGING_ONLY_NOT_DEPLOYABLE",
+  "source_apk": {
+    "package_id": "app.basair.qurv2",
+    "version_code": 690,
+    "apk_sha256": "4f95dd781c23b04e27581ab8257cce2393a83bfe1a0ea2f31ea076a4262535fc",
+    "certificate_sha256": "35066b87e4b854187b5c8fa8321676bacc2de8bef14624072afb33ebd506dc07",
+    "apk_uploaded_to_git": false
+  },
+  "execution": {
+    "browser": "local Chromium (Playwright) with mocked DOM and browser storage",
+    "screen_widths_css_px": [
+      320,
+      364,
+      390,
+      430
+    ],
+    "modes": [
+      "light",
+      "dark"
+    ],
+    "runs": 8,
+    "assertions_per_run": 13,
+    "passed_assertions": 104,
+    "total_assertions": 104,
+    "actual_apk_p117_js_and_css": true,
+    "p118_functional_extract_without_css": true,
+    "full_upstream_p118_js_css_executed": false,
+    "real_android_webview": false,
+    "real_device_validation": false,
+    "assertions": [
+      "114 surahs remain",
+      "Tafsir header downloads visible",
+      "more menu hidden while Tafsir active",
+      "single toolbar after re-entry",
+      "storage shim functional",
+      "no horizontal overflow for functional-only sample",
+      "zero uncaught JavaScript errors",
+      "Tafsir downloads route only",
+      "search forwards to native input",
+      "last saved position open event",
+      "surah and ayah picker open event",
+      "resume callback",
+      "Tilawa re-entry restores menu and audio test event"
+    ]
+  },
+  "evidence": {
+    "local_test_script_sha256": "54da843b6f8c13b907f33997c1b22fc341393162412e5b46154b970f14d793fc",
+    "local_test_results_sha256": "a353821fccbb0c5891e6a6c95c4e0734a12961e62360c348d82806a9424db944",
+    "p118_manual_extract_sha256": "1476d327cc5a14475fcd1b568ec74d267ba801a693dadea37c069cd661df1196"
+  },
+  "release_gates": {
+    "owner_lock_ed25519_approval": "MISSING_FOR_PROTECTED_DIFF",
+    "branch_ruleset": "NOT_ENFORCED",
+    "official_signed_qa051_ota": "NOT_CREATED",
+    "full_p118_ui_chromium": "NOT_TESTED",
+    "real_phone": "NOT_TESTED",
+    "publish": "BLOCKED"
+  },
+  "conclusion": "Functional-only mocked browser integration passed. Do not present as QA051 rollout approval. No protected QA050 bytes, live release manifest, signing material, APK or OTA were changed."
+}

@@ -1,0 +1,57 @@
+{
+  "schema": "basair-p118-staging-candidate-v1",
+  "status": "STAGING_ONLY_REAL_APK_HTML_72_OF_72_NOT_SIGNED_NOT_PUBLISHED",
+  "candidate": "P118-QA051-TAFSIR-VISUAL-MATCH",
+  "createdDate": "2026-11-10",
+  "sourceCommit": "aca95565ba7d1e3c341ee6f69ba1f43eb047abcc",
+  "sourceApk": {
+    "packageId": "app.basair.qurv2",
+    "versionCode": 690,
+    "versionName": "1.0.0-v690p92",
+    "sha256": "4f95dd781c23b04e27581ab8257cce2393a83bfe1a0ea2f31ea076a4262535fc",
+    "signerCertificateSha256": "35066b87e4b854187b5c8fa8321676bacc2de8bef14624072afb33ebd506dc07",
+    "apkArtifactIncluded": false
+  },
+  "frozenTilawa": {
+    "lockId": "BASAIR-TILAWA-QA050-OWNER-LOCK-20261109",
+    "sequence": 50,
+    "activeAssetCount": 8,
+    "releasePath": "p92/owner-qa-001/release.json",
+    "approvedMutation": false,
+    "assetsChanged": false
+  },
+  "stagedFiles": [
+    {
+      "path": "tafsir-ui/staging/p118/p118-tafsir-visual-match.css",
+      "sha256": "6446d97c315f4acd69a7072e15710fee186a3f994408160775bfa169a881b517",
+      "role": "visual-reference-not-separated-OTA"
+    },
+    {
+      "path": "tafsir-ui/staging/p118/p118-tafsir-visual-match.js",
+      "sha256": "30a87fc1897bf0c6820cf830d18408cb2a654121ca98af92feb086d4c85b5fb5",
+      "role": "runtime-preview-only-not-active"
+    }
+  ],
+  "testEvidence": {
+    "githubOwnerLockRun": "https://github.com/nmg200101-collab/basair-tafsir-updates/actions/runs/42802664779",
+    "p117ActualApkSmoke": "4/4 viewport tests PASSED; 114 surahs, downloads dispatch, search propagation, resume; offline simulated DOM not real phone",
+    "p118FunctionOnlySmoke": "4/4 viewport tests PASSED; manually extracted functional portion without P118 CSS, not identical full P118 script and not a release test",
+    "fullP118ChromiumTest": "NOT_EXECUTED",
+    "realAndroidTest": "NOT_EXECUTED"
+  },
+  "blockers": [
+    "Current V690/P117 receiver requires scoped Ed25519 approval for any change to QA050 frozen eight-asset manifest.",
+    "The independent encrypted Ed25519 owner-approval private key is not supplied in Android signing ZIP.",
+    "GitHub main rulesets are not enabled.",
+    "No finalized signed QA051 OTA or full P118 WebView regression suite."
+  ],
+  "releasePermit": {
+    "ownerUserRequestUpload": "upload-to-staging-authorized",
+    "ownerProductionOrOwnerQAPublish": "BLOCKED_INDEPENDENT_ED25519_NOT_AVAILABLE",
+    "ed25519OwnerApproval": "MISSING",
+    "rsaOtaSignature": "NOT_CREATED",
+    "publishReleaseManifest": false
+  },
+  "notes": "Audit metadata, not an OTA manifest; readers MUST NOT present this as a signed release or install it. The private APK and private signing materials are never committed. Updated P118 typography: 9 invalid font shorthand declarations converted to individual CSS properties in CSS and embedded JS; test requirements unchanged.",
+  "browserTest": "Full original V690 index.html and 64 packaged JS / 46 packaged styles, eight viewport/theme combinations, 72 of 72 P118 assertions PASS; baseline error count 3 per fixture from browser restrictions; this does not prove Android or QA050 OTA active state."
+}

@@ -1,0 +1,129 @@
+{
+  "schema": "basair-real-v690-html-p118-regression-v4",
+  "date": "2026-11-10",
+  "status": "STAGING_ONLY_NO_OTA",
+  "apk": {
+    "package": "app.basair.qurv2",
+    "versionCode": 690,
+    "sha256": "4f95dd781c23b04e27581ab8257cce2393a83bfe1a0ea2f31ea076a4262535fc",
+    "privateBytesUploaded": false
+  },
+  "source": {
+    "fullP118JsSha256": "30a87fc1897bf0c6820cf830d18408cb2a654121ca98af92feb086d4c85b5fb5",
+    "p118CssSha256": "6446d97c315f4acd69a7072e15710fee186a3f994408160775bfa169a881b517"
+  },
+  "test": {
+    "originalApkIndexHtmlUsed": true,
+    "originalIndexHtmlBytes": 4609377,
+    "bundledScriptsInlined": 64,
+    "bundledStylesInlined": 46,
+    "actualP117AndP118SourceUsed": true,
+    "fixtureOrigin": "about:blank",
+    "storage": "memory-only shim",
+    "externalNetwork": "blocked",
+    "realAndroidWebView": false,
+    "realInstalledQa050State": false,
+    "cleanScriptNoManualFocus": true,
+    "checksPerCase": [
+      "native Tafsir activation",
+      "114 real Surah cards",
+      "Tafsir downloads header",
+      "no duplicate toolbar/last-position",
+      "full embedded P118 CSS",
+      "no Tafsir section horizontal overflow",
+      "search focus from actual P118 button",
+      "native home/return navigation",
+      "zero P118 diagnostic exceptions"
+    ],
+    "matrix": [
+      {
+        "viewportCssPx": 320,
+        "theme": "light",
+        "passed": 9,
+        "total": 9,
+        "tafsirOverflowPx": 0,
+        "p118InternalErrors": 0,
+        "fullAppFixturePageErrors": 3
+      },
+      {
+        "viewportCssPx": 320,
+        "theme": "dark",
+        "passed": 9,
+        "total": 9,
+        "tafsirOverflowPx": 0,
+        "p118InternalErrors": 0,
+        "fullAppFixturePageErrors": 3
+      },
+      {
+        "viewportCssPx": 364,
+        "theme": "light",
+        "passed": 9,
+        "total": 9,
+        "tafsirOverflowPx": 0,
+        "p118InternalErrors": 0,
+        "fullAppFixturePageErrors": 3
+      },
+      {
+        "viewportCssPx": 364,
+        "theme": "dark",
+        "passed": 9,
+        "total": 9,
+        "tafsirOverflowPx": 0,
+        "p118InternalErrors": 0,
+        "fullAppFixturePageErrors": 3
+      },
+      {
+        "viewportCssPx": 390,
+        "theme": "light",
+        "passed": 9,
+        "total": 9,
+        "tafsirOverflowPx": 0,
+        "p118InternalErrors": 0,
+        "fullAppFixturePageErrors": 3
+      },
+      {
+        "viewportCssPx": 390,
+        "theme": "dark",
+        "passed": 9,
+        "total": 9,
+        "tafsirOverflowPx": 0,
+        "p118InternalErrors": 0,
+        "fullAppFixturePageErrors": 3
+      },
+      {
+        "viewportCssPx": 430,
+        "theme": "light",
+        "passed": 9,
+        "total": 9,
+        "tafsirOverflowPx": 0,
+        "p118InternalErrors": 0,
+        "fullAppFixturePageErrors": 3
+      },
+      {
+        "viewportCssPx": 430,
+        "theme": "dark",
+        "passed": 9,
+        "total": 9,
+        "tafsirOverflowPx": 0,
+        "p118InternalErrors": 0,
+        "fullAppFixturePageErrors": 3
+      }
+    ],
+    "passed": 72,
+    "total": 72
+  },
+  "baselineComparison": {
+    "fullHtmlErrorsWithP118": 3,
+    "fullHtmlErrorsWithoutP118": 3,
+    "note": "same one insertBefore and two IndexedDB access-denied errors from browser-only environment; these are not P118 diagnostic errors and must not be reported as a clean WebView execution"
+  },
+  "releaseGates": {
+    "githubMainRulesets": 0,
+    "ownerEd25519Signature": "MISSING",
+    "qa050FrozenAssetsChanged": false,
+    "otaPublication": false,
+    "apkRelease": false,
+    "androidFieldTest": false
+  },
+  "report": "tafsir-ui/staging/p118/P118-QA051-REAL-V690-HTML-72OF72-REPORT.md"
+}
