@@ -1,0 +1,82 @@
+{
+  "status": "QA_UNSIGNABLE_PREVIEW_NOT_LIVE",
+  "description": "UNSIGNED P132 QA ONLY. Do not rename to release.json or publish until owner explicitly approves and Android field acceptance is documented.",
+  "previous": {
+    "sequence": 8,
+    "tafsirVersion": 7,
+    "release": "P131"
+  },
+  "proposal": {
+    "schema": "basair-universal-ota-v1",
+    "channel": "owner-qa",
+    "applicationId": "app.basair.qurv2",
+    "sequence": 9,
+    "id": "P132-TAFSIR-NATIQ-OWNER-QA-20261111",
+    "minAppVersion": 694,
+    "deliveryMode": "notify",
+    "modules": [
+      {
+        "id": "tafsir",
+        "version": 8,
+        "assets": [
+          {
+            "path": "modules/tafsir/p131-verse-tools.css",
+            "kind": "css",
+            "size": 5717,
+            "sha256": "a41e96fb1b9c079e6aa6e4b962b49bbed76162c99fa5fb3fb1101fff5b8dce77"
+          },
+          {
+            "path": "modules/tafsir/p132-natiq.css",
+            "kind": "css",
+            "size": 3492,
+            "sha256": "38297624b2a983aeec5fd009bc87ac966e67a5e1ce8a79f7e7e2086049ecf72e"
+          },
+          {
+            "path": "modules/tafsir/p132-verse-tools.js",
+            "kind": "js",
+            "size": 42355,
+            "sha256": "b8348a2e8ba749956dde0a5744489d9eeaa014c3e42682b68a9e3aa6a36874a6"
+          },
+          {
+            "path": "modules/tafsir/p132-ayah-catalog.js",
+            "kind": "js",
+            "size": 3036,
+            "sha256": "c1c231fb33ffff149ec0cc7cb8e7d007c1238db6655e1be925a2d47343cf1080"
+          },
+          {
+            "path": "modules/tafsir/p132-reciter-bridge.js",
+            "kind": "js",
+            "size": 7075,
+            "sha256": "ed9c205b8abc9e1bef47288220cc9a3a376ebfe39e9e22a291599263e32a4025"
+          },
+          {
+            "path": "modules/tafsir/p132-natiq.js",
+            "kind": "js",
+            "size": 28577,
+            "sha256": "a489af52c9bcde7ed654882d64d622330d2cb9f77df56225afb4b09d1b148f55"
+          }
+        ]
+      }
+    ]
+  },
+  "guards": {
+    "signed": false,
+    "liveManifestUnchanged": true,
+    "protectedTilawaQA050Unchanged": true,
+    "ownerConsentToPublishP132": false,
+    "androidTTSVerified": false,
+    "sevenReaderAudioFieldVerified": false,
+    "rollback": "P131 v7 via restore previous"
+  },
+  "tests": {
+    "isolatedMocksPassed": 77,
+    "actualAndroidAudioTests": 0,
+    "originalRendererLayoutFixturesPassed": 6
+  },
+  "caveats": [
+    "Shared owner-qa channel not device-exclusive",
+    "Links to original EveryAyah per-verse source; no audio redistribution",
+    "External-only Tafsir al-Muharrar has no internal full text for speech",
+    "Real Arabic voice quality and autoplay must be verified on user's V694 before release"
+  ]
+}
