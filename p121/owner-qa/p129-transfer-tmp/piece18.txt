@@ -1,0 +1,29 @@
+){
+      var item=pending.toggled[i];if(item.node.isConnected){
+        if(item.had) item.node.classList.add('v194T5Ayah');
+        else item.node.classList.remove('v194T5Ayah');
+      }
+    }
+    feedBusy=false;feedRetryAt=Date.now()+400;
+    manualGateReason=reason||'';
+  }
+  // Only native STEP5 actually builds the next article; our gate owns its
+  // invocation. Temporarily restrict its unfiltered class query to the
+  // validated tail (never old P120 carry articles) for the synchronous call.
+  function requestManualNext(force){
+    synchronizeReaderMode();
+    if(manualDisabled()||manualPending||!readyFeed())return false;
+    if(!force&&(!manualNearEnd()||Date.now()-manualLastGestureAt>1300))return false;
+    if(!force&&manualGestures<=manualGateAt)return false;
+    var tail=validatedTail(),p=tail&&nextLocation(tail.location);
+    if(!tail||!p){syncManualSentinel();return false}
+    var transition=locKey(tail.location)+'>'+locKey(p);
+    if(manualCompleted.has(transition)||manualFaulted.has(transition))return false;
+    var host=E('tafsirAyahs');if(!host)return false;
+    // Reject a duplicate already in the DOM; silently assuming success on
+    // `rows.length` growth is unsafe and can loop dozens of times.
+    var existing=manualRows().some(function(el){return locKey(manualLocation(el))===locKey(p)});
+    if(existing){manualFaulted.add(transition);toast('تم رصد آية مكررة؛ أوقف التحميل التلقائي لهذه النقطة');return false}
+    // STEP5 enhances data-t5-* asynchronously after STEP2 paints. Manual
+    // scrolling can occur before that 25ms task. Give the validated article
+    // the exact cursor attributes before native loadN
