@@ -8,7 +8,7 @@
 if(w.__BASAIR_TAFSIR_NATIQ_P132__)return;
 var VERSION='P132.1-NATIQ-QA-NOT-LIVE', KEY='basair:tafsir:natiq:p132:prefs';
 var opts={mode:'both',sections:'all',rate:0.95,autoNext:false,preferLocal:true,voiceURI:''};
-var active=null,token=0,mountTimer=0,observer=null,longTimer=0,longPressUntil=0,press=null;
+var active=null,token=0,mountTimer=0,observer=null,viewObserver=null,longTimer=0,longPressUntil=0,press=null;
 var lastDrawnButton=null,lastLiveLabel=null;
 var stats={starts:0,stops:0,spokenChunks:0,skippedSymbols:0,sourceUnavailable:0,staleCancelled:0,errors:0};
 function E(id){return d.getElementById(id)}
@@ -299,7 +299,18 @@ async function sequence(s){
   if(token===s.token){stats.errors++;stop(q(e&&e.message||'تعذر تشغيل الناطق'));toast(q(e&&e.message||'تعذر تشغيل الناطق'))}
  }
 }
+function conflictingTilawaAudio(){
+ var a=E('tilawaAudio');
+ if(a&&!a.paused&&(a.currentSrc||a.src))return true;
+ var r=w.__BASAIR_R109_SELECTED__,st=r&&r._test&&r._test.state||null;
+ var other=st&&st.audio;
+ return !!(other&&other!==a&&!other.paused&&(other.currentSrc||other.src));
+}
 function start(row){
+ if(conflictingTilawaAudio()){
+  toast('أوقف صوت التلاوة الجاري أولًا، ثم شغّل الناطق لمنع تداخل الصوتين');
+  return false;
+ }
  if(!tafsirOpen()){toast('افتح التفسير أولًا');return false}
  row=row||visibleRow();var v=record(row);
  if(!row||!valid(v)){toast('اختر آية صحيحة أولًا');return false}
@@ -475,9 +486,17 @@ function observe(){
  });
  observer.observe(host,{childList:true,subtree:true,characterData:true,attributes:true,attributeFilter:['data-t5-type','data-type','data-t2ayah']});
 }
+function observeReaderExit(){
+ var rdr=E('tafsirReader');
+ if(!rdr||!w.MutationObserver)return;
+ viewObserver=new w.MutationObserver(function(){
+  if(active&&!tafsirOpen())stop('توقف الناطق بعد الخروج من التفسير');
+ });
+ viewObserver.observe(rdr,{attributes:true,attributeFilter:['class','hidden','style']});
+}
 function init(){
  if(!E('tafsirReader'))return;
- loadOpts();attach();panel();observe();
+ loadOpts();attach();panel();observe();observeReaderExit();
  d.addEventListener('click',onClick,true);
  d.addEventListener('pointerdown',pointerDown,true);
  d.addEventListener('pointerup',pointerEnd,true);
