@@ -1,0 +1,58 @@
+{
+  "result": "PASS",
+  "passed": 13,
+  "tests": [
+    {
+      "name": "P124 is signed manual OTA with tafsir only",
+      "pass": true
+    },
+    {
+      "name": "P124 cannot install on pre-V694 versions",
+      "pass": true
+    },
+    {
+      "name": "manual notice created",
+      "pass": true
+    },
+    {
+      "name": "no asset download without user tap",
+      "pass": true
+    },
+    {
+      "name": "manual button available",
+      "pass": true
+    },
+    {
+      "name": "both files downloaded after consent",
+      "pass": true
+    },
+    {
+      "name": "only tafsir staged; no change in other modules",
+      "pass": true
+    },
+    {
+      "name": "P124 does not execute during existing session",
+      "pass": true
+    },
+    {
+      "name": "P124 script executes at next app start",
+      "pass": true
+    },
+    {
+      "name": "P124 CSS applied at next app start",
+      "pass": true
+    },
+    {
+      "name": "module registered as tafsir",
+      "pass": true
+    },
+    {
+      "name": "identical release not downloaded again",
+      "pass": true
+    },
+    {
+      "name": "delivery mode cannot be tampered",
+      "pass": true
+    }
+  ]
+}
