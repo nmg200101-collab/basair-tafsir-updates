@@ -15,16 +15,18 @@ function el(tag,children=[]){
  return node;
 }
 function t(s){return {nodeType:3,nodeValue:s,nextSibling:null}}
-function mock(prefs={},bridge=null,{neverEnd=false,remoteOnly=false}={}){
+function mock(prefs={},bridge=null,{neverEnd=false,remoteOnly=false,tilawaPlaying=false}={}){
  const utter=[],events=[],toast=[],callbacks={};
- let panel=null,cancelCount=0;
+ let panel=null,cancelCount=0,viewActive=true,viewCb=null;
+ const reader={classList:{contains:key=>key==='active'&&viewActive}};
  const body=el('div',[el('h3',[t('اللمسة البيانية')]),el('p',[t('في اللغة العربية بلاغة وبيان كامل.')])]);
  const row={isConnected:true,getAttribute:(s)=>s==='data-t2ayah'?'4':s==='data-t5-s'?'1':s==='data-t5-type'?'basair':null,
   querySelector:(s)=>s==='.v194T2Body'?body:null};
  const doc={readyState:'complete',hidden:false,
   body:{appendChild:v=>panel=v},
-  getElementById:id=>id==='tafsirReader'?{classList:{contains:x=>x==='active'}}:
-    id==='tafsirAyahs'?{querySelectorAll:()=>[]}:id==='p132Panel'?panel:null,
+  getElementById:id=>id==='tafsirReader'?reader:
+    id==='tafsirAyahs'?{querySelectorAll:()=>[]}:id==='p132Panel'?panel:
+    id==='tilawaAudio'&&tilawaPlaying?{paused:false,currentSrc:'https://example.test/track.mp3'}:null,
   querySelectorAll:()=>[],createElement:tag=>({tagName:tag,hidden:false,addEventListener(){},
    setAttribute(){},querySelector:()=>null}),
   addEventListener:(name,fn)=>callbacks[name]=fn};
@@ -34,13 +36,14 @@ function mock(prefs={},bridge=null,{neverEnd=false,remoteOnly=false}={}){
   speak:u=>{utter.push(u.text);events.push('speak:'+u.text);if(!neverEnd)Promise.resolve().then(()=>u.onend&&u.onend())}
  };
  const win={speechSynthesis:synth,SpeechSynthesisUtterance:function(s){this.text=s},
+  MutationObserver:function(cb){this.observe=function(target){if(target===reader)viewCb=cb};this.disconnect=function(){}}, 
   setTimeout,clearTimeout,localStorage:{getItem:()=>JSON.stringify(prefs),setItem(){}},
   addEventListener:(name,fn)=>callbacks[name]=fn,
   __BASAIR_TAFSIR_AYAH_RECITER_BRIDGE__:bridge,
   __BASAIR_TAFSIR_CORE__:{toast:msg=>toast.push(msg)}};
  new Function('window','document',src)(win,doc);
  return {api:win.__BASAIR_TAFSIR_NATIQ_P132__,row,utter,events,toast,
-  callbacks,cancelCount:()=>cancelCount};
+  callbacks,cancelCount:()=>cancelCount,exitTafsir:()=>{viewActive=false;if(viewCb)viewCb([])}};
 }
 async function settle(){await new Promise(r=>setTimeout(r,250));await new Promise(r=>setTimeout(r,0))}
 async function main(){
@@ -122,7 +125,19 @@ async function main(){
   assert.equal(m.api.preview(),false);
   assert.equal(m.utter.length,0);
  });
- console.log(JSON.stringify({pass:count,total:14,environment:'mocked DOM and browser TTS, not Android'}));
+ await check('Active Tilawa audio blocks simultaneous Natiq TTS',async()=>{
+  const m=mock({mode:'tafsir'},null,{tilawaPlaying:true});
+  assert.equal(m.api.start(m.row),false);
+  assert.equal(m.utter.length,0);
+ });
+ await check('SPA navigation away from Tafsir cancels ongoing speech',async()=>{
+  const m=mock({mode:'tafsir'},null,{neverEnd:true});
+  assert.equal(m.api.start(m.row),true);await settle();
+  m.exitTafsir();
+  assert.equal(m.api.status().running,false);
+  assert.ok(m.cancelCount()>0);
+ });
+ console.log(JSON.stringify({pass:count,total:16,environment:'mocked DOM and browser TTS, not Android'}));
 }
 if(typeof module!=='undefined'&&module.exports)module.exports=main;
 if(typeof require!=='undefined'&&require.main===module)main().catch(e=>{console.error(e);process.exitCode=1});
