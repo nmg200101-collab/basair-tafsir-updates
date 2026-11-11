@@ -42,7 +42,7 @@ function mock(prefs={},bridge=null,{neverEnd=false,remoteOnly=false}={}){
  return {api:win.__BASAIR_TAFSIR_NATIQ_P132__,row,utter,events,toast,
   callbacks,cancelCount:()=>cancelCount};
 }
-async function settle(){await new Promise(r=>setTimeout(r,0));await new Promise(r=>setTimeout(r,0))}
+async function settle(){await new Promise(r=>setTimeout(r,250));await new Promise(r=>setTimeout(r,0))}
 async function main(){
  let count=0;
  async function check(name,test){await test();count++;console.log('PASS '+name)}
