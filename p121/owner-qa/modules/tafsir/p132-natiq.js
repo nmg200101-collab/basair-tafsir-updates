@@ -202,7 +202,7 @@ function readChunk(s,content,isHeading){
   if(token!==s.token||!active){resolve(false);return}
   var v=voice();if(!v){reject(new Error('لا يوجد صوت عربي متاح في الجهاز'));return}
   var u=new w.SpeechSynthesisUtterance(content);
-  u.lang='ar-SA';u.voice=v;u.rate=isHeading?Math.max(.7,opts.rate-.08):opts.rate;u.pitch=1;u.volume=1;
+  u.lang=v.lang||'ar-SA';u.voice=v;u.rate=isHeading?Math.max(.7,opts.rate-.08):opts.rate;u.pitch=1;u.volume=1;
   var done=false;
   function finish(ok,error){if(done)return;done=true;u.onend=null;u.onerror=null;if(error)reject(error);else resolve(ok)}
   u.onend=function(){finish(true)};
@@ -417,7 +417,8 @@ function previewVoice(){
 function settings(){
  var p=panel();populateVoices(p);['mode','sections','rate','autoNext','preferLocal','voiceURI'].forEach(function(key){
   var x=p.querySelector('[data-p132-option="'+key+'"]');if(!x)return;
-  if(x.type==='checkbox')x.checked=!!opts[key];else x.value=q(opts[key]);
+  if(x.type==='checkbox')x.checked=!!opts[key];
+  else if(key!=='voiceURI'||opts.voiceURI)x.value=q(opts[key]);
  });
  var status=p.querySelector('#p132NatiqStatus'),b=bridge(),sel=b&&typeof b.selected==='function'&&b.selected();
  if(status)status.textContent=(ttsReady()?'الصوت العربي: متاح':'الصوت العربي المحلي: لم يتم التحقق من توفره')
