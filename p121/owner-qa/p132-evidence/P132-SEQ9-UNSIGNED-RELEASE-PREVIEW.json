@@ -52,8 +52,8 @@
           {
             "path": "modules/tafsir/p132-natiq.js",
             "kind": "js",
-            "size": 28577,
-            "sha256": "a489af52c9bcde7ed654882d64d622330d2cb9f77df56225afb4b09d1b148f55"
+            "size": 29421,
+            "sha256": "698dd3261aaa392cf39369aca1cb36a0b0150685667af5d2d534ee11cf0e1ecc"
           }
         ]
       }
@@ -69,7 +69,7 @@
     "rollback": "P131 v7 via restore previous"
   },
   "tests": {
-    "isolatedMocksPassed": 77,
+    "isolatedMocksPassed": 79,
     "actualAndroidAudioTests": 0,
     "originalRendererLayoutFixturesPassed": 6
   },
