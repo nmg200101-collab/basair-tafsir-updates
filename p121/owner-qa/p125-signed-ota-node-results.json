@@ -1,0 +1,70 @@
+{
+  "passed": 16,
+  "total": 16,
+  "checks": [
+    {
+      "name": "previous P124 module cached",
+      "pass": true
+    },
+    {
+      "name": "P125 is signed manual OTA seq3",
+      "pass": true
+    },
+    {
+      "name": "only Tafsir v2 changes, min V694",
+      "pass": true
+    },
+    {
+      "name": "in-app manual notification is visible",
+      "pass": true
+    },
+    {
+      "name": "no asset fetch without consent",
+      "pass": true
+    },
+    {
+      "name": "explicit update button exists",
+      "pass": true
+    },
+    {
+      "name": "exactly 2 new files downloaded after consent",
+      "pass": true
+    },
+    {
+      "name": "version2 staged only, no current session execution",
+      "pass": true
+    },
+    {
+      "name": "P124 rollback retained in previous state",
+      "pass": true
+    },
+    {
+      "name": "new P125 script executes on next start",
+      "pass": true
+    },
+    {
+      "name": "old P124 script no longer loaded",
+      "pass": true
+    },
+    {
+      "name": "new CSS is applied",
+      "pass": true
+    },
+    {
+      "name": "module is registered as Tafsir",
+      "pass": true
+    },
+    {
+      "name": "no redownload of same seq3",
+      "pass": true
+    },
+    {
+      "name": "tampered delivery policy rejected by RSA",
+      "pass": true
+    },
+    {
+      "name": "manual rollback restores P124",
+      "pass": true
+    }
+  ]
+}
