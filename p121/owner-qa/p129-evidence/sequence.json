@@ -1,0 +1,113 @@
+{
+  "320": {
+    "initial": {
+      "tab": "p129-manual",
+      "rows": [
+        "4"
+      ]
+    },
+    "after15": [
+      [
+        "2",
+        "11"
+      ],
+      [
+        "2",
+        "12"
+      ]
+    ],
+    "noNativeDuplicate": true,
+    "stop": {
+      "intended": false,
+      "tries": 0,
+      "saved": null,
+      "lastObserved": "1:4:basair",
+      "manualStopAt": 1794396542122,
+      "exportBusy": false,
+      "feedBusy": false,
+      "manualScrollAt": 1794396541695,
+      "mode": "manual",
+      "cleanupCount": 15,
+      "cursor": "1:4:basair",
+      "pending": false,
+      "gestures": 15,
+      "completed": 15,
+      "faulted": 0
+    },
+    "trace": []
+  },
+  "390": {
+    "initial": {
+      "tab": "p129-manual",
+      "rows": [
+        "4"
+      ]
+    },
+    "after15": [
+      [
+        "2",
+        "11"
+      ],
+      [
+        "2",
+        "12"
+      ]
+    ],
+    "noNativeDuplicate": true,
+    "stop": {
+      "intended": false,
+      "tries": 0,
+      "saved": null,
+      "lastObserved": "1:4:basair",
+      "manualStopAt": 1794396543847,
+      "exportBusy": false,
+      "feedBusy": false,
+      "manualScrollAt": 1794396543427,
+      "mode": "manual",
+      "cleanupCount": 15,
+      "cursor": "1:4:basair",
+      "pending": false,
+      "gestures": 15,
+      "completed": 15,
+      "faulted": 0
+    },
+    "trace": []
+  },
+  "430": {
+    "initial": {
+      "tab": "p129-manual",
+      "rows": [
+        "4"
+      ]
+    },
+    "after15": [
+      [
+        "2",
+        "11"
+      ],
+      [
+        "2",
+        "12"
+      ]
+    ],
+    "noNativeDuplicate": true,
+    "stop": {
+      "intended": false,
+      "tries": 0,
+      "saved": null,
+      "lastObserved": "1:4:basair",
+      "manualStopAt": 1794396545368,
+      "exportBusy": false,
+      "feedBusy": false,
+      "manualScrollAt": 1794396544948,
+      "mode": "manual",
+      "cleanupCount": 15,
+      "cursor": "1:4:basair",
+      "pending": false,
+      "gestures": 15,
+      "completed": 15,
+      "faulted": 0
+    },
+    "trace": []
+  }
+}
