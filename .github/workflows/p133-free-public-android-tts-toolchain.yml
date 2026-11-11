@@ -20,9 +20,17 @@ jobs:
         with:
           distribution: temurin
           java-version: '17'
-      - uses: android-actions/setup-android@v3
-      - name: Install Android API 36
-        run: sdkmanager --install 'platforms;android-36'
+      - name: Use Android SDK preinstalled on ubuntu-24.04
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "ANDROID_HOME=${ANDROID_HOME:-unset}"
+          echo "SDK platforms:"
+          ls -la "${ANDROID_HOME}/platforms" || :
+          if test ! -f "${ANDROID_HOME}/platforms/android-36/android.jar"; then
+            yes | "${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager" --install "platforms;android-36" || true
+          fi
+          test -s "${ANDROID_HOME}/platforms/android-36/android.jar"
       - name: Compile anonymous TTS API probe (no Basair app source)
         shell: bash
         run: |
