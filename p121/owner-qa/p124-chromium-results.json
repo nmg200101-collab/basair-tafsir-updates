@@ -1,0 +1,216 @@
+{
+  "tests": [
+    {
+      "width": 320,
+      "name": "outside note converted to follow",
+      "pass": true
+    },
+    {
+      "width": 320,
+      "name": "inside note preserved",
+      "pass": true
+    },
+    {
+      "width": 320,
+      "name": "copy is decorated",
+      "pass": true
+    },
+    {
+      "width": 320,
+      "name": "start from verse3",
+      "pass": true
+    },
+    {
+      "width": 320,
+      "name": "stop and resume without rerender",
+      "pass": true
+    },
+    {
+      "width": 320,
+      "name": "short copy only verse 3",
+      "pass": true
+    },
+    {
+      "width": 320,
+      "name": "long press opens image dialog",
+      "pass": true
+    },
+    {
+      "width": 320,
+      "name": "image encoded to local URL",
+      "pass": true
+    },
+    {
+      "width": 320,
+      "name": "no frame overflow",
+      "pass": true
+    },
+    {
+      "width": 320,
+      "name": "export PNG has meaningful data",
+      "pass": true
+    },
+    {
+      "width": 320,
+      "name": "auto recover a transient stop without starting verse over",
+      "pass": true
+    },
+    {
+      "width": 320,
+      "name": "user stop remains stopped",
+      "pass": true
+    },
+    {
+      "width": 320,
+      "name": "legacy stop remains stopped",
+      "pass": true
+    },
+    {
+      "width": 320,
+      "name": "no unexpected JS exception",
+      "pass": true
+    },
+    {
+      "width": 390,
+      "name": "outside note converted to follow",
+      "pass": true
+    },
+    {
+      "width": 390,
+      "name": "inside note preserved",
+      "pass": true
+    },
+    {
+      "width": 390,
+      "name": "copy is decorated",
+      "pass": true
+    },
+    {
+      "width": 390,
+      "name": "start from verse3",
+      "pass": true
+    },
+    {
+      "width": 390,
+      "name": "stop and resume without rerender",
+      "pass": true
+    },
+    {
+      "width": 390,
+      "name": "short copy only verse 3",
+      "pass": true
+    },
+    {
+      "width": 390,
+      "name": "long press opens image dialog",
+      "pass": true
+    },
+    {
+      "width": 390,
+      "name": "image encoded to local URL",
+      "pass": true
+    },
+    {
+      "width": 390,
+      "name": "no frame overflow",
+      "pass": true
+    },
+    {
+      "width": 390,
+      "name": "export PNG has meaningful data",
+      "pass": true
+    },
+    {
+      "width": 390,
+      "name": "auto recover a transient stop without starting verse over",
+      "pass": true
+    },
+    {
+      "width": 390,
+      "name": "user stop remains stopped",
+      "pass": true
+    },
+    {
+      "width": 390,
+      "name": "legacy stop remains stopped",
+      "pass": true
+    },
+    {
+      "width": 390,
+      "name": "no unexpected JS exception",
+      "pass": true
+    },
+    {
+      "width": 430,
+      "name": "outside note converted to follow",
+      "pass": true
+    },
+    {
+      "width": 430,
+      "name": "inside note preserved",
+      "pass": true
+    },
+    {
+      "width": 430,
+      "name": "copy is decorated",
+      "pass": true
+    },
+    {
+      "width": 430,
+      "name": "start from verse3",
+      "pass": true
+    },
+    {
+      "width": 430,
+      "name": "stop and resume without rerender",
+      "pass": true
+    },
+    {
+      "width": 430,
+      "name": "short copy only verse 3",
+      "pass": true
+    },
+    {
+      "width": 430,
+      "name": "long press opens image dialog",
+      "pass": true
+    },
+    {
+      "width": 430,
+      "name": "image encoded to local URL",
+      "pass": true
+    },
+    {
+      "width": 430,
+      "name": "no frame overflow",
+      "pass": true
+    },
+    {
+      "width": 430,
+      "name": "export PNG has meaningful data",
+      "pass": true
+    },
+    {
+      "width": 430,
+      "name": "auto recover a transient stop without starting verse over",
+      "pass": true
+    },
+    {
+      "width": 430,
+      "name": "user stop remains stopped",
+      "pass": true
+    },
+    {
+      "width": 430,
+      "name": "legacy stop remains stopped",
+      "pass": true
+    },
+    {
+      "width": 430,
+      "name": "no unexpected JS exception",
+      "pass": true
+    }
+  ],
+  "passed": 42,
+  "total": 42
+}
