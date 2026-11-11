@@ -1,0 +1,36 @@
+ntent end or temporary failure).
+      intended=false;renderButtons();
+    }
+  }
+  // The native STEP5 window.scroll listener sees only main-tab="tafsir".
+  // P129 explicitly owns the manual feed, so neither the native listener nor
+  // R114 can race P129 to append a second copy of the same verse.
+  // User-visible tab buttons and body selection are left as they are.
+  function synchronizeReaderMode(){
+    var reader=E('tafsirReader'),f=api();
+    if(!reader||!inTafsir()){followOwnsReader=false;return;}
+    var status=f&&f.status&&f.status(),running=!!(status&&status.running);
+    var tab=reader.getAttribute('data-basair-main-tab')||'tafsir';
+    var normal=(tab==='tafsir'||tab==='p128-follow'||tab==='p129-manual');
+    if(!normal){followOwnsReader=false;return;}
+    var mode=running?'p128-follow':'p129-manual';
+    if(tab!==mode) reader.setAttribute('data-basair-main-tab',mode);
+    followOwnsReader=running;
+    if(running){
+      cancelPendingManual('follow-start');
+      var host=E('tafsirAyahs');
+      if(host)Array.prototype.forEach.call(host.querySelectorAll('.v194T5Generated'),function(node){
+        if(node.classList.contains('b118CarryArticle'))return;
+        if(node.getAttribute('data-p128-manual-preexisting')==='1')return;
+        node.remove();cleanupCount++;
+      });
+    }
+    lastMode=running?'auto':'manual';
+  }
+  function markExistingManualArticles(){
+    var host=E('tafsirAyahs');if(!host)return;
+    host.querySelectorAll('.v194T5Generated').forEach(function(el){el.setAttribute('data-p128-manual-preexisting','1');});
+  }
+  function startFromVisible(row){
+    var f=api(),t=step(),r=row?verseRecord(row):currentRecord(),host=E('tafsirAyahs');
+    if(!f||!
