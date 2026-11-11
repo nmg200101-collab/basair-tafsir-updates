@@ -105,7 +105,8 @@ function sayHeading(title){
  if(/تدب[رّ]|لطائف التدبر/.test(title))return 'ومن لطائف التدبر في الآية.';
  if(/فوائد|تطبيقات|العمل بالآية/.test(title))return 'ومن الفوائد العملية.';
  if(/الخلاص[ةه]|خلاصة المعنى/.test(title))return 'وخلاصة المعنى.';
- if(/البيان|الشرح|معنى الآية/.test(title))return 'ننتقل إلى البيان والشرح.';
+ if(/^المعنى$|معنى الآية/.test(title))return 'نبدأ الآن ببيان معنى الآية.';
+ if(/البيان|الشرح/.test(title))return 'ننتقل إلى البيان والشرح.';
  return title;
 }
 function getState(){try{var t=w.__BASAIR_TAFSIR_STEP2__;return t&&typeof t.state==='function'?t.state():null}catch(_){return null}}
@@ -190,17 +191,21 @@ function filterSections(all){
    :/الشرح|البيان|المعنى|تفسير/;
  return all.filter(function(x){return re.test(x.title||'')});
 }
-function readChunk(s,content){
+function readChunk(s,content,isHeading){
  return new Promise(function(resolve,reject){
   if(token!==s.token||!active){resolve(false);return}
   var v=voice();if(!v){reject(new Error('لا يوجد صوت عربي متاح في الجهاز'));return}
   var u=new w.SpeechSynthesisUtterance(content);
-  u.lang='ar-SA';u.voice=v;u.rate=opts.rate;u.pitch=1;u.volume=1;
+  u.lang='ar-SA';u.voice=v;u.rate=isHeading?Math.max(.7,opts.rate-.08):opts.rate;u.pitch=1;u.volume=1;
   var done=false;
   function finish(ok,error){if(done)return;done=true;u.onend=null;u.onerror=null;if(error)reject(error);else resolve(ok)}
   u.onend=function(){finish(true)};
   u.onerror=function(e){if(token!==s.token){finish(false);return}finish(false,new Error('فشل محرك النطق العربي'))};
   try{w.speechSynthesis.speak(u)}catch(e){finish(false,e)}
+ });
+}
+function sectionPause(s,ms){return new Promise(function(resolve){
+  setTimeout(function(){resolve(token===s.token&&!!active)},ms);
  });
 }
 async function readTafsir(s){
@@ -216,8 +221,9 @@ async function readTafsir(s){
   for(var j=0;j<all.length;j++){
    if(token!==s.token)return false;
    stage('قراءة التفسير: '+(item.title||'المعنى')+' • '+(i+1)+'/'+ss.length);
-   var ok=await readChunk(s,all[j]);if(!ok)return false;
+   var isHeading=!!(h&&j===0),ok=await readChunk(s,all[j],isHeading);if(!ok)return false;
    stats.spokenChunks++;
+   if(isHeading&&j<all.length-1){if(!await sectionPause(s,220))return false;}
   }
  }
  return true;
