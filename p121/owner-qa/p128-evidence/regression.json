@@ -1,0 +1,186 @@
+{
+  "passed": 36,
+  "total": 36,
+  "checks": [
+    {
+      "width": 320,
+      "label": "toolbar final",
+      "pass": true
+    },
+    {
+      "width": 320,
+      "label": "follow starts",
+      "pass": true
+    },
+    {
+      "width": 320,
+      "label": "native STEP5 feed gated by mode",
+      "pass": true
+    },
+    {
+      "width": 320,
+      "label": "touch and wheel do not stop",
+      "pass": true
+    },
+    {
+      "width": 320,
+      "label": "no STEP5 feed when auto running",
+      "pass": true
+    },
+    {
+      "width": 320,
+      "label": "explicit Stop works",
+      "pass": true
+    },
+    {
+      "width": 320,
+      "label": "manual tab restored",
+      "pass": true
+    },
+    {
+      "width": 320,
+      "label": "manual feed appends 4 once",
+      "pass": true
+    },
+    {
+      "width": 320,
+      "label": "manual->auto uses selected verse 4",
+      "pass": true
+    },
+    {
+      "width": 320,
+      "label": "auto starts after selected reset",
+      "pass": true
+    },
+    {
+      "width": 320,
+      "label": "only selected verse after reset",
+      "pass": true
+    },
+    {
+      "width": 320,
+      "label": "no runtime errors",
+      "pass": true
+    },
+    {
+      "width": 390,
+      "label": "toolbar final",
+      "pass": true
+    },
+    {
+      "width": 390,
+      "label": "follow starts",
+      "pass": true
+    },
+    {
+      "width": 390,
+      "label": "native STEP5 feed gated by mode",
+      "pass": true
+    },
+    {
+      "width": 390,
+      "label": "touch and wheel do not stop",
+      "pass": true
+    },
+    {
+      "width": 390,
+      "label": "no STEP5 feed when auto running",
+      "pass": true
+    },
+    {
+      "width": 390,
+      "label": "explicit Stop works",
+      "pass": true
+    },
+    {
+      "width": 390,
+      "label": "manual tab restored",
+      "pass": true
+    },
+    {
+      "width": 390,
+      "label": "manual feed appends 4 once",
+      "pass": true
+    },
+    {
+      "width": 390,
+      "label": "manual->auto uses selected verse 4",
+      "pass": true
+    },
+    {
+      "width": 390,
+      "label": "auto starts after selected reset",
+      "pass": true
+    },
+    {
+      "width": 390,
+      "label": "only selected verse after reset",
+      "pass": true
+    },
+    {
+      "width": 390,
+      "label": "no runtime errors",
+      "pass": true
+    },
+    {
+      "width": 430,
+      "label": "toolbar final",
+      "pass": true
+    },
+    {
+      "width": 430,
+      "label": "follow starts",
+      "pass": true
+    },
+    {
+      "width": 430,
+      "label": "native STEP5 feed gated by mode",
+      "pass": true
+    },
+    {
+      "width": 430,
+      "label": "touch and wheel do not stop",
+      "pass": true
+    },
+    {
+      "width": 430,
+      "label": "no STEP5 feed when auto running",
+      "pass": true
+    },
+    {
+      "width": 430,
+      "label": "explicit Stop works",
+      "pass": true
+    },
+    {
+      "width": 430,
+      "label": "manual tab restored",
+      "pass": true
+    },
+    {
+      "width": 430,
+      "label": "manual feed appends 4 once",
+      "pass": true
+    },
+    {
+      "width": 430,
+      "label": "manual->auto uses selected verse 4",
+      "pass": true
+    },
+    {
+      "width": 430,
+      "label": "auto starts after selected reset",
+      "pass": true
+    },
+    {
+      "width": 430,
+      "label": "only selected verse after reset",
+      "pass": true
+    },
+    {
+      "width": 430,
+      "label": "no runtime errors",
+      "pass": true
+    }
+  ]
+}
