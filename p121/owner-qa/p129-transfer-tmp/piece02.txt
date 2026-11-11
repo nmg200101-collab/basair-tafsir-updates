@@ -1,0 +1,26 @@
+indow.__BASAIR_TAFSIR_R114__; }
+  function step() { return window.__BASAIR_TAFSIR_STEP2__; }
+  function toast(s) { try { var c = window.__BASAIR_TAFSIR_CORE__; if (c && c.toast) {c.toast(s); return;} if (typeof window.toast === 'function') window.toast(s); } catch (_) {} }
+  function state() { try { return step() && step().state && step().state(); } catch (_) { return null; } }
+  function art() {
+    var host = E('tafsirAyahs'); if (!host) return null;
+    var rows = host.querySelectorAll('.v194T2Ayah:not(.b118CarryArticle)');
+    if (!rows.length) return null;
+    // Manual reading can append verses without Step2.open. The article around
+    // the reading line is the current verse, not the oldest mounted article.
+    var top = Math.max(85, window.innerHeight * .27), best = null, dist = Infinity;
+    for (var i=0;i<rows.length;i++) {
+      var r=rows[i].getBoundingClientRect();
+      if (r.height<1) continue;
+      var d=r.top<=top&&r.bottom>=top ? 0 : Math.min(Math.abs(r.top-top),Math.abs(r.bottom-top));
+      if(d<dist){best=rows[i];dist=d;}
+    }
+    return best||rows[0];
+  }
+  function clean(x) { return String(x || '').replace(/\s+/g, ' ').trim(); }
+  function verseRecord(node) {
+    var st = state() || {}, row = node && node.closest && node.closest('.v194T2Ayah'),
+      bar = row && row.querySelector('.basairB231AyahActions');
+    var a = Number(row && (row.getAttribute('data-t2ayah') || row.getAttribute('data-t5-a'))) || Number(bar && bar.getAttribute('data-a')) || Number(st.a) || 1;
+    var s = Number(row && row.getAttribute('data-t5-s')) || Number(bar && bar.getAttribute('data-s')) || Number(st.s) || 1;
+    var type = String(row && row.getAttribute('data-t5-type'
