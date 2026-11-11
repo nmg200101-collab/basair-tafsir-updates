@@ -1,0 +1,29 @@
+-label','ملاحظة الآية');
+      }else if(b.hasAttribute('data-r2-action')){
+        b.setAttribute('data-r2-action','note');b.innerHTML='<span>✎</span><b>ملاحظة</b>';
+      }
+    });
+  }
+  function decorate(){
+    if(!inTafsir())return;
+    var items=E('tafsirAyahs');if(!items)return;
+    items.querySelectorAll('.v194T2Ayah:not(.b118CarryArticle)').forEach(function(row){
+      var tool=row.querySelector('.basairB231AyahActions');if(!tool)return;
+      restoreTopNote(row);
+      var b=tool.querySelector('[data-p125-follow]');
+      if(!b){
+        b=tool.querySelector('[data-r2-action="note"]');
+        if(!b)return;
+        ['data-r2-action','data-b231-action','data-t107-tool','data-t4-action','data-p124-follow'].forEach(function(a){b.removeAttribute(a);});
+        b.classList.add('p125Follow');b.setAttribute('data-p125-follow','1');
+        b.innerHTML='<span aria-hidden="true">▶</span><b>متابعة</b>';
+        b.setAttribute('aria-label','متابعة الآيات — اضغط مطولًا لتحديد السرعة');
+      }
+      var copy=tool.querySelector('[data-b231-action="copy"]');
+      if(copy){
+        copy.setAttribute('data-p125-copy','1');copy.removeAttribute('data-p124-copy');
+        copy.classList.add('p125Copy');
+        copy.setAttribute('aria-label','ضغطة قصيرة لنسخ نص الآية، ضغطة مطولة لتصدير صورة الآية');
+        copy.title='نسخ نص الآية • اضغط مطولًا لتصدير صورتها';
+        if(!copy.querySelector('.p125CopyHint')){
+          copy.innerHTML='<span aria-hidden="true" class="p125CopyIcon">⧉</span><b>نسخ نص</b><small class="p125CopyHint">مطو
