@@ -1,0 +1,47 @@
+name: P133 free public Android TTS compiler check (no app source)
+
+on:
+  push:
+    branches:
+      - qa/p133-github-runner-smoke-20261111
+    paths:
+      - '.github/workflows/p133-free-public-android-tts-toolchain.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check-android-tts-api:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: android-actions/setup-android@v3
+      - name: Install Android API 36
+        run: sdkmanager --install 'platforms;android-36'
+      - name: Compile anonymous TTS API probe (no Basair app source)
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat > TtsApiProbe.java <<'JAVA'
+          import android.speech.tts.TextToSpeech;
+          import android.speech.tts.Voice;
+          import android.webkit.WebResourceRequest;
+          import android.webkit.WebView;
+          class TtsApiProbe {
+            boolean safe(WebResourceRequest request, Voice voice) {
+              return request.isForMainFrame() && !voice.isNetworkConnectionRequired();
+            }
+            TextToSpeech engine;
+            WebView webView;
+          }
+          JAVA
+          javac -encoding UTF-8 -cp "${ANDROID_HOME}/platforms/android-36/android.jar" TtsApiProbe.java
+          test -s TtsApiProbe.class
+          echo 'P133 Android 36 TTS API COMPILE PASS (not a production app)'
+      - name: Do not upload artifacts or APK
+        run: test ! -e app-release.apk
