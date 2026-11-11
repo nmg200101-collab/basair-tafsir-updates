@@ -112,7 +112,17 @@ async function main(){
   assert.equal(m.api.start(m.row),true);await settle();
   assert.ok(m.utter.length>0);
  });
- console.log(JSON.stringify({pass:count,total:12,environment:'mocked DOM and browser TTS, not Android'}));
+ await check('Arabic explanatory preview uses the chosen local voice',async()=>{
+  const m=mock({mode:'tafsir'});
+  assert.equal(m.api.preview(),true);
+  assert.ok(m.utter.some(x=>x.includes('نبدأ الآن ببيان معنى الآية')));
+ });
+ await check('Preview refuses remote-only voices by default',async()=>{
+  const m=mock({mode:'tafsir'},null,{remoteOnly:true});
+  assert.equal(m.api.preview(),false);
+  assert.equal(m.utter.length,0);
+ });
+ console.log(JSON.stringify({pass:count,total:14,environment:'mocked DOM and browser TTS, not Android'}));
 }
 if(typeof module!=='undefined'&&module.exports)module.exports=main;
 if(typeof require!=='undefined'&&require.main===module)main().catch(e=>{console.error(e);process.exitCode=1});
