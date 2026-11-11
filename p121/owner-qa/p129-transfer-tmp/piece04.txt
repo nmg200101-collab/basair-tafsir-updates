@@ -1,0 +1,37 @@
+derMode();renderButtons();
+    return true;
+  }
+  function startFrom(r) {
+    if (!inTafsir()) return false;
+    var f=api(),t=step(),current=currentRecord();
+    if(!f||!f.start) {toast('متابعة التفسير غير جاهزة');return false;}
+    r=valid(r)?r:current||saved();
+    if(!valid(r)) {toast('اختر آية أولًا');return false;}
+    intended=true;manualStopAt=0;
+    var status=f.status&&f.status();
+    if(status&&status.running){remember(current||r,position());renderButtons();return true;}
+    // Preserve verse and scroll coordinates on resume; avoid re-opening it.
+    if(same(current,r)&&art()){
+      remember(r,position());f.start();renderButtons();return true;
+    }
+    if(!t||!t.open){intended=false;toast('تعذر تحديد الآية المطلوبة');return false;}
+    try{t.open(r.s,r.a,r.type);}catch(_){intended=false;toast('تعذر فتح الآية');return false;}
+    var trials=0;
+    (function wait(){
+      if(!intended||manualStopAt||!inTafsir())return;
+      var now=currentRecord();
+      if(same(now,r)&&art()){remember(r,position());f.start();renderButtons();return;}
+      if(++trials<100)setTimeout(wait,80);
+      else {intended=false;toast('لم يكتمل تحميل الآية؛ أعد المحاولة');renderButtons();}
+    })();
+    return true;
+  }
+  function toggleFrom(button) {
+    var f=api(),st=f&&f.status&&f.status();
+    if((st&&st.running)||intended){stopFromUser();return;}
+    var row=button&&button.closest('.v194T2Ayah'),target=row?verseRecord(row):currentRecord();
+    if(!row){var s=saved(),cur=currentRecord();if(s&&cur&&same(s,cur))target=s;}
+    startFromVisible(row);
+  }
+  function settings(){
+    var f=api(
