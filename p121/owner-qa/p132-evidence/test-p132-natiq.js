@@ -43,20 +43,20 @@ check('Tadabbur heading becomes transition',()=>assert.match(api.sayHeading('ا�
 check('Unknown source heading read faithfully',()=>assert.equal(api.sayHeading('الناسخ والمنسوخ'),'الناسخ والمنسوخ'));
 check('Tafsir sections read in original order',()=>{
  const b=body([['البيان',['شرح أول.','شرح ثانٍ.']],['اللمسة البيانية',['نكتة بلاغية.']],['الفوائد',['ثمرة عملية.']]]);
- const rows={querySelector:()=>b},arr=api.segments(rows);
+ const rows={querySelector:selector=>selector==='.v194T2Body'?b:null},arr=api.segments(rows);
  assert.equal(arr.length,3);assert.deepEqual(arr.map(x=>x.title),['البيان','اللمسة البيانية','الفوائد']);
  assert.match(arr[0].text,/شرح أول/);assert.match(arr[0].text,/شرح ثان/);
 });
 check('Works independently of Tafsir source title',()=>{
  for(const name of ['ابن كثير','التفسير الميسر','تفسير بصائر']){
   const content=body([[name,['نص تفسيري من هذا المصدر.']]]);
-  const result=api.segments({querySelector:()=>content});
+  const result=api.segments({querySelector:selector=>selector==='.v194T2Body'?content:null});
   assert.equal(result[0].title,name);assert.match(result[0].text,/نص تفسيري/);
  }
 });
 check('Buttons and Quran row are excluded from Tafsir speech',()=>{
  const x=createNode('div',[t('نص التفسير'),createNode('button',[t('انسخ الآية')])]);
- const row={querySelector:()=>x};
+ const row={querySelector:selector=>selector==='.v194T2Body'?x:null};
  assert.equal(api.segments(row)[0].text,'نص التفسير');
 });
 check('No Tafsir body: do not recite Quran text as Tafsir',()=>assert.equal(api.segments({querySelector:()=>null}).length,0));
