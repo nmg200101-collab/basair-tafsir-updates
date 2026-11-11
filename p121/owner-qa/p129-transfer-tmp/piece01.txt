@@ -1,0 +1,26 @@
+/* BASAIR P129 — deterministic manual Tafsir verse cursor after Follow stop: local follow stop/settings, note and copy/image.
+   Signed modular OTA: module "tafsir" only; no Quran text, Tilawa, audio or native code changes.
+   Runs after the existing B231/P120 reader. Keep P120's seamless DOM and no-flash transition. */
+(function () {
+  'use strict';
+  if (window.__BASAIR_TAFSIR_P129__) return;
+  var VERSION = 'P129.1-STRICT-MANUAL-VERSE-CURSOR';
+  var KEY = 'basair:tafsir:p124:resume';
+  var held = null, holdTimer = 0, blockClickUntil = 0, intended = false;
+  var followHold = null, followHoldTimer = 0, followLongUntil = 0, manualStopAt = 0;
+  var resumeAttempts = 0, lastObserved = '';
+  var observer = null, scheduled = false, exportBusy = false;
+  var exportURL = null;
+  var lastLiveRunning = null, manualScrollAt = 0, feedBusy = false, feedKey = '', feedScheduled = false;
+  var feedWaitTimer = 0, feedRetryAt = 0, prefillCount = 0, manualPointer = null;
+  var feedObserver = null, readerLifecycleObserver = null;
+  var followOwnsReader = false, lastMode = '', cleanupCount = 0;
+  var autoStartToken = 0, resetInFlight = false;
+  var manualEpoch = 0, manualPending = null, manualGateAt = 0;
+  var manualGateReason = '', manualLastGestureAt = 0, manualGestures = 0;
+  var manualLastRequested = '', manualCompleted = new Set(), manualFaulted = new Set();
+  var manualSource = '', manualChanging = false, lastManualReaderState = '', manualBaseArticle=null;
+  var pendingMutationObserver = null;
+  var E = function (id) { return document.getElementById(id); };
+  function inTafsir() { var r = E('tafsirReader'); return !!(r && r.classList.contains('active')); }
+  function api() { return w
