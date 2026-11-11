@@ -1,0 +1,37 @@
+h;i++){
+      var p=manualLocation(rows[i]),k=locKey(p);
+      if(!p||seen.has(k))continue;
+      if(tail){
+        var expect=nextLocation(tail.location);
+        if(!expect||locKey(expect)!==k)break;
+      }
+      seen.add(k);tail={node:rows[i],location:p,index:i};
+    }
+    return tail;
+  }
+  function syncManualSentinel(){
+    var sentinel=E('v194T5Sentinel');if(!sentinel)return;
+    sentinel.classList.toggle('p129-manual-sentinel',!manualDisabled());
+    var btn=sentinel.querySelector('[data-p126-next]');
+    if(!btn){btn=document.createElement('button');btn.type='button';btn.setAttribute('data-p126-next','1');sentinel.appendChild(btn)}
+    var last=validatedTail(),p=last&&nextLocation(last.location);
+    btn.textContent=manualPending?'جارٍ تجهيز الآية التالية…':
+      (p?'عرض الآية التالية ↓':'تم الوصول إلى نهاية السورة / المصحف');
+    btn.disabled=!!manualPending||!p;
+    btn.setAttribute('aria-label',p?'تحميل الآية '+p.a+' من سورة '+p.s:'نهاية القرآن الكريم');
+  }
+  function manualNearEnd(){
+    var last=validatedTail();if(!last)return false;
+    var rect=last.node.getBoundingClientRect();
+    return rect.bottom<=(window.innerHeight||720)+Math.max(120,(window.innerHeight||720)*.22);
+  }
+  function readyFeed(){
+    var f=window.__BASAIR_TAFSIR_STEP5__;
+    return !!(f&&typeof f.loadNext==='function');
+  }
+  function cancelPendingManual(reason){
+    if(!manualPending)return;
+    var pending=manualPending;manualPending=null;manualEpoch++;
+    if(pending.observer)pending.observer.disconnect();
+    clearTimeout(pending.timer);
+    for(var i=0;i<pending.toggled.length;i++
