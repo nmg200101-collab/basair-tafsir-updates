@@ -1,0 +1,74 @@
+{
+  "passed": 17,
+  "total": 17,
+  "checks": [
+    {
+      "name": "previous P126 module cached",
+      "pass": true
+    },
+    {
+      "name": "P128 is signed manual OTA seq5",
+      "pass": true
+    },
+    {
+      "name": "Tafsir v4 and Updates v1, min V694",
+      "pass": true
+    },
+    {
+      "name": "in-app manual notification is visible",
+      "pass": true
+    },
+    {
+      "name": "no asset fetch without consent",
+      "pass": true
+    },
+    {
+      "name": "explicit update button exists",
+      "pass": true
+    },
+    {
+      "name": "exactly 3 new files downloaded after consent",
+      "pass": true
+    },
+    {
+      "name": "both modules staged only, no current session execution",
+      "pass": true
+    },
+    {
+      "name": "P126 rollback retained in previous state",
+      "pass": true
+    },
+    {
+      "name": "new P128 script executes on next start",
+      "pass": true
+    },
+    {
+      "name": "old P126 script no longer loaded",
+      "pass": true
+    },
+    {
+      "name": "new restart module loads next session",
+      "pass": true
+    },
+    {
+      "name": "new CSS is applied",
+      "pass": true
+    },
+    {
+      "name": "module is registered as Tafsir",
+      "pass": true
+    },
+    {
+      "name": "no redownload of same seq5",
+      "pass": true
+    },
+    {
+      "name": "tampered delivery policy rejected by RSA",
+      "pass": true
+    },
+    {
+      "name": "manual rollback restores P126",
+      "pass": true
+    }
+  ]
+}
