@@ -1,0 +1,321 @@
+{
+  "passed": 63,
+  "total": 63,
+  "tests": [
+    {
+      "width": 320,
+      "test": "legacy note relabeled even before JS",
+      "pass": true
+    },
+    {
+      "width": 320,
+      "test": "small note above tools kept",
+      "pass": true
+    },
+    {
+      "width": 320,
+      "test": "follow inside toolbar",
+      "pass": true
+    },
+    {
+      "width": 320,
+      "test": "4 buttons no duplication",
+      "pass": true
+    },
+    {
+      "width": 320,
+      "test": "old note replaced",
+      "pass": true
+    },
+    {
+      "width": 320,
+      "test": "copy hint shown",
+      "pass": true
+    },
+    {
+      "width": 320,
+      "test": "follow start",
+      "pass": true
+    },
+    {
+      "width": 320,
+      "test": "follow stop",
+      "pass": true
+    },
+    {
+      "width": 320,
+      "test": "stop remains stopped",
+      "pass": true
+    },
+    {
+      "width": 320,
+      "test": "long follow opens native sheet",
+      "pass": true
+    },
+    {
+      "width": 320,
+      "test": "next sentinel available",
+      "pass": true
+    },
+    {
+      "width": 320,
+      "test": "manual next appends following ayah",
+      "pass": true
+    },
+    {
+      "width": 320,
+      "test": "manual next keeps previous ayah",
+      "pass": true
+    },
+    {
+      "width": 320,
+      "test": "new tools decorated without legacy button",
+      "pass": true
+    },
+    {
+      "width": 320,
+      "test": "small note appears on new verse",
+      "pass": true
+    },
+    {
+      "width": 320,
+      "test": "consecutive manual load through verse 7",
+      "pass": true
+    },
+    {
+      "width": 320,
+      "test": "5 follow buttons stable",
+      "pass": true
+    },
+    {
+      "width": 320,
+      "test": "toolbar follows official running state",
+      "pass": true
+    },
+    {
+      "width": 320,
+      "test": "toolbar follows official stopped state",
+      "pass": true
+    },
+    {
+      "width": 320,
+      "test": "no horizontal overflow",
+      "pass": true
+    },
+    {
+      "width": 320,
+      "test": "no JS exception",
+      "pass": true
+    },
+    {
+      "width": 390,
+      "test": "legacy note relabeled even before JS",
+      "pass": true
+    },
+    {
+      "width": 390,
+      "test": "small note above tools kept",
+      "pass": true
+    },
+    {
+      "width": 390,
+      "test": "follow inside toolbar",
+      "pass": true
+    },
+    {
+      "width": 390,
+      "test": "4 buttons no duplication",
+      "pass": true
+    },
+    {
+      "width": 390,
+      "test": "old note replaced",
+      "pass": true
+    },
+    {
+      "width": 390,
+      "test": "copy hint shown",
+      "pass": true
+    },
+    {
+      "width": 390,
+      "test": "follow start",
+      "pass": true
+    },
+    {
+      "width": 390,
+      "test": "follow stop",
+      "pass": true
+    },
+    {
+      "width": 390,
+      "test": "stop remains stopped",
+      "pass": true
+    },
+    {
+      "width": 390,
+      "test": "long follow opens native sheet",
+      "pass": true
+    },
+    {
+      "width": 390,
+      "test": "next sentinel available",
+      "pass": true
+    },
+    {
+      "width": 390,
+      "test": "manual next appends following ayah",
+      "pass": true
+    },
+    {
+      "width": 390,
+      "test": "manual next keeps previous ayah",
+      "pass": true
+    },
+    {
+      "width": 390,
+      "test": "new tools decorated without legacy button",
+      "pass": true
+    },
+    {
+      "width": 390,
+      "test": "small note appears on new verse",
+      "pass": true
+    },
+    {
+      "width": 390,
+      "test": "consecutive manual load through verse 7",
+      "pass": true
+    },
+    {
+      "width": 390,
+      "test": "5 follow buttons stable",
+      "pass": true
+    },
+    {
+      "width": 390,
+      "test": "toolbar follows official running state",
+      "pass": true
+    },
+    {
+      "width": 390,
+      "test": "toolbar follows official stopped state",
+      "pass": true
+    },
+    {
+      "width": 390,
+      "test": "no horizontal overflow",
+      "pass": true
+    },
+    {
+      "width": 390,
+      "test": "no JS exception",
+      "pass": true
+    },
+    {
+      "width": 430,
+      "test": "legacy note relabeled even before JS",
+      "pass": true
+    },
+    {
+      "width": 430,
+      "test": "small note above tools kept",
+      "pass": true
+    },
+    {
+      "width": 430,
+      "test": "follow inside toolbar",
+      "pass": true
+    },
+    {
+      "width": 430,
+      "test": "4 buttons no duplication",
+      "pass": true
+    },
+    {
+      "width": 430,
+      "test": "old note replaced",
+      "pass": true
+    },
+    {
+      "width": 430,
+      "test": "copy hint shown",
+      "pass": true
+    },
+    {
+      "width": 430,
+      "test": "follow start",
+      "pass": true
+    },
+    {
+      "width": 430,
+      "test": "follow stop",
+      "pass": true
+    },
+    {
+      "width": 430,
+      "test": "stop remains stopped",
+      "pass": true
+    },
+    {
+      "width": 430,
+      "test": "long follow opens native sheet",
+      "pass": true
+    },
+    {
+      "width": 430,
+      "test": "next sentinel available",
+      "pass": true
+    },
+    {
+      "width": 430,
+      "test": "manual next appends following ayah",
+      "pass": true
+    },
+    {
+      "width": 430,
+      "test": "manual next keeps previous ayah",
+      "pass": true
+    },
+    {
+      "width": 430,
+      "test": "new tools decorated without legacy button",
+      "pass": true
+    },
+    {
+      "width": 430,
+      "test": "small note appears on new verse",
+      "pass": true
+    },
+    {
+      "width": 430,
+      "test": "consecutive manual load through verse 7",
+      "pass": true
+    },
+    {
+      "width": 430,
+      "test": "5 follow buttons stable",
+      "pass": true
+    },
+    {
+      "width": 430,
+      "test": "toolbar follows official running state",
+      "pass": true
+    },
+    {
+      "width": 430,
+      "test": "toolbar follows official stopped state",
+      "pass": true
+    },
+    {
+      "width": 430,
+      "test": "no horizontal overflow",
+      "pass": true
+    },
+    {
+      "width": 430,
+      "test": "no JS exception",
+      "pass": true
+    }
+  ]
+}
