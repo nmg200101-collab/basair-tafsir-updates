@@ -7,7 +7,7 @@
 'use strict';
 if(w.__BASAIR_TAFSIR_NATIQ_P132__)return;
 var VERSION='P132.1-NATIQ-QA-NOT-LIVE', KEY='basair:tafsir:natiq:p132:prefs';
-var opts={mode:'both',sections:'all',rate:0.95,autoNext:false,preferLocal:true};
+var opts={mode:'both',sections:'all',rate:0.95,autoNext:false,preferLocal:true,voiceURI:''};
 var active=null,token=0,mountTimer=0,observer=null,longTimer=0,longPressUntil=0,press=null;
 var lastDrawnButton=null,lastLiveLabel=null;
 var stats={starts:0,stops:0,spokenChunks:0,skippedSymbols:0,sourceUnavailable:0,staleCancelled:0,errors:0};
@@ -134,6 +134,7 @@ function loadOpts(){
   if(['both','recitation','tafsir'].indexOf(o.mode)>=0)opts.mode=o.mode;
   if(['all','explanation','reflection','summary'].indexOf(o.sections)>=0)opts.sections=o.sections;
   opts.rate=clamp(o.rate,.7,1.3,.95);opts.autoNext=o.autoNext===true;opts.preferLocal=o.preferLocal!==false;
+  opts.voiceURI=typeof o.voiceURI==='string'?o.voiceURI.slice(0,160):'';
  }catch(_){}
 }
 function saveOpts(){try{w.localStorage.setItem(KEY,JSON.stringify(opts))}catch(_){}}
@@ -141,7 +142,12 @@ function voices(){
  var synth=w.speechSynthesis;if(!synth||typeof synth.getVoices!=='function')return [];
  try{return synth.getVoices().filter(function(v){return /^ar(?:-|$)/i.test(v.lang||'')})}catch(_){return []}
 }
-function voice(){var vs=voices();if(opts.preferLocal){var local=vs.filter(function(v){return v.localService});return local[0]||null}return vs[0]||null}
+function eligibleVoices(){var vs=voices();return opts.preferLocal?vs.filter(function(v){return v.localService}):vs}
+function voice(){
+ var list=eligibleVoices(),wanted=opts.voiceURI;
+ if(wanted){var found=list.filter(function(v){return (v.voiceURI||v.name)===wanted})[0];if(found)return found}
+ return list[0]||null;
+}
 function ttsReady(){return !!(w.speechSynthesis&&typeof w.SpeechSynthesisUtterance==='function'&&voice())}
 function bridge(){
  // Only a dedicated, audited one-ayah adapter is acceptable. The ordinary
@@ -364,20 +370,52 @@ function panel(){
  box.innerHTML='<div class="p132Sheet"><header><strong>الناطق التفسيري</strong><button type="button" data-p132-close="1" aria-label="إغلاق">×</button></header>'+
  '<label>نمط التشغيل<select data-p132-option="mode"><option value="both">الآية ثم التفسير</option><option value="tafsir">التفسير فقط</option><option value="recitation">تلاوة الآية فقط</option></select></label>'+
  '<label>أقسام التفسير<select data-p132-option="sections"><option value="all">جميع أقسام التفسير</option><option value="explanation">البيان والشرح</option><option value="reflection">التدبر والفوائد</option><option value="summary">الخلاصة</option></select></label>'+
- '<label>سرعة النطق<select data-p132-option="rate"><option value="0.8">بطيء</option><option value="0.95">هادئ</option><option value="1">طبيعي</option><option value="1.15">أسرع</option></select></label>'+
+ '<label>سرعة النطق<select data-p132-option="rate"><option value="0.8">بطيء</option><option value="0.95">هادئ</option><option value="1">طبيعي</option><option value="1.15">أسرع</option></select></label>'+ 
+ '<label>الصوت العربي<select data-p132-option="voiceURI" aria-label="اختيار الصوت العربي"></select></label>'+ 
+ '<button type="button" data-p132-preview="1" aria-label="تجربة صوت التفسير">▶ تجربة صوت التفسير</button>'+ 
  '<label class="p132Check"><input type="checkbox" data-p132-option="autoNext">متابعة الآية التالية تلقائيًا</label>'+
  '<label class="p132Check"><input type="checkbox" data-p132-option="preferLocal">الصوت العربي المحلي فقط (دون إرسال النص للخدمة السحابية)</label>'+
  '<small>التلاوة الأصلية للقارئ لا تُستبدل بنطق اصطناعي. إن ألغيت شرط الصوت المحلي فقد يرسل محرك النطق نص التفسير إلى مزود صوت خارجي. التحقق من عمل الصوت محليًا يتطلب اختبار الهاتف.</small>'+
  '<p id="p132NatiqStatus" aria-live="polite"></p></div>';
  d.body.appendChild(box);
- box.addEventListener('click',function(e){if(e.target&&e.target.closest('[data-p132-close]'))box.hidden=true});
+ box.addEventListener('click',function(e){
+  if(e.target&&e.target.closest('[data-p132-close]')){box.hidden=true;return}
+  if(e.target&&e.target.closest('[data-p132-preview]'))previewVoice();
+ });
  box.addEventListener('change',function(e){var target=e.target,key=target&&target.getAttribute('data-p132-option');
-  if(!key)return;opts[key]=key==='autoNext'||key==='preferLocal'?target.checked:key==='rate'?clamp(target.value,.7,1.3,.95):target.value;saveOpts();
+  if(!key)return;opts[key]=key==='autoNext'||key==='preferLocal'?target.checked:key==='rate'?clamp(target.value,.7,1.3,.95):target.value;
+  if(key==='preferLocal'){opts.voiceURI='';populateVoices(box)}
+  saveOpts();
  });
  return box;
 }
+function populateVoices(p){
+ var box=p&&p.querySelector&&p.querySelector('[data-p132-option="voiceURI"]');
+ if(!box||typeof box.appendChild!=='function')return;
+ box.textContent='';
+ var list=eligibleVoices();
+ if(!list.length){
+  var empty=d.createElement('option');empty.value='';empty.textContent='لا يوجد صوت عربي متاح';box.appendChild(empty);box.value='';return;
+ }
+ for(var i=0;i<list.length;i++){
+  var v=list[i],opt=d.createElement('option');
+  opt.value=v.voiceURI||v.name||'';opt.textContent=(v.name||'صوت عربي')+
+   ' — '+(v.lang||'ar')+(v.localService?' · محلي':' · قد يستخدم اتصالًا');
+  box.appendChild(opt);
+ }
+ var selected=voice();box.value=selected?(selected.voiceURI||selected.name||''):'';
+}
+function previewVoice(){
+ if(!ttsReady()){toast('لا يتوفر صوت عربي مطابق للإعدادات؛ اختر صوتًا محليًا أو ثبّته على الهاتف');return false}
+ if(active)stop('تم إيقاف التشغيل لتجربة الصوت',true);
+ var v=voice(),u=new w.SpeechSynthesisUtterance('السلام عليكم ورحمة الله. نبدأ الآن ببيان معنى الآية، ثم اللمسة البيانية والتدبر.');
+ u.lang=v.lang||'ar-SA';u.voice=v;u.rate=opts.rate;u.pitch=1;u.volume=1;
+ u.onerror=function(){toast('تعذر اختبار الصوت العربي على هذا الهاتف')};
+ try{w.speechSynthesis.cancel();w.speechSynthesis.speak(u);return true}
+ catch(_){toast('تعذر بدء تجربة الصوت');return false}
+}
 function settings(){
- var p=panel();['mode','sections','rate','autoNext','preferLocal'].forEach(function(key){
+ var p=panel();populateVoices(p);['mode','sections','rate','autoNext','preferLocal','voiceURI'].forEach(function(key){
   var x=p.querySelector('[data-p132-option="'+key+'"]');if(!x)return;
   if(x.type==='checkbox')x.checked=!!opts[key];else x.value=q(opts[key]);
  });
@@ -447,6 +485,10 @@ function init(){
   if(press&&(Math.abs(e.clientX-press.x)>12||Math.abs(e.clientY-press.y)>12))pointerEnd(e)
  },true);
  w.addEventListener('pagehide',function(){stop('تم إيقاف الصوت عند الخروج',true)});
+  var synth=w.speechSynthesis;
+  if(synth&&typeof synth.addEventListener==='function')synth.addEventListener('voiceschanged',function(){
+   var p=E('p132Panel');if(p&&!p.hidden)populateVoices(p);
+  });
  d.addEventListener('visibilitychange',function(){if(d.hidden&&active)stop('توقف الصوت عند إخفاء التطبيق')});
 }
 var API={version:VERSION,normalize:normalize,segments:segments,splitSpeech:splitSpeech,
@@ -458,7 +500,7 @@ var API={version:VERSION,normalize:normalize,segments:segments,splitSpeech:split
    exactAyahSource:!!(b&&b.diagnostics&&b.diagnostics().exactAyahCatalogAvailable),
    mounted:!!E('tafsirReader'),currentVersion:VERSION};
  },
- start:start,stop:stop,settings:settings,refresh:mountSoon};
+ start:start,stop:stop,settings:settings,preview:previewVoice,refresh:mountSoon};
 w.__BASAIR_TAFSIR_NATIQ_P132__=API;
 if(d.readyState==='loading')d.addEventListener('DOMContentLoaded',init,{once:true});else init();
 })(window,document);
