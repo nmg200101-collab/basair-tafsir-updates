@@ -33,13 +33,24 @@ function ineligible(el){
  if(/^(SCRIPT|STYLE|NOSCRIPT|BUTTON|INPUT|SELECT|TEXTAREA|AUDIO|VIDEO|SVG|CANVAS|NAV|FOOTER)$/i.test(el.tagName||''))return true;
  var cls=String(el.className||'');
  if(/(^|\s)(v194T2Qrow|basairB231AyahActions|b118CarryArticle|p124ExportDialog|p132NatiqBar|p132Panel|p132NatiqStatus|v194T5Sentinel)(\s|$)/.test(cls))return true;
+ // Placeholder text is not exegesis; do not pretend it is a valid tafsir.
+ if(/(^|\s)v194T2Field(\s|$)/.test(cls)&&/(^|\s)pending(\s|$)/.test(cls))return true;
  if(el.hasAttribute('hidden')||el.getAttribute('aria-hidden')==='true')return true;
  return false;
 }
 function heading(el){
  if(!el||el.nodeType!==1)return false;
  if(/^H[1-6]$/.test(el.tagName||''))return true;
- return el.matches&&el.matches('[data-tafsir-section-title],.v194T2SectionTitle,.v194T2Heading,.tafsirSectionTitle');
+ return el.matches&&el.matches('[data-tafsir-section-title],.v194T2SectionTitle,.v194T2Heading,.tafsirSectionTitle,.v194T2FieldTitle');
+}
+function headingText(node){
+ if(node.matches&&node.matches('.v194T2FieldTitle')){
+  // V690/P117 renders <b>section title</b><small>source metadata</small>;
+  // speak the section heading, not its small attribution on every paragraph.
+  var label=node.querySelector&&node.querySelector('b');
+  if(label)return label.textContent||'';
+ }
+ return node.textContent||'';
 }
 function segments(row){
  if(!row||!row.querySelector)return [];
@@ -47,6 +58,10 @@ function segments(row){
  // article: otherwise Quran text and toolbar labels would be spoken as Tafsir.
  var root=row.querySelector('.v194T2Body')||row.querySelector('[data-tafsir-content]');
  if(!root)return [];
+ // 'التفسير المحرر' is an external source card in the original renderer,
+ // not the content of the tafsir. Never read that introduction as full tafsir.
+ if(/(^|\s)v194T108Muharrar(\s|$)/.test(String(row.className||'')))return [];
+ if(row.querySelector('.v194T108OfficialOpen'))return [];
  var out=[],parts=[],title='';
  function flush(){
   var body=normalize(parts.join(''));parts=[];
@@ -58,7 +73,7 @@ function segments(row){
   if(node.nodeType===3){parts.push(node.nodeValue||'');return}
   if(node.nodeType!==1||ineligible(node))return;
   if(heading(node)){
-   flush();title=node.textContent||'';return;
+   flush();title=headingText(node);return;
   }
   var tag=String(node.tagName||'').toUpperCase();
   if(tag==='BR'){parts.push('\n');return}
@@ -302,7 +317,10 @@ function start(row){
   toast('لم يُعثر على محرك نطق عربي صالح على الهاتف');return false;
  }
  if((opts.mode==='both'||opts.mode==='tafsir')&&!filterSections(segments(row)).length){
-  toast('لا يوجد نص تفسير قابل للقراءة في الآية المحددة');return false;
+  var external=/(^|\s)v194T108Muharrar(\s|$)/.test(String(row.className||''))||
+    !!row.querySelector('.v194T108OfficialOpen');
+  toast(external?'هذا المصدر يعرض رابط التفسير الرسمي فقط؛ لا يوجد متن كامل للنطق داخل التطبيق':'لم يكتمل تحميل نص التفسير؛ اختر مصدرًا محمّلًا أو أعد المحاولة');
+  return false;
  }
  stop('',true);
  var s={token:token,verse:v,row:row,audioSession:null,stage:'start'};
