@@ -1,0 +1,48 @@
+/* P128: stable toolbar before the dynamic JS is injected by the OTA receiver.
+   The original note tool is VISUALLY presented as Follow immediately, even
+   during the 1-frame DOM insertion before JS applies event handlers. */
+#tafsirReader.active #tafsirAyahs .basairB231AyahActions >button[data-r2-action="note"]{position:relative;color:#145c43!important;pointer-events:none;}
+#tafsirReader.active #tafsirAyahs .basairB231AyahActions >button[data-r2-action="note"] >*{visibility:hidden!important;}
+#tafsirReader.active #tafsirAyahs .basairB231AyahActions >button[data-r2-action="note"]::after{content:"▶ متابعة";position:absolute;inset:0;display:grid;place-items:center;font-weight:800;font-size:12px;color:#145c43;}
+#tafsirReader.active #tafsirAyahs .basairB231AyahActions >button[data-b231-action="copy"]:not([data-p125-copy]) b{font-size:0!important;}
+#tafsirReader.active #tafsirAyahs .basairB231AyahActions >button[data-b231-action="copy"]:not([data-p125-copy]) b::after{content:"نسخ نص";font-size:12px!important;}
+#tafsirReader #v194T5Sentinel [data-p126-next]{display:inline-block;min-height:40px;padding:8px 16px;margin:10px 2px;border-radius:14px;border:1px solid #aaccc0;background:#ecf7ef;color:#13543d;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;}
+#tafsirReader #tafsirAyahs{overflow:visible;touch-action:pan-y pinch-zoom;}
+#tafsirReader .v194T2Field, #tafsirReader .v194T2Body{touch-action:pan-y pinch-zoom;}
+.dark #tafsirReader #v194T5Sentinel [data-p126-next]{background:#214737;color:#e7fff0;}
+/* P125 — Reader per-ayah toolbar: four tools, only the first is Follow.
+   Preserve the small note chip above the toolbar and the native scroll inertia. */
+#tafsirReader .basairB231AyahActions [data-p125-follow],
+#tafsirReader .basairB231AyahActions [data-p125-copy] {
+  touch-action:manipulation;-webkit-tap-highlight-color:transparent;-webkit-touch-callout:none;
+  user-select:none;min-width:0;
+}
+#tafsirReader .basairB231AyahActions [data-p125-follow] {color:#0c583e;font-weight:800;}
+#tafsirReader .basairB231AyahActions [data-p125-follow].p125-on {background:#e0f0e8;border-color:#4a9b7b;color:#0b593c;}
+#tafsirReader .basairB231AyahActions .p125CopyHint {display:block;color:#5e7868;font-size:10px;font-weight:600;line-height:1.4;white-space:nowrap;}
+#tafsirReader .basairB231AyahActions .p125CopyIcon {line-height:1.1;}
+#tafsirReader .v194T2Ayah { -webkit-overflow-scrolling:touch; }
+#tafsirReader .v194T2Body, #tafsirReader .v194T2Qrow { touch-action:pan-y pinch-zoom; }
+.dark #tafsirReader .basairB231AyahActions [data-p125-follow] {color:#d4f4e4;}
+.dark #tafsirReader .basairB231AyahActions [data-p125-follow].p125-on {background:#204d3c;border-color:#76a68c;}
+.dark #tafsirReader .basairB231AyahActions .p125CopyHint {color:#bcd4c3;}
+.p124ExportDialog{position:fixed;inset:0;z-index:30000;display:none;align-items:center;justify-content:center;padding:15px;}
+.p124ExportDialog.open{display:flex;}.p124ExportDialog .p124Shade{position:absolute;inset:0;background:#061b14ad;}
+.p124ExportDialog .p124ExportPanel{position:relative;max-height:88vh;overflow:auto;width:min(100%,520px);background:#fdfcf7;border:1px solid #c0cdbf;border-radius:18px;padding:15px;color:#1a4a38;box-shadow:0 15px 42px #0004;}
+.p124ExportPanel header{display:flex;justify-content:space-between;align-items:center;font-size:18px;margin-bottom:12px;}
+.p124ExportPanel header button{background:transparent;border:0;font-size:26px;color:inherit;}
+.p124ExportPanel img{display:block;width:100%;height:auto;border-radius:10px;background:#f8f5e8;}
+.p124ExportPanel p{text-align:center;color:#62776a;font-size:13px;}
+.p124ExportPanel footer{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+.p124ExportPanel footer button{background:#1c7254;color:white;font-size:14px;font-weight:700;font-family:inherit;line-height:1.2;min-height:42px;padding:7px 18px;border:0;border-radius:12px;}
+.dark .p124ExportPanel{background:#112f26;color:#f0fbf5;border-color:#608471;}
+
+#p126ExportProgress:not([hidden]){position:fixed;bottom:calc(88px + env(safe-area-inset-bottom));left:16px;z-index:30002;border:1px solid #b8d6c5;border-radius:16px;background:#e9f7ef;color:#14523b;font:700 13px Tahoma,Arial;padding:11px 16px;box-shadow:0 7px 24px #112c2333;max-width:80vw;}
+.dark #p126ExportProgress:not([hidden]){background:#214735;color:#d6fce9;border-color:#85ab96;}
+
+/* P129: expose ONE reachable next-ayah affordance; the older STEP5 global
+   CSS hid the sentinel, leaving the sources-and-method card as a dead end. */
+body #tafsirReader.active #v194T5Sentinel.p129-manual-sentinel{display:block!important;min-height:70px;margin:12px 12px 14px;padding:9px;border:1px solid #c6dfd2;border-radius:15px;background:var(--soft);text-align:center;}
+body #tafsirReader.active #v194T5Sentinel:not(.p129-manual-sentinel){display:none!important;}
+#tafsirReader #v194T5Sentinel.p129-manual-sentinel button[data-p126-next]{display:inline-flex;align-items:center;justify-content:center;min-height:42px;width:min(95%,290px);margin:3px auto;}
+#tafsirReader #v194T5Sentinel.p129-manual-sentinel button:disabled{opacity:.65;cursor:default;}
