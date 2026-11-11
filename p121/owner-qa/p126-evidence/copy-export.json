@@ -1,0 +1,306 @@
+{
+  "passed": 60,
+  "total": 60,
+  "results": [
+    {
+      "width": 320,
+      "name": "small upper note preserved",
+      "pass": true
+    },
+    {
+      "width": 320,
+      "name": "inside note replaced by follow",
+      "pass": true
+    },
+    {
+      "width": 320,
+      "name": "toolbar has four actions",
+      "pass": true
+    },
+    {
+      "width": 320,
+      "name": "copy has text and image hint",
+      "pass": true
+    },
+    {
+      "width": 320,
+      "name": "starts currently visible verse",
+      "pass": true
+    },
+    {
+      "width": 320,
+      "name": "explicit stop cancels motion immediately",
+      "pass": true
+    },
+    {
+      "width": 320,
+      "name": "stop stays stopped after watchdog interval",
+      "pass": true
+    },
+    {
+      "width": 320,
+      "name": "resumes at current verse without reopening",
+      "pass": true
+    },
+    {
+      "width": 320,
+      "name": "long press opens original speed settings",
+      "pass": true
+    },
+    {
+      "width": 320,
+      "name": "long press does not stop follow",
+      "pass": true
+    },
+    {
+      "width": 320,
+      "name": "short tap copies verse",
+      "pass": true
+    },
+    {
+      "width": 320,
+      "name": "long copy exports PNG dialog",
+      "pass": true
+    },
+    {
+      "width": 320,
+      "name": "PNG file bytes valid",
+      "pass": true
+    },
+    {
+      "width": 320,
+      "name": "no horizontal overflow",
+      "pass": true
+    },
+    {
+      "width": 320,
+      "name": "no uncaught JS exceptions",
+      "pass": true
+    },
+    {
+      "width": 364,
+      "name": "small upper note preserved",
+      "pass": true
+    },
+    {
+      "width": 364,
+      "name": "inside note replaced by follow",
+      "pass": true
+    },
+    {
+      "width": 364,
+      "name": "toolbar has four actions",
+      "pass": true
+    },
+    {
+      "width": 364,
+      "name": "copy has text and image hint",
+      "pass": true
+    },
+    {
+      "width": 364,
+      "name": "starts currently visible verse",
+      "pass": true
+    },
+    {
+      "width": 364,
+      "name": "explicit stop cancels motion immediately",
+      "pass": true
+    },
+    {
+      "width": 364,
+      "name": "stop stays stopped after watchdog interval",
+      "pass": true
+    },
+    {
+      "width": 364,
+      "name": "resumes at current verse without reopening",
+      "pass": true
+    },
+    {
+      "width": 364,
+      "name": "long press opens original speed settings",
+      "pass": true
+    },
+    {
+      "width": 364,
+      "name": "long press does not stop follow",
+      "pass": true
+    },
+    {
+      "width": 364,
+      "name": "short tap copies verse",
+      "pass": true
+    },
+    {
+      "width": 364,
+      "name": "long copy exports PNG dialog",
+      "pass": true
+    },
+    {
+      "width": 364,
+      "name": "PNG file bytes valid",
+      "pass": true
+    },
+    {
+      "width": 364,
+      "name": "no horizontal overflow",
+      "pass": true
+    },
+    {
+      "width": 364,
+      "name": "no uncaught JS exceptions",
+      "pass": true
+    },
+    {
+      "width": 390,
+      "name": "small upper note preserved",
+      "pass": true
+    },
+    {
+      "width": 390,
+      "name": "inside note replaced by follow",
+      "pass": true
+    },
+    {
+      "width": 390,
+      "name": "toolbar has four actions",
+      "pass": true
+    },
+    {
+      "width": 390,
+      "name": "copy has text and image hint",
+      "pass": true
+    },
+    {
+      "width": 390,
+      "name": "starts currently visible verse",
+      "pass": true
+    },
+    {
+      "width": 390,
+      "name": "explicit stop cancels motion immediately",
+      "pass": true
+    },
+    {
+      "width": 390,
+      "name": "stop stays stopped after watchdog interval",
+      "pass": true
+    },
+    {
+      "width": 390,
+      "name": "resumes at current verse without reopening",
+      "pass": true
+    },
+    {
+      "width": 390,
+      "name": "long press opens original speed settings",
+      "pass": true
+    },
+    {
+      "width": 390,
+      "name": "long press does not stop follow",
+      "pass": true
+    },
+    {
+      "width": 390,
+      "name": "short tap copies verse",
+      "pass": true
+    },
+    {
+      "width": 390,
+      "name": "long copy exports PNG dialog",
+      "pass": true
+    },
+    {
+      "width": 390,
+      "name": "PNG file bytes valid",
+      "pass": true
+    },
+    {
+      "width": 390,
+      "name": "no horizontal overflow",
+      "pass": true
+    },
+    {
+      "width": 390,
+      "name": "no uncaught JS exceptions",
+      "pass": true
+    },
+    {
+      "width": 430,
+      "name": "small upper note preserved",
+      "pass": true
+    },
+    {
+      "width": 430,
+      "name": "inside note replaced by follow",
+      "pass": true
+    },
+    {
+      "width": 430,
+      "name": "toolbar has four actions",
+      "pass": true
+    },
+    {
+      "width": 430,
+      "name": "copy has text and image hint",
+      "pass": true
+    },
+    {
+      "width": 430,
+      "name": "starts currently visible verse",
+      "pass": true
+    },
+    {
+      "width": 430,
+      "name": "explicit stop cancels motion immediately",
+      "pass": true
+    },
+    {
+      "width": 430,
+      "name": "stop stays stopped after watchdog interval",
+      "pass": true
+    },
+    {
+      "width": 430,
+      "name": "resumes at current verse without reopening",
+      "pass": true
+    },
+    {
+      "width": 430,
+      "name": "long press opens original speed settings",
+      "pass": true
+    },
+    {
+      "width": 430,
+      "name": "long press does not stop follow",
+      "pass": true
+    },
+    {
+      "width": 430,
+      "name": "short tap copies verse",
+      "pass": true
+    },
+    {
+      "width": 430,
+      "name": "long copy exports PNG dialog",
+      "pass": true
+    },
+    {
+      "width": 430,
+      "name": "PNG file bytes valid",
+      "pass": true
+    },
+    {
+      "width": 430,
+      "name": "no horizontal overflow",
+      "pass": true
+    },
+    {
+      "width": 430,
+      "name": "no uncaught JS exceptions",
+      "pass": true
+    }
+  ]
+}

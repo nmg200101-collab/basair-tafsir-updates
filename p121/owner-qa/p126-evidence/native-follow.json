@@ -1,0 +1,156 @@
+{
+  "passed": 30,
+  "total": 30,
+  "tests": [
+    {
+      "width": 320,
+      "name": "real R114 API loaded",
+      "pass_": true
+    },
+    {
+      "width": 320,
+      "name": "real R114 running after per-ayah press",
+      "pass_": true
+    },
+    {
+      "width": 320,
+      "name": "real R114 stopped after per-ayah press",
+      "pass_": true
+    },
+    {
+      "width": 320,
+      "name": "real R114 remains stopped after 2s",
+      "pass_": true
+    },
+    {
+      "width": 320,
+      "name": "stop prevents further auto scrolling",
+      "pass_": true
+    },
+    {
+      "width": 320,
+      "name": "resumes same verse via real R114",
+      "pass_": true
+    },
+    {
+      "width": 320,
+      "name": "real official speed sheet opens",
+      "pass_": true
+    },
+    {
+      "width": 320,
+      "name": "real speed and timer controls both present",
+      "pass_": true
+    },
+    {
+      "width": 320,
+      "name": "long press does not stop real R114",
+      "pass_": true
+    },
+    {
+      "width": 320,
+      "name": "no JS errors",
+      "pass_": true
+    },
+    {
+      "width": 390,
+      "name": "real R114 API loaded",
+      "pass_": true
+    },
+    {
+      "width": 390,
+      "name": "real R114 running after per-ayah press",
+      "pass_": true
+    },
+    {
+      "width": 390,
+      "name": "real R114 stopped after per-ayah press",
+      "pass_": true
+    },
+    {
+      "width": 390,
+      "name": "real R114 remains stopped after 2s",
+      "pass_": true
+    },
+    {
+      "width": 390,
+      "name": "stop prevents further auto scrolling",
+      "pass_": true
+    },
+    {
+      "width": 390,
+      "name": "resumes same verse via real R114",
+      "pass_": true
+    },
+    {
+      "width": 390,
+      "name": "real official speed sheet opens",
+      "pass_": true
+    },
+    {
+      "width": 390,
+      "name": "real speed and timer controls both present",
+      "pass_": true
+    },
+    {
+      "width": 390,
+      "name": "long press does not stop real R114",
+      "pass_": true
+    },
+    {
+      "width": 390,
+      "name": "no JS errors",
+      "pass_": true
+    },
+    {
+      "width": 430,
+      "name": "real R114 API loaded",
+      "pass_": true
+    },
+    {
+      "width": 430,
+      "name": "real R114 running after per-ayah press",
+      "pass_": true
+    },
+    {
+      "width": 430,
+      "name": "real R114 stopped after per-ayah press",
+      "pass_": true
+    },
+    {
+      "width": 430,
+      "name": "real R114 remains stopped after 2s",
+      "pass_": true
+    },
+    {
+      "width": 430,
+      "name": "stop prevents further auto scrolling",
+      "pass_": true
+    },
+    {
+      "width": 430,
+      "name": "resumes same verse via real R114",
+      "pass_": true
+    },
+    {
+      "width": 430,
+      "name": "real official speed sheet opens",
+      "pass_": true
+    },
+    {
+      "width": 430,
+      "name": "real speed and timer controls both present",
+      "pass_": true
+    },
+    {
+      "width": 430,
+      "name": "long press does not stop real R114",
+      "pass_": true
+    },
+    {
+      "width": 430,
+      "name": "no JS errors",
+      "pass_": true
+    }
+  ]
+}

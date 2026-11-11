@@ -1,0 +1,126 @@
+{
+  "passed": 24,
+  "total": 24,
+  "checks": [
+    {
+      "width": 320,
+      "name": "real STEP5 API ready",
+      "pass": true
+    },
+    {
+      "width": 320,
+      "name": "manual sentinel created by real STEP5",
+      "pass": true
+    },
+    {
+      "width": 320,
+      "name": "P126 manual next button inserted",
+      "pass": true
+    },
+    {
+      "width": 320,
+      "name": "real STEP5 appended next verse",
+      "pass": true
+    },
+    {
+      "width": 320,
+      "name": "real STEP5 kept earlier verse",
+      "pass": true
+    },
+    {
+      "width": 320,
+      "name": "new real rendered verse gets follow",
+      "pass": true
+    },
+    {
+      "width": 320,
+      "name": "original notes remain",
+      "pass": true
+    },
+    {
+      "width": 320,
+      "name": "no JS errors",
+      "pass": true
+    },
+    {
+      "width": 390,
+      "name": "real STEP5 API ready",
+      "pass": true
+    },
+    {
+      "width": 390,
+      "name": "manual sentinel created by real STEP5",
+      "pass": true
+    },
+    {
+      "width": 390,
+      "name": "P126 manual next button inserted",
+      "pass": true
+    },
+    {
+      "width": 390,
+      "name": "real STEP5 appended next verse",
+      "pass": true
+    },
+    {
+      "width": 390,
+      "name": "real STEP5 kept earlier verse",
+      "pass": true
+    },
+    {
+      "width": 390,
+      "name": "new real rendered verse gets follow",
+      "pass": true
+    },
+    {
+      "width": 390,
+      "name": "original notes remain",
+      "pass": true
+    },
+    {
+      "width": 390,
+      "name": "no JS errors",
+      "pass": true
+    },
+    {
+      "width": 430,
+      "name": "real STEP5 API ready",
+      "pass": true
+    },
+    {
+      "width": 430,
+      "name": "manual sentinel created by real STEP5",
+      "pass": true
+    },
+    {
+      "width": 430,
+      "name": "P126 manual next button inserted",
+      "pass": true
+    },
+    {
+      "width": 430,
+      "name": "real STEP5 appended next verse",
+      "pass": true
+    },
+    {
+      "width": 430,
+      "name": "real STEP5 kept earlier verse",
+      "pass": true
+    },
+    {
+      "width": 430,
+      "name": "new real rendered verse gets follow",
+      "pass": true
+    },
+    {
+      "width": 430,
+      "name": "original notes remain",
+      "pass": true
+    },
+    {
+      "width": 430,
+      "name": "no JS errors",
+      "pass": true
+    }
+  ]
+}
