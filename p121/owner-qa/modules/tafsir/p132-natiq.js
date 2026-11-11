@@ -282,9 +282,21 @@ function start(row){
   if(!guard||typeof guard.stop!=='function'){toast('أوقف متابعة الآيات أولًا');return false}
   guard.stop();if(follow.status().running){toast('أوقف متابعة الآيات أولًا');return false}
  }
- if((opts.mode==='both'||opts.mode==='recitation')&&!bridge()){
-  toast('لا توجد واجهة موثقة لتسجيل الآية؛ يمكنك اختيار تفسير فقط من إعدادات الناطق');
-  stats.sourceUnavailable++;return false;
+ if(opts.mode==='both'||opts.mode==='recitation'){
+  var reciter=bridge();
+  if(!reciter){
+   toast('لم يتوفر مصدر موثوق لتسجيل الآية؛ اختر «التفسير فقط» من إعدادات الناطق');
+   stats.sourceUnavailable++;return false;
+  }
+  if(typeof reciter.availability==='function'){
+   var av;
+   try{av=reciter.availability({surah:v.s,ayah:v.a})}catch(_){av=null}
+   if(!av||!av.available){
+    stats.sourceUnavailable++;
+    toast(av&&av.reason||'تسجيل هذه الآية غير متاح للقارئ المحدد؛ اختر «التفسير فقط»');
+    return false;
+   }
+  }
  }
  if((opts.mode==='both'||opts.mode==='tafsir')&&!ttsReady()){
   toast('لم يُعثر على محرك نطق عربي صالح على الهاتف');return false;
@@ -344,7 +356,12 @@ function settings(){
  var p=panel();['mode','sections','rate','autoNext','preferLocal'].forEach(function(key){
   var x=p.querySelector('[data-p132-option="'+key+'"]');if(!x)return;
   if(x.type==='checkbox')x.checked=!!opts[key];else x.value=q(opts[key]);
- });p.hidden=false;
+ });
+ var status=p.querySelector('#p132NatiqStatus'),b=bridge(),sel=b&&typeof b.selected==='function'&&b.selected();
+ if(status)status.textContent=(ttsReady()?'الصوت العربي: متاح':'الصوت العربي المحلي: لم يتم التحقق من توفره')
+   +' • '+(sel?'القارئ المحدد: '+q(sel.name):'لم يتم العثور على قارئ محدد')
+   +' • '+(b&&typeof b.diagnostics==='function'&&b.diagnostics().exactAyahCatalogAvailable?'تسجيلات الآيات: فهرس متاح':'تسجيلات الآيات: يلزم مصدر آيات منفردة');
+ p.hidden=false;
 }
 function pointerDown(e){
  var b=e.target&&e.target.closest&&e.target.closest('.p132NatiqButton');
@@ -411,6 +428,12 @@ function init(){
 var API={version:VERSION,normalize:normalize,segments:segments,splitSpeech:splitSpeech,
  sayHeading:sayHeading,record:record,capabilities:function(){return {arabicTTS:ttsReady(),arabicVoices:voices().length,verifiedAyahAudioBridge:!!bridge()}},
  status:function(){return {running:!!active,stage:active&&active.stage||'',options:Object.assign({},opts),stats:Object.assign({},stats)}},
+ diagnostics:function(){
+  var b=bridge();return {arabicTTS:ttsReady(),localArabicVoices:voices().filter(function(x){return x.localService}).length,
+   reciterSelected:!!(b&&b.selected&&b.selected()),
+   exactAyahSource:!!(b&&b.diagnostics&&b.diagnostics().exactAyahCatalogAvailable),
+   mounted:!!E('tafsirReader'),currentVersion:VERSION};
+ },
  start:start,stop:stop,settings:settings,refresh:mountSoon};
 w.__BASAIR_TAFSIR_NATIQ_P132__=API;
 if(d.readyState==='loading')d.addEventListener('DOMContentLoaded',init,{once:true});else init();
