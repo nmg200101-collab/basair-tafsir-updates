@@ -15,7 +15,7 @@ function el(tag,children=[]){
  return node;
 }
 function t(s){return {nodeType:3,nodeValue:s,nextSibling:null}}
-function mock(prefs={},bridge=null,{neverEnd=false}={}){
+function mock(prefs={},bridge=null,{neverEnd=false,remoteOnly=false}={}){
  const utter=[],events=[],toast=[],callbacks={};
  let panel=null,cancelCount=0;
  const body=el('div',[el('h3',[t('اللمسة البيانية')]),el('p',[t('في اللغة العربية بلاغة وبيان كامل.')])]);
@@ -29,7 +29,7 @@ function mock(prefs={},bridge=null,{neverEnd=false}={}){
    setAttribute(){},querySelector:()=>null}),
   addEventListener:(name,fn)=>callbacks[name]=fn};
  const synth={
-  getVoices:()=>[{lang:'ar-SA',localService:true,name:'Arabic'}],
+  getVoices:()=>[{lang:'ar-SA',localService:!remoteOnly,name:'Arabic'}],
   cancel:()=>{cancelCount++;events.push('cancel')},
   speak:u=>{utter.push(u.text);events.push('speak:'+u.text);if(!neverEnd)Promise.resolve().then(()=>u.onend&&u.onend())}
  };
@@ -103,7 +103,16 @@ async function main(){
   m.api.start(m.row);await settle();m.api.stop('stop');await settle();
   assert.equal(m.api.status().running,false);assert.equal(m.api.status().stats.starts,1);
  });
- console.log(JSON.stringify({pass:count,total:10,environment:'mocked DOM and browser TTS, not Android'}));
+ await check('Local-only privacy setting refuses remote-only Arabic TTS',async()=>{
+  const m=mock({mode:'tafsir'},null,{remoteOnly:true});
+  assert.equal(m.api.start(m.row),false);assert.equal(m.utter.length,0);
+ });
+ await check('Cloud fallback requires explicit user opt-in',async()=>{
+  const m=mock({mode:'tafsir',preferLocal:false},null,{remoteOnly:true});
+  assert.equal(m.api.start(m.row),true);await settle();
+  assert.ok(m.utter.length>0);
+ });
+ console.log(JSON.stringify({pass:count,total:12,environment:'mocked DOM and browser TTS, not Android'}));
 }
 if(typeof module!=='undefined'&&module.exports)module.exports=main;
 if(typeof require!=='undefined'&&require.main===module)main().catch(e=>{console.error(e);process.exitCode=1});
