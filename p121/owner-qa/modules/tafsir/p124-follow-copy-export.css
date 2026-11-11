@@ -1,0 +1,17 @@
+/* BASAIR P124 — styling scoped entirely to the Tafsir reader. */
+#tafsirReader .p124FollowAboveTools {display:flex;justify-content:flex-start;direction:rtl;margin:8px 12px 5px;}
+#tafsirReader .p124Follow {display:inline-flex;gap:7px;align-items:center;justify-content:center;border:1px solid #b4c7bb;border-radius:24px;background:#eef4ef;color:#17543c;font-size:14px;font-weight:800;font-family:inherit;line-height:1.3;padding:9px 14px;min-height:40px;touch-action:manipulation;-webkit-tap-highlight-color:transparent;}
+#tafsirReader .p124Follow span{font-size:15px;color:inherit;}
+#tafsirReader .p124Follow.p124-on{background:#d9ede4;color:#075c3e;border-color:#298465;}
+#tafsirReader [data-p124-copy]{touch-action:manipulation;-webkit-touch-callout:none;user-select:none;}
+.dark #tafsirReader .p124Follow{background:#163d32;color:#ddf4e8;border-color:#547968;}
+.p124ExportDialog{position:fixed;inset:0;z-index:30000;display:none;align-items:center;justify-content:center;padding:15px;}
+.p124ExportDialog.open{display:flex;}.p124ExportDialog .p124Shade{position:absolute;inset:0;background:#061b14ad;}
+.p124ExportDialog .p124ExportPanel{position:relative;max-height:88vh;overflow:auto;width:min(100%,520px);background:#fdfcf7;border:1px solid #c0cdbf;border-radius:18px;padding:15px;color:#1a4a38;box-shadow:0 15px 42px #0004;}
+.p124ExportPanel header{display:flex;justify-content:space-between;align-items:center;font-size:18px;margin-bottom:12px;}
+.p124ExportPanel header button{background:transparent;border:0;font-size:26px;color:inherit;}
+.p124ExportPanel img{display:block;width:100%;height:auto;border-radius:10px;background:#f8f5e8;}
+.p124ExportPanel p{text-align:center;color:#62776a;font-size:13px;}
+.p124ExportPanel footer{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+.p124ExportPanel footer button{background:#1c7254;color:white;font-size:14px;font-weight:700;font-family:inherit;line-height:1.2;min-height:42px;padding:7px 18px;border:0;border-radius:12px;}
+.dark .p124ExportPanel{background:#112f26;color:#f0fbf5;border-color:#608471;}
