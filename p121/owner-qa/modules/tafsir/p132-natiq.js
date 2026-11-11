@@ -125,7 +125,7 @@ function voices(){
  var synth=w.speechSynthesis;if(!synth||typeof synth.getVoices!=='function')return [];
  try{return synth.getVoices().filter(function(v){return /^ar(?:-|$)/i.test(v.lang||'')})}catch(_){return []}
 }
-function voice(){var vs=voices();if(opts.preferLocal){var local=vs.filter(function(v){return v.localService});if(local.length)return local[0]}return vs[0]||null}
+function voice(){var vs=voices();if(opts.preferLocal){var local=vs.filter(function(v){return v.localService});return local[0]||null}return vs[0]||null}
 function ttsReady(){return !!(w.speechSynthesis&&typeof w.SpeechSynthesisUtterance==='function'&&voice())}
 function bridge(){
  // Only a dedicated, audited one-ayah adapter is acceptable. The ordinary
@@ -330,8 +330,8 @@ function panel(){
  '<label>أقسام التفسير<select data-p132-option="sections"><option value="all">جميع أقسام التفسير</option><option value="explanation">البيان والشرح</option><option value="reflection">التدبر والفوائد</option><option value="summary">الخلاصة</option></select></label>'+
  '<label>سرعة النطق<select data-p132-option="rate"><option value="0.8">بطيء</option><option value="0.95">هادئ</option><option value="1">طبيعي</option><option value="1.15">أسرع</option></select></label>'+
  '<label class="p132Check"><input type="checkbox" data-p132-option="autoNext">متابعة الآية التالية تلقائيًا</label>'+
- '<label class="p132Check"><input type="checkbox" data-p132-option="preferLocal">تفضيل صوت عربي محلي عند توفره</label>'+
- '<small>التلاوة الأصلية للقارئ لا تُستبدل بنطق اصطناعي. يعمل الصوت العربي فقط إذا كان المحرك متاحًا بالجهاز.</small>'+
+ '<label class="p132Check"><input type="checkbox" data-p132-option="preferLocal">الصوت العربي المحلي فقط (دون إرسال النص للخدمة السحابية)</label>'+
+ '<small>التلاوة الأصلية للقارئ لا تُستبدل بنطق اصطناعي. إن ألغيت شرط الصوت المحلي فقد يرسل محرك النطق نص التفسير إلى مزود صوت خارجي. التحقق من عمل الصوت محليًا يتطلب اختبار الهاتف.</small>'+
  '<p id="p132NatiqStatus" aria-live="polite"></p></div>';
  d.body.appendChild(box);
  box.addEventListener('click',function(e){if(e.target&&e.target.closest('[data-p132-close]'))box.hidden=true});
