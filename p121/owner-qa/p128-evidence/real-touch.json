@@ -1,0 +1,126 @@
+{
+  "passed": 24,
+  "total": 24,
+  "checks": [
+    {
+      "width": 320,
+      "name": "real R114 running",
+      "pass": true
+    },
+    {
+      "width": 320,
+      "name": "STEP5 tab hidden from duplicate append",
+      "pass": true
+    },
+    {
+      "width": 320,
+      "name": "finger pause retains running",
+      "pass": true
+    },
+    {
+      "width": 320,
+      "name": "touch and wheel do not stop official R114",
+      "pass": true
+    },
+    {
+      "width": 320,
+      "name": "pointer release resumes engine running",
+      "pass": true
+    },
+    {
+      "width": 320,
+      "name": "explicit stop halts R114",
+      "pass": true
+    },
+    {
+      "width": 320,
+      "name": "STEP5 tab restored after explicit stop",
+      "pass": true
+    },
+    {
+      "width": 320,
+      "name": "no exceptions",
+      "pass": true
+    },
+    {
+      "width": 390,
+      "name": "real R114 running",
+      "pass": true
+    },
+    {
+      "width": 390,
+      "name": "STEP5 tab hidden from duplicate append",
+      "pass": true
+    },
+    {
+      "width": 390,
+      "name": "finger pause retains running",
+      "pass": true
+    },
+    {
+      "width": 390,
+      "name": "touch and wheel do not stop official R114",
+      "pass": true
+    },
+    {
+      "width": 390,
+      "name": "pointer release resumes engine running",
+      "pass": true
+    },
+    {
+      "width": 390,
+      "name": "explicit stop halts R114",
+      "pass": true
+    },
+    {
+      "width": 390,
+      "name": "STEP5 tab restored after explicit stop",
+      "pass": true
+    },
+    {
+      "width": 390,
+      "name": "no exceptions",
+      "pass": true
+    },
+    {
+      "width": 430,
+      "name": "real R114 running",
+      "pass": true
+    },
+    {
+      "width": 430,
+      "name": "STEP5 tab hidden from duplicate append",
+      "pass": true
+    },
+    {
+      "width": 430,
+      "name": "finger pause retains running",
+      "pass": true
+    },
+    {
+      "width": 430,
+      "name": "touch and wheel do not stop official R114",
+      "pass": true
+    },
+    {
+      "width": 430,
+      "name": "pointer release resumes engine running",
+      "pass": true
+    },
+    {
+      "width": 430,
+      "name": "explicit stop halts R114",
+      "pass": true
+    },
+    {
+      "width": 430,
+      "name": "STEP5 tab restored after explicit stop",
+      "pass": true
+    },
+    {
+      "width": 430,
+      "name": "no exceptions",
+      "pass": true
+    }
+  ]
+}
