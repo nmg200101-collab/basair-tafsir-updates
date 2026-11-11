@@ -1,0 +1,35 @@
+pi();return !!(f&&f.status&&f.status().running)||resetInFlight;
+  }
+  function manualRows(){
+    var host=E('tafsirAyahs');if(!host)return [];
+    var base=host.querySelector('.v194T2Ayah:not(.v194T5Generated):not(.b118CarryArticle)');
+    if(base && manualBaseArticle!==base){
+      // STEP2 opened a new reader/surah/verse. Old successful transitions
+      // must NOT prevent re-reading the same verse in the new DOM chain.
+      if(manualBaseArticle){manualCompleted.clear();manualFaulted.clear();cancelPendingManual('reader-replaced')}
+      manualBaseArticle=base;manualGateAt=0;
+    }
+    return Array.prototype.filter.call(host.querySelectorAll('.v194T2Ayah:not(.b118CarryArticle)'),function(r){
+      return r.getBoundingClientRect().height>0&&r.getAttribute('aria-hidden')!=='true';
+    });
+  }
+  function manualLocation(row){
+    if(!row)return null;
+    var v=verseRecord(row),q=window.__BASAIR_TAFSIR_CORE__&&window.__BASAIR_TAFSIR_CORE__.q||[];
+    var s=Number(v.s),a=Number(v.a),su=q[s-1];
+    if(!su||!Number.isInteger(a)||a<1||a>Number(su.count||su.ayahs&&su.ayahs.length||0))return null;
+    return {s:s,a:a,type:String(v.type||'basair')};
+  }
+  function locKey(p){return p?String(p.s)+':'+String(p.a)+':'+p.type:'';}
+  function nextLocation(p){
+    if(!p)return null;
+    var Q=window.__BASAIR_TAFSIR_CORE__&&window.__BASAIR_TAFSIR_CORE__.q||[],su=Q[p.s-1];
+    if(!su)return null;
+    var count=Number(su.count||su.ayahs&&su.ayahs.length||0);
+    if(p.a<count)return {s:p.s,a:p.a+1,type:p.type};
+    if(p.s<Q.length)return {s:p.s+1,a:1,type:p.type};
+    return null;
+  }
+  function validatedTail(){
+    var rows=manualRows(),seen=new Set(),tail=null;
+    for(var i=0;i<rows.lengt
