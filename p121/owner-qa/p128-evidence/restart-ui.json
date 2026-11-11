@@ -1,0 +1,111 @@
+{
+  "passed": 21,
+  "total": 21,
+  "checks": [
+    {
+      "width": 320,
+      "name": "no button before update complete",
+      "pass": true
+    },
+    {
+      "width": 320,
+      "name": "still no button while download running",
+      "pass": true
+    },
+    {
+      "width": 320,
+      "name": "restart button shown after success",
+      "pass": true
+    },
+    {
+      "width": 320,
+      "name": "button describes re-opening the app",
+      "pass": true
+    },
+    {
+      "width": 320,
+      "name": "banner also has restart",
+      "pass": true
+    },
+    {
+      "width": 320,
+      "name": "no duplicate restart on refresh",
+      "pass": true
+    },
+    {
+      "width": 320,
+      "name": "no JavaScript errors",
+      "pass": true
+    },
+    {
+      "width": 390,
+      "name": "no button before update complete",
+      "pass": true
+    },
+    {
+      "width": 390,
+      "name": "still no button while download running",
+      "pass": true
+    },
+    {
+      "width": 390,
+      "name": "restart button shown after success",
+      "pass": true
+    },
+    {
+      "width": 390,
+      "name": "button describes re-opening the app",
+      "pass": true
+    },
+    {
+      "width": 390,
+      "name": "banner also has restart",
+      "pass": true
+    },
+    {
+      "width": 390,
+      "name": "no duplicate restart on refresh",
+      "pass": true
+    },
+    {
+      "width": 390,
+      "name": "no JavaScript errors",
+      "pass": true
+    },
+    {
+      "width": 430,
+      "name": "no button before update complete",
+      "pass": true
+    },
+    {
+      "width": 430,
+      "name": "still no button while download running",
+      "pass": true
+    },
+    {
+      "width": 430,
+      "name": "restart button shown after success",
+      "pass": true
+    },
+    {
+      "width": 430,
+      "name": "button describes re-opening the app",
+      "pass": true
+    },
+    {
+      "width": 430,
+      "name": "banner also has restart",
+      "pass": true
+    },
+    {
+      "width": 430,
+      "name": "no duplicate restart on refresh",
+      "pass": true
+    },
+    {
+      "width": 430,
+      "name": "no JavaScript errors",
+      "pass": true
+    }
+  ]
+}
