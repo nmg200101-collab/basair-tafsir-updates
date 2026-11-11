@@ -1,0 +1,140 @@
+/* BASAIR P128 — unified Tafsir auto/manual scroll and no duplicate verses: local follow stop/settings, note and copy/image.
+   Signed modular OTA: module "tafsir" only; no Quran text, Tilawa, audio or native code changes.
+   Runs after the existing B231/P120 reader. Keep P120's seamless DOM and no-flash transition. */
+(function () {
+  'use strict';
+  if (window.__BASAIR_TAFSIR_P128__) return;
+  var VERSION = 'P128.1-UNIFIED-FOLLOW-MANUAL-AND-RESTART';
+  var KEY = 'basair:tafsir:p124:resume';
+  var held = null, holdTimer = 0, blockClickUntil = 0, intended = false;
+  var followHold = null, followHoldTimer = 0, followLongUntil = 0, manualStopAt = 0;
+  var resumeAttempts = 0, lastObserved = '';
+  var observer = null, scheduled = false, exportBusy = false;
+  var exportURL = null;
+  var lastLiveRunning = null, manualScrollAt = 0, feedBusy = false, feedKey = '', feedScheduled = false;
+  var feedWaitTimer = 0, feedRetryAt = 0, prefillCount = 0, manualPointer = null;
+  var feedObserver = null, readerLifecycleObserver = null;
+  var followOwnsReader = false, lastMode = '', cleanupCount = 0;
+  var autoStartToken = 0, resetInFlight = false;
+  var E = function (id) { return document.getElementById(id); };
+  function inTafsir() { var r = E('tafsirReader'); return !!(r && r.classList.contains('active')); }
+  function api() { return window.__BASAIR_TAFSIR_R114__; }
+  function step() { return window.__BASAIR_TAFSIR_STEP2__; }
+  function toast(s) { try { var c = window.__BASAIR_TAFSIR_CORE__; if (c && c.toast) {c.toast(s); return;} if (typeof window.toast === 'function') window.toast(s); } catch (_) {} }
+  function state() { try { return step() && step().state && step().state(); } catch (_) { return null; } }
+  function art() {
+    var host = E('tafsirAyahs'); if (!host) return null;
+    var rows = host.querySelectorAll('.v194T2Ayah:not(.b118CarryArticle)');
+    if (!rows.length) return null;
+    // Manual reading can append verses without Step2.open. The article around
+    // the reading line is the current verse, not the oldest mounted article.
+    var top = Math.max(85, window.innerHeight * .27), best = null, dist = Infinity;
+    for (var i=0;i<rows.length;i++) {
+      var r=rows[i].getBoundingClientRect();
+      if (r.height<1) continue;
+      var d=r.top<=top&&r.bottom>=top ? 0 : Math.min(Math.abs(r.top-top),Math.abs(r.bottom-top));
+      if(d<dist){best=rows[i];dist=d;}
+    }
+    return best||rows[0];
+  }
+  function clean(x) { return String(x || '').replace(/\s+/g, ' ').trim(); }
+  function verseRecord(node) {
+    var st = state() || {}, row = node && node.closest && node.closest('.v194T2Ayah'),
+      bar = row && row.querySelector('.basairB231AyahActions');
+    var a = Number(row && (row.getAttribute('data-t2ayah') || row.getAttribute('data-t5-a'))) || Number(bar && bar.getAttribute('data-a')) || Number(st.a) || 1;
+    var s = Number(row && row.getAttribute('data-t5-s')) || Number(bar && bar.getAttribute('data-s')) || Number(st.s) || 1;
+    var type = String(row && row.getAttribute('data-t5-type') || bar && bar.getAttribute('data-type') || st.type || 'basair');
+    return {s:s, a:a, type:type};
+  }
+  function valid(r) { return r && r.s>=1 && r.s<=114 && r.a>=1 && r.a<=286; }
+  function same(a,b) { return a && b && Number(a.s)===Number(b.s) && Number(a.a)===Number(b.a) && String(a.type)===String(b.type); }
+  function remember(r, scroll) {
+    if (!valid(r)) return;
+    try {localStorage.setItem(KEY,JSON.stringify({s:r.s,a:r.a,type:r.type,at:Date.now(),scroll:Number(scroll)||0}));} catch (_) {}
+    lastObserved = r.s+':'+r.a+':'+r.type;
+  }
+  function saved() { try { var o = JSON.parse(localStorage.getItem(KEY)||'null'); return valid(o)?o:null; } catch (_) {return null;} }
+  function position() {
+    var host = E('tafsirAyahs'); if (!host) return 0;
+    var el = host; while(el && el!==document.body) {
+      try { if (/(auto|scroll)/.test(getComputedStyle(el).overflowY) && el.scrollHeight>el.clientHeight+4) return el.scrollTop||0; } catch (_) {}
+      el = el.parentElement;
+    }
+    return (document.scrollingElement||document.documentElement).scrollTop||0;
+  }
+  function currentRecord() {
+    var active = art();
+    if (active) return verseRecord(active);
+    var st = state(); return st?{s:Number(st.s),a:Number(st.a),type:String(st.type||'basair')}:saved();
+  }
+  function stopFromUser() {
+    // Always invoke the original reader's stop, including during handoff.
+    // The former P124 retry watchdog could restart a deliberate stop.
+    intended=false;resumeAttempts=0;manualStopAt=Date.now();++autoStartToken;resetInFlight=false;
+    var p=currentRecord();if(valid(p))remember(p,position());
+    var f=api();if(f&&typeof f.stop==='function')f.stop();
+    synchronizeReaderMode();renderButtons();
+    return true;
+  }
+  function startFrom(r) {
+    if (!inTafsir()) return false;
+    var f=api(),t=step(),current=currentRecord();
+    if(!f||!f.start) {toast('متابعة التفسير غير جاهزة');return false;}
+    r=valid(r)?r:current||saved();
+    if(!valid(r)) {toast('اختر آية أولًا');return false;}
+    intended=true;manualStopAt=0;
+    var status=f.status&&f.status();
+    if(status&&status.running){remember(current||r,position());renderButtons();return true;}
+    // Preserve verse and scroll coordinates on resume; avoid re-opening it.
+    if(same(current,r)&&art()){
+      remember(r,position());f.start();renderButtons();return true;
+    }
+    if(!t||!t.open){intended=false;toast('تعذر تحديد الآية المطلوبة');return false;}
+    try{t.open(r.s,r.a,r.type);}catch(_){intended=false;toast('تعذر فتح الآية');return false;}
+    var trials=0;
+    (function wait(){
+      if(!intended||manualStopAt||!inTafsir())return;
+      var now=currentRecord();
+      if(same(now,r)&&art()){remember(r,position());f.start();renderButtons();return;}
+      if(++trials<100)setTimeout(wait,80);
+      else {intended=false;toast('لم يكتمل تحميل الآية؛ أعد المحاولة');renderButtons();}
+    })();
+    return true;
+  }
+  function toggleFrom(button) {
+    var f=api(),st=f&&f.status&&f.status();
+    if((st&&st.running)||intended){stopFromUser();return;}
+    var row=button&&button.closest('.v194T2Ayah'),target=row?verseRecord(row):currentRecord();
+    if(!row){var s=saved(),cur=currentRecord();if(s&&cur&&same(s,cur))target=s;}
+    startFromVisible(row);
+  }
+  function settings(){
+    var f=api();
+    if(f&&typeof f.settings==='function'){f.settings();return true;}
+    toast('إعدادات سرعة المتابعة غير متاحة');return false;
+  }
+  function renderButtons(force){
+    var f=api(),on=!!(f&&f.status&&f.status().running);
+    if(!force && lastLiveRunning===on) return;
+    lastLiveRunning=on;
+    document.querySelectorAll('#tafsirAyahs .basairB231AyahActions [data-p125-follow]').forEach(function(b){
+      b.setAttribute('aria-pressed',on?'true':'false');b.classList.toggle('p125-on',on);
+      var label=b.querySelector('b'),labelText=on?'إيقاف':'متابعة';
+      if(label&&label.textContent!==labelText)label.textContent=labelText;
+      var icon=b.querySelector('span'),iconText=on?'Ⅱ':'▶';
+      if(icon&&icon.textContent!==iconText)icon.textContent=iconText;
+      b.title=on?'إيقاف المتابعة — اضغط مطولًا لضبط السرعة':'متابعة من هذه الآية — اضغط مطولًا لضبط السرعة';
+    });
+  }
+  function restoreTopNote(row){
+    // P124 formerly transformed this small note chip into a follow button.
+    // Restore the original small note and its original R3 click handler.
+    row.querySelectorAll('.p124FollowAboveTools').forEach(function(w){w.remove();});
+    row.querySelectorAll('button[data-p124-follow]').forEach(function(b){
+      if(b.closest('.basairB231AyahActions'))return;
+      b.removeAttribute('data-p124-follow');b.classList.remove('p124Follow','p124-on');
+      if(b.hasAttribute('data-r3-note-pos')||b.classList.contains('b263r3NoteChip')){
+        b.classList.add('b263r3NoteChip');
+        b.innerHTML='<span>✎</span><b>ملاحظة</b>';
+        b.setAttribute('aria-label','ملاحظة الآية');
+      }else if(b.hasAt
