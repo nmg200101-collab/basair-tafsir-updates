@@ -68,7 +68,9 @@ check('Long Tafsir is never truncated or dropped',()=>{
 check('A long single word is not discarded',()=>assert.equal(api.splitSpeech('ا'.repeat(300))[0],'ا'.repeat(300)));
 check('No native or Tilawa modifications in P132 module',()=>{
  assert.equal(js.includes('setInterval('),false);
- assert.equal(js.includes('tilawaAudio'),false);
+ assert.equal(js.includes("E('tilawaAudio')"),true); // read-only conflict detection
+ assert.equal(/tilawaAudio\.src\s*=/.test(js),false);
+ assert.equal(/tilawaAudio\.play\s*\(/.test(js),false);
  assert.equal(js.includes('speechSynthesis.speak('),true);
  assert.equal(js.includes('handle.verified!==true'),true);
 });
