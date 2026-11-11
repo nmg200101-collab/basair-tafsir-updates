@@ -1,0 +1,14 @@
+r('pagehide',function(){intended=false;++autoStartToken;});
+    // Update play state without re-painting toolbar HTML.
+    setInterval(function(){monitor();renderButtons(false);},250);
+    if(window.MutationObserver){
+      var rdr=E('tafsirReader');
+      readerLifecycleObserver=new MutationObserver(function(){if(inTafsir())scheduleDecorate()});
+      readerLifecycleObserver.observe(rdr,{attributes:true,attributeFilter:['class']});
+    }
+    markExistingManualArticles();setupManualFeed();synchronizeReaderMode();
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
+  window.__BASAIR_TAFSIR_P129__={version:VERSION,init:decorate,start:startFrom,stop:stopFromUser,settings:settings,exportVerse:exportVerseImage,
+    manualNext:function(){markManualGesture();return requestManualNext(true)},sync:synchronizeReaderMode,status:function(){return {intended:intended,tries:resumeAttempts,saved:saved(),lastObserved:lastObserved,manualStopAt:manualStopAt,exportBusy:exportBusy,feedBusy:feedBusy,manualScrollAt:manualScrollAt,mode:lastMode,cleanupCount:cleanupCount,cursor:validatedTail()&&locKey(validatedTail().location),pending:!!manualPending,gestures:manualGestures,completed:manualCompleted.size,faulted:manualFaulted.size}}};
+})();
