@@ -39,3 +39,6 @@ body.dark #tafsirReader.active .p132NatiqButton{
 .dark #p132Panel label,body.dark #p132Panel label{border-bottom-color:#365747}
 .dark #p132NatiqStatus,body.dark #p132NatiqStatus{color:#b3ead1}
 @media (min-width:740px){#p132Panel{align-items:center}}
+
+#tafsirReader.active .p132NatiqLive:not([hidden]){display:inline-block;vertical-align:middle;max-width:55%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11px;font-weight:600;color:#347056;margin-inline:4px}
+.dark #tafsirReader.active .p132NatiqLive:not([hidden]),body.dark #tafsirReader.active .p132NatiqLive:not([hidden]){color:#bce7d0}
