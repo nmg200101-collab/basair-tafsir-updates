@@ -23,7 +23,7 @@ function normalize(raw){
  x=x.replace(/[﴿﴾۞۩۝«»]/g,' ').replace(/\u0640/g,'');
  x=x.replace(/[\u200B-\u200F\uFEFF]/g,' ').replace(/[ \t]+/g,' ');
  x=x.replace(/\s*([،؛:،؟.!?])\s*/g,'$1 ');
- x=x.replace(/[!?]/g,'؟').replace(/[.;:]/g,'،');
+ x=x.replace(/\?/g,'؟').replace(/!/g,'،').replace(/[.;:؛]/g,'،');
  x=x.replace(/[ \t]*\n[ \t]*/g,'\n').replace(/\n{3,}/g,'\n\n');
  return x.trim();
 }
