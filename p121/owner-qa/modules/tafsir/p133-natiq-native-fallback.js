@@ -221,18 +221,26 @@ function readNativeChunk(s,content,isHeading,v){
   if(token!==s.token||!active){resolve(false);return}
   var n=nativeBridge(),id='p133_'+(++nativeReq);
   if(!n||!nativeStatus().ready){reject(new Error('محرك النطق العربي الأصلي غير جاهز؛ أعد المحاولة'));return}
-  var done=false;
-  nativePending[id]=function(ok){if(done)return;done=true;delete nativePending[id];if(ok)resolve(true);else resolve(false)};
+  var done=false,watchdog=0;
+  nativePending[id]=function(ok,error){
+   if(done)return;
+   done=true;clearTimeout(watchdog);delete nativePending[id];
+   if(error)reject(error);
+   else resolve(ok);
+  };
+  watchdog=setTimeout(function(){
+   if(nativePending[id])nativePending[id](false,new Error('توقف محرك النطق العربي دون إشعار اكتمال'));
+  },60000);
   try{
    var accepted=n.speak(id,content,isHeading?Math.max(.7,opts.rate-.08):opts.rate,v.name);
-   if(!accepted){delete nativePending[id];reject(new Error('رفض محرك Android بدء الكلام العربي'))}
-  }catch(e){delete nativePending[id];reject(new Error('فشل الاتصال بمحرك النطق العربي الأصلي'))}
+   if(!accepted)nativePending[id](false,new Error('رفض محرك Android بدء الكلام العربي'));
+  }catch(e){if(nativePending[id])nativePending[id](false,new Error('فشل الاتصال بمحرك النطق العربي الأصلي'))}
  });
 }
 w.__BASAIR_P133_NATIVE_TTS_EVENT__=function(id,event){
  var cb=nativePending[id];if(!cb)return;
  if(event==='end')cb(true);
- if(event==='error')cb(false);
+ if(event==='error')cb(false,new Error('محرك Android توقف بسبب خطأ في النطق العربي'));
 };
 function readChunk(s,content,isHeading){
  return new Promise(function(resolve,reject){
