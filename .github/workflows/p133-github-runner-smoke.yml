@@ -1,0 +1,23 @@
+name: P133 public runner diagnostic (NO RELEASE)
+
+on:
+  push:
+    branches: [qa/p133-github-runner-smoke-20261111]
+    paths:
+      - .github/workflows/p133-github-runner-smoke.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  runner-diagnostics:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Verify runner allocated
+        run: echo "P133 runner allocated; no application source, secrets, media or APK present"
+      - name: Check Java compiler
+        run: javac -version
+      - name: Ensure no release or APK produced
+        run: test -z "${{ secrets.NO_SUCH_BUILD_SECRET_NONEXISTENT }}"
