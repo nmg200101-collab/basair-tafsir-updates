@@ -1,0 +1,69 @@
+{
+  "status": "UNSIGNED_QA_CANDIDATE_NOT_PUBLISHABLE",
+  "signingRequired": true,
+  "signature": null,
+  "baselineSequence": 9,
+  "baselineRelease": "p121/owner-qa/release.json",
+  "candidate": {
+    "schema": "basair-universal-ota-v1",
+    "channel": "owner-qa",
+    "applicationId": "app.basair.qurv2",
+    "sequence": 10,
+    "id": "P134-TAFSIR-VOICE-SCROLL-OWNER-QA-20261112",
+    "title": "إصلاح الناطق واستقرار تمرير التفسير — نسخة اختبار المالك",
+    "minAppVersion": 695,
+    "deliveryMode": "notify",
+    "issuedAt": "2026-11-12T21:00:00Z",
+    "expiresAt": "2027-02-10T21:00:00Z",
+    "modules": [
+      {
+        "id": "tafsir",
+        "version": 9,
+        "assets": [
+          {
+            "path": "modules/tafsir/p131-verse-tools.css",
+            "kind": "css",
+            "size": 5717,
+            "sha256": "a41e96fb1b9c079e6aa6e4b962b49bbed76162c99fa5fb3fb1101fff5b8dce77"
+          },
+          {
+            "path": "modules/tafsir/p132-natiq.css",
+            "kind": "css",
+            "size": 3492,
+            "sha256": "38297624b2a983aeec5fd009bc87ac966e67a5e1ce8a79f7e7e2086049ecf72e"
+          },
+          {
+            "path": "modules/tafsir/p134-verse-tools.js",
+            "kind": "js",
+            "size": 43085,
+            "sha256": "cd492a5cd06207377d8a76468814d600fd52749de83c56895e36f81bbcae5fe4"
+          },
+          {
+            "path": "modules/tafsir/p132-ayah-catalog.js",
+            "kind": "js",
+            "size": 3036,
+            "sha256": "c1c231fb33ffff149ec0cc7cb8e7d007c1238db6655e1be925a2d47343cf1080"
+          },
+          {
+            "path": "modules/tafsir/p132-reciter-bridge.js",
+            "kind": "js",
+            "size": 7075,
+            "sha256": "ed9c205b8abc9e1bef47288220cc9a3a376ebfe39e9e22a291599263e32a4025"
+          },
+          {
+            "path": "modules/tafsir/p134-natiq.js",
+            "kind": "js",
+            "size": 33388,
+            "sha256": "05e985262a0c1da539f999afbf1913ee4760515a31aa1b79bf7d28f3884da5ed"
+          }
+        ]
+      }
+    ]
+  },
+  "protectedTilawaChannel": "p92/owner-qa-001/release.json",
+  "qa": {
+    "nodeSimulated": "19/19 PASS",
+    "realAndroid": "NOT TESTED",
+    "ownerLock": "EXACT SIGNED APPROVAL REQUIRED"
+  }
+}
