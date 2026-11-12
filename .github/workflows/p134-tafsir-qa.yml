@@ -24,3 +24,5 @@ jobs:
         run: node p134/tests/test-p134-natiq.js
       - name: Scroll safety static assertions (NOT device proof)
         run: node p134/tests/test-p134-scroll.js
+      - name: Verify signed-channel draft asset digests (UNSIGNED)
+        run: node p134/tests/test-p134-candidate.js
