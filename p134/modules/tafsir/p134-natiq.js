@@ -39,7 +39,7 @@ function ineligible(el){
  if(!el||el.nodeType!==1)return false;
  if(/^(SCRIPT|STYLE|NOSCRIPT|BUTTON|INPUT|SELECT|TEXTAREA|AUDIO|VIDEO|SVG|CANVAS|NAV|FOOTER)$/i.test(el.tagName||''))return true;
  var cls=String(el.className||'');
- if(/(^|\s)(v194T2Qrow|basairB231AyahActions|b118CarryArticle|p124ExportDialog|p132NatiqBar|p132Panel|p132NatiqStatus|v194T5Sentinel)(\s|$)/.test(cls))return true;
+ if(/(^|\s)(v194T2Qrow|basairB231AyahActions|b118CarryArticle|p124ExportDialog|p132NatiqBar|p132NatiqLive|p132NatiqButton|p132Panel|p132NatiqStatus|v194T5Sentinel)(\s|$)/.test(cls))return true;
  // Placeholder text is not exegesis; do not pretend it is a valid tafsir.
  if(/(^|\s)v194T2Field(\s|$)/.test(cls)&&/(^|\s)pending(\s|$)/.test(cls))return true;
  if(el.hasAttribute('hidden')||el.getAttribute('aria-hidden')==='true')return true;
