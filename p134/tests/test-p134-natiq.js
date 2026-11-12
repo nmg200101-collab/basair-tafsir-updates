@@ -46,12 +46,12 @@ async function main(){
  await check('Native local Arabic voice used without browser speechSynthesis',()=>{
   const m=setup();assert.equal(m.api.capabilities().arabicTTS,true);
   assert.equal(m.api.start(m.row),true);assert.equal(m.pending.length,1);
-  assert.match(m.pending[0].value,/اللمسة البيانية/);
+  assert.match(m.pending[0].value,/اللمسة البيانية/);m.api.stop();
  });
  await check('Tafsir follows only native completion, not a fixed timeout',async()=>{
   const m=setup();m.api.start(m.row);await delay(15);
   assert.equal(m.pending.length,1);m.emit(0,'end');await delay(260);
-  assert.ok(m.pending.length>=2);assert.match(m.pending[1].value,/بيان عظيم/);
+  assert.ok(m.pending.length>=2);assert.match(m.pending[1].value,/بيان عظيم/);m.api.stop();
  });
  await check('Native error cancels the current reading session',async()=>{
   const m=setup();m.api.start(m.row);m.emit(0,'error');await delay(10);
@@ -77,13 +77,13 @@ async function main(){
   const m=setup({mode:null});
   assert.equal(m.api.status().options.mode,'tafsir');
   assert.equal(m.api.start(m.row),true);
-  assert.ok(m.pending.length>0);
+  assert.ok(m.pending.length>0);m.api.stop();
  });
  await check('P134 both-mode gracefully narrates Tafsir when no verified reciter track',()=>{
   const m=setup({mode:'both'});
   assert.equal(m.api.start(m.row),true);
   assert.ok(m.toasts.some(t=>/التفسير فقط/.test(t)));
-  assert.ok(m.pending.length>0);
+  assert.ok(m.pending.length>0);m.api.stop();
  });
  await check('P134 TTS UI mutation does not cancel active session',()=>{
   const m=setup();m.api.start(m.row);
@@ -92,7 +92,7 @@ async function main(){
   const body=m.row.querySelector('.v194T2Body');
   body.contains=()=>true;
   m.mutate([{type:'characterData',target:t}]);
-  assert.equal(m.api.status().running,true);
+  assert.equal(m.api.status().running,true);m.api.stop();
  });
  console.log(JSON.stringify({pass:count,total:11,native:'mock only',androidDevice:'not tested'}));
 }
