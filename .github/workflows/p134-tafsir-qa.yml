@@ -1,0 +1,26 @@
+name: P134 isolated Tafsir QA
+on:
+  pull_request:
+    paths:
+      - 'p134/**'
+      - '.github/workflows/p134-tafsir-qa.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  p134-tafsir-simulated:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Syntax validate isolated replacement assets
+        run: |
+          node --check p134/modules/tafsir/p134-natiq.js
+          node --check p134/modules/tafsir/p134-verse-tools.js
+      - name: Simulated narrator tests (NOT Android proof)
+        run: node p134/tests/test-p134-natiq.js
+      - name: Scroll safety static assertions (NOT device proof)
+        run: node p134/tests/test-p134-scroll.js
