@@ -94,7 +94,16 @@ async function main(){
   m.mutate([{type:'characterData',target:t}]);
   assert.equal(m.api.status().running,true);m.api.stop();
  });
- console.log(JSON.stringify({pass:count,total:11,native:'mock only',androidDevice:'not tested'}));
+ await check('P134 never includes narrator status or error in Tafsir source text',()=>{
+  const m=setup(),body=m.row.querySelector('.v194T2Body');
+  const status=el('small',[text('رسالة حالة الناطق ليست جزءًا من التفسير')]);
+  status.className='p132NatiqLive';
+  let tail=body.firstChild;while(tail.nextSibling)tail=tail.nextSibling;tail.nextSibling=status;
+  const result=m.api.segments(m.row).map(x=>x.text).join(' ');
+  assert.ok(!result.includes('رسالة حالة الناطق'));
+  assert.ok(result.includes('في هذه الآية'));
+ });
+ console.log(JSON.stringify({pass:count,total:12,native:'mock only',androidDevice:'not tested'}));
 }
 if(typeof module!=='undefined'&&module.exports)module.exports=main;
 if(typeof require!=='undefined'&&require.main===module)main().catch(e=>{console.error(e);process.exitCode=1});
