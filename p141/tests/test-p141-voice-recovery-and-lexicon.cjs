@@ -25,7 +25,15 @@ function setup({chosen='native:bad',lastGood='',guide=true,sourceOnly=false}={})
  const row={isConnected:true,getAttribute:k=>k==='data-t2ayah'?'1':k==='data-t5-s'?'1':k==='data-t5-type'?'basair':null,
  querySelector:k=>k==='.v194T2Body'?body:null};
  const rdr={classList:{contains:k=>k==='active'},querySelectorAll:()=>legacy};
- const host={querySelectorAll:()=>[]};
+ // The real Tafsir ayah host can be a sibling rather than a descendant
+ // of #tafsirReader. Test both independent roots.
+ const hostLegacy=[
+  {tagName:'BUTTON',hidden:false,disabled:false,attrs:{},
+   getAttribute(k){return this.attrs[k]||null},setAttribute(k,v){this.attrs[k]=v}},
+  {tagName:'BUTTON',hidden:false,disabled:false,attrs:{},
+   getAttribute(k){return this.attrs[k]||null},setAttribute(k,v){this.attrs[k]=v}}
+ ];
+ const host={querySelectorAll:q=>q.indexOf('v194T2Ayah')>=0?[]:hostLegacy};
  const doc={readyState:'complete',hidden:false,body:{appendChild(){}},
   getElementById:k=>k==='tafsirReader'?rdr:k==='tafsirAyahs'?host:null,
   createElement:k=>({tagName:k,hidden:false,setAttribute(){},querySelector(){return null},addEventListener(){}}),
@@ -41,7 +49,7 @@ function setup({chosen='native:bad',lastGood='',guide=true,sourceOnly=false}={})
  };
  if(sourceOnly){delete win.BasairNativeArabicTts}
  new Function('window','document',source)(win,doc);
- return {win,api:win.__BASAIR_TAFSIR_NATIQ_P132__,pending,toasts,store,legacy,row,
+ return {win,api:win.__BASAIR_TAFSIR_NATIQ_P132__,pending,toasts,store,legacy,hostLegacy,row,
   emit:(i,type)=>win.__BASAIR_P133_NATIVE_TTS_EVENT__(pending[i].id,type)};
 }
 async function main(){
@@ -49,7 +57,20 @@ async function main(){
  await check('legacy narrator buttons anywhere inside Tafsir reader are disabled',()=>{
   const m=setup();assert.ok(m.legacy.every(el=>el.hidden&&el.disabled));
   assert.equal(m.api.diagnostics().legacyCleanup,true);
-  assert.ok(m.api.status().stats.legacyHidden>=2);m.api.stop();
+  assert.ok(m.api.status().stats.legacyHidden>=4);m.api.stop();
+ });
+ await check('legacy narrator buttons under sibling #tafsirAyahs are also removed',()=>{
+  const m=setup();
+  assert.ok(m.hostLegacy.every(el=>el.hidden&&el.disabled&&el.attrs['aria-hidden']==='true'));
+  assert.equal(m.api.diagnostics().dualRootCleanup,true);m.api.stop();
+ });
+ await check('CSS applies wave and tool dimensions without assuming nested reader',()=>{
+  const css=fs.readFileSync(path.resolve(__dirname,'../../p121/owner-qa/modules/tafsir/p141-natiq.css'),'utf8');
+  for(const rule of ['#tafsirAyahs .p140WaveButton','#tafsirAyahs .p141WaveButton',
+   '#tafsirAyahs .basairB231AyahActions','#tafsirAyahs .p132NatiqButton']){
+   assert.ok(css.includes(rule),'missing independent root selector '+rule);
+  }
+  assert.ok(css.includes('min-height:44px!important'),'minimum accessible tool tap height must be preserved');
  });
  await check('guided Allah, Lillah, Allahumma and proper names have no speculative case ending',()=>{
   const m=setup();
@@ -85,6 +106,6 @@ async function main(){
   const m=setup();assert.equal(m.api.status().options.voiceSource,'local');
   assert.equal(m.api.diagnostics().serverAvailable,false);m.api.stop();
  });
- console.log(JSON.stringify({pass:n,total:6,device:'NOT TESTED',privacy:'local only'}));
+ console.log(JSON.stringify({pass:n,total:8,device:'NOT TESTED',privacy:'local only',siblingHost:'COVERED'}));
 }
 main().catch(e=>{console.error(e);process.exitCode=1});
