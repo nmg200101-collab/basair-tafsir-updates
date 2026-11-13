@@ -1,0 +1,41 @@
+<!doctype html><html lang="ar" dir="rtl"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="stylesheet" href="../../p121/owner-qa/modules/tafsir/p143-natiq.css">
+<title>P143 coordinated Tafsir controls test</title></head>
+<body style="font-size:125%">
+<section id="tafsirReader" class="active"><h2>تفسير بصائر القرآن</h2></section>
+<section id="tafsirAyahs"><article class="v194T2Ayah">
+<button id="old142" class="p142WaveButton">الناطق القديم</button>
+<button id="note" class="b263r3NoteChip p143NoteChip" aria-label="ملاحظة الآية">
+<svg class="p143NoteIcon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 5H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7"></path><path d="m16 4 4 4M9 15l-1 3 3-1 9-9a2.1 2.1 0 0 0-3-3l-8 10Z"></path></svg><b class="p143NoteLabel">ملاحظة</b>
+</button>
+<button id="mic" class="p143MicButton" aria-label="الناطق">
+<svg class="p143MicIcon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="9" y="2.5" width="6" height="12" rx="3"></rect><path d="M5.5 10.5v1.5a6.5 6.5 0 0 0 13 0v-1.5M12 18.5V22M8 22h8"></path></svg><b class="p143MicLabel">الناطق</b>
+</button>
+<div class="basairB231AyahActions"><button>متابعة</button><button>نسخ</button><button>مقارنة</button><button>مفضلة</button></div>
+</article></section>
+<section id="independentTilawa"><button id="outside" class="p142WaveButton">باقي التطبيق</button></section>
+<pre id="result">pending</pre>
+<script>
+window.addEventListener('load',()=>{
+ const by=id=>document.getElementById(id),style=id=>getComputedStyle(by(id));
+ const mic=by('mic').getBoundingClientRect(),note=by('note').getBoundingClientRect();
+ const micIcon=by('mic').querySelector('svg').getBoundingClientRect(),
+ micLabel=by('mic').querySelector('b').getBoundingClientRect(),
+ noteIcon=by('note').querySelector('svg').getBoundingClientRect(),
+ noteLabel=by('note').querySelector('b').getBoundingClientRect();
+ const action=document.querySelector('.basairB231AyahActions button').getBoundingClientRect();
+ const sameSize=Math.abs(mic.width-note.width)<=2&&Math.abs(mic.height-note.height)<=2;
+ const pass=style('old142').display==='none'&&style('outside').display!=='none'&&
+ style('mic').display==='inline-flex'&&style('note').display==='inline-flex'&&
+ style('mic').flexDirection==='column'&&style('note').flexDirection==='column'&&
+ mic.height>=48&&mic.height<=54&&note.height>=48&&note.height<=54&&
+ mic.width>=61&&mic.width<=72&&sameSize&&
+ micIcon.bottom<micLabel.top&&noteIcon.bottom<noteLabel.top&&action.height>=44;
+ by('result').textContent=JSON.stringify({pass,oneMic:true,sameSize,
+  mic:{width:mic.width,height:mic.height,layout:style('mic').flexDirection},
+  note:{width:note.width,height:note.height,layout:style('note').flexDirection},
+  iconAboveLabel:micIcon.bottom<micLabel.top&&noteIcon.bottom<noteLabel.top,
+  actionHeight:action.height,oldHidden:style('old142').display==='none',otherUnaffected:style('outside').display!=='none'});
+});
+</script></body></html>
