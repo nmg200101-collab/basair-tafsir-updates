@@ -308,8 +308,7 @@ async function readQuran(s){
   throw new Error('مصدر التلاوة لم يؤكد مطابقة القارئ والآية');
  }
  s.audioSession=handle;
- await handle.ended;
- s.audioSession=null;
+ try{await handle.ended}finally{s.audioSession=null}
  return token===s.token;
 }
 function nextVerse(v){
@@ -343,7 +342,15 @@ async function sequence(s){
   while(token===s.token){
    if(!tafsirOpen()||!s.row.isConnected)throw new Error('تم إغلاق التفسير أو تغيير الآية');
    if(s.mode==='both'||s.mode==='recitation'){
-    var heard=await readQuran(s);if(!heard)return;
+    try{
+     var heard=await readQuran(s);if(!heard)return;
+    }catch(ayahError){
+     if(token!==s.token||!active)return;
+     if(s.mode==='recitation')throw ayahError;
+     // A failed network recording must not silence otherwise working Tafsir.
+     stats.sourceUnavailable++;
+     toast('تعذر تشغيل تسجيل الآية لهذا القارئ؛ سنُكمل نطق التفسير فقط. يمكنك تجربة قارئ آخر.');
+    }
     if(s.mode==='both'&&!(await sectionPause(s,420)))return;
    }
    if(s.mode==='both'||s.mode==='tafsir'){
