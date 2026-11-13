@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="stylesheet" href="../../p121/owner-qa/modules/tafsir/p141-natiq.css">
+<title>P141 dual-root CSS visual contract</title>
+</head>
+<body style="font-size:125%">
+<!-- The key regression is sibling roots rather than nested roots. -->
+<section id="tafsirReader" class="active"><h2>تفسير بصائر القرآن</h2></section>
+<section id="tafsirAyahs">
+  <article class="v194T2Ayah">
+    <button id="note" class="b263r3NoteChip">ملاحظة</button>
+    <button id="old132" class="p132NatiqButton">ناطق P132</button>
+    <button id="old137" class="p137NatiqButton">ناطق P137</button>
+    <button id="old138" class="p138MicButton">ميكروفون P138</button>
+    <button id="old139" class="p139WaveButton">ناطق P139</button>
+    <button id="old140" class="p140WaveButton">ناطق P140</button>
+    <button id="new141" class="p141WaveButton"><span class="p141Waves">◖))</span><b>الناطق</b></button>
+    <div class="basairB231AyahActions">
+      <button>متابعة</button><button>نسخ نص مطول</button><button>مقارنة</button><button>مفضلة</button>
+    </div>
+  </article>
+</section>
+<section id="independentTilawa"><button class="p132NatiqButton" id="outside">Other unrelated UI</button></section>
+<pre id="result">pending</pre>
+<script>
+window.addEventListener('load',function(){
+ const ids=['old132','old137','old138','old139','old140'];
+ const el=id=>document.getElementById(id),st=id=>getComputedStyle(el(id));
+ const hidden=ids.every(id=>st(id).display==='none');
+ const wave=st('new141');
+ const tool=getComputedStyle(document.querySelector('.basairB231AyahActions>button'));
+ const note=st('note');
+ const outside=st('outside');
+ const h=Math.round(parseFloat(wave.height)),w=parseFloat(wave.width),toolH=parseFloat(tool.height);
+ const pass=hidden&&wave.display==='inline-flex'&&h>=34&&h<=38&&w<=104&&
+  tool.display==='flex'&&toolH>=44&&toolH<=54&&outside.display!=='none'&&
+  parseFloat(note.height)>=32;
+ const out={pass,hiddenLegacy:ids.map(id=>[id,st(id).display]),
+  wave:{display:wave.display,height:wave.height,width:wave.width},
+  tool:{display:tool.display,height:tool.height},outside:outside.display};
+ document.getElementById('result').textContent=JSON.stringify(out);
+});
+</script>
+</body></html>
