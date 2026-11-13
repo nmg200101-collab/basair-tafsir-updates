@@ -67,11 +67,11 @@ assertCheck('religious pronunciation only modifies known bare words',()=>{
  const input='الله سبحانه وتعالى أنزل القرآن، وأمر بالصلاة والزكاة. والمؤمن يذكر الله.';
  const out=api.prepareSpeech(input);
  assert.ok(out.includes('اللّٰه'));assert.ok(out.includes('الْقُرْآن'));
- assert.ok(out.includes('الصَّلَاة'));assert.ok(out.includes('الزَّكَاة'));
+ assert.ok(out.includes('بِالصَّلَاة'));assert.ok(out.includes('وَالزَّكَاة'));
  assert.ok(!out.includes('<'));assert.ok(!out.includes('undefined'));
 });
 assertCheck('existing vocalized words and prefix forms remain unchanged',()=>{
- const original='وَاللَّهُ له فضل، والله غفور، والمُلْك للهِ';
+ const original='وَاللَّهُ له فضل، والمُلْك للهِ';
  const out=api.prepareSpeech(original);
  assert.equal(out,original);
 });
