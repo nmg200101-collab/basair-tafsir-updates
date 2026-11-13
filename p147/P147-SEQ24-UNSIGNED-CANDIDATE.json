@@ -1,0 +1,87 @@
+{
+  "status": "UNSIGNED_CANDIDATE_DO_NOT_PUBLISH",
+  "ownerApprovalRequired": true,
+  "verifiedBase": {
+    "sequence": 23,
+    "releaseBlobSha1": "d3f617f616970a75b0edb638b00d011853fbec11",
+    "previousVersion": 21,
+    "previousAssets": 8
+  },
+  "sourceBranch": "fix/p147-tafsir-notes-brief-hierarchy-20261113",
+  "signing": null,
+  "productionPublished": false,
+  "notes": [
+    "This is a metadata-only release candidate; it is NOT a valid signed OTA envelope.",
+    "Set issuedAt/expiresAt only at signing time, sign the canonical original-receiver payload with owner private RSA, verify all SHA256 asset digests.",
+    "Do not modify active p121/owner-qa/release.json or merge/publish before owner authorization and browser/device acceptance.",
+    "P146 Seq23 signed rollback remains in main, unchanged."
+  ],
+  "proposedPayload": {
+    "schema": "basair-universal-ota-v1",
+    "channel": "owner-qa",
+    "applicationId": "app.basair.qurv2",
+    "sequence": 24,
+    "id": "P147-TAFSIR-NOTES-NIGHT-OWNER-QA-20261113",
+    "title": "توحيد الناطق قرب الآية وإعادة الملاحظات إلى أسفل التفسير وإبراز التبويب المحدد",
+    "minAppVersion": 694,
+    "deliveryMode": "notify",
+    "issuedAt": null,
+    "expiresAt": null,
+    "modules": [
+      {
+        "id": "tafsir",
+        "version": 22,
+        "assets": [
+          {
+            "path": "modules/tafsir/p131-verse-tools.css",
+            "kind": "css",
+            "size": 5717,
+            "sha256": "a41e96fb1b9c079e6aa6e4b962b49bbed76162c99fa5fb3fb1101fff5b8dce77"
+          },
+          {
+            "path": "modules/tafsir/p144-natiq.css",
+            "kind": "css",
+            "size": 35547,
+            "sha256": "c23a89096b23172f18614b600e83404abc0f528a1c4de1dda950e7931e2bbf3b"
+          },
+          {
+            "path": "modules/tafsir/p134-verse-tools.js",
+            "kind": "js",
+            "size": 43085,
+            "sha256": "cd492a5cd06207377d8a76468814d600fd52749de83c56895e36f81bbcae5fe4"
+          },
+          {
+            "path": "modules/tafsir/p136-ayah-catalog.js",
+            "kind": "js",
+            "size": 3734,
+            "sha256": "d5126157a176b6b32fd40d88cd71d323d428e2e5ebeae8546b1752c9ab8279f2"
+          },
+          {
+            "path": "modules/tafsir/p136-reciter-bridge.js",
+            "kind": "js",
+            "size": 7358,
+            "sha256": "2b3ef7d3a3f25180298f2828fec537d88962a575c138852bb13300a602b56c43"
+          },
+          {
+            "path": "modules/tafsir/p144-natiq.js",
+            "kind": "js",
+            "size": 59259,
+            "sha256": "ca458ef6665f353d8de508256757482d32df436492dbf202208e368116760eba"
+          },
+          {
+            "path": "modules/tafsir/p147-reader-polish.css",
+            "kind": "css",
+            "size": 19912,
+            "sha256": "edb4265ba5e05ba88a424fca34b943a0474becabe2f4cc1b51b031343b6a881d"
+          },
+          {
+            "path": "modules/tafsir/p147-reader-polish.js",
+            "kind": "js",
+            "size": 21051,
+            "sha256": "938897728b9e35edb572cc891e798b2e2059697e92e4e5b6e91960207a6b1724"
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,102 @@
+<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="stylesheet" href="../../p121/owner-qa/modules/tafsir/p147-reader-polish.css">
+<style>body{font-size:125%}.v194T2Ayah{border:1px solid #ccc;padding:8px;margin:8px}
+.b263r3NoteChip{width:140px!important;height:90px!important;padding:20px!important}
+.basairB231AyahActions{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:3px}
+.card{background:white;border:4px solid #b5c2b9;box-shadow:0 2px 6px #777;padding:18px;margin:12px 0}
+.card p,.card small{font-size:12px;line-height:1.15}
+</style></head>
+<body data-basair-tafsir-main-tab="tafsir">
+<section id="tafsirReader" class="active">
+<div id="basairTafsirPrimaryTabs">
+<button class="on" aria-selected="true" data-basair-main-tab="tafsir">التفسير</button>
+<button aria-selected="false" data-basair-main-tab="intro">مقدمة السورة</button>
+<button aria-selected="false" data-basair-main-tab="thread">خيط السورة</button>
+</div>
+<div class="card" id="summary"><h3>خلاصة السورة</h3>
+<p id="summaryCopy">التعريف بالله وأسمائه ورحمته، ثم بيان العبودية والدعاء والهداية إلى الصراط المستقيم.</p></div>
+<div class="card" id="stations"><h3>أبرز المحطات</h3><div class="card" id="point">
+<b>محطة عند الآية 1</b><small id="smallCopy">ابدأ بالله، فصفحة البداية تحدد جهة الطريق بوضوح ومعنى يتصل بالآيات.</small></div></div>
+</section>
+<div id="tafsirAyahs">
+<article class="v194T2Ayah" data-t2ayah="1">
+<div class="v194T2Qrow">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>
+<div class="v194T2Body"><div class="v194T2FieldTitle" id="fieldTitle"><b>اللمسة البيانية</b><small>بيان لغوي</small></div><p>تفسير الآية الأولى</p></div>
+<button type="button" id="duplicateNote" class="b263r3NoteChip p144NoteChip">ملاحظة مكررة</button>
+<button type="button" id="originalNote" data-r3-note-pos="1" class="b263r3NoteChip p144NoteChip"><svg class="p144NoteIcon"></svg><b class="p144NoteLabel">ملاحظة</b></button>
+<button type="button" id="mic" class="p144MicButton">الناطق</button>
+<div class="basairB231AyahActions" id="actions">
+<button>متابعة</button><button>نسخ</button><button>مقارنة</button><button>مفضلة</button>
+</div></article>
+</div>
+<a id="source" href="https://quranenc.com/ar/browse/arabic_moyassar/1/1">فتح المصدر</a>
+<pre id="result">PENDING</pre>
+<script>
+window.__BASAIR_TAFSIR_STEP2__={state:()=>({s:1,a:1,type:'muyassar'}),open:()=>{}};
+window.__BASAIR_TAFSIR_CORE__={getMuyassarSurah:()=>new Promise(()=>{})};
+window.__noteClicks=0;
+document.getElementById('originalNote').addEventListener('click',()=>window.__noteClicks++);
+window.fetch=()=>Promise.resolve({ok:true,json:()=>Promise.resolve({
+schema:'basair-muyassar-surah-v1',s:1,ayah_count:2,ayahs:['بيان أول','بيان ثان']})});
+</script>
+<script src="../../p121/owner-qa/modules/tafsir/p147-reader-polish.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded',function(){
+ try{
+ const api=window.__BASAIR_TAFSIR_P147__;
+ const note=document.getElementById('originalNote'),dup=document.getElementById('duplicateNote'),
+       bar=document.getElementById('actions'), mic=document.getElementById('mic');
+ const top=mic.closest('.p146TopMic');
+ note.click();
+ const noteFirst=note.parentElement===bar&&bar.children.length===5;
+ const sizes=[note.getBoundingClientRect().height,note.getBoundingClientRect().width];
+ const grid=getComputedStyle(bar).gridTemplateColumns.split(' ').length;
+ const five=grid===5;
+ const stable=!!top&&top.previousElementSibling.classList.contains('v194T2Qrow')&&
+  noteFirst&&dup.hidden&&dup.disabled&&window.__noteClicks===1&&five&&sizes[0]>=44&&sizes[0]<=47;
+ // Simulate an older style writer resetting 4 columns; P147 observes and repairs.
+ bar.style.setProperty('grid-template-columns','repeat(4,minmax(0,1fr))','important');
+ const tabs=[...document.querySelectorAll('#basairTafsirPrimaryTabs button')];
+ for(const t of tabs){t.classList.toggle('on',t.dataset.basairMainTab==='thread');
+  t.setAttribute('aria-selected',t.dataset.basairMainTab==='thread'?'true':'false')}
+ api.decorateReading();
+ const copy=document.getElementById('smallCopy'),heading=document.querySelector('#stations h3');
+ const prose=copy.classList.contains('p147ReadingCopy')&&
+   getComputedStyle(copy).fontSize!=='12px'&&
+   document.getElementById('summaryCopy').classList.contains('p147ReadingCopy');
+ const introThread=heading.classList.contains('p147ReadingHeading')&&prose&&
+  document.body.dataset.p147ReadingTab==='thread';
+ const before=getComputedStyle(copy).color;
+ document.documentElement.classList.add('dark'); // Android may flag HTML instead of BODY
+ api.syncVisualMode();api.decorateReading();
+ const after=getComputedStyle(copy).color;
+ const dark=before!==after;
+ const htmlNight=document.body.getAttribute('data-p147-night')==='1';
+ const field=document.getElementById('fieldTitle');
+ const fieldTone=field.getAttribute('data-p147-field-tone')==='bayani';
+ const titleNightColor=getComputedStyle(field).color;
+ const tabsNightColor=getComputedStyle(document.getElementById('basairTafsirPrimaryTabs')).backgroundColor;
+ const highContrast=titleNightColor!=='rgb(12, 68, 56)'&&
+    tabsNightColor!=='rgb(240, 244, 239)';
+ document.documentElement.classList.remove('dark');
+ api.syncVisualMode();
+ const restoresDay=document.body.getAttribute('data-p147-night')==='0';
+ const result={pass:stable&&introThread&&dark&&htmlNight&&fieldTone&&highContrast&&restoresDay,noteFirst,duplicateHidden:dup.hidden,
+    listenerPreserved:window.__noteClicks===1,toolbarColumns:grid,
+    noteHeight:sizes[0],noteWidth:sizes[1],micTop:!!top,prose,readingTab:document.body.dataset.p147ReadingTab,dark,htmlNight,fieldTone,highContrast,restoresDay,titleNightColor,tabsNightColor};
+ setTimeout(function(){
+   // Legacy P144 may overwrite five columns after initial render: verify
+   // MutationObserver restores a stable five-tool bar (not only initial size).
+   const repairedColumns=getComputedStyle(bar).gridTemplateColumns.split(' ').length===5;
+   const noteStillActive=note.parentElement===bar&&!note.disabled&&!note.hidden;
+   const noDuplicate=!dup.disabled?false:dup.hidden;
+   result.gridRestoredAfterLegacyStyle=repairedColumns;
+   result.noteStillActiveAfterMutation=noteStillActive;
+   result.duplicateStillInert=noDuplicate;
+   result.pass=result.pass&&repairedColumns&&noteStillActive&&noDuplicate;
+   document.getElementById('result').textContent=JSON.stringify(result);
+ },410);
+ }catch(e){document.getElementById('result').textContent='ERROR: '+e.stack}
+});
+</script></body></html>
