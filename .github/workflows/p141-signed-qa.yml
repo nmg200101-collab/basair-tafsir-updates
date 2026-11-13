@@ -1,0 +1,34 @@
+name: P141 signed owner QA seq18 validation (temporary)
+on:
+  pull_request:
+    paths:
+      - 'p141/**'
+      - 'p121/owner-qa/release*.json'
+      - '.github/workflows/p141-signed-qa.yml'
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify owner signature and all six OTA assets
+        run: node p141/tests/test-p141-signed-release.cjs
+      - name: Re-run dual-root tests and core narration regression
+        run: |
+          node p141/tests/test-p141-natiq.cjs
+          node p141/tests/test-p141-narrator-integration.cjs
+          node p141/tests/test-p141-auto-next.cjs
+          node p141/tests/test-p141-wave-toggle.cjs
+          node p141/tests/test-p141-voice-recovery-and-lexicon.cjs
+      - name: Verify real Chromium sibling-root visual contract
+        shell: bash
+        run: |
+          CHROME="$(command -v google-chrome || command -v chromium || true)"
+          test -n "$CHROME"
+          "$CHROME" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage --allow-file-access-from-files \
+            --dump-dom "file://$PWD/p141/tests/p141-dual-root-layout.html" 2>/dev/null | grep -F '"pass":true'
