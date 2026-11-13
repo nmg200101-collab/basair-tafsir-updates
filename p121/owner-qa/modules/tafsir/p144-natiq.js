@@ -19,18 +19,41 @@ if(baseV695&&baseV695!==previousNarrator&&typeof baseV695.stop==='function'){
 var opts={mode:'both',sections:'all',rate:0.9,autoNext:false,preferLocal:true,voiceURI:'',reciterId:'follow',religiousGuide:true,voiceSource:'local'};
 var active=null,token=0,mountTimer=0,observer=null,viewObserver=null,longTimer=0,longPressUntil=0,press=null;
 var lastDrawnButton=null,lastLiveLabel=null,lastTappedButton=null;
-var nativeReq=0,nativePending=Object.create(null),lastWorkingVoiceURI='',beforeVoiceChoice='';
+var nativeReq=0,nativePending=Object.create(null),lastWorkingVoiceURI='',beforeVoiceChoice='',statusTimer=0;
 var stats={starts:0,stops:0,spokenChunks:0,skippedSymbols:0,sourceUnavailable:0,staleCancelled:0,errors:0,nativeStarts:0,nativeErrors:0,nativeNoStart:0,nativeRetries:0,browserFallbacks:0,nextTransitions:0,voiceReverted:0,legacyHidden:0};
 function E(id){return d.getElementById(id)}
 function tafsirOpen(){var x=E('tafsirReader');return !!(x&&x.classList.contains('active'))}
 function q(s){return String(s==null?'':s)}
+function setPriority(el,key,val){
+ if(el&&el.style&&typeof el.style.setProperty==='function')
+  el.style.setProperty(key,val,'important');
+}
+function showSpeechFrame(message,kind){
+ if(!tafsirOpen()||!q(message))return;
+ var card=E('p144SpeechFrame');
+ if(!card&&d.body&&typeof d.body.appendChild==='function'){
+  card=d.createElement('div');card.id='p144SpeechFrame';
+  card.hidden=true;
+  card.setAttribute('role','status');
+  card.setAttribute('aria-live','polite');
+  card.setAttribute('aria-atomic','true');
+  card.setAttribute('data-basair-tafsir-status','1');
+  d.body.appendChild(card);
+ }
+ if(!card)return;
+ if(statusTimer)w.clearTimeout(statusTimer);
+ card.textContent=q(message);card.hidden=false;
+ card.setAttribute('data-tone',kind==='error'?'error':'normal');
+ statusTimer=w.setTimeout(function(){
+  card.hidden=true;card.textContent='';statusTimer=0;
+ },kind==='error'?4600:2700);
+}
 function clamp(n,min,max,defaultValue){n=Number(n);return Number.isFinite(n)?Math.min(max,Math.max(min,n)):defaultValue}
 function toast(msg){
- var b=lastTappedButton,row=b&&b.isConnected&&b.closest('.v194T2Ayah');
- var live=row&&row.querySelector('.p144MicLive');
- if(live){live.hidden=false;live.textContent=q(msg);live.setAttribute('role','status')}
- var panelStatus=E('p144VoiceStatus');if(panelStatus)panelStatus.textContent=q(msg);
- try{var c=w.__BASAIR_TAFSIR_CORE__;if(c&&typeof c.toast==='function')c.toast(msg);else if(typeof w.toast==='function')w.toast(msg)}catch(_){}
+ showSpeechFrame(msg,/فشل|تعذر|خطأ|توقف محرك/.test(q(msg))?'error':'normal');
+ var panelStatus=E('p144VoiceStatus');
+ if(panelStatus)panelStatus.textContent=q(msg);
+ // A single status card replaces duplicate host toasts.
 }
 function normalize(raw){
  var x=q(raw);
@@ -267,6 +290,7 @@ function bridge(){
 function stage(label){if(!active)return;active.stage=label;drawStatus(label)}
 function drawStatus(value){
  var el=E('p144VoiceStatus');if(el)el.textContent=value||'';
+ if(value)showSpeechFrame(value,/فشل|تعذر|خطأ/.test(q(value))?'error':'normal');
  // P132.1 performance: touch only the active/previous button, not every
  // rendered verse on every TTS chunk.
  var current=active&&active.row&&active.row.querySelector('.p144MicButton');
@@ -281,9 +305,9 @@ function drawStatus(value){
  lastDrawnButton=current||null;
  if(current){
   current.setAttribute('aria-pressed','true');current.classList.add('p132-on');
-  var title=current.querySelector('b');if(title)title.textContent='إيقاف الناطق';
+  var title=current.querySelector('b');if(title)title.textContent='الناطق';
   var live=active.row.querySelector('.p144MicLive');
-  if(live){live.hidden=false;if(live.textContent!==value)live.textContent=value||'';lastLiveLabel=live}
+  if(live){live.hidden=true;live.textContent='';lastLiveLabel=live}
  }
 }
 function stop(reason,quiet){
