@@ -870,7 +870,7 @@ function observe(){
   if(mutations.some(function(m){
    var el=m.target&&m.target.nodeType===1?m.target:m.target&&m.target.parentElement;
    var note=el&&el.closest&&el.closest('button.b263r3NoteChip,button[data-r3-note-pos]');
-   return !!(note&&!note.querySelector('.p143NoteIcon'));
+   return !!(note&&typeof note.querySelector==='function'&&!note.querySelector('.p143NoteIcon'));
   }))mountSoon();
   if(mutations.some(function(m){if(m.type!=='childList')return false;
     for(var i=0;i<m.addedNodes.length;i++){var n=m.addedNodes[i];
