@@ -29,3 +29,12 @@ jobs:
         run: node p141/tests/test-p141-wave-toggle.cjs
       - name: Sibling Tafsir roots, CSS and phonetic guide
         run: node p141/tests/test-p141-voice-recovery-and-lexicon.cjs
+      - name: Chromium verifies independent Tafsir tool layout
+        shell: bash
+        run: |
+          CHROME="$(command -v google-chrome || command -v chromium || true)"
+          test -n "$CHROME"
+          "$CHROME" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage \
+            --allow-file-access-from-files --dump-dom \
+            "file://$PWD/p141/tests/p141-dual-root-layout.html" \
+            2>/dev/null | grep -F '"pass":true'
