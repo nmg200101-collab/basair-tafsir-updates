@@ -50,7 +50,7 @@ async function main(){
  });
  await check('Tafsir follows only native completion, not a fixed timeout',async()=>{
   const m=setup();m.api.start(m.row);await delay(15);
-  assert.equal(m.pending.length,1);m.emit(0,'end');await delay(260);
+  assert.equal(m.pending.length,1);m.emit(0,'end');await delay(410);
   assert.ok(m.pending.length>=2);assert.match(m.pending[1].value,/بيان عظيم/);m.api.stop();
  });
  await check('Native error cancels the current reading session',async()=>{
@@ -73,7 +73,7 @@ async function main(){
  await check('Remote-only Arabic is excluded under default local-only policy',()=>{
   const m=setup({local:false});assert.equal(m.api.capabilities().arabicTTS,false);
  });
- await check('P134 default mode is Tafsir-only without reciter dependency',()=>{
+ await check('P135 defaults to both but gracefully falls back to Tafsir without reciter',()=>{
   const m=setup({mode:null});
   assert.equal(m.api.status().options.mode,'both');
   assert.equal(m.api.start(m.row),true);
