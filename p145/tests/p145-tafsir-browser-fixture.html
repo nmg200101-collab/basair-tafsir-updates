@@ -1,0 +1,63 @@
+<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="stylesheet" href="../../p121/owner-qa/modules/tafsir/p145-reader-polish.css">
+<title>P145 actual Chrome WebView-compatible DOM contract</title>
+<style>.v194T2Ayah{border:1px solid #d4ddda;margin:10px;padding:8px}.v194T2Qrow{background:#f6f5ed;padding:7px}
+.v194T2Body{padding:12px}body{font-size:125%}
+.b263r3NoteChip{height:99px!important;width:140px!important;padding:20px!important}
+</style></head><body data-basair-tafsir-main-tab="tafsir">
+<section id="tafsirReader" class="active">
+<div id="basairTafsirPrimaryTabs"><button data-basair-main-tab="tafsir" class="on" aria-selected="true">التفسير</button>
+<button data-basair-main-tab="intro">مقدمة السورة</button>
+<button data-basair-main-tab="thread">خيط السورة</button></div>
+<div id="tafsirAyahs">
+<article class="v194T2Ayah" data-t2ayah="1"><div class="v194T2Qrow">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>
+<div class="v194T2Body">بيان الآية الأولى</div>
+<button id="note1" class="b263r3NoteChip p144NoteChip">ملاحظة</button>
+<button id="mic1" class="p144MicButton">الناطق</button>
+<div class="basairB231AyahActions"><button>متابعة</button><button>نسخ</button><button>مقارنة</button><button>مفضلة</button></div>
+</article>
+<article class="v194T2Ayah" data-t2ayah="2"><div class="v194T2Qrow">الْحَمْدُ لِلَّهِ</div><div class="v194T2Body">جارٍ تحميل تفسير الآية...</div>
+<button id="mic2" class="p144MicButton">الناطق</button>
+</article>
+<div class="v194T2Loading"><b>التفسير الميسر</b><span>جارٍ تحميل تفسير هذه الآية فقط...</span></div>
+<a id="source" href="https://quranenc.com/ar/browse/arabic_moyassar/1/1">فتح المصدر</a>
+</div></section>
+<pre id="result">PENDING</pre>
+<script>
+window.__BASAIR_TAFSIR_STEP2__={state:()=>({s:1,a:1,type:'muyassar'}),open(){window.__retries=(window.__retries||0)+1}};
+window.__BASAIR_TAFSIR_CORE__={getMuyassarSurah:()=>new Promise(()=>{})};
+window.__noteClick=0;document.getElementById('note1').addEventListener('click',()=>window.__noteClick++);
+window.fetch=(url)=>Promise.resolve({ok:true,json:()=>Promise.resolve({
+ schema:'basair-muyassar-surah-v1',s:1,ayah_count:2,ayahs:['مادة تفسيرية للآية الأولى','مادة تفسيرية للآية الثانية']})});
+</script>
+<script src="../../p121/owner-qa/modules/tafsir/p145-reader-polish.js"></script>
+<script>
+setTimeout(async function(){
+const api=window.__BASAIR_TAFSIR_P145__;
+const a=document.getElementById('mic1'),n=document.getElementById('note1'),
+ a2=document.getElementById('mic2');
+const bar=a.closest('.p145TopControls'),bar2=a2.closest('.p145TopControls');
+const r=a.getBoundingClientRect(),z=n.getBoundingClientRect(),
+ action=document.querySelector('.basairB231AyahActions>button').getBoundingClientRect();
+n.click();
+const entry=await window.__BASAIR_TAFSIR_CORE__.getMuyassarSurah(1,true);
+const old=document.getElementById('source');old.click();
+const overlay=document.getElementById('p145SourceOverlay');
+const sourceOpen=!!overlay&&!overlay.hidden;
+if(sourceOpen)overlay.querySelector('#p145SourceBack').click();
+const success=!!bar&&!!bar2&&bar.previousElementSibling.classList.contains('v194T2Qrow')&&
+ bar.contains(a)&&bar.contains(n)&&bar2.contains(a2)&&
+ r.height>=43&&r.height<=45&&z.height>=43&&z.height<=45&&
+ Math.abs(r.width-z.width)<2&&window.__noteClick===1&&
+ action.height>=44&&action.height<=47&&
+ entry.ayahs[0]==='مادة تفسيرية للآية الأولى'&&
+ api.status().stats.fetchFallback>=1&&sourceOpen&&overlay.hidden&&
+ getComputedStyle(document.querySelector('[data-basair-main-tab="intro"]')).borderBottomColor!=='rgba(0, 0, 0, 0)';
+document.getElementById('result').textContent=JSON.stringify({
+ pass:success,top:!!bar,sameHeight:[r.height,z.height],
+ action:action.height,cacheFallback:api.status().stats.fetchFallback,
+ sourceOpened:sourceOpen,sourceClosed:overlay.hidden,noteListenerPreserved:window.__noteClick===1,
+ otherTafsirTop:!!bar2});
+},2300);
+</script></body></html>
