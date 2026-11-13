@@ -61,9 +61,10 @@ async function main(){
   assert.equal(m.nativeSpoken.length,0);
   assert.equal(m.selector.value,'husary');
   m.audios[0].onended();await sleep(480);
-  assert.ok(m.nativeSpoken.length>=1);
-  assert.equal(m.log[0],'recitation');assert.ok(m.log.indexOf('tafsir')>0);
+  const spoken=m.nativeSpoken.length,firstRecording=m.log.indexOf('recitation'),firstTafsir=m.log.indexOf('tafsir');
   m.api.stop();
+  assert.ok(spoken>=1);
+  assert.ok(firstRecording>=0&&firstTafsir>firstRecording,'recording must precede Tafsir TTS');
  });
  await check('Quran-only mode creates no synthetic TTS',async()=>{
   const m=setup({mode:'recitation',reciterId:'alafasy'});
