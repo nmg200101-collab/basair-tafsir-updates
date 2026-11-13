@@ -1,6 +1,7 @@
 'use strict';
 const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm');
 const assert=require('node:assert/strict');
+const crypto=require('node:crypto');
 const root=path.resolve(__dirname,'../..');
 const read=p=>fs.readFileSync(path.join(root,p),'utf8');
 const js=read('p121/owner-qa/modules/tafsir/p147-reader-polish.js');
@@ -57,6 +58,40 @@ const payload=JSON.parse(Buffer.from(sig.payload,'base64').toString('utf8'));
 assert.equal(payload.sequence,23,'no OTA sequence advance');
 assert.equal(payload.modules[0].version,21,'active Tafsir module unchanged');
 assert.equal(payload.modules[0].assets.length,8);
+
+assert.ok(js.includes("stableNoteByRow.set(row,canonical)"),
+ 'original note must remain stable across legacy rerenders');
+assert.ok(js.includes("candidate.hasAttribute('data-r3-note-pos')"),
+ 'real R3 note must take priority over an earlier stale duplicate');
+assert.ok(!js.includes('if(!canonical&&notes.length)canonical=notes[0]'),
+ 'disabled stale note must never become active just because it is first');
+
+const candidate=JSON.parse(read('p147/P147-SEQ24-UNSIGNED-CANDIDATE.json'));
+assert.equal(candidate.status,'UNSIGNED_CANDIDATE_DO_NOT_PUBLISH');
+assert.equal(candidate.ownerApprovalRequired,true);
+assert.equal(candidate.productionPublished,false);
+assert.equal(candidate.signing,null);
+const next=candidate.proposedPayload;
+assert.equal(next.sequence,24);
+assert.equal(next.modules[0].version,22);
+assert.equal(next.applicationId,'app.basair.qurv2');
+assert.equal(next.minAppVersion,694);
+assert.equal(next.deliveryMode,'notify');
+assert.equal(next.channel,'owner-qa');
+assert.equal(next.issuedAt,null);
+assert.equal(next.expiresAt,null);
+assert.match(next.id,/^[a-zA-Z0-9-]{1,70}$/);
+assert.equal(next.modules[0].assets.length,8);
+for(const [i,a] of next.modules[0].assets.entries()){
+ const location='p121/owner-qa/'+a.path;
+ const contents=fs.readFileSync(path.join(root,location));
+ assert.equal(contents.length,a.size,'asset byte size changed: '+a.path);
+ assert.equal(crypto.createHash('sha256').update(contents).digest('hex'),a.sha256,
+  'candidate SHA256 differs from file: '+a.path);
+ if(i<6)assert.deepEqual(a,payload.modules[0].assets[i],
+   'P146 inherited original six assets must remain identical');
+}
+
 console.log(JSON.stringify({
  status:'PASS',mode:'source-and-immutable-release',sequence:23,stage:'P147-DRAFT',
  notes:'one original node among five',fallback:'preserved',sourceBack:'preserved',
