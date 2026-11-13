@@ -64,7 +64,7 @@ async function main(){
  });
  await check('Native preview uses Android voice and no speechSynthesis',()=>{
   const m=setup();assert.equal(m.api.preview(),true);
-  assert.equal(m.pending.length,1);assert.match(m.pending[0].value,/نبدأ الآن/);
+  assert.equal(m.pending.length,1);assert.match(m.pending[0].value,/اللّٰه/);assert.match(m.pending[0].value,/الْقُرْآن/);
  });
  await check('Not-ready native bridge cannot falsely report success',()=>{
   const m=setup({ready:false});assert.equal(m.api.capabilities().arabicTTS,false);
