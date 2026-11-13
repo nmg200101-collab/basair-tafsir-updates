@@ -25,3 +25,5 @@ jobs:
         run: node p137/tests/test-p137-narrator-integration.cjs
       - name: Hot upgrade reciter settings gear and next toggle
         run: node p137/tests/test-p137-hot-update-controls.cjs
+      - name: Follow next ayah through expected Tafsir DOM update
+        run: node p137/tests/test-p137-auto-next.cjs
