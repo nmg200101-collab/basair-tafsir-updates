@@ -1,0 +1,135 @@
+/* BASAIR P137 visible narrator controls and voice recovery, Tafsir-only.
+ * Visible only inside Tafsir. No changes to Tilawa, Mushaf, reader geometry.
+ */
+#tafsirReader.active .p138MicButton{
+ display:inline-flex;align-items:center;gap:5px;vertical-align:middle;
+ min-height:33px;margin-inline:5px 0;padding:4px 11px;border:1px solid #b9d7c6;border-radius:999px;
+ color:#195a41;background:#edf8f1;font-family:inherit;font-size:12px;font-weight:700;line-height:1.35;cursor:pointer;
+ touch-action:manipulation;-webkit-tap-highlight-color:transparent;user-select:none;
+}
+#tafsirReader.active .p138MicButton.p132-on{
+ background:#e7f1e9;color:#0f6844;border-color:#69a789;
+}
+#tafsirReader.active .p138MicButton>span{font-size:16px;line-height:1}
+#tafsirReader.active .p132NatiqBar{display:flex;justify-content:flex-end;margin:3px 8px 6px}
+#p138NatiqPanel[hidden]{display:none!important}
+#p138NatiqPanel{position:fixed;inset:0;z-index:30005;display:flex;align-items:flex-end;justify-content:center;
+ padding:12px;background:#04170e9c;box-sizing:border-box}
+#p138NatiqPanel .p132Sheet{width:min(100%,520px);max-height:86vh;overflow:auto;
+ border-radius:18px;background:#fffdf7;color:#173e2c;border:1px solid #bdd6c4;
+ box-shadow:0 15px 45px #0006;padding:16px;box-sizing:border-box;font-family:inherit}
+#p138NatiqPanel header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+#p138NatiqPanel header strong{font-size:17px}#p138NatiqPanel header button{
+ background:none;border:none;color:inherit;font-size:27px;min-width:40px;min-height:40px}
+#p138NatiqPanel label{display:flex;align-items:center;justify-content:space-between;gap:12px;
+ padding:8px 0;border-bottom:1px solid #dae5de;font-size:14px;font-weight:600}
+#p138NatiqPanel label select{max-width:62%;min-height:40px;padding:5px;border:1px solid #bad0c5;
+ border-radius:10px;background:#fff;color:#153b2a;font:inherit}
+#p138NatiqPanel label.p132Check{justify-content:flex-start}
+#p138NatiqPanel label.p132Check input{width:19px;height:19px;accent-color:#18714e}
+#p138NatiqPanel small{display:block;margin:12px 0;color:#617669;font-size:12px;line-height:1.7}
+#p138NatiqStatus{margin:6px 0 0;font-size:13px;line-height:1.7;color:#1c674c}
+.dark #tafsirReader.active .p138MicButton,
+body.dark #tafsirReader.active .p138MicButton{
+ background:#204b37;border-color:#587e67;color:#ecfff1}
+.dark #p138NatiqPanel .p132Sheet,body.dark #p138NatiqPanel .p132Sheet{
+ background:#122a22;color:#e9ffed;border-color:#526e61}
+.dark #p138NatiqPanel label select,body.dark #p138NatiqPanel label select{
+ background:#183f30;color:#eefdef;border-color:#51715a}
+.dark #p138NatiqPanel label,body.dark #p138NatiqPanel label{border-bottom-color:#365747}
+.dark #p138NatiqStatus,body.dark #p138NatiqStatus{color:#b3ead1}
+@media (min-width:740px){#p138NatiqPanel{align-items:center}}
+
+#tafsirReader.active .p138MicLive:not([hidden]){display:inline-block;vertical-align:middle;max-width:55%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11px;font-weight:600;color:#347056;margin-inline:4px}
+.dark #tafsirReader.active .p138MicLive:not([hidden]),body.dark #tafsirReader.active .p138MicLive:not([hidden]){color:#bce7d0}
+
+#p138NatiqPanel [data-p132-preview]{display:block;width:100%;min-height:40px;margin:10px 0;padding:8px 12px;border-radius:12px;border:1px solid #81ad95;background:#e9f6ef;color:#125438;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer}
+.dark #p138NatiqPanel [data-p132-preview],body.dark #p138NatiqPanel [data-p132-preview]{background:#204c35;color:#e4fff2;border-color:#719c80}
+
+/* Comparison preview for locally guided pronunciation, no network calls. */
+#p138NatiqPanel [data-p136-preview-plain]{display:block;width:100%;min-height:40px;margin:6px 0 10px;padding:8px 12px;border-radius:12px;border:1px solid #b3c9bd;background:#f8faf8;color:#23563c;font-family:inherit;font-size:13px;font-weight:650;cursor:pointer}
+.dark #p138NatiqPanel [data-p136-preview-plain],body.dark #p138NatiqPanel [data-p136-preview-plain]{background:#294638;color:#e8fff2;border-color:#567d66}
+#p138NatiqPanel label:has([data-p132-option="religiousGuide"]){border-top:1px solid #dae5de}
+
+/* A cached P136 narrator must retain its old (hidden) button node to stop
+   the earlier MutationObserver from recreating duplicate old controls. */
+#tafsirReader .p132NatiqButton[hidden]{display:none!important}
+#tafsirReader.active .p137NatiqSettings,#tafsirReader.active .p137NatiqNext{
+ display:inline-flex;align-items:center;justify-content:center;min-height:33px;
+ margin-inline:4px 0;padding:4px 9px;border:1px solid #bfd8ca;
+ border-radius:999px;background:#f2f7f2;color:#205642;font:600 11px/1.3 inherit;
+ cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;
+}
+#tafsirReader.active .p137NatiqNext[aria-pressed="true"]{background:#def3e5;border-color:#79b08d;color:#135c35}
+.dark #tafsirReader.active .p137NatiqSettings,.dark #tafsirReader.active .p137NatiqNext,
+body.dark #tafsirReader.active .p137NatiqSettings,body.dark #tafsirReader.active .p137NatiqNext{
+ background:#244b37;border-color:#668c77;color:#eaffef}
+.dark #tafsirReader.active .p137NatiqNext[aria-pressed="true"],body.dark #tafsirReader.active .p137NatiqNext[aria-pressed="true"]{background:#2c6746}
+#tafsirReader.active .p137NatiqBar{display:flex;gap:3px;align-items:center;flex-wrap:wrap}
+
+/* P138 visual contract: ONE microphone per ayah, no extra Settings/Next chips. */
+body #tafsirReader.active #tafsirAyahs .p132NatiqButton,
+body #tafsirReader.active #tafsirAyahs .p137NatiqButton,
+body #tafsirReader.active #tafsirAyahs .p137NatiqSettings,
+body #tafsirReader.active #tafsirAyahs .p137NatiqNext,
+body #tafsirReader.active #tafsirAyahs .p132NatiqLive,
+body #tafsirReader.active #tafsirAyahs .p137NatiqLive {display:none!important}
+body #tafsirReader.active #tafsirAyahs .p138MicButton{
+ display:inline-flex!important;align-items:center;justify-content:center;
+ width:36px!important;min-width:36px!important;max-width:36px!important;
+ height:36px!important;min-height:36px!important;padding:0!important;
+ margin:0 5px!important;flex:none!important;vertical-align:middle;
+ background:#f2f8f3!important;color:#195c42!important;border:1px solid #b5d5c5!important;
+ border-radius:999px!important;box-shadow:none!important;line-height:1!important;
+ touch-action:manipulation;user-select:none;-webkit-tap-highlight-color:transparent;
+}
+body #tafsirReader.active #tafsirAyahs .p138MicButton svg{
+ width:17px!important;height:17px!important;min-width:17px!important;flex:none;
+}
+body #tafsirReader.active #tafsirAyahs .p138MicButton.p132-on{
+ background:#d8eee2!important;border-color:#669f83!important;color:#126341!important;
+}
+body.dark #tafsirReader.active #tafsirAyahs .p138MicButton,
+.dark #tafsirReader.active #tafsirAyahs .p138MicButton{
+ background:#254d3b!important;border-color:#5b856d!important;color:#ecfff4!important;
+}
+/* Narrator state stays visually unobtrusive. Error details remain in dialog / toast. */
+#tafsirReader.active #tafsirAyahs .p138MicLive:not([hidden]){
+ display:inline-block;max-width:140px;white-space:nowrap;overflow:hidden;
+ text-overflow:ellipsis;font-size:10px;color:#2b7453;vertical-align:middle;
+}
+#tafsirReader.active #tafsirAyahs .p138MicBar{display:inline-flex;align-items:center;gap:4px}
+/* Tafsir action tiles only; preserve 44px mobile tap targets and other sections. */
+body #tafsirReader.active #tafsirAyahs .basairB231AyahActions{
+ display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;
+ gap:4px!important;align-items:stretch!important;margin:5px 0 6px!important;
+ padding:5px!important;border-radius:13px!important;
+}
+body #tafsirReader.active #tafsirAyahs .basairB231AyahActions > button{
+ min-width:0!important;width:100%!important;min-height:44px!important;height:auto!important;
+ padding:4px 2px!important;border-radius:10px!important;
+ font-size:10.5px!important;line-height:1.25!important;
+ margin:0!important;box-shadow:none!important;
+}
+body #tafsirReader.active #tafsirAyahs .basairB231AyahActions > button span,
+body #tafsirReader.active #tafsirAyahs .basairB231AyahActions > button svg,
+body #tafsirReader.active #tafsirAyahs .basairB231AyahActions > button .p125CopyIcon{
+ font-size:14px!important;max-width:17px!important;max-height:17px!important;
+}
+body #tafsirReader.active #tafsirAyahs .basairB231AyahActions > button b,
+body #tafsirReader.active #tafsirAyahs .basairB231AyahActions > button .p125CopyHint{
+ font-size:10px!important;line-height:1.22!important;
+}
+body #tafsirReader.active #tafsirAyahs .b263r3NoteChip{
+ min-height:31px!important;padding:4px 8px!important;font-size:11px!important;
+}
+/* Professionally organized, fully scrollable voice settings at high font scales. */
+#p138NatiqPanel .p132Sheet{max-height:min(88vh,760px);padding:14px 15px 16px;
+ overscroll-behavior:contain;scrollbar-width:thin}
+#p138NatiqPanel label{font-size:13px!important;min-height:36px;padding:7px 0!important;gap:10px}
+#p138NatiqPanel label select{max-width:61%;min-height:38px;font-size:12px}
+#p138NatiqPanel .p138CloudNote{font-size:11px;line-height:1.65;color:#637667}
+#p138NatiqPanel .p132Sheet>header{position:sticky;top:-15px;z-index:1;
+ background:inherit;padding:3px 0 8px}
+#p138NatiqPanel .p138PreviewButtons{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+#p138NatiqPanel .p138PreviewButtons button{width:100%;min-height:40px;margin:7px 0;font-size:12px}
