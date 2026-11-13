@@ -1,0 +1,31 @@
+name: P140 Tafsir narrator duplicate cleanup and local Arabic voice QA
+on:
+  pull_request:
+    paths:
+      - 'p140/**'
+      - 'p121/owner-qa/modules/tafsir/p140-*.js'
+      - 'p121/owner-qa/modules/tafsir/p140-*.css'
+      - '.github/workflows/p140-tafsir-qa.yml'
+permissions:
+  contents: read
+jobs:
+  p140:
+    runs-on: ubuntu-latest
+    timeout-minutes: 9
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: JS syntax
+        run: node --check p121/owner-qa/modules/tafsir/p140-natiq.js
+      - name: Existing native voice regressions
+        run: node p140/tests/test-p140-natiq.cjs
+      - name: Recorded Quran and Tafsir speech order
+        run: node p140/tests/test-p140-narrator-integration.cjs
+      - name: Next ayah movement
+        run: node p140/tests/test-p140-auto-next.cjs
+      - name: Unique wave and two-way Next control
+        run: node p140/tests/test-p140-wave-toggle.cjs
+      - name: Failing voice recovery, preview rollback, sacred lexicon, global UI cleanup
+        run: node p140/tests/test-p140-voice-recovery-and-lexicon.cjs
