@@ -1,0 +1,34 @@
+name: P144 owner RSA signed OTA Seq21 verification
+on:
+  pull_request:
+    paths:
+      - 'p144/**'
+      - 'p121/owner-qa/release*.json'
+      - '.github/workflows/p144-signed-qa.yml'
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 9
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify RSA, six SHA256 assets and Seq20 rollback
+        run: node p144/tests/test-p144-signed-release.cjs
+      - name: Recheck Tafsir recorded verse, voice, compact UI and safe morphology
+        run: |
+          node p144/tests/test-p144-natiq.cjs
+          node p144/tests/test-p144-narrator-integration.cjs
+          node p144/tests/test-p144-auto-next.cjs
+          node p144/tests/test-p144-mic-note-controls.cjs
+          node p144/tests/test-p144-voice-recovery-and-diction.cjs
+      - name: Chromium verifies reduced note and toolbar plus status frame
+        shell: bash
+        run: |
+          CHROME="$(command -v google-chrome || command -v chromium || true)"
+          test -n "$CHROME"
+          "$CHROME" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage --allow-file-access-from-files \
+            --dump-dom "file://$PWD/p144/tests/p144-compact-status-layout.html" 2>/dev/null | grep -F '"pass":true'
