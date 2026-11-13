@@ -1,0 +1,29 @@
+name: P138 Tafsir compact microphone isolated QA
+on:
+  pull_request:
+    paths:
+      - 'p138/**'
+      - 'p121/owner-qa/modules/tafsir/p138-*.js'
+      - 'p121/owner-qa/modules/tafsir/p138-*.css'
+      - '.github/workflows/p138-tafsir-qa.yml'
+permissions:
+  contents: read
+jobs:
+  p138-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate narrator JavaScript
+        run: node --check p121/owner-qa/modules/tafsir/p138-natiq.js
+      - name: Core voice recovery regression
+        run: node p138/tests/test-p138-natiq.cjs
+      - name: Original Quran recitation and Tafsir order
+        run: node p138/tests/test-p138-narrator-integration.cjs
+      - name: Auto-next continuation
+        run: node p138/tests/test-p138-auto-next.cjs
+      - name: Compact mic controls and local privacy
+        run: node p138/tests/test-p138-compact-voice-ui.cjs
