@@ -6,6 +6,7 @@
  var stats={controls:0,repositioned:0,duplicatePruned:0,fetchFallback:0,cacheWrites:0,retryShown:0,externalOpened:0};
  var observe=null,debounce=0,slowTimers=[],surahRequests=new Map(),baseMuyassar=null,seenCore=null,modalBack=false,sourceModal=null;
  var noteBarObserver=null,noteBarWatched=new WeakSet();
+ var stableNoteByRow=new WeakMap();
  function E(id){return d.getElementById(id)}
  function open(){var r=E('tafsirReader');return !!(r&&r.classList.contains('active'))}
  function style(el,key,value){if(el&&el.style&&typeof el.style.setProperty==='function'&&
@@ -46,11 +47,20 @@
   // Keep the note in the actual four-button verse toolbar (fifth compact tool).
   var actions=row.querySelector('.basairB231AyahActions');
   var notes=row.querySelectorAll('button.b263r3NoteChip,button.p144NoteChip,button[data-r3-note-pos]');
-  var canonical=null;
-  for(var n=0;n<notes.length;n++){
-   if(!notes[n].disabled&&!canonical)canonical=notes[n];
+  var canonical=null,previous=stableNoteByRow.get(row);
+  if(previous&&row.contains(previous)&&!previous.disabled)canonical=previous;
+  // Prefer the application's original R3 note control over legacy clones.
+  // An already-hidden/disabled duplicate must never replace an active control.
+  if(!canonical)for(var pass=0;pass<3&&!canonical;pass++){
+   for(var n=0;n<notes.length;n++){
+    var candidate=notes[n];
+    if(candidate.disabled||candidate.hidden)continue;
+    if((pass===0&&candidate.hasAttribute('data-r3-note-pos'))||
+       (pass===1&&candidate.classList.contains('b263r3NoteChip'))||
+       pass===2){canonical=candidate;break}
+   }
   }
-  if(!canonical&&notes.length)canonical=notes[0];
+  if(canonical)stableNoteByRow.set(row,canonical);
   for(var z=0;z<notes.length;z++){
    if(notes[z]===canonical)continue;
    if(!notes[z].hidden)stats.duplicatePruned++;
