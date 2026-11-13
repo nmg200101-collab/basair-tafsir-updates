@@ -122,6 +122,54 @@
   }
   return true;
  }
+ // P147 night-mode detection: V695 may set .dark on HTML rather than BODY.
+ // Read rendered backgrounds as a fallback; never infer solely from OS preference.
+ function darkRgb(v){
+  var m=String(v||'').match(/^rgba?\(\s*(\d+)[,\s]+(\d+)[,\s]+(\d+)(?:[,\s/]+([\d.]+))?/i);
+  if(!m||m[4]!==undefined&&Number(m[4])<0.15)return null;
+  var r=Number(m[1]),g=Number(m[2]),b=Number(m[3]);
+  return (0.2126*r+0.7152*g+0.0722*b)<110;
+ }
+ function isNight(){
+  var body=d.body,html=d.documentElement;
+  function darkFlag(x){if(!x)return false;
+   var cl=x.classList,cls=String(x.className||'');
+   if(cl&&(cl.contains('dark')||cl.contains('night')||cl.contains('dark-mode')))return true;
+   if(/(?:^|\s)(?:dark|night|dark-mode)(?:\s|$)/.test(cls))return true;
+   var a=x.getAttribute&&[x.getAttribute('data-theme'),x.getAttribute('data-mode'),x.getAttribute('data-bs-theme'),x.getAttribute('data-color-mode')];
+   return !!(a&&a.some(function(v){return /^(dark|night)$/i.test(String(v||''))}));
+  }
+  if(darkFlag(body)||darkFlag(html))return true;
+  if(!w.getComputedStyle)return false;
+  var nodes=[body,html,E('tafsirReader'),E('tafsirAyahs')];
+  for(var i=0;i<nodes.length;i++){
+   if(!nodes[i])continue;
+   try{
+    var bg=w.getComputedStyle(nodes[i]).backgroundColor,choice=darkRgb(bg);
+    if(choice!==null)return choice;
+   }catch(_){}
+  }
+  return false;
+ }
+ function annotateFieldTitles(){
+  var host=E('tafsirAyahs');if(!host||!host.querySelectorAll)return;
+  var titles=host.querySelectorAll('.v194T2FieldTitle,.v194T2SectionTitle,.v194T2Heading,[data-tafsir-section-title]');
+  for(var i=0;i<titles.length;i++){
+   var h=titles[i],label=h.querySelector&&h.querySelector('b'),text=String(label?label.textContent:h.textContent||'').trim();
+   var tone=/لمس[ةه].*بياني|بيان|بلاغة/.test(text)?'bayani':
+    /تدبر|لطائف|فائدة|فوائد/.test(text)?'tadabbur':
+    /خلاص|نتيجة/.test(text)?'summary':'meaning';
+   if(h.getAttribute('data-p147-field-tone')!==tone)h.setAttribute('data-p147-field-tone',tone);
+  }
+ }
+ function syncVisualMode(){
+  var b=d.body;
+  if(!b)return;
+  var night=isNight(),value=night?'1':'0';
+  if(b.getAttribute('data-p147-night')!==value)b.setAttribute('data-p147-night',value);
+  annotateFieldTitles();
+ }
+
  // P147 visual hierarchy is opt-in ONLY for visible Intro and Thread panels.
  function readingMode(){
   var tabs=E('basairTafsirPrimaryTabs'),b=d.body;
@@ -172,6 +220,7 @@
   for(var i=0;i<rows.length;i++)topRow(rows[i]);
   var tabs=E('basairTafsirPrimaryTabs');
   if(tabs)tabs.setAttribute('data-p145-tabs','ready');
+  syncVisualMode();
   decorateReading();
  }
  function schedule(){if(debounce)return;debounce=w.setTimeout(function(){debounce=0;sweep();syncLoader()},110)}
@@ -327,5 +376,5 @@
  if(d.readyState==='loading')d.addEventListener('DOMContentLoaded',ready,{once:true});else ready();
  w.setInterval(function(){if(open()){installLoader();sweep();syncLoader()}},900);
  w.__BASAIR_TAFSIR_P147__={version:VERSION,refresh:sweep,openSource:openSource,closeSource:closeSource,
-  fetchFull:fetchFull,decorateReading:decorateReading,status:function(){return Object.assign({mounted:!!observe,reader:open(),loaderInstalled:!!(seenCore&&seenCore.getMuyassarSurah.__p145)},stats)}};
+  fetchFull:fetchFull,decorateReading:decorateReading,syncVisualMode:syncVisualMode,status:function(){return Object.assign({mounted:!!observe,reader:open(),loaderInstalled:!!(seenCore&&seenCore.getMuyassarSurah.__p145)},stats)}};
 })(window,document);
