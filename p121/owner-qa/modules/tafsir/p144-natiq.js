@@ -182,12 +182,51 @@ function guideFixedPhrases(raw){
   return boundary+p+FIXED_PHRASES[phrase];
  });
 }
+// ONLY these grammatically stable contexts are vocalized. Ambiguous single
+// words such as خلق (خَلَقَ / خُلُق / خَلْق / خُلِقَ) are left unchanged.
+// This transforms Tafsir speech input, never Quran audio, printed text or
+// saved annotations.
+var CONTEXT_PRONUNCIATIONS={
+ 'إن الله تعالى':'إِنَّ اللَّهَ تَعَالَى',
+ 'أن الله تعالى':'أَنَّ اللَّهَ تَعَالَى',
+ 'إن الله خلق':'إِنَّ اللَّهَ خَلَقَ',
+ 'لقد خلق الله':'لَقَدْ خَلَقَ اللَّهُ',
+ 'خلق الله السماوات':'خَلَقَ اللَّهُ السَّمَاوَاتِ',
+ 'خلق الله الإنسان':'خَلَقَ اللَّهُ الْإِنْسَانَ',
+ 'إن الله':'إِنَّ اللَّهَ',
+ 'أن الله':'أَنَّ اللَّهَ',
+ 'قال الله':'قَالَ اللَّهُ',
+ 'الله تعالى':'اللَّهُ تَعَالَى',
+ 'رسول الله':'رَسُول اللَّهِ',
+ 'عبد الله':'عَبْد اللَّهِ',
+ 'كتاب الله':'كِتَاب اللَّهِ',
+ 'كلام الله':'كَلَام اللَّهِ',
+ 'رحمة الله':'رَحْمَة اللَّهِ',
+ 'رضا الله':'رِضَا اللَّهِ',
+ 'ذكر الله':'ذِكْر اللَّهِ',
+ 'توحيد الله':'تَوْحِيد اللَّهِ',
+ 'حسن الخلق':'حُسْن الْخُلُق',
+ 'سوء الخلق':'سُوء الْخُلُق',
+ 'صاحب خلق حسن':'صَاحِب خُلُق حَسَن',
+ 'صاحب خلق كريم':'صَاحِب خُلُق كَرِيم',
+ 'مكارم الأخلاق':'مَكَارِم الْأَخْلَاق'
+};
+function guideContext(raw){
+ var boundary='[^\\u0621-\\u064A\\u064B-\\u065F\\u0670\\u0671-\\u06D3]';
+ var keys=Object.keys(CONTEXT_PRONUNCIATIONS).sort(function(a,b){return b.length-a.length});
+ // All phrases are plain Arabic letters/spaces; no regex metacharacters.
+ var re=new RegExp('(^|'+boundary+')([وف]?)('+keys.join('|')+')(?=$|'+boundary+')','g');
+ return q(raw).replace(re,function(full,edge,prefix,key){
+  return edge+(prefix?({و:'وَ',ف:'فَ'}[prefix]||prefix):'')+
+   CONTEXT_PRONUNCIATIONS[key];
+ });
+}
 function prepareSpeech(source,forceGuide){
  var raw=q(source);
  if(forceGuide===false||(forceGuide===undefined&&!opts.religiousGuide))return raw;
  // Whole, unvowelled words only. Avoid changing mixed/vowelled Arabic terms,
  // suffixes, place names and homographs for which fixed tashkeel is unsafe.
- return guideFixedPhrases(raw).replace(/(^|[^\u0621-\u064A\u064B-\u065F\u0670\u0671-\u06D3])([وفب]?)(الله|لله|اللهم|القرآن|الرحمن|الرحيم|الإيمان|الصلاة|الزكاة|التقوى|الآخرة|العبادة|الملائكة|النبوة|محمد|إبراهيم|موسى|عيسى)(?=$|[^\u0621-\u064A\u064B-\u065F\u0670\u0671-\u06D3])/g,
+ return guideFixedPhrases(guideContext(raw)).replace(/(^|[^\u0621-\u064A\u064B-\u065F\u0670\u0671-\u06D3])([وفب]?)(الله|لله|اللهم|القرآن|الرحمن|الرحيم|الإيمان|الصلاة|الزكاة|التقوى|الآخرة|العبادة|الملائكة|النبوة|محمد|إبراهيم|موسى|عيسى)(?=$|[^\u0621-\u064A\u064B-\u065F\u0670\u0671-\u06D3])/g,
   function(full,boundary,prefix,term){
    var p=prefix?({و:'وَ',ف:'فَ',ب:'بِ'}[prefix]||prefix):'';
    return boundary+p+(RELIGIOUS_READING[term]||term);
@@ -814,7 +853,7 @@ function populateVoices(p){
 function previewVoice(forceGuide){
  if(!ttsReady()){toast('لا يتوفر صوت عربي محلي. جرّب إعدادات تحويل النص إلى كلام في الهاتف.');return false}
  if(active)stop('توقف التشغيل لاختبار الصوت',true);
- var v=voice(),sample='الله سبحانه وتعالى، أنزل القرآن رحمة وهدى، وأمر بالصلاة والزكاة والتقوى.';
+ var v=voice(),sample='إن الله تعالى رحيم. لقد خلق الله الإنسان. حسن الخلق من الإيمان. سبحان الله، والحمد لله.';
  sample=prepareSpeech(sample,forceGuide);
  if(v&&v._basairNative){
   var n=nativeBridge(),id='p140_preview_'+(++nativeReq);
