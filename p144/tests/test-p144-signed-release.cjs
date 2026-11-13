@@ -11,6 +11,9 @@ function unwrap(file){const e=JSON.parse(f(file));assert.equal(typeof e.payload,
 const old=unwrap('p121/owner-qa/release-p143-seq20-before-p144-20261113.json');
 const next=unwrap('p144/P144-SEQ21-OWNER-SIGNED-RELEASE.json');
 assert.equal(old.sequence,20);assert.equal(next.sequence,21);
+// Actual V694/V695 WebView receiver rejects signed manifests whose id is longer than 70 ASCII chars.
+assert.match(next.id,/^[A-Za-z0-9-]{1,70}$/,'receiver rejects update ID longer than 70');
+assert.ok(next.id.length<=70,'P144 must be compatible with installed Android OTA receiver');
 assert.equal(old.channel,'owner-qa');assert.equal(next.channel,old.channel);
 assert.equal(next.applicationId,'app.basair.qurv2');assert.equal(next.minAppVersion,694);
 assert.equal(next.deliveryMode,'notify');assert.equal(next.modules.length,1);
