@@ -93,6 +93,24 @@ async function main(){
   assert.equal(m.bridge.selected('alafasy').id,'alafasy');
   assert.equal(m.bridge.availability({surah:1,ayah:1,reciterId:'unknown'}).available,false);
  });
- console.log(JSON.stringify({pass,total:10,device:'NOT TESTED',remoteMP3:'NOT VERIFIED',tilawaMutations:0}));
+ await check('P136 overrides legacy cached catalog without modifying Tilawa',()=>{
+  const m=setup('husary');
+  m.w.__BASAIR_TAFSIR_EXACT_AYAH_AUDIO_CATALOG__={selected:()=>({id:'husary'}),getExact:()=>null,version:'P132'};
+  new Function('window','document',c)(m.w,m.d);
+  assert.equal(m.w.__BASAIR_TAFSIR_EXACT_AYAH_AUDIO_CATALOG__.version,'P136-RECITER-CATALOG-V1');
+  assert.equal(m.w.__BASAIR_TAFSIR_EXACT_AYAH_AUDIO_CATALOG__.list().length,7);
+  assert.equal(m.selector.value,'husary');assert.deepEqual(m.writes,[]);
+ });
+ await check('P136 replaces older cached bridge, stopping its narrator audio only',()=>{
+  const m=setup('husary');
+  let stopped=0;
+  m.w.__BASAIR_TAFSIR_AYAH_RECITER_BRIDGE__={version:'P132',stop(){stopped++},selected(){return null},playOne(){}};
+  new Function('window','document',b)(m.w,m.d);
+  assert.equal(stopped,1);
+  assert.equal(m.w.__BASAIR_TAFSIR_AYAH_RECITER_BRIDGE__.version,'P136-RECITER-BRIDGE-V1');
+  assert.equal(m.w.__BASAIR_TAFSIR_AYAH_RECITER_BRIDGE__.list().length,7);
+  assert.equal(m.selector.value,'husary');assert.deepEqual(m.writes,[]);
+ });
+ console.log(JSON.stringify({pass,total:12,device:'NOT TESTED',remoteMP3:'NOT VERIFIED',tilawaMutations:0}));
 }
 main().catch(e=>{console.error(e);process.exitCode=1});
