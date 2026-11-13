@@ -374,7 +374,7 @@
  d.addEventListener('keydown',function(e){if(e.key==='Escape'&&closeSource()){e.preventDefault();e.stopPropagation()}});
  var attempts=0;function ready(){if(init())return;if(attempts++<36)w.setTimeout(ready,250)}
  if(d.readyState==='loading')d.addEventListener('DOMContentLoaded',ready,{once:true});else ready();
- w.setInterval(function(){if(open()){installLoader();sweep();syncLoader()}},900);
+ w.setInterval(function(){if(open()){installLoader();sweep();syncLoader()}},1800);
  w.__BASAIR_TAFSIR_P147__={version:VERSION,refresh:sweep,openSource:openSource,closeSource:closeSource,
   fetchFull:fetchFull,decorateReading:decorateReading,syncVisualMode:syncVisualMode,status:function(){return Object.assign({mounted:!!observe,reader:open(),loaderInstalled:!!(seenCore&&seenCore.getMuyassarSurah.__p145)},stats)}};
 })(window,document);
