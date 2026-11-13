@@ -591,8 +591,8 @@ function syncNextButtons(){
 }
 function decorateNote(row){
  if(!row||!row.querySelector)return;
- var n=row.querySelector('button.b263r3NoteChip,button[data-r3-note-pos]');
- if(!n||n.closest&&n.closest('.basairB231AyahActions'))return;
+ var n=row.querySelector('.b263r3NoteChip,[data-r3-note-pos]');
+ if(!n||n.tagName!=='BUTTON'||n.closest&&n.closest('.basairB231AyahActions'))return;
  // Preserve the exact original note button and its click/long-press handlers.
  if(n.querySelector&&n.querySelector('.p143NoteIcon')&&n.querySelector('.p143NoteLabel'))return;
  n.classList.add('p143NoteChip');
@@ -620,7 +620,7 @@ function control(row){
  live.setAttribute('role','status');
  // Do not insert the new P142 control inside an old .v695NatiqBar:
  // native V695 bar must be hidden without hiding its P142 successor.
- var anchor=row.querySelector('button.b263r3NoteChip,button[data-r3-note-pos],.p124FollowAboveTools');
+ var anchor=row.querySelector('.b263r3NoteChip,[data-r3-note-pos],.p124FollowAboveTools');
  if(anchor&&anchor.parentElement){
   anchor.insertAdjacentElement('afterend',btn);
   btn.insertAdjacentElement('afterend',live);
