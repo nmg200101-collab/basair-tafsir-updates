@@ -87,6 +87,20 @@ async function main(){
   assert.match(m.audios[0].src,/Abdurrahmaan_As-Sudais_64kbps\/001004\.mp3$/);
   assert.equal(m.selector.value,'husary');assert.equal(m.store.v170Reciter,'husary');m.api.stop();
  });
- console.log(JSON.stringify({pass,total:4,device:'NOT TESTED',remoteMP3:'NOT VERIFIED'}));
+ await check('broken remote verse track degrades to Tafsir without synthetic Quran',async()=>{
+  const m=setup({mode:'both',reciterId:'alafasy'});
+  assert.equal(m.api.start(m.row),true);
+  const a=m.audios[0];assert.ok(a&&typeof a.onerror==='function');
+  a.onerror(); // first EveryAyah URL fails; attempt same-reader alternate
+  assert.ok(typeof a.onerror==='function');
+  a.onerror(); // second source also fails
+  await sleep(600);
+  const spoken=m.nativeSpoken.length;
+  m.api.stop();
+  assert.ok(spoken>0,'Tafsir voice must resume after verse source failure');
+  assert.ok(m.toasts.some(msg=>/تعذر تشغيل تسجيل الآية/.test(msg)));
+  assert.equal(m.selector.value,'husary');
+ });
+ console.log(JSON.stringify({pass,total:5,device:'NOT TESTED',remoteMP3:'NOT VERIFIED'}));
 }
 main().catch(e=>{console.error(e);process.exitCode=1});
