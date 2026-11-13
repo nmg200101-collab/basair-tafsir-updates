@@ -720,10 +720,11 @@ function previewVoice(forceGuide){
   function fail(){
    if(done)return;
    cleanup();
-   opts.voiceURI=previous&&previous!==v.voiceURI?previous:'';
-   saveOpts();stats.voiceReverted++;
-   var panel=E('p140VoicePanel');if(panel&&!panel.hidden)populateVoices(panel);
-   toast('هذا الصوت لا يبدأ على هاتفك. أعدنا الصوت المحلي السابق أو الافتراضي.');
+   if(previous&&previous!==v.voiceURI){
+    opts.voiceURI=previous;saveOpts();stats.voiceReverted++;
+    var panel=E('p140VoicePanel');if(panel&&!panel.hidden)populateVoices(panel);
+    toast('هذا الصوت لا يبدأ على هاتفك. استعدنا الصوت المحلي الذي عمل سابقًا.');
+   }else revertUnusableVoice(v.voiceURI);
   }
   nativePending[id]=function(ok,error,event){
    if(done)return;
