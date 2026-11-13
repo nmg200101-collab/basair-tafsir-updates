@@ -18,6 +18,34 @@ assert.ok(js.includes('decorateReading()'), 'intro and thread typography must re
 assert.ok(css.includes('[data-p147-reading-tab]'),'reading changes must be scoped to intro/thread');
 assert.ok(css.includes('body.dark[data-p147-reading-tab]'),'dark-mode prose styles');
 assert.ok(css.includes('min-height:44px'),'mobile tap target minimum 44px');
+
+assert.ok(js.includes('syncVisualMode()')&&js.includes('isNight()'),
+ 'P147 must identify actual Android night mode');
+assert.ok(js.includes("data-p147-field-tone"),
+ 'Tafsir section heading category colors must be annotated');
+assert.ok(css.includes('data-p147-night="1"'),
+ 'force high contrast night colors even when .dark belongs to HTML');
+assert.ok(css.includes('.v194T2FieldTitle'),
+ 'target genuine Tafsir per-ayah title field');
+assert.ok(css.includes('data-basair-main-tab="thread"'),
+ 'thread tab needs matching night selection palette');
+assert.ok(css.includes('data-basair-main-tab="intro"'),
+ 'intro tab needs matching night selection palette');
+function luminance(h){
+ const x=h.replace('#','').match(/../g).map(p=>parseInt(p,16)/255).map(v=>v<=0.04045?v/12.92:((v+.055)/1.055)**2.4);
+ return x[0]*.2126+x[1]*.7152+x[2]*.0722;
+}
+function contrast(a,b){const l=[luminance(a),luminance(b)].sort((x,y)=>y-x);return (l[0]+.05)/(l[1]+.05)}
+for(const [name,fg,bg] of [
+ ['field meaning','#f0d7a4','#152b21'],
+ ['field rhetoric','#b5eed5','#152b21'],
+ ['source metadata','#bfd5c8','#152b21'],
+ ['reading heading','#bfe8cd','#1c3429'],
+ ['reading prose','#f0f8f0','#1c3429'],
+ ['inactive tab','#d1e2d6','#1d382d']]){
+ assert.ok(contrast(fg,bg)>=4.5,'night contrast too low: '+name);
+}
+
 assert.ok(js.includes('p145SourceOverlay'),'P146 in-app source back must remain');
 assert.ok(js.includes('fetchFull(s)'),'P146 bounded fallback must remain');
 assert.ok(js.includes('p146TopMic'),'P146 mic by Quran ayah must remain');
