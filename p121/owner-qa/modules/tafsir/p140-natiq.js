@@ -639,7 +639,7 @@ function panel(){
  '<small class="p140CloudNote">الصوت المحلي متاح دون إرسال النص. الخدمة السحابية المجانية تحتاج حساب خدمة موثوقًا ومفتاحًا محفوظًا على الخادم، ولا تُفعّل دون ذلك.</small>'+
  '<label class="p132Check"><input type="checkbox" data-p132-option="religiousGuide">تحسين ألفاظ التفسير الدينية (تشكيل مخصص للنطق فقط)</label>'+
  '<button type="button" data-p136-preview-plain="1" aria-label="مقارنة النطق دون تحسين الألفاظ">▶ مقارنة الصوت الأصلي</button>'+
- '<small>الآية بتسجيل القارئ الأصلي والتفسير بمحرك الهاتف. لا نضيف حركات إعراب تخمينية قد تغيّر المعنى، والمعجم الصوتي اختياري. الضغط المطوّل على الميكروفون لفتح جميع الإعدادات.</small>'+
+ '<small>النطق المحلّي يحاول ضبط لفظ الجلالة وبعض الأسماء الدينية فقط؛ التشكيل قابل للتعطيل ولا يغيّر النص المعروض أو تلاوة القارئ. عند فشل الصوت المختار سنعود لصوت محلي صالح. اضغط مطوّلًا على زر الناطق لإعداداته.</small>'+
  '<p id="p140VoiceStatus" aria-live="polite"></p></div>';
  d.body.appendChild(box);
  box.addEventListener('click',function(e){
@@ -661,9 +661,17 @@ function panel(){
  box.addEventListener('change',function(e){var target=e.target,key=target&&target.getAttribute('data-p132-option');
   if(!key)return;
   if(key==='voiceSource'){opts.voiceSource='local';target.value='local';return}
+  if(key==='voiceURI')beforeVoiceChoice=lastWorkingVoiceURI||opts.voiceURI;
   opts[key]=key==='autoNext'||key==='religiousGuide'?target.checked:key==='rate'?clamp(target.value,.7,1.3,.95):target.value;
   if(key==='preferLocal'){opts.voiceURI='';populateVoices(box)}
   if(key==='reciterId'){var b=bridge();if(opts.reciterId!=='follow'&&(!b||!b.selected(opts.reciterId)))opts.reciterId='follow'}
+  if(key==='voiceURI'){
+   beforeVoiceChoice=opts.voiceURI===target.value?lastWorkingVoiceURI:beforeVoiceChoice;
+   saveOpts();
+   // A rejected Android voice must revert immediately during preview,
+   // not break the next Tafsir narration session.
+   previewVoice();return;
+  }
   saveOpts();if(key==='autoNext')syncNextButtons();
  });
  return box;
@@ -700,19 +708,42 @@ function populateVoices(p){
  var selected=voice();box.value=selected?(selected.voiceURI||selected.name||''):'';
 }
 function previewVoice(forceGuide){
- if(!ttsReady()){toast('لا يمكن الوصول إلى صوت عربي داخل WebView. يلزم جسر Android TextToSpeech أو صوت متوافق');return false}
- if(active)stop('تم إيقاف التشغيل لتجربة الصوت',true);
+ if(!ttsReady()){toast('لا يتوفر صوت عربي محلي. جرّب إعدادات تحويل النص إلى كلام في الهاتف.');return false}
+ if(active)stop('توقف التشغيل لاختبار الصوت',true);
  var v=voice(),sample='الله سبحانه وتعالى، أنزل القرآن رحمة وهدى، وأمر بالصلاة والزكاة والتقوى.';
  sample=prepareSpeech(sample,forceGuide);
  if(v&&v._basairNative){
-  var n=nativeBridge(),id='p133_preview_'+(++nativeReq);
-  try{return !!n.speak(id,sample,opts.rate,v.name)}catch(_){toast('تعذر تشغيل تجربة الصوت العربي الأصلي');return false}
+  var n=nativeBridge(),id='p140_preview_'+(++nativeReq);
+  var previous=lastWorkingVoiceURI||beforeVoiceChoice,started=false,done=false;
+  var ack=w.setTimeout(function(){if(!started&&!done)fail()},9000);
+  function cleanup(){done=true;w.clearTimeout(ack);delete nativePending[id]}
+  function fail(){
+   if(done)return;
+   cleanup();
+   opts.voiceURI=previous&&previous!==v.voiceURI?previous:'';
+   saveOpts();stats.voiceReverted++;
+   var panel=E('p140VoicePanel');if(panel&&!panel.hidden)populateVoices(panel);
+   toast('هذا الصوت لا يبدأ على هاتفك. أعدنا الصوت المحلي السابق أو الافتراضي.');
+  }
+  nativePending[id]=function(ok,error,event){
+   if(done)return;
+   if(event==='start'){
+    started=true;w.clearTimeout(ack);
+    var p=E('p140VoiceStatus');if(p)p.textContent='بدأ الصوت المختار. اكتمل التحقق عند نهاية الجملة.';
+    return;
+   }
+   if(error||ok===false){fail();return}
+   if(ok){cleanup();recordWorkingVoice(v);beforeVoiceChoice=v.voiceURI;
+    var p=E('p140VoiceStatus');if(p)p.textContent='تم التحقق من نجاح الصوت المحلي المختار.'}
+  };
+  try{if(!n.speak(id,sample,opts.rate,v.name)){fail();return false}return true}
+  catch(_){fail();return false}
  }
  var u=new w.SpeechSynthesisUtterance(sample);
  u.lang=v.lang||'ar-SA';u.voice=v;u.rate=opts.rate;u.pitch=1;u.volume=1;
- u.onerror=function(){toast('تعذر اختبار الصوت العربي على هذا الهاتف')};
+ u.onerror=function(){toast('فشل الصوت العربي المختار في المتصفح')};
  try{w.speechSynthesis.cancel();w.speechSynthesis.speak(u);return true}
- catch(_){toast('تعذر بدء تجربة الصوت');return false}
+ catch(_){toast('تعذر بدء تجربة الصوت المحلي');return false}
 }
 function syncNextSwitch(p){
  var button=p&&p.querySelector&&p.querySelector('[data-p140-next-switch]');
