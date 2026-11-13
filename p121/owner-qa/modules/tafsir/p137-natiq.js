@@ -259,45 +259,109 @@ function filterSections(all){
    :/الشرح|البيان|المعنى|تفسير/;
  return all.filter(function(x){return re.test(x.title||'')});
 }
-function readNativeChunk(s,content,isHeading,v){
+// Native JS transport acknowledges requests immediately, not audio playback.
+// Android P133 emits start/end/error/cancel asynchronously. Enforce an explicit
+// start acknowledgement and bounded end deadline; never wait 60s silently.
+var lastNativeIssue='';
+function readNativeChunk(s,content,isHeading,v,plain){
  return new Promise(function(resolve,reject){
   if(token!==s.token||!active){resolve(false);return}
-  var n=nativeBridge(),id='p133_'+(++nativeReq);
-  if(!n||!nativeStatus().ready){reject(new Error('محرك النطق العربي الأصلي غير جاهز؛ أعد المحاولة'));return}
-  var done=false,watchdog=0;
-  nativePending[id]=function(ok,error){
+  var n=nativeBridge(),id='p137_'+(++nativeReq);
+  if(!n||!nativeStatus().ready){reject(new Error('محرك النطق المحلي غير جاهز'));return}
+  var done=false,started=false,ackTimer=0,watchdog=0;
+  function finish(ok,error){
    if(done)return;
-   done=true;clearTimeout(watchdog);delete nativePending[id];
-   if(error)reject(error);
+   done=true;clearTimeout(ackTimer);clearTimeout(watchdog);
+   delete nativePending[id];
+   if(error){lastNativeIssue=q(error.message);reject(error)}
    else resolve(ok);
+  }
+  nativePending[id]=function(ok,error,event){
+   if(done)return;
+   if(event==='start'){
+    started=true;clearTimeout(ackTimer);stats.nativeStarts++;return;
+   }
+   finish(ok,error);
   };
+  ackTimer=setTimeout(function(){
+   if(!done&&!started){
+    stats.nativeNoStart++;
+    finish(false,new Error('لم يبدأ محرك Android نطق العبارة خلال المهلة؛ قد يكون الاتصال بالجسر الصوتي متوقفًا'));
+   }
+  },9500);
   watchdog=setTimeout(function(){
-   if(nativePending[id])nativePending[id](false,new Error('توقف محرك النطق العربي دون إشعار اكتمال'));
-  },60000);
+   if(!done)finish(false,new Error('تأخر محرك Android في إكمال العبارة الصوتية'));
+  },Math.min(45000,Math.max(25000,content.length*250)));
   try{
-   var accepted=n.speak(id,prepareSpeech(content),isHeading?Math.max(.7,opts.rate-.08):opts.rate,v.name);
-   if(!accepted)nativePending[id](false,new Error('رفض محرك Android بدء الكلام العربي'));
-  }catch(e){if(nativePending[id])nativePending[id](false,new Error('فشل الاتصال بمحرك النطق العربي الأصلي'))}
+   var text=plain?content:prepareSpeech(content);
+   var accepted=n.speak(id,text,isHeading?Math.max(.7,opts.rate-.08):opts.rate,v.name);
+   if(!accepted)finish(false,new Error('رفض الجسر الصوتي بدء العبارة'));
+  }catch(e){finish(false,new Error('تعذر إرسال العبارة إلى محرك Android'))}
  });
 }
 w.__BASAIR_P133_NATIVE_TTS_EVENT__=function(id,event){
  var cb=nativePending[id];if(!cb)return;
- if(event==='end')cb(true);
- if(event==='error')cb(false,new Error('محرك Android توقف بسبب خطأ في النطق العربي'));
+ if(event==='start')cb(null,null,'start');
+ else if(event==='end')cb(true);
+ else if(event==='cancel')cb(false,new Error('أوقف Android العبارة الصوتية قبل اكتمالها'));
+ else if(event==='error')cb(false,new Error('رفض محرك Android نطق العبارة الحالية'));
 };
-function readChunk(s,content,isHeading){
+function readBrowserChunk(s,content,isHeading,v,plain){
  return new Promise(function(resolve,reject){
   if(token!==s.token||!active){resolve(false);return}
-  var v=voice();if(!v){reject(new Error('لا يمكن الوصول إلى صوت عربي عبر WebView؛ يلزم ربط Android TextToSpeech في APK'));return}
-  if(v._basairNative){readNativeChunk(s,content,isHeading,v).then(resolve,reject);return}
-  var u=new w.SpeechSynthesisUtterance(prepareSpeech(content));
-  u.lang=v.lang||'ar-SA';u.voice=v;u.rate=isHeading?Math.max(.7,opts.rate-.08):opts.rate;u.pitch=1;u.volume=1;
-  var done=false;
-  function finish(ok,error){if(done)return;done=true;u.onend=null;u.onerror=null;if(error)reject(error);else resolve(ok)}
+  var synth=w.speechSynthesis;
+  if(!synth||typeof w.SpeechSynthesisUtterance!=='function'){
+   reject(new Error('لا يوجد محرك Web Speech عربي بديل على الهاتف'));return;
+  }
+  var u=new w.SpeechSynthesisUtterance(plain?content:prepareSpeech(content));
+  u.lang=v.lang||'ar-SA';u.voice=v;u.rate=isHeading?Math.max(.7,opts.rate-.08):opts.rate;
+  u.pitch=1;u.volume=1;var done=false,watchdog=0;
+  function finish(ok,error){
+   if(done)return;done=true;clearTimeout(watchdog);
+   u.onend=null;u.onerror=null;if(error)reject(error);else resolve(ok);
+  }
   u.onend=function(){finish(true)};
-  u.onerror=function(e){if(token!==s.token){finish(false);return}finish(false,new Error('فشل محرك النطق العربي'))};
-  try{w.speechSynthesis.speak(u)}catch(e){finish(false,e)}
+  u.onerror=function(){
+   if(token!==s.token){finish(false);return}
+   finish(false,new Error('فشل محرك Web Speech في نطق العبارة'));
+  };
+  watchdog=setTimeout(function(){
+   finish(false,new Error('لم يكتمل نطق Web Speech ضمن المهلة'));
+  },45000);
+  try{synth.speak(u)}catch(e){finish(false,new Error('تعذر بدء Web Speech'))}
  });
+}
+async function readChunk(s,content,isHeading){
+ if(token!==s.token||!active)return false;
+ var v=voice();
+ if(!v)throw new Error('لا يتوفر صوت عربي، افتح الإعدادات واختر صوتًا متاحًا');
+ if(!v._basairNative)return readBrowserChunk(s,content,isHeading,v,false);
+ try{return await readNativeChunk(s,content,isHeading,v,false)}
+ catch(firstError){
+  if(token!==s.token||!active)return false;
+  stats.nativeErrors++;
+  // The vocalized form can break some phone TTS engines. Retry once with
+  // original undecorated Tafsir text, then try a locally available browser
+  // Arabic voice (never synthesize Quran recordings).
+  var n=nativeBridge();
+  if(n&&typeof n.stop==='function')try{n.stop()}catch(_){}
+  if(!await sectionPause(s,260))return false;
+  stats.nativeRetries++;
+  try{return await readNativeChunk(s,content,isHeading,v,true)}
+  catch(secondError){
+   if(token!==s.token||!active)return false;
+   stats.nativeErrors++;
+   var available=eligibleVoices().filter(function(item){
+    return !item._basairNative&&/^ar(?:-|$)/i.test(item.lang||'');
+   });
+   if(available.length){
+    stats.browserFallbacks++;
+    try{return await readBrowserChunk(s,content,isHeading,available[0],true)}
+    catch(browserError){lastNativeIssue=q(browserError.message)}
+   }
+   throw new Error('تعذر استمرار صوت التفسير. '+q(lastNativeIssue||secondError.message)+'. جرّب صوتًا عربيًا آخر من إعدادات الناطق.');
+  }
+ }
 }
 function sectionPause(s,ms){return new Promise(function(resolve){
   setTimeout(function(){resolve(token===s.token&&!!active)},ms);
@@ -723,6 +787,7 @@ var API={version:VERSION,normalize:normalize,segments:segments,splitSpeech:split
    reciterSelected:!!(b&&b.selected&&b.selected(opts.reciterId)),reciterChoice:opts.reciterId,
    supportedReciters:b&&b.list?b.list().length:0,
    nextEnabled:opts.autoNext,visibleSettings:true,
+   lastNativeIssue:lastNativeIssue,
    narratorTakeover:takeover,religiousGuideEnabled:opts.religiousGuide,
    hasReciterSelector:!!(E('p132Panel')&&E('p132Panel').querySelector('[data-p132-option="reciterId"]')),
    exactAyahSource:!!(b&&b.diagnostics&&b.diagnostics().exactAyahCatalogAvailable),
