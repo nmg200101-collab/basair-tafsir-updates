@@ -1,0 +1,32 @@
+name: P146 owner RSA signed Seq23 final verification (temporary)
+on:
+  pull_request:
+    paths:
+      - 'p146/**'
+      - 'p121/owner-qa/release*.json'
+      - '.github/workflows/p146-signed-qa.yml'
+permissions:
+  contents: read
+jobs:
+  signature-and-assets:
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify original-owner RSA signature, eight assets, Seq22 rollback
+        run: node p146/tests/test-p146-signed-release.cjs
+      - name: Reverify trusted QuranEnc fallback and bounded retries
+        run: node p146/tests/test-p146-loading-recovery.cjs
+      - name: Reverify P146 scope and UI contract
+        run: node p146/tests/test-p146-static.cjs
+      - name: Chromium final 125 percent mic, note, and selected tabs
+        shell: bash
+        run: |
+          CHROME="$(command -v google-chrome || command -v chromium || true)"
+          test -n "$CHROME"
+          "$CHROME" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage \
+            --allow-file-access-from-files --virtual-time-budget=8000 \
+            --dump-dom "file://$PWD/p146/tests/p146-mic-note-tabs-browser.html" 2>/dev/null | grep -F '"pass":true'
