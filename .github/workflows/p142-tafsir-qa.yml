@@ -1,0 +1,38 @@
+name: P142 V695 built-in narrator deduplication QA
+on:
+  pull_request:
+    paths:
+      - 'p142/**'
+      - 'p121/owner-qa/modules/tafsir/p142-*.js'
+      - 'p121/owner-qa/modules/tafsir/p142-*.css'
+      - '.github/workflows/p142-tafsir-qa.yml'
+permissions:
+  contents: read
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: JavaScript syntax
+        run: node --check p121/owner-qa/modules/tafsir/p142-natiq.js
+      - name: Native Android TTS regression
+        run: node p142/tests/test-p142-natiq.cjs
+      - name: Quran recitation bridge isolation
+        run: node p142/tests/test-p142-narrator-integration.cjs
+      - name: Next ayah regression
+        run: node p142/tests/test-p142-auto-next.cjs
+      - name: Legacy Android V695 button and double-player regression
+        run: node p142/tests/test-p142-wave-toggle-v695.cjs
+      - name: Spoken-prose vocabulary and native voice fallback
+        run: node p142/tests/test-p142-voice-recovery-and-lexicon.cjs
+      - name: Chromium real V695 button hidden inside independent Tafsir roots
+        shell: bash
+        run: |
+          CHROME="$(command -v google-chrome || command -v chromium || true)"
+          test -n "$CHROME"
+          "$CHROME" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage --allow-file-access-from-files \
+            --dump-dom "file://$PWD/p142/tests/p142-v695-native-layout.html" 2>/dev/null | grep -F '"pass":true'
