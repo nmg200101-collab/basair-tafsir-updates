@@ -135,8 +135,11 @@ function prepareSpeech(source,forceGuide){
  if(forceGuide===false||(forceGuide===undefined&&!opts.religiousGuide))return raw;
  // Whole, unvowelled words only. Avoid changing mixed/vowelled Arabic terms,
  // suffixes, place names and homographs for which fixed tashkeel is unsafe.
- return raw.replace(/(^|[^\u0621-\u064A\u064B-\u065F\u0670\u0671-\u06D3])(الله|القرآن|الرحمن|الرحيم|الإيمان|الصلاة|الزكاة|التقوى|الآخرة|العبادة|الملائكة|النبوة)(?=$|[^\u0621-\u064A\u064B-\u065F\u0670\u0671-\u06D3])/g,
-  function(full,boundary,term){return boundary+(RELIGIOUS_READING[term]||term)});
+ return raw.replace(/(^|[^\u0621-\u064A\u064B-\u065F\u0670\u0671-\u06D3])([وفب]?)(الله|القرآن|الرحمن|الرحيم|الإيمان|الصلاة|الزكاة|التقوى|الآخرة|العبادة|الملائكة|النبوة)(?=$|[^\u0621-\u064A\u064B-\u065F\u0670\u0671-\u06D3])/g,
+  function(full,boundary,prefix,term){
+   var p=prefix?({و:'وَ',ف:'فَ',ب:'بِ'}[prefix]||prefix):'';
+   return boundary+p+(RELIGIOUS_READING[term]||term);
+  });
 }
 function sayHeading(title){
  title=normalize(title);if(!title)return '';
