@@ -1,0 +1,31 @@
+name: P136 isolated reciter settings and speech QA
+on:
+  pull_request:
+    paths:
+      - 'p136/**'
+      - 'p121/owner-qa/modules/tafsir/p136-*.js'
+      - '.github/workflows/p136-tafsir-qa.yml'
+permissions:
+  contents: read
+jobs:
+  p136-qa:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Syntax validate three Tafsir-only JavaScript modules
+        run: |
+          node --check p121/owner-qa/modules/tafsir/p136-ayah-catalog.js
+          node --check p121/owner-qa/modules/tafsir/p136-reciter-bridge.js
+          node --check p121/owner-qa/modules/tafsir/p136-natiq.js
+      - name: Regression - exact-ayah reciter catalog and privacy
+        run: node p136/tests/test-p136-reciter-bridge.cjs
+      - name: Regression - narrator voice, fallback, stop
+        run: node p136/tests/test-p136-natiq.cjs
+      - name: Regression - Quran recording always before Tafsir TTS
+        run: node p136/tests/test-p136-narrator-integration.cjs
+      - name: Regression - cached settings window migration and religious pronunciation
+        run: node p136/tests/test-p136-migration-pronunciation.cjs
