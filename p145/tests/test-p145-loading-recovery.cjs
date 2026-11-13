@@ -33,7 +33,7 @@ async function run(){
   new Promise((_,bad)=>setTimeout(()=>bad(Error('fallback remained stuck')),4500))
  ]);
  assert.equal(result.ayahs[0],'موثوق: تفسير الآية الأولى');
- assert.equal(win.__BASAIR_TAFSIR_P145__.status().stats.fetchFallback,1);
+ assert.equal(win.__BASAIR_TAFSIR_P145__.status().fetchFallback,1);
  assert.equal(fetches,1);
  source='error';
  await assert.rejects(core.getMuyassarSurah(1,true),/مصدر التفسير غير متاح/);
