@@ -90,7 +90,7 @@ function dispatch(name,target){
 async function run(){
  let count=0;function check(name,fn){fn();count++;console.log('PASS '+name)}
  check('prior narrator stops exactly once and new narrator takes over',()=>{
-  assert.equal(oldApiStop,1);assert.match(api.version,/P140/);
+  assert.equal(oldApiStop,1);assert.match(api.version,/P141/);
  });
  check('one original-style wave narrator, old mic/gear/next hidden',()=>{
   assert.ok(btn);assert.equal(row.querySelectorAll('.p141WaveButton').length,1);
