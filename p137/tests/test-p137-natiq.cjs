@@ -53,9 +53,12 @@ async function main(){
   assert.equal(m.pending.length,1);m.emit(0,'end');await delay(410);
   assert.ok(m.pending.length>=2);assert.match(m.pending[1].value,/بيان عظيم/);m.api.stop();
  });
- await check('Native error cancels the current reading session',async()=>{
-  const m=setup();m.api.start(m.row);m.emit(0,'error');await delay(10);
-  assert.equal(m.api.status().running,false);assert.ok(m.api.status().stats.errors>0);
+ await check('Native error triggers one safe retry rather than silencing Tafsir',async()=>{
+  const m=setup();m.api.start(m.row);m.emit(0,'error');await delay(350);
+  assert.equal(m.api.status().running,true);
+  assert.equal(m.pending.length,2);
+  assert.equal(m.api.status().stats.nativeRetries,1);
+  assert.equal(m.api.status().stats.nativeErrors,1);m.api.stop();
  });
  await check('Explicit stop silences native and discards late callback',async()=>{
   const m=setup();m.api.start(m.row);m.api.stop();m.emit(0,'end');
@@ -121,7 +124,17 @@ async function main(){
   assert.equal(m.api.status().options.reciterId,'follow');
   assert.equal(m.api.diagnostics().supportedReciters,0);
  });
- console.log(JSON.stringify({pass:count,total:15,native:'mock only',androidDevice:'not tested'}));
+ await check('P137 start/end acknowledgements do not double-count completion',async()=>{
+  const m=setup();m.api.start(m.row);
+  m.emit(0,'start');m.emit(0,'end');await delay(350);
+  assert.equal(m.api.status().stats.nativeStarts,1);
+  assert.equal(m.pending.length,2);m.api.stop();
+ });
+ await check('P137 cancellation event is handled as real error not 60s stall',async()=>{
+  const m=setup();m.api.start(m.row);m.emit(0,'cancel');await delay(350);
+  assert.equal(m.pending.length,2);m.api.stop();
+ });
+ console.log(JSON.stringify({pass:count,total:17,native:'mock only',androidDevice:'not tested'}));
 }
 if(typeof module!=='undefined'&&module.exports)module.exports=main;
 if(typeof require!=='undefined'&&require.main===module)main().catch(e=>{console.error(e);process.exitCode=1});
