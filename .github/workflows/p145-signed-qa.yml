@@ -1,0 +1,32 @@
+name: P145 owner RSA signed Seq22 release validation (temporary)
+on:
+  pull_request:
+    paths:
+      - 'p145/**'
+      - 'p121/owner-qa/release*.json'
+      - '.github/workflows/p145-signed-qa.yml'
+permissions:
+  contents: read
+jobs:
+  sign-and-regression:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify RSA signature and all eight asset digests
+        run: node p145/tests/test-p145-signed-release.cjs
+      - name: Verify code boundaries and stuck loader recovery
+        run: |
+          node --check p121/owner-qa/modules/tafsir/p145-reader-polish.js
+          node p145/tests/test-p145-static.cjs
+          node p145/tests/test-p145-loading-recovery.cjs
+      - name: Verify small top chips and source return in headless Chromium
+        shell: bash
+        run: |
+          CHROME="$(command -v google-chrome || command -v chromium || true)"
+          test -n "$CHROME"
+          "$CHROME" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage --allow-file-access-from-files \
+            --dump-dom "file://$PWD/p145/tests/p145-tafsir-browser-fixture.html" 2>/dev/null | grep -F '"pass":true'
