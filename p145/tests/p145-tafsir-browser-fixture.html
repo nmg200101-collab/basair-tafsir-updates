@@ -28,6 +28,9 @@
 window.__BASAIR_TAFSIR_STEP2__={state:()=>({s:1,a:1,type:'muyassar'}),open(){window.__retries=(window.__retries||0)+1}};
 window.__BASAIR_TAFSIR_CORE__={getMuyassarSurah:()=>new Promise(()=>{})};
 window.__noteClick=0;document.getElementById('note1').addEventListener('click',()=>window.__noteClick++);
+Object.defineProperty(HTMLIFrameElement.prototype,'src',{configurable:true,
+ get(){return this.getAttribute('data-fake-src')||''},
+ set(v){this.setAttribute('data-fake-src',String(v))}});
 window.fetch=(url)=>Promise.resolve({ok:true,json:()=>Promise.resolve({
  schema:'basair-muyassar-surah-v1',s:1,ayah_count:2,ayahs:['مادة تفسيرية للآية الأولى','مادة تفسيرية للآية الثانية']})});
 </script>
@@ -55,7 +58,7 @@ const success=!!bar&&!!bar2&&bar.previousElementSibling.classList.contains('v194
  api.status().fetchFallback>=1&&sourceOpen&&overlay.hidden&&
  getComputedStyle(document.querySelector('[data-basair-main-tab="intro"]')).borderBottomColor!=='rgba(0, 0, 0, 0)';
 document.getElementById('result').textContent=JSON.stringify({
- pass:success,top:!!bar,sameHeight:[r.height,z.height],
+ pass:success,top:!!bar,sameHeight:[r.height,z.height],sameWidth:[r.width,z.width],topBelowQrow:bar.previousElementSibling.classList.contains('v194T2Qrow'),tabBorder:getComputedStyle(document.querySelector('[data-basair-main-tab="intro"]')).borderBottomColor,
  action:action.height,loaderInstalled:loaderInstalled,
  sourceOpened:sourceOpen,sourceClosed:overlay.hidden,noteListenerPreserved:window.__noteClick===1,
  otherTafsirTop:!!bar2});
