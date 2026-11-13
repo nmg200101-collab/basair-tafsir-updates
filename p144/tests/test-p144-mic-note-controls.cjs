@@ -66,7 +66,8 @@ function panel(){
 const d={readyState:'complete',hidden:false,
  body:{appendChild:p=>panels.push(p)},
  getElementById:id=>id==='tafsirReader'?reader:id==='tafsirAyahs'?host:
-   id==='p144VoicePanel'?panels.filter(p=>!p.removed).at(-1)||null:null,
+   id==='p144VoicePanel'?panels.filter(p=>p.id==='p144VoicePanel'&&!p.removed).at(-1)||null:
+    id==='p144SpeechFrame'?panels.find(p=>p.id==='p144SpeechFrame')||null:null,
  createElement:tag=>tag==='div'?panel():element('',tag.toUpperCase()),
  addEventListener(){},querySelectorAll(){return []}
 };
@@ -148,7 +149,7 @@ async function run(){
  dispatch('pointerdown',btn);
  await new Promise(r=>setTimeout(r,630));
  check('long press opens one full RTL settings sheet',()=>{
-  const p=panels.at(-1);assert.equal(p.hidden,false);
+  const p=panels.filter(p=>p.id==='p144VoicePanel'&&!p.removed).at(-1);assert.equal(p.hidden,false);
   assert.ok(p.innerHTML.includes('data-p132-option="reciterId"'));
   assert.ok(p.innerHTML.includes('data-p144-next-switch'));
   assert.ok(p.innerHTML.includes('value="server" disabled'));
@@ -159,7 +160,7 @@ async function run(){
   dispatch('click',btn);
   assert.equal(api.status().running,false);
  });
- const p=panels.at(-1),sw=p.querySelector('[data-p144-next-switch]');
+ const p=panels.filter(p=>p.id==='p144VoicePanel'&&!p.removed).at(-1),sw=p.querySelector('[data-p144-next-switch]');
  const makeClick=()=>({target:{closest:s=>s==='[data-p144-next-switch]'?sw:null},preventDefault(){},stopPropagation(){}});
  check('Next switch restores previously enabled state',()=>{
   assert.equal(api.status().options.autoNext,true);
