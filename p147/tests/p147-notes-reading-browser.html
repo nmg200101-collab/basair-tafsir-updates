@@ -85,7 +85,18 @@ document.addEventListener('DOMContentLoaded',function(){
  const result={pass:stable&&introThread&&dark&&htmlNight&&fieldTone&&highContrast&&restoresDay,noteFirst,duplicateHidden:dup.hidden,
     listenerPreserved:window.__noteClicks===1,toolbarColumns:grid,
     noteHeight:sizes[0],noteWidth:sizes[1],micTop:!!top,prose,readingTab:document.body.dataset.p147ReadingTab,dark,htmlNight,fieldTone,highContrast,restoresDay,titleNightColor,tabsNightColor};
- document.getElementById('result').textContent=JSON.stringify(result);
+ setTimeout(function(){
+   // Legacy P144 may overwrite five columns after initial render: verify
+   // MutationObserver restores a stable five-tool bar (not only initial size).
+   const repairedColumns=getComputedStyle(bar).gridTemplateColumns.split(' ').length===5;
+   const noteStillActive=note.parentElement===bar&&!note.disabled&&!note.hidden;
+   const noDuplicate=!dup.disabled?false:dup.hidden;
+   result.gridRestoredAfterLegacyStyle=repairedColumns;
+   result.noteStillActiveAfterMutation=noteStillActive;
+   result.duplicateStillInert=noDuplicate;
+   result.pass=result.pass&&repairedColumns&&noteStillActive&&noDuplicate;
+   document.getElementById('result').textContent=JSON.stringify(result);
+ },410);
  }catch(e){document.getElementById('result').textContent='ERROR: '+e.stack}
 });
 </script></body></html>
