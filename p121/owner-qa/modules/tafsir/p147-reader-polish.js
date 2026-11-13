@@ -5,6 +5,7 @@
  var ROOT='https://raw.githubusercontent.com/nmg200101-collab/basair-tafsir-updates/main/public-assets/tafsir-muyassar/v1/surahs/';
  var stats={controls:0,repositioned:0,duplicatePruned:0,fetchFallback:0,cacheWrites:0,retryShown:0,externalOpened:0};
  var observe=null,debounce=0,slowTimers=[],surahRequests=new Map(),baseMuyassar=null,seenCore=null,modalBack=false,sourceModal=null;
+ var noteBarObserver=null,noteBarWatched=new WeakSet();
  function E(id){return d.getElementById(id)}
  function open(){var r=E('tafsirReader');return !!(r&&r.classList.contains('active'))}
  function style(el,key,value){if(el&&el.style&&typeof el.style.setProperty==='function'&&
@@ -93,6 +94,17 @@
     style(canonical,'border-radius','9px');
    }
   }
+  if(actions&&canonical&&w.MutationObserver){
+   if(!noteBarObserver)noteBarObserver=new MutationObserver(schedule);
+   if(!noteBarWatched.has(actions)){
+    noteBarObserver.observe(actions,{attributes:true,attributeFilter:['style']});
+    noteBarWatched.add(actions);
+   }
+   if(!noteBarWatched.has(canonical)){
+    noteBarObserver.observe(canonical,{attributes:true,attributeFilter:['style']});
+    noteBarWatched.add(canonical);
+   }
+  }
   var staleHost=row.querySelector('.p146BottomNote');
   if(staleHost&&!staleHost.children.length)staleHost.remove();
   var all=row.querySelectorAll('button.p144MicButton');
@@ -112,12 +124,10 @@
  }
  // P147 visual hierarchy is opt-in ONLY for visible Intro and Thread panels.
  function readingMode(){
-  var tabs=E('basairTafsirPrimaryTabs'),b=d.body,
-      mode=b&&b.getAttribute('data-basair-tafsir-main-tab');
-  if(mode!=='intro'&&mode!=='thread'){
-   var selected=tabs&&tabs.querySelector('button[data-basair-main-tab].on,button[data-basair-main-tab][aria-selected="true"]');
-   mode=selected&&selected.getAttribute('data-basair-main-tab');
-  }
+  var tabs=E('basairTafsirPrimaryTabs'),b=d.body;
+  var selected=tabs&&tabs.querySelector('button[data-basair-main-tab].on,button[data-basair-main-tab][aria-selected="true"]');
+  var mode=selected&&selected.getAttribute('data-basair-main-tab');
+  if(!mode)mode=b&&b.getAttribute('data-basair-tafsir-main-tab');
   return mode==='intro'||mode==='thread'?mode:null;
  }
  function decorateReading(){
@@ -129,10 +139,11 @@
   var titleRe=/^(?:خلاصة السورة|متى نزلت وسياقها|سبب النزول|أبرز المحطات|أهم المعاني في مسار السورة|محطة عند الآية\s*\d+|عند الآية\s*\d+)$/;
   for(var r=0;r<roots.length;r++){
    var root=roots[r];if(!root||!root.querySelectorAll)continue;
-   var titles=root.querySelectorAll('h2,h3,h4,h5,h6,strong,b,[class*="Title"],[class*="title"]');
+   var titles=root.querySelectorAll('div,span,p,h2,h3,h4,h5,h6,strong,b,[class*="Title"],[class*="title"]');
    for(var k=0;k<titles.length;k++){
     var title=titles[k],value=String(title.textContent||'').replace(/\s+/g,' ').trim();
     if(value.length>85||!titleRe.test(value)||!title.parentElement)continue;
+    if(title.firstElementChild&&String(title.firstElementChild.textContent||'').trim()===value)continue;
     title.classList.add('p147ReadingHeading');
     var card=title.parentElement;
     // Do not style a whole reading page if its heading is wrapped separately.
