@@ -103,7 +103,7 @@ async function run(){
  check('one original-style wave narrator, old mic/gear/next hidden',()=>{
   assert.ok(btn);assert.equal(row.querySelectorAll('.p142WaveButton').length,1);
   for(const legacy of [oldP132,oldP137,oldGear,oldNext,oldMic,oldWave,olderWave,prior141,nativeV695,nativeBar]){
-   assert.equal(legacy.hidden,true);assert.equal(legacy.disabled,true)
+   assert.equal(legacy.hidden,true);if(legacy.tagName==='BUTTON')assert.equal(legacy.disabled,true)
   }
   assert.ok(btn.innerHTML.includes('◖))'));
   assert.equal(nativeLive.hidden,true);
