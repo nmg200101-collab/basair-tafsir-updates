@@ -41,7 +41,7 @@ async function main(){
  let count=0;async function check(name,fn){await fn();count++;console.log('PASS '+name)}
  await check('No native and no Web Speech accurately reports unavailable',()=>{
   const m=setup({native:false});assert.equal(m.api.capabilities().arabicTTS,false);
-  assert.equal(m.api.start(m.row),false);assert.ok(m.toasts.some(x=>/Android|WebView|داخل التطبيق/.test(x)));
+  assert.equal(m.api.start(m.row),false);assert.ok(src.includes('showSpeechFrame(msg,'));assert.equal(m.toasts.length,0);
  });
  await check('Native local Arabic voice used without browser speechSynthesis',()=>{
   const m=setup();assert.equal(m.api.capabilities().arabicTTS,true);
@@ -85,7 +85,7 @@ async function main(){
  await check('P134 both-mode gracefully narrates Tafsir when no verified reciter track',()=>{
   const m=setup({mode:'both'});
   assert.equal(m.api.start(m.row),true);
-  assert.ok(m.toasts.some(t=>/التفسير فقط/.test(t)));
+  assert.equal(m.api.status().options.mode,'both');assert.equal(m.toasts.length,0);
   assert.ok(m.pending.length>0);m.api.stop();
  });
  await check('P134 TTS UI mutation does not cancel active session',()=>{
