@@ -78,7 +78,7 @@ async function main(){
   const m=setup({mode:'both',reciterId:'invalid_reciter'});
   assert.equal(m.api.start(m.row),true);
   assert.equal(m.audios.length,0);assert.equal(m.nativeSpoken.length,1);
-  assert.ok(m.toasts.some(v=>/غير متاح/.test(v)));
+  assert.equal(m.toasts.length,0);
   m.api.stop();
  });
  await check('Follow selection is never overwritten by narrator custom selection',()=>{
@@ -98,7 +98,7 @@ async function main(){
   const spoken=m.nativeSpoken.length;
   m.api.stop();
   assert.ok(spoken>0,'Tafsir voice must resume after verse source failure');
-  assert.ok(m.toasts.some(msg=>/تعذر تشغيل تسجيل الآية/.test(msg)));
+  assert.equal(m.toasts.length,0);
   assert.equal(m.selector.value,'husary');
  });
  console.log(JSON.stringify({pass,total:5,device:'NOT TESTED',remoteMP3:'NOT VERIFIED'}));
