@@ -10,7 +10,7 @@ function matches(el,selector){
  });
 }
 function element(cls='',tag='DIV'){
- const el={nodeType:1,tagName:tag,className:cls,hidden:false,disabled:false,attrs:{},children:[],parentElement:null,innerHTML:'',
+ const el={nodeType:1,tagName:tag,className:cls,hidden:false,disabled:false,attrs:{},children:[],parentElement:null,innerHTML:'',style:{applied:{},setProperty(k,v,priority){this.applied[k]={value:v,priority}}},
   classList:{contains:k=>cls===k,remove(){},add(){}},
   setAttribute(k,v){this.attrs[k]=String(v)},getAttribute(k){return this.attrs[k]||null},
   appendChild(c){c.parentElement=this;this.children.push(c);return c},
@@ -36,7 +36,10 @@ const note=element('b263r3NoteChip','BUTTON'),oldP132=element('p132NatiqButton',
  oldNext=element('p137NatiqNext','BUTTON'),oldMic=element('p138MicButton','BUTTON'),oldWave=element('p139WaveButton','BUTTON'),olderWave=element('p140WaveButton','BUTTON'),prior141=element('p141WaveButton','BUTTON'),prior142=element('p142WaveButton','BUTTON'),
  nativeV695=element('v695NatiqButton','BUTTON'),nativeLive=element('v695NatiqLive','SMALL'),nativeBar=element('v695NatiqBar');
 nativeBar.appendChild(nativeV695);nativeBar.appendChild(nativeLive);
-for(const el of [note,nativeBar,oldP132,oldP137,oldGear,oldNext,oldMic,oldWave,olderWave,prior141,prior142])row.appendChild(el);
+const actionBar=element('basairB231AyahActions');
+const actionButtons=['متابعة','نسخ','مقارنة','مفضلة'].map(()=>element('', 'BUTTON'));
+actionButtons.forEach(b=>actionBar.appendChild(b));
+for(const el of [note,nativeBar,oldP132,oldP137,oldGear,oldNext,oldMic,oldWave,olderWave,prior141,prior142,actionBar])row.appendChild(el);
 const panels=[],wEvents={};let oldApiStop=0,baseV695Stop=0,legacyInvoked=0;
 function panel(){
  const p=element('', 'DIV');p.id='p144VoicePanel';p.fields={};p.setAttribute('data-revision','');
@@ -98,7 +101,7 @@ async function run(){
  let count=0;function check(name,fn){fn();count++;console.log('PASS '+name)}
  check('prior narrator stops exactly once and new narrator takes over',()=>{
   assert.equal(oldApiStop,1);assert.equal(baseV695Stop,1);
-  assert.match(api.version,/P143/);
+  assert.match(api.version,/P144/);
  });
  check('one original-style wave narrator, old mic/gear/next hidden',()=>{
   assert.ok(btn);assert.equal(row.querySelectorAll('.p144MicButton').length,1);
@@ -121,6 +124,20 @@ async function run(){
  });
  check('old P137/P138/P139 click handlers do not intercept P140 wave',()=>{
   dispatch('click',btn);assert.equal(legacyInvoked,0);
+ });
+ check('mic/note have equal important sizing and actions use only 48px height',()=>{
+  for(const chip of [note,btn]){
+   assert.equal(chip.style.applied.width.value,'62px');
+   assert.equal(chip.style.applied.height.value,'50px');
+   assert.equal(chip.style.applied.width.priority,'important');
+  }
+  assert.equal(actionBar.style.applied['max-height'].value,'62px');
+  for(const action of actionButtons){
+   assert.equal(action.style.applied.height.value,'48px');
+   assert.equal(action.style.applied['min-height'].value,'44px');
+  }
+  assert.equal(api.diagnostics().compactActions,true);
+  assert.equal(api.diagnostics().framedStatus,true);
  });
  check('cloud is explicitly disabled and no remote preference is inherited',()=>{
   assert.equal(api.status().options.voiceSource,'local');
@@ -172,6 +189,6 @@ async function run(){
   assert.ok(source.includes('verified!==true'));
   assert.ok(!source.includes('SpeechSynthesisUtterance(s.verse'));
  });
- console.log(JSON.stringify({pass:count,total:11,physicalDevice:'NOT TESTED',server:'NOT CONFIGURED',nativeV695Hidden:true}));
+ console.log(JSON.stringify({pass:count,total:12,physicalDevice:'NOT TESTED',server:'NOT CONFIGURED',nativeV695Hidden:true}));
 }
 run().catch(e=>{console.error(e);process.exitCode=1});
