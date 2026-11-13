@@ -71,7 +71,7 @@ function ineligible(el){
  if(!el||el.nodeType!==1)return false;
  if(/^(SCRIPT|STYLE|NOSCRIPT|BUTTON|INPUT|SELECT|TEXTAREA|AUDIO|VIDEO|SVG|CANVAS|NAV|FOOTER)$/i.test(el.tagName||''))return true;
  var cls=String(el.className||'');
- if(/(^|\s)(v194T2Qrow|basairB231AyahActions|b118CarryArticle|p124ExportDialog|v695NatiqBar|v695NatiqLive|v695NatiqButton|p132NatiqBar|p132NatiqLive|p132NatiqButton|p142WaveButton|p142WaveLive|p144MicLive|p137NatiqButton|p137NatiqSettings|p137NatiqNext|p144VoicePanel|p144VoiceStatus|v194T5Sentinel)(\s|$)/.test(cls))return true;
+ if(/(^|\s)(v194T2Qrow|basairB231AyahActions|b118CarryArticle|p124ExportDialog|v695NatiqBar|v695NatiqLive|v695NatiqButton|p132NatiqBar|p132NatiqLive|p132NatiqButton|p142WaveButton|p142WaveLive|p144MicLive|p143MicButton|p143MicLive|p137NatiqButton|p137NatiqSettings|p137NatiqNext|p144VoicePanel|p144VoiceStatus|v194T5Sentinel)(\s|$)/.test(cls))return true;
  // Placeholder text is not exegesis; do not pretend it is a valid tafsir.
  if(/(^|\s)v194T2Field(\s|$)/.test(cls)&&/(^|\s)pending(\s|$)/.test(cls))return true;
  if(el.hasAttribute('hidden')||el.getAttribute('aria-hidden')==='true')return true;
@@ -699,7 +699,7 @@ function control(row){
  decorateNote(row);compactActions(row);
  // Keep old nodes in place so P132/P137 MutationObservers do not recreate
  // them. Make old controls inert and invisible instead of touching Tilawa.
- var prior=row.querySelectorAll('.v695NatiqButton,.v695NatiqLive,.p132NatiqButton,.p132NatiqLive,.p137NatiqButton,.p137NatiqSettings,.p137NatiqNext,.p137NatiqLive,.p138MicButton,.p138MicLive,.p139WaveButton,.p139WaveLive,.p140WaveButton,.p140WaveLive,.p141WaveButton,.p141WaveLive,.p142WaveButton,.p142WaveLive');
+ var prior=row.querySelectorAll('.v695NatiqButton,.v695NatiqLive,.p132NatiqButton,.p132NatiqLive,.p137NatiqButton,.p137NatiqSettings,.p137NatiqNext,.p137NatiqLive,.p138MicButton,.p138MicLive,.p139WaveButton,.p139WaveLive,.p140WaveButton,.p140WaveLive,.p141WaveButton,.p141WaveLive,.p142WaveButton,.p142WaveLive,.p143MicButton,.p143MicLive');
  for(var i=0;i<prior.length;i++){
   var old=prior[i];
   if(!old.hidden){old.hidden=true;stats.legacyHidden++}
@@ -732,7 +732,7 @@ function hideAllOldNarrators(){
  // #tafsirReader, so do NOT use reader || ayahs. Inspect BOTH roots.
  if(!tafsirOpen())return;
  var roots=[E('tafsirReader'),E('tafsirAyahs')],seen=[];
- var oldSelector='.v695NatiqButton,.v695NatiqLive,.v695NatiqBar,.p132NatiqButton,.p137NatiqButton,.p137NatiqSettings,.p137NatiqNext,.p138MicButton,.p139WaveButton,.p140WaveButton,.p141WaveButton,.p142WaveButton,.p132NatiqLive,.p137NatiqLive,.p138MicLive,.p139WaveLive,.p140WaveLive,.p141WaveLive,.p142WaveLive';
+ var oldSelector='.v695NatiqButton,.v695NatiqLive,.v695NatiqBar,.p132NatiqButton,.p137NatiqButton,.p137NatiqSettings,.p137NatiqNext,.p138MicButton,.p139WaveButton,.p140WaveButton,.p141WaveButton,.p142WaveButton,.p143MicButton,.p132NatiqLive,.p137NatiqLive,.p138MicLive,.p139WaveLive,.p140WaveLive,.p141WaveLive,.p142WaveLive,.p143MicLive';
  for(var r=0;r<roots.length;r++){
   var root=roots[r];if(!root||typeof root.querySelectorAll!=='function')continue;
   var nodes=root.querySelectorAll(oldSelector);
@@ -932,7 +932,7 @@ function onClick(e){
 }
 function natiqUiNode(node){
  var el=node&&node.nodeType===1?node:node&&node.parentElement;
- return !!(el&&el.closest&&el.closest('.v695NatiqBar,.v695NatiqButton,.v695NatiqLive,.p132NatiqBar,.p132NatiqButton,.p132NatiqLive,.p137NatiqButton,.p137NatiqSettings,.p137NatiqNext,.p142WaveButton,.p142WaveLive,.p144MicButton,.p144MicLive,.p144MicBar,.p144NoteChip,#p144VoiceStatus'));
+ return !!(el&&el.closest&&el.closest('.v695NatiqBar,.v695NatiqButton,.v695NatiqLive,.p132NatiqBar,.p132NatiqButton,.p132NatiqLive,.p137NatiqButton,.p137NatiqSettings,.p137NatiqNext,.p142WaveButton,.p142WaveLive,.p143MicButton,.p143MicLive,.p143NoteChip,.p144MicButton,.p144MicLive,.p144MicBar,.p144NoteChip,#p144VoiceStatus,#p144SpeechFrame'));
 }
 function onTafsirChanged(mutations){
  if(!active)return;
@@ -989,7 +989,7 @@ function observeReaderExit(){
 function init(){
  if(!E('tafsirReader'))return;
  loadOpts();
- ['v695NatiqPanel','p138NatiqPanel','p139VoicePanel','p140VoicePanel','p141VoicePanel','p142VoicePanel','p132Panel'].forEach(function(id){var old=E(id);if(old){old.hidden=true;old.setAttribute('aria-hidden','true')}})
+ ['v695NatiqPanel','p138NatiqPanel','p139VoicePanel','p140VoicePanel','p141VoicePanel','p142VoicePanel','p143VoicePanel','p132Panel'].forEach(function(id){var old=E(id);if(old){old.hidden=true;old.setAttribute('aria-hidden','true')}})
  attach();panel();observe();observeReaderExit();
  // An older narrator attached capture listeners to document and cannot remove
  // them. In a hot upgrade intercept ONLY narrator button events at window
