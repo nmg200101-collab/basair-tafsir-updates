@@ -588,8 +588,9 @@ function control(row){
  btn.innerHTML='<span class="p142Waves" aria-hidden="true">◖))</span><b>الناطق</b>';
  var live=d.createElement('small');live.className='p142WaveLive';live.hidden=true;
  live.setAttribute('role','status');
- var anchor=row.querySelector('.b263r3NoteChip,[data-r3-note-pos],.p124FollowAboveTools')||
- row.querySelector('.v695NatiqButton,.p141WaveButton,.p140WaveButton,.p139WaveButton,.p138MicButton,.p137NatiqButton,.p132NatiqButton');
+ // Do not insert the new P142 control inside an old .v695NatiqBar:
+ // native V695 bar must be hidden without hiding its P142 successor.
+ var anchor=row.querySelector('.b263r3NoteChip,[data-r3-note-pos],.p124FollowAboveTools');
  if(anchor&&anchor.parentElement){
   anchor.insertAdjacentElement('afterend',btn);
   btn.insertAdjacentElement('afterend',live);
