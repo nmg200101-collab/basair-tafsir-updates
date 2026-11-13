@@ -51,12 +51,11 @@ assert.ok(js.includes('p145SourceOverlay'),'P146 in-app source back must remain'
 assert.ok(js.includes('fetchFull(s)'),'P146 bounded fallback must remain');
 assert.ok(js.includes('p146TopMic'),'P146 mic by Quran ayah must remain');
 assert.ok(base.includes('p146BottomNote'),'P146 reference baseline retained');
-assert.ok(!read('p121/owner-qa/release.json').includes('p147-reader-polish'),
- 'main signed receiver manifest must NOT be changed until owner approval');
-const sig=JSON.parse(read('p121/owner-qa/release.json'));
+// Owner authorized P147 OTA publication; active signed manifest is now staged for Seq24.
+const sig=JSON.parse(read('p147/P147-SEQ24-OWNER-SIGNED-RELEASE.json'));
 const payload=JSON.parse(Buffer.from(sig.payload,'base64').toString('utf8'));
-assert.equal(payload.sequence,23,'no OTA sequence advance');
-assert.equal(payload.modules[0].version,21,'active Tafsir module unchanged');
+assert.equal(payload.sequence,24,'signed Seq24 required');
+assert.equal(payload.modules[0].version,22,'new Tafsir v22 required');
 assert.equal(payload.modules[0].assets.length,8);
 
 assert.ok(js.includes("stableNoteByRow.set(row,canonical)"),
@@ -93,7 +92,7 @@ for(const [i,a] of next.modules[0].assets.entries()){
 }
 
 console.log(JSON.stringify({
- status:'PASS',mode:'source-and-immutable-release',sequence:23,stage:'P147-DRAFT',
+ status:'PASS',mode:'source-and-signed-owner-release',sequence:24,stage:'P147-OWNER-QA',
  notes:'one original node among five',fallback:'preserved',sourceBack:'preserved',
  tilawaQA050:'no protected files changed',physicalDevice:'NOT TESTED'
 }));
