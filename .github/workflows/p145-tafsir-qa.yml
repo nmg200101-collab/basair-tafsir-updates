@@ -20,6 +20,8 @@ jobs:
         run: node --check p121/owner-qa/modules/tafsir/p145-reader-polish.js
       - name: Check safety boundaries
         run: node p145/tests/test-p145-static.cjs
+      - name: Stuck per-ayah QuranEnc request recovery with bounded GitHub fallback
+        run: node p145/tests/test-p145-loading-recovery.cjs
       - name: Chromium real loading and top control UI at 125 percent
         shell: bash
         run: |
