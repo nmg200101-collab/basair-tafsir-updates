@@ -69,7 +69,7 @@
  function cacheSurah(data){
   if(!w.indexedDB)return Promise.resolve(data);
   return new Promise(function(resolve){
-   var req=indexedDB.open('basair-tafsir-library-v2',1);
+   var req;try{req=indexedDB.open('basair-tafsir-library-v2',1)}catch(_){resolve(data);return}
    req.onupgradeneeded=function(){if(!req.result.objectStoreNames.contains('surahs'))
     req.result.createObjectStore('surahs',{keyPath:'k'})};
    req.onerror=function(){resolve(data)};
