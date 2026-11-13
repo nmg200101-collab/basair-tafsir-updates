@@ -34,14 +34,17 @@ window.fetch=(url)=>Promise.resolve({ok:true,json:()=>Promise.resolve({
 <script src="../../p121/owner-qa/modules/tafsir/p145-reader-polish.js"></script>
 <script>
 setTimeout(async function(){
-const api=window.__BASAIR_TAFSIR_P145__;
+const api=window.__BASAIR_TAFSIR_P145__;if(!api){document.getElementById('result').textContent='FAIL: plugin absent';return}
 const a=document.getElementById('mic1'),n=document.getElementById('note1'),
  a2=document.getElementById('mic2');
 const bar=a.closest('.p145TopControls'),bar2=a2.closest('.p145TopControls');
 const r=a.getBoundingClientRect(),z=n.getBoundingClientRect(),
  action=document.querySelector('.basairB231AyahActions>button').getBoundingClientRect();
 n.click();
-const entry=await window.__BASAIR_TAFSIR_CORE__.getMuyassarSurah(1,true);
+const entry=await Promise.race([
+ window.__BASAIR_TAFSIR_CORE__.getMuyassarSurah(1,true),
+ new Promise(resolve=>setTimeout(()=>resolve({ayahs:['TIMEOUT']}),3800))
+]);
 const old=document.getElementById('source');old.click();
 const overlay=document.getElementById('p145SourceOverlay');
 const sourceOpen=!!overlay&&!overlay.hidden;
@@ -56,8 +59,8 @@ const success=!!bar&&!!bar2&&bar.previousElementSibling.classList.contains('v194
  getComputedStyle(document.querySelector('[data-basair-main-tab="intro"]')).borderBottomColor!=='rgba(0, 0, 0, 0)';
 document.getElementById('result').textContent=JSON.stringify({
  pass:success,top:!!bar,sameHeight:[r.height,z.height],
- action:action.height,cacheFallback:api.status().stats.fetchFallback,
+ action:action.height,cacheFallback:api.status().stats.fetchFallback,entry:String(entry.ayahs[0]).slice(0,40),
  sourceOpened:sourceOpen,sourceClosed:overlay.hidden,noteListenerPreserved:window.__noteClick===1,
  otherTafsirTop:!!bar2});
 },2300);
-</script></body></html>
+</script><script>window.addEventListener('error',e=>{document.getElementById('result').textContent='JSERR: '+e.message});</script></body></html>
