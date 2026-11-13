@@ -1,0 +1,27 @@
+name: P140 signed owner QA sequence 17 verification (temporary)
+on:
+  pull_request:
+    paths:
+      - 'p140/**'
+      - 'p121/owner-qa/release*.json'
+      - '.github/workflows/p140-signed-qa.yml'
+permissions:
+  contents: read
+jobs:
+  p140-release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 9
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify owner RSA, six asset SHA256 hashes and archived seq16
+        run: node p140/tests/test-p140-signed-release.cjs
+      - name: Rerun voice recovery and narrator isolation tests
+        run: |
+          node p140/tests/test-p140-natiq.cjs
+          node p140/tests/test-p140-narrator-integration.cjs
+          node p140/tests/test-p140-auto-next.cjs
+          node p140/tests/test-p140-wave-toggle.cjs
+          node p140/tests/test-p140-voice-recovery-and-lexicon.cjs
