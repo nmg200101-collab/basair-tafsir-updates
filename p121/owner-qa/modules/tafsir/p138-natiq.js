@@ -175,7 +175,7 @@ function loadOpts(){
  try{var o=JSON.parse(w.localStorage.getItem(KEY)||'{}');
   if(['both','recitation','tafsir'].indexOf(o.mode)>=0)opts.mode=o.mode;
   if(['all','explanation','reflection','summary'].indexOf(o.sections)>=0)opts.sections=o.sections;
-  if(o.rate!==undefined)opts.rate=clamp(o.rate,.7,1.3,.9);opts.autoNext=o.autoNext===true;opts.preferLocal=o.preferLocal!==false;
+  if(o.rate!==undefined)opts.rate=clamp(o.rate,.7,1.3,.9);opts.autoNext=o.autoNext===true;opts.preferLocal=true;
   opts.reciterId=typeof o.reciterId==='string'&&/^(follow|[a-z][a-z0-9_-]{1,40})$/.test(o.reciterId)?o.reciterId:'follow';
   opts.religiousGuide=o.p138ReligiousGuide===true;
   opts.voiceSource='local'; // no trusted server adapter is connected
@@ -220,7 +220,7 @@ function drawStatus(value){
  var el=E('p138NatiqStatus');if(el)el.textContent=value||'';
  // P132.1 performance: touch only the active/previous button, not every
  // rendered verse on every TTS chunk.
- var current=active&&active.row&&active.row.querySelector('.p137NatiqButton');
+ var current=active&&active.row&&active.row.querySelector('.p138MicButton');
  if(lastDrawnButton&&lastDrawnButton!==current){
   lastDrawnButton.classList.remove('p132-on');
   lastDrawnButton.setAttribute('aria-pressed','false');
