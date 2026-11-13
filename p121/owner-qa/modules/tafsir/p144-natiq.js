@@ -613,18 +613,51 @@ function syncNextButtons(){
   btn.textContent=opts.autoNext?'التالي: مفعّل':'التالي: متوقف';
  }
 }
+function sizeChip(btn){
+ if(!btn)return;
+ [
+  ['box-sizing','border-box'],['width','62px'],['min-width','62px'],['max-width','62px'],
+  ['height','50px'],['min-height','50px'],['max-height','50px'],
+  ['padding','4px 2px'],['margin','0 2px'],['display','inline-flex'],
+  ['flex-direction','column'],['align-items','center'],['justify-content','center'],
+  ['gap','2px'],['overflow','hidden'],['border-radius','13px']
+ ].forEach(function(pair){setPriority(btn,pair[0],pair[1])});
+}
+function compactActions(row){
+ if(!row||!row.querySelector)return;
+ var bar=row.querySelector('.basairB231AyahActions');
+ if(!bar)return;
+ [
+  ['box-sizing','border-box'],['display','grid'],
+  ['grid-template-columns','repeat(4,minmax(0,1fr))'],['gap','3px'],
+  ['padding','3px'],['height','auto'],['min-height','0px'],
+  ['max-height','62px'],['margin','4px 0 5px'],['align-items','stretch']
+ ].forEach(function(pair){setPriority(bar,pair[0],pair[1])});
+ var children=bar.children||[];
+ for(var i=0;i<children.length;i++){
+  var b=children[i];if(b.tagName!=='BUTTON')continue;
+  [
+   ['box-sizing','border-box'],['width','100%'],['min-width','0px'],
+   ['height','48px'],['min-height','44px'],['max-height','48px'],
+   ['margin','0px'],['padding','2px'],['border-radius','9px'],
+   ['display','flex'],['flex-direction','column'],['align-items','center'],
+   ['justify-content','center'],['font-size','9.5px'],['line-height','1.1']
+  ].forEach(function(pair){setPriority(b,pair[0],pair[1])});
+ }
+}
 function decorateNote(row){
  if(!row||!row.querySelector)return;
  var n=row.querySelector('.b263r3NoteChip,[data-r3-note-pos]');
  if(!n||n.tagName!=='BUTTON'||n.closest&&n.closest('.basairB231AyahActions'))return;
- // Preserve the exact original note button and its click/long-press handlers.
+ // Preserve original note click/long-press, even after old scripts redraw it.
+ n.classList.add('p144NoteChip');sizeChip(n);
  if(n.querySelector&&n.querySelector('.p144NoteIcon')&&n.querySelector('.p144NoteLabel'))return;
  n.classList.add('p144NoteChip');
  n.setAttribute('aria-label','ملاحظة الآية');
  n.innerHTML='<svg class="p144NoteIcon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7"></path><path d="m16 4 4 4M9 15l-1 3 3-1 9-9a2.1 2.1 0 0 0-3-3l-8 10Z"></path></svg><b class="p144NoteLabel">ملاحظة</b>';
 }
 function control(row){
- decorateNote(row);
+ decorateNote(row);compactActions(row);
  // Keep old nodes in place so P132/P137 MutationObservers do not recreate
  // them. Make old controls inert and invisible instead of touching Tilawa.
  var prior=row.querySelectorAll('.v695NatiqButton,.v695NatiqLive,.p132NatiqButton,.p132NatiqLive,.p137NatiqButton,.p137NatiqSettings,.p137NatiqNext,.p137NatiqLive,.p138MicButton,.p138MicLive,.p139WaveButton,.p139WaveLive,.p140WaveButton,.p140WaveLive,.p141WaveButton,.p141WaveLive,.p142WaveButton,.p142WaveLive');
@@ -634,12 +667,13 @@ function control(row){
   if(old.getAttribute('aria-hidden')!=='true')old.setAttribute('aria-hidden','true');
   if(old.tagName==='BUTTON'&&!old.disabled){old.disabled=true;old.tabIndex=-1}
  }
- if(row.querySelector('.p144MicButton'))return;
+ if(row.querySelector('.p144MicButton')){sizeChip(row.querySelector('.p144MicButton'));return}
  var btn=d.createElement('button');btn.type='button';btn.className='p144MicButton';
  btn.setAttribute('aria-label','الناطق: ضغطة للتشغيل أو الإيقاف، وضغطة مطوّلة للإعدادات');
  btn.setAttribute('aria-haspopup','dialog');
  btn.setAttribute('title','الناطق: اضغط مطولًا للإعدادات');
  btn.innerHTML='<svg class="p144MicIcon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2.5" width="6" height="12" rx="3"></rect><path d="M5.5 10.5v1.5a6.5 6.5 0 0 0 13 0v-1.5M12 18.5V22M8 22h8"></path></svg><b class="p144MicLabel">الناطق</b>';
+ sizeChip(btn);
  var live=d.createElement('small');live.className='p144MicLive';live.hidden=true;
  live.setAttribute('role','status');
  // Do not insert the new P142 control inside an old .v695NatiqBar:
@@ -950,7 +984,7 @@ var API={version:VERSION,normalize:normalize,segments:segments,splitSpeech:split
   var b=bridge();return {nativeTTS:nativeStatus(),arabicTTS:ttsReady(),localArabicVoices:voices().filter(function(x){return x.localService}).length,
    reciterSelected:!!(b&&b.selected&&b.selected(opts.reciterId)),reciterChoice:opts.reciterId,
    supportedReciters:b&&b.list?b.list().length:0,
-   nextEnabled:opts.autoNext,visibleSettings:true,compactMic:false,singleMic:true,unifiedNote:true,dualRootCleanup:true,originalV695Cleanup:true,legacyCleanup:true,verifiedLocalVoice:!!lastWorkingVoiceURI,voiceSource:'local',serverAvailable:false,
+   nextEnabled:opts.autoNext,visibleSettings:true,compactMic:true,singleMic:true,unifiedNote:true,compactActions:true,framedStatus:true,contextualArabic:true,dualRootCleanup:true,originalV695Cleanup:true,legacyCleanup:true,verifiedLocalVoice:!!lastWorkingVoiceURI,voiceSource:'local',serverAvailable:false,
    lastNativeIssue:lastNativeIssue,
    narratorTakeover:takeover,religiousGuideEnabled:opts.religiousGuide,
    hasReciterSelector:!!(E('p144VoicePanel')&&E('p144VoicePanel').querySelector('[data-p132-option="reciterId"]')),
