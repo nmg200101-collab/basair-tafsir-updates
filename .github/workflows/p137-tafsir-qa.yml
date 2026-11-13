@@ -1,0 +1,27 @@
+name: P137 isolated Tafsir voice recovery and controls QA
+on:
+  pull_request:
+    paths:
+      - 'p137/**'
+      - 'p121/owner-qa/modules/tafsir/p137-*.js'
+      - 'p121/owner-qa/modules/tafsir/p137-*.css'
+      - '.github/workflows/p137-tafsir-qa.yml'
+permissions:
+  contents: read
+jobs:
+  narrator:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Syntax
+        run: node --check p121/owner-qa/modules/tafsir/p137-natiq.js
+      - name: Narrator and native TTS acknowledgement
+        run: node p137/tests/test-p137-natiq.cjs
+      - name: Quran recording and Tafsir sequence
+        run: node p137/tests/test-p137-narrator-integration.cjs
+      - name: Hot upgrade reciter settings gear and next toggle
+        run: node p137/tests/test-p137-hot-update-controls.cjs
