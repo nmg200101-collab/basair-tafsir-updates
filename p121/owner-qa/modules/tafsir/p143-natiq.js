@@ -865,6 +865,13 @@ function observe(){
  observer=new w.MutationObserver(function(mutations){
   hideAllOldNarrators();
   onTafsirChanged(mutations);
+  // Old verse-tool scripts can restore the pencil after P143 attached.
+  // Reapply only if our SVG is gone, preventing mutation/repaint loops.
+  if(mutations.some(function(m){
+   var el=m.target&&m.target.nodeType===1?m.target:m.target&&m.target.parentElement;
+   var note=el&&el.closest&&el.closest('button.b263r3NoteChip,button[data-r3-note-pos]');
+   return !!(note&&!note.querySelector('.p143NoteIcon'));
+  }))mountSoon();
   if(mutations.some(function(m){if(m.type!=='childList')return false;
     for(var i=0;i<m.addedNodes.length;i++){var n=m.addedNodes[i];
      if(n.nodeType===1&&(n.matches('.v194T2Ayah')||n.querySelector&&n.querySelector('.v194T2Ayah')))return true;
