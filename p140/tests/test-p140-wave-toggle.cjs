@@ -107,7 +107,7 @@ async function run(){
   assert.equal(api.status().options.voiceSource,'local');
   assert.equal(api.status().options.preferLocal,true);
   assert.equal(api.diagnostics().serverAvailable,false);
-  assert.equal(api.status().options.religiousGuide,false);
+  assert.equal(api.status().options.religiousGuide,true);
  });
  dispatch('pointerdown',btn);
  await new Promise(r=>setTimeout(r,630));
