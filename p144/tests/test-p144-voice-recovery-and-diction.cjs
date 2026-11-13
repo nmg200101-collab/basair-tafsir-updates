@@ -95,6 +95,36 @@ async function main(){
   for(const v of ['.p144MicButton','.p144NoteChip','.p144MicIcon','.p144NoteIcon','min-height:44px!important'])
    assert.ok(css.includes(v),'CSS contract missing '+v);
  });
+ await check('context chooses nominative Allah after qala and accusative after inna',()=>{
+  const m=setup();
+  assert.equal(m.api.prepareSpeech('قال الله'), 'قَالَ اللَّهُ');
+  assert.equal(m.api.prepareSpeech('إن الله تعالى'), 'إِنَّ اللَّهَ تَعَالَى');
+  assert.equal(m.api.prepareSpeech('أن الله'), 'أَنَّ اللَّهَ');
+  assert.equal(m.api.prepareSpeech('رسول الله'), 'رَسُول اللَّهِ');
+  assert.equal(m.api.prepareSpeech('بالله'), 'بِاللَّه');
+  m.api.stop();
+ });
+ await check('khalq / khuluq / khalaqa disambiguation applies only to vetted contexts',()=>{
+  const m=setup();
+  assert.equal(m.api.prepareSpeech('خلق'),'خلق');
+  assert.equal(m.api.prepareSpeech('حسن الخلق'),'حُسْن الْخُلُق');
+  assert.equal(m.api.prepareSpeech('صاحب خلق كريم'),'صَاحِب خُلُق كَرِيم');
+  assert.equal(m.api.prepareSpeech('خلق الله الإنسان'),'خَلَقَ اللَّهُ الْإِنْسَانَ');
+  assert.equal(m.api.prepareSpeech('لقد خلق الله'),'لَقَدْ خَلَقَ اللَّهُ');
+  assert.equal(m.api.prepareSpeech('خُلُق حَسَن'),'خُلُق حَسَن');
+  assert.equal(m.api.prepareSpeech('خلق الله الإنسان',false),'خلق الله الإنسان');
+  m.api.stop();
+ });
+ await check('phrase guide never rewrites ambiguous surrounding grammar or fully vocalized names',()=>{
+  const m=setup();
+  assert.equal(m.api.prepareSpeech('في خلق الإنسان'),'في خلق الإنسان');
+  assert.equal(m.api.prepareSpeech('وَاللَّهُ غَفُورٌ'),'وَاللَّهُ غَفُورٌ');
+  assert.equal(m.api.prepareSpeech('حُسْنُ الْخُلُقِ'),'حُسْنُ الْخُلُقِ');
+  const v=m.api.prepareSpeech('إن الله رحيم، قال الله: سبحان الله.');
+  assert.ok(v.includes('إِنَّ اللَّهَ'));assert.ok(v.includes('قَالَ اللَّهُ'));
+  assert.ok(v.includes('سُبْحَانَ اللَّهِ'));
+  m.api.stop();
+ });
  await check('voice changes use chosen local voice for first native utterance',()=>{
   const m=setup();assert.equal(m.api.start(m.row),true);
   assert.equal(m.pending.length,1);assert.equal(m.pending[0].voice,'bad');m.api.stop();
@@ -115,13 +145,13 @@ async function main(){
   assert.equal(m.pending[0].voice,'bad');
   m.emit(0,'error');
   assert.equal(m.api.status().options.voiceURI,'native:good');
-  assert.ok(m.toasts.some(x=>/الصوت/.test(x)));m.api.stop();
+  assert.ok(m.api.status().stats.voiceReverted>=1);m.api.stop();
  });
  await check('audio switch never creates network voice provider or Quran TTS',()=>{
   assert.ok(!source.includes('SpeechSynthesisUtterance(s.verse'));
   const m=setup();assert.equal(m.api.status().options.voiceSource,'local');
   assert.equal(m.api.diagnostics().serverAvailable,false);m.api.stop();
  });
- console.log(JSON.stringify({pass:n,total:10,device:'NOT TESTED',privacy:'local only',siblingHost:'COVERED'}));
+ console.log(JSON.stringify({pass:n,total:13,device:'NOT TESTED',privacy:'local only',siblingHost:'COVERED'}));
 }
 main().catch(e=>{console.error(e);process.exitCode=1});
