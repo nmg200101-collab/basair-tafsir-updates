@@ -338,7 +338,8 @@ html body #tafsirAyahs .p141WaveButton{
  padding:4px 8px!important;margin:0 3px!important;border-radius:999px!important;
  background:#edf8f1!important;color:#1b6048!important;
  border:1px solid #afcbb9!important;box-shadow:none!important;
- font:700 11px/1.1 inherit!important;touch-action:manipulation!important;
+ font-family:inherit!important;font-size:11px!important;font-weight:700!important;
+ line-height:1.1!important;touch-action:manipulation!important;
 }
 html body #tafsirAyahs .p141WaveButton b{
  font-family:inherit!important;font-size:11px!important;line-height:1.05!important;white-space:nowrap;
