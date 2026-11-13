@@ -27,4 +27,6 @@ jobs:
           test -n "$CHROME"
           "$CHROME" --headless --no-sandbox --disable-gpu --disable-dev-shm-usage \
             --allow-file-access-from-files --virtual-time-budget=9000 \
-            --dump-dom "file://$PWD/p145/tests/p145-tafsir-browser-fixture.html" 2>/dev/null | grep -F '"pass":true'
+            --dump-dom "file://$PWD/p145/tests/p145-tafsir-browser-fixture.html" 2>/dev/null > /tmp/p145-dom.html
+          sed -n '/<pre id="result">/,/<\/pre>/p' /tmp/p145-dom.html | head -6
+          grep -F '"pass":true' /tmp/p145-dom.html
