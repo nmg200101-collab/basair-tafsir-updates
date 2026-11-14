@@ -1,4 +1,4 @@
-/* P150 Tafsir-only: guarantee visible delegated note in existing fifth slot even if native R3 button is delayed; CSS mic status fallback. */
+/* P150 Tafsir-only: R3 native note stays top-level hidden, one visible s:a delegated toolbar proxy, mic status CSS fallback. */
 (function(w,d){'use strict';
  var VERSION='P150-NOTE-VISIBILITY-R3-OWNER-QA';
  if(w.__BASAIR_TAFSIR_P150__&&w.__BASAIR_TAFSIR_P150__.version===VERSION)return;
@@ -19,12 +19,14 @@
   var obs=new w.MutationObserver(function(ms){
    if(!open()||!row.isConnected)return;
    var relevant=ms.some(function(m){
+    if(m.type==='attributes')return !!(m.target&&m.target.matches&&m.target.matches('button.b263r3NoteChip:not(.p150NoteProxy)')&&
+      (m.attributeName==='data-r3-note-pos'||m.attributeName==='class'));
     if(m.type!=='childList')return false;
     if(m.target.classList&&m.target.classList.contains('p149NoteSlot'))return true;
     var nodes=Array.prototype.slice.call(m.addedNodes).concat(Array.prototype.slice.call(m.removedNodes));
     return nodes.some(function(node){
      return node&&node.nodeType===1&&(
-      node.matches&&node.matches('button.b263r3NoteChip,button.p144NoteChip,button[data-r3-note-pos],.p149NoteSlot,.basairB231AyahActions')||
+      node.matches&&node.matches('button.b263r3NoteChip,button.p144NoteChip,button[data-r3-note-pos],.p150NoteProxy,.p149NoteSlot,.basairB231AyahActions')||
       node.querySelector&&node.querySelector('button.b263r3NoteChip,button.p144NoteChip,button[data-r3-note-pos]'));
     });
    });
@@ -36,7 +38,7 @@
     topRow(row);noteAudit.slotRepairs++;
    });
   });
-  obs.observe(row,{childList:true,subtree:true});
+  obs.observe(row,{childList:true,subtree:true,attributes:true,attributeFilter:['class','data-r3-note-pos']});
   rowWatchers.set(row,{observer:obs,entry:entry});
  }
  function reflectMic(button){
@@ -103,75 +105,98 @@
     slot.setAttribute('role','group');slot.setAttribute('aria-label','ملاحظة الآية');
     actions.appendChild(slot);
    }else if(slot.parentElement!==actions){actions.appendChild(slot)}
-   // The P149 fifth cell can be completely blank when the R3 control is
-   // not mounted yet, OR when earlier patches left the real control hidden.
-   // Prefer a real R3 note over our provisional control even if an older
-   // patch disabled it. No second note button is kept once the native appears.
+   // IMPORTANT: original V694/V695 R3 syncAyahNotes() ONLY recognizes
+   // ':scope > .b263r3NoteChip' directly under the verse article.
+   // Moving that original inside the toolbar makes R3 recreate a TOP note
+   // on every sync, while P149 then hides all candidates. Keep the real
+   // R3 node as a hidden DIRECT child and use exactly ONE visible proxy in
+   // the fifth tool slot. R3's document-level click listener accepts its
+   // 'data-r3-note-pos' and invokes the existing R2.openNote() storage/editor.
    var notes=row.querySelectorAll('button.b263r3NoteChip,button.p144NoteChip,button[data-r3-note-pos]');
-   var original=nativeNoteByRow.get(row);
-   if(!original||!row.contains(original))original=null;
-   if(original&&original.hasAttribute('data-p150-provisional-note'))original=null;
-   if(!original)for(var pass=0;pass<3&&!original;pass++){
+   var native=null,proxy=slot.querySelector('button[data-p150-note-proxy="1"]');
+   // Reuse any real R3 node, whether hidden, disabled, or moved by P149.
+   for(var pass=0;pass<2&&!native;pass++){
     for(var n=0;n<notes.length;n++){
      var item=notes[n];
-     if(item.hasAttribute('data-p150-provisional-note'))continue;
-     if((pass===0&&item.hasAttribute('data-r3-note-pos'))||
-        (pass===1&&item.classList.contains('b263r3NoteChip'))||pass===2){
-      original=item;break;
-     }
+     if(item===proxy||item.hasAttribute('data-p150-note-proxy')||
+        item.hasAttribute('data-p150-provisional-note'))continue;
+     if(pass===0&&item.hasAttribute('data-r3-note-pos')||
+        pass===1&&item.classList.contains('b263r3NoteChip')){native=item;break}
     }
    }
-   if(!original){
-    original=slot.querySelector('button[data-p150-provisional-note="1"]');
-    if(!original){
-     // The existing R3 note handler uses delegated click routing, so an
-     // R3-class button can be present before the native note decorator runs.
-     // Avoid making an unrelated notes store or replacing user notes.
-     original=d.createElement('button');original.type='button';
-     original.className='b263r3NoteChip p144NoteChip p150ProvisionalNote';
-     original.setAttribute('data-r3-note-pos','1');
-     original.setAttribute('data-p150-provisional-note','1');
-     original.setAttribute('aria-label','ملاحظة الآية');
-     original.setAttribute('title','ملاحظة الآية');
-     original.innerHTML='<span aria-hidden="true">✎</span><b>ملاحظة</b>';
-     slot.appendChild(original);
-     noteAudit.provisionalCreated=(noteAudit.provisionalCreated||0)+1;
-    }
-   }else{
-    var provisional=slot.querySelector('button[data-p150-provisional-note="1"]');
-    if(provisional&&provisional!==original)provisional.remove();
+   if(native){
+    nativeNoteByRow.set(row,native);
+    native.classList.add('b263r3NoteChip');
+    native.classList.remove('p149NoteTool','p148NoteTool','p147NoteTool');
+    // Do not create a new native note; move the same object BACK to the
+    // original article level, where R3 syncAyahNotes expects it.
+    if(native.parentElement!==row){row.appendChild(native);stats.repositioned++}
+    if(!native.hidden)native.hidden=true;
+    native.tabIndex=-1;
+    if(native.getAttribute('aria-hidden')!=='true')native.setAttribute('aria-hidden','true');
+    style(native,'visibility','hidden');style(native,'opacity','0');
+    style(native,'pointer-events','none');style(native,'display','none');
    }
-   if(original){
-    nativeNoteByRow.set(row,original);
-    original.classList.remove('p148NoteTool','p147NoteTool');
-    original.classList.add('p149NoteTool','p144NoteChip');
-    // P134 may search ANY descendant of the original four-button bar for
-    // [data-r2-action="note"] and convert it into "متابعة". The original
-    // R3 note uses data-r3-note-pos / b263r3NoteChip, not that R2 follow tag.
-    if(original.getAttribute('data-r2-action')==='note'&&
-       (original.hasAttribute('data-r3-note-pos')||original.classList.contains('b263r3NoteChip'))){
-     original.setAttribute('data-p149-preserved-r2-action','note');
-     original.removeAttribute('data-r2-action');
+   function noteVersePos(){
+    var s=state()||{},pos=native&&native.getAttribute('data-r3-note-pos');
+    if(/^\d+:\d+$/.test(String(pos||'')))return pos;
+    var su=Number(row.getAttribute('data-t5-s'))||Number(s.s)||1;
+    var ay=Number(row.getAttribute('data-t5-a'))||Number(row.getAttribute('data-t2ayah'))||0;
+    if(!ay&&row.id){
+     var match=String(row.id).match(/^ta-(?:(\d+)-)?(\d+)$/);
+     if(match){if(match[1])su=Number(match[1])||su;ay=Number(match[2])||0}
     }
-
-    if(original.hidden)original.hidden=false;
-    if(original.disabled)original.disabled=false;
-    if(original.getAttribute('aria-hidden')==='true')original.removeAttribute('aria-hidden');
-    if(original.parentElement!==slot){slot.appendChild(original);stats.repositioned++;noteAudit.legacyMoved++}
-    style(original,'display','flex');
-    [['box-sizing','border-box'],['width','100%'],['min-width','0px'],['max-width','100%'],
-     ['height','44px'],['min-height','44px'],['max-height','44px'],
-     ['padding','2px 1px'],['margin','0px'],['display','flex'],
-     ['flex-direction','column'],['align-items','center'],['justify-content','center'],
-     ['font-size','9px'],['line-height','1.08'],['gap','0px'],
-     ['border-radius','8px']
-    ].forEach(function(pair){style(original,pair[0],pair[1])});
+    return String(su)+':'+String(ay||Number(s.a)||1);
    }
+   if(!proxy){
+    // This is a visual proxy, NEVER a second R3 native note or notes store.
+    // R3's click listener runs on document bubbling and routes by s:a.
+    proxy=d.createElement('button');proxy.type='button';
+    proxy.className='p150NoteProxy p150ProvisionalNote p149NoteTool';
+    proxy.setAttribute('data-p150-note-proxy','1');
+    proxy.setAttribute('aria-label','ملاحظة الآية');
+    proxy.setAttribute('title','ملاحظة الآية');
+    slot.appendChild(proxy);
+    noteAudit.provisionalCreated=(noteAudit.provisionalCreated||0)+1;
+   }
+   if(proxy.parentElement!==slot)slot.appendChild(proxy);
+   var versePos=noteVersePos();
+   if(proxy.getAttribute('data-r3-note-pos')!==versePos)
+    proxy.setAttribute('data-r3-note-pos',versePos);
+   if(proxy.hidden)proxy.hidden=false;
+   if(proxy.disabled)proxy.disabled=false;
+   if(proxy.getAttribute('aria-hidden')==='true')proxy.removeAttribute('aria-hidden');
+   var hasNote=!!(native&&native.classList.contains('has-note'));
+   if(proxy.classList.contains('has-note')!==hasNote)
+    proxy.classList.toggle('has-note',hasNote);
+   var label=hasNote?'تعديل الملاحظة':'ملاحظة';
+   var marker=hasNote?'📝':'✎';
+   // Only touch text when it actually changes; avoid mutation loops.
+   if(proxy.getAttribute('data-p150-note-label')!==label){
+    proxy.setAttribute('data-p150-note-label',label);
+    proxy.innerHTML='<span aria-hidden="true">'+marker+'</span><b>'+label+'</b>';
+   }
+   style(proxy,'display','flex');
+   [['box-sizing','border-box'],['width','100%'],['min-width','0px'],['max-width','100%'],
+    ['height','44px'],['min-height','44px'],['max-height','44px'],
+    ['padding','2px 1px'],['margin','0px'],['display','flex'],
+    ['flex-direction','column'],['align-items','center'],['justify-content','center'],
+    ['font-size','9px'],['line-height','1.08'],['gap','0px'],
+    ['border-radius','8px']
+   ].forEach(function(pair){style(proxy,pair[0],pair[1])});
+   // Remove stale P149 buttons from the VISUAL slot. The sole native R3
+   // anchor (if present) stays under the verse for original sync routines.
+   var slotButtons=slot.querySelectorAll('button');
+   for(var i=0;i<slotButtons.length;i++)
+    if(slotButtons[i]!==proxy)slotButtons[i].remove();
    for(var z=0;z<notes.length;z++){
-    var extra=notes[z];if(extra===original)continue;
+    var extra=notes[z];
+    if(extra===native||extra===proxy)continue;
+    if(extra.hasAttribute('data-p150-note-proxy')){extra.remove();continue}
     if(!extra.hidden){extra.hidden=true;stats.duplicatePruned++;noteAudit.duplicatesHidden++}
-    if(!extra.disabled)extra.disabled=true;
+    extra.tabIndex=-1;
     if(extra.getAttribute('aria-hidden')!=='true')extra.setAttribute('aria-hidden','true');
+    style(extra,'visibility','hidden');style(extra,'pointer-events','none');
     style(extra,'display','none');
    }
    if(actions.getAttribute('data-p149-note-layout')!=='native-four-plus-slot')
