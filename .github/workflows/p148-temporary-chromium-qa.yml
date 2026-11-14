@@ -16,7 +16,8 @@ jobs:
         run: |
           node --version
           node p148/tests/test-p148-source.cjs
-      - name: Chromium visual and interaction regression
+      - name: Chromium visual and interaction regression (Playwright)
         run: |
-          google-chrome --version || chromium --version
-          node p148/tests/run-p148-chromium.cjs
+          google-chrome --version
+          npm install --no-save --package-lock=false playwright-core@1.57.0
+          node p148/tests/run-p148-playwright.cjs
