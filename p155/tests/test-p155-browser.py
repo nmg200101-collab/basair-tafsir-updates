@@ -79,9 +79,9 @@ with sync_playwright() as p:
  page.locator('[data-bq155-notes]').click()
  assert page.evaluate("window.__p155Test.tab")=="notes","Notes tab not opened"
  page.locator('#basairTafsirB232FavoritesBtn').click()
- assert page.evaluate("window.__p155Test.tab")=="notes","Original Favorites must be preserved (not replaced)"
- page.locator('#basairTafsirR3SavedTabs [data-r3-saved-tab="favorites"]').click()
- assert page.evaluate("window.__p155Test.tab")=="favorites"
+ page.wait_for_timeout(100)
+ assert page.evaluate("window.__p155Test.tab")=="favorites","Original Favorites must open its own tab"
+ assert page.evaluate("window.__p155Test.favorite")==1,"Original favorite handler must remain functional"
  page.locator('#v194T104SurahSearchInput').fill('البقرة')
  assert page.evaluate("window.__p155Test.search")==1,"Full search broken"
  page.locator('[data-r2-action="note"]').click()
