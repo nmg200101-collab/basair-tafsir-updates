@@ -77,7 +77,6 @@
   // P147: retain exactly one ORIGINAL note button; do not clone its handlers.
   // Keep the note in the actual four-button verse toolbar (fifth compact tool).
   var actions=row.querySelector('.basairB231AyahActions');
-  var actions=row.querySelector('.basairB231AyahActions');
   var notes=row.querySelectorAll('button.b263r3NoteChip,button.p144NoteChip,button[data-r3-note-pos]');
   var canonical=null,previous=stableNoteByRow.get(row);
   if(previous&&row.contains(previous)&&!previous.disabled)canonical=previous;
@@ -241,7 +240,7 @@
   syncVisualMode();
   decorateReading();
  }
- function schedule(){if(debounce)return;debounce=w.setTimeout(function(){debounce=0;sweep();syncLoader()},110)}
+ function schedule(){if(debounce)return;debounce=w.setTimeout(function(){debounce=0;sweep();syncLoader()},36)}
  function state(){var a=w.__BASAIR_TAFSIR_STEP2__;try{return a&&a.state?a.state():null}catch(_){return null}}
  function key(s){return ('000'+s).slice(-3)}
  function valid(d,s,a){return !!(d&&Number(d.s||s)===s&&Array.isArray(d.ayahs)&&
@@ -394,5 +393,5 @@
  if(d.readyState==='loading')d.addEventListener('DOMContentLoaded',ready,{once:true});else ready();
  w.setInterval(function(){if(open()){installLoader();sweep();syncLoader()}},1800);
  w.__BASAIR_TAFSIR_P148__={version:VERSION,refresh:sweep,openSource:openSource,closeSource:closeSource,
-  fetchFull:fetchFull,decorateReading:decorateReading,syncVisualMode:syncVisualMode,status:function(){return Object.assign({mounted:!!observe,reader:open(),loaderInstalled:!!(seenCore&&seenCore.getMuyassarSurah.__p145)},stats,noteAudit:noteAudit)}};
+  fetchFull:fetchFull,decorateReading:decorateReading,syncVisualMode:syncVisualMode,status:function(){return Object.assign({mounted:!!observe,reader:open(),loaderInstalled:!!(seenCore&&seenCore.getMuyassarSurah.__p145)},stats,{noteAudit:noteAudit})}};
 })(window,document);
