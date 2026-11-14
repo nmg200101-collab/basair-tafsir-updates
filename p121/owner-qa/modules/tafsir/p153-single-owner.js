@@ -513,9 +513,18 @@
    notes.innerHTML='<span aria-hidden="true">✎</span><b>الملاحظات</b>';
    stats.mounted++;
   }
-  if(fav.getAttribute('data-p153-tab')!=='favorites'){
-   fav.setAttribute('data-p153-tab','favorites');
-   fav.setAttribute('aria-label','فتح المفضلة');
+  // B233 registers WINDOW capture BEFORE the OTA script and calls
+  // stopImmediatePropagation() for #basairTafsirB232FavoritesBtn.
+  // Keep its ORIGINAL element/id hidden as B233's internal anchor.
+  // Expose a distinct, stable favorites trigger that B233 cannot hijack.
+  var favProxy=bar.querySelector('#p153FavoritesIndex');
+  if(!favProxy){
+   favProxy=d.createElement('button');favProxy.type='button';
+   favProxy.id='p153FavoritesIndex';
+   favProxy.setAttribute('data-p153-tab','favorites');
+   favProxy.setAttribute('aria-label','فتح المفضلة');
+   favProxy.innerHTML='<span aria-hidden="true">☆</span><b>المفضلة</b>';
+   fav.insertAdjacentElement('afterend',favProxy);
   }
   if(bar.getAttribute('data-p153-ready')!=='1'){
    bar.setAttribute('data-p153-ready','1');stats.repaired++;
