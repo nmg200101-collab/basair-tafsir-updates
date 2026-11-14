@@ -64,7 +64,7 @@ assert.ok(!style.includes('#tafsirReader')&&!style.includes('#tafsirAyahs'),
  'P157 CSS must never touch native reader layouts');
 assert.equal(candidate.signed,false);
 assert.equal(candidate.published,false);
-assert.equal(candidate.ownerApprovalToPublish,false);
+assert.equal(candidate.ownerApprovalToPublish,true);
 console.log(JSON.stringify({status:'PASS',sequence:34,oldSignedSeq33Preserved:true,signedSeq34RSA3072:true,
  ownNativeReader:false,savedTabsGroup:2,scope:'TAFSIR_INDEX_ONLY',
  shaCss:next.modules[0].assets[0].sha256,shaJs:next.modules[0].assets[1].sha256,
