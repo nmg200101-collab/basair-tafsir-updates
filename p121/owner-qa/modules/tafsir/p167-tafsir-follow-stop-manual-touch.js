@@ -529,7 +529,11 @@
       toggled:toggled,started:started,observer:null,timer:0,before:before};
     manualPending=pending;feedBusy=true;manualGateAt=manualGestures;
     try{window.__BASAIR_TAFSIR_STEP5__.loadNext()}catch(err){
-      cancelPendingManual('load-error');manualFaulted.add(transition);return false;
+      cancelPendingManual('load-error');
+      var error=manualFailures.get(transition)||{count:0,at:0};
+      error.count++;error.at=Date.now();manualFailures.set(transition,error);
+      if(error.count>=2)manualFaulted.add(transition);
+      return false;
     }finally{
       toggled.forEach(function(item){if(item.node.isConnected){
         if(item.had)item.node.classList.add('v194T5Ayah');else item.node.classList.remove('v194T5Ayah');
