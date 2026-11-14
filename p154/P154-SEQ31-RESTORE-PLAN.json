@@ -1,0 +1,64 @@
+{
+  "status": "SIGNED_STAGED_NOT_DEPLOYED",
+  "reason": "P153 causes Tafsir controls to hang on user's Android",
+  "sequence": 31,
+  "tafsirModuleVersion": 29,
+  "channel": "owner-qa",
+  "deliveryMode": "automatic",
+  "previousRelease": "p121/owner-qa/release-p153-seq30-before-p154-20261114.json",
+  "rollbackAssets": [
+    {
+      "path": "modules/tafsir/p131-verse-tools.css",
+      "kind": "css",
+      "size": 5717,
+      "sha256": "a41e96fb1b9c079e6aa6e4b962b49bbed76162c99fa5fb3fb1101fff5b8dce77"
+    },
+    {
+      "path": "modules/tafsir/p144-natiq.css",
+      "kind": "css",
+      "size": 35547,
+      "sha256": "c23a89096b23172f18614b600e83404abc0f528a1c4de1dda950e7931e2bbf3b"
+    },
+    {
+      "path": "modules/tafsir/p134-verse-tools.js",
+      "kind": "js",
+      "size": 43085,
+      "sha256": "cd492a5cd06207377d8a76468814d600fd52749de83c56895e36f81bbcae5fe4"
+    },
+    {
+      "path": "modules/tafsir/p136-ayah-catalog.js",
+      "kind": "js",
+      "size": 3734,
+      "sha256": "d5126157a176b6b32fd40d88cd71d323d428e2e5ebeae8546b1752c9ab8279f2"
+    },
+    {
+      "path": "modules/tafsir/p136-reciter-bridge.js",
+      "kind": "js",
+      "size": 7358,
+      "sha256": "2b3ef7d3a3f25180298f2828fec537d88962a575c138852bb13300a602b56c43"
+    },
+    {
+      "path": "modules/tafsir/p144-natiq.js",
+      "kind": "js",
+      "size": 59259,
+      "sha256": "ca458ef6665f353d8de508256757482d32df436492dbf202208e368116760eba"
+    },
+    {
+      "path": "modules/tafsir/p152-reader-saved.css",
+      "kind": "css",
+      "size": 56574,
+      "sha256": "919c4e45941eb956246cf1d867fa29e2cb288dc657d7d73cbd7a73b66e0a9047"
+    },
+    {
+      "path": "modules/tafsir/p152-reader-saved.js",
+      "kind": "js",
+      "size": 51191,
+      "sha256": "f7902b467d7596b96eccaea00c42830f9230c99667ca5f12ff5e536fb85422c9"
+    }
+  ],
+  "expectedFallback": "P152 Seq29 assets",
+  "preserveUserNotes": true,
+  "preserveFavorites": true,
+  "tilawaOwnerLock": "QA050 unchanged",
+  "androidValidation": "pending"
+}
