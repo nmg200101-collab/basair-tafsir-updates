@@ -1,0 +1,92 @@
+/* P160 — Owner-approved Tafsir verse controls, index P157 unchanged. */
+/* One header row: narrator (original button/handler) + one smaller stable Note chip. */
+html body #tafsirAyahs .v194T2Ayah .bq160UpperControlHost{
+ box-sizing:border-box!important;display:flex!important;flex-direction:row!important;
+ direction:rtl!important;justify-content:flex-start!important;align-items:center!important;
+ flex-wrap:nowrap!important;gap:7px!important;min-height:42px!important;
+ height:auto!important;max-height:none!important;margin:4px 8px 7px!important;
+ padding:1px 4px!important;background:transparent!important;border:0!important;
+ box-shadow:none!important;
+}
+html body #tafsirAyahs .v194T2Ayah button.bq160NoteChip{
+ box-sizing:border-box!important;display:inline-flex!important;flex-direction:row!important;
+ justify-content:center!important;align-items:center!important;gap:4px!important;
+ flex:0 0 auto!important;width:78px!important;min-width:78px!important;max-width:78px!important;
+ height:36px!important;min-height:36px!important;max-height:36px!important;
+ margin:0 2px!important;padding:3px 7px!important;border:1px solid #b7c5b5!important;
+ border-radius:18px!important;background:#f3f5ed!important;color:#365b45!important;
+ font:700 10.5px/1 Arial,Tahoma,sans-serif!important;white-space:nowrap!important;
+ box-shadow:none!important;transition:none!important;touch-action:manipulation;cursor:pointer;
+}
+html body #tafsirAyahs .v194T2Ayah button.bq160NoteChip span{
+ font:700 13px/1 Arial,Tahoma,sans-serif!important;
+}
+html body #tafsirAyahs .v194T2Ayah button.bq160NoteChip b{
+ font:700 10.5px/1 Arial,Tahoma,sans-serif!important;white-space:nowrap!important;
+}
+html body #tafsirAyahs .v194T2Ayah button.bq160NoteChip.has-note{
+ border-color:#bca46d!important;background:#fff4dc!important;color:#745522!important;
+}
+/* Hide only true duplicated narrator controls of the SAME verse, preserving original event owners. */
+html body #tafsirAyahs .v194T2Ayah[data-bq160-ready="1"] button.p144MicButton[data-bq160-secondary-narrator="1"]{display:none!important}
+/* Suppress only redundant legacy note chips (not the native hidden R3 sync anchor). */
+html body #tafsirAyahs .v194T2Ayah[data-bq160-ready="1"] .bq158NoteChip,
+html body #tafsirAyahs .v194T2Ayah[data-bq160-ready="1"] .p145TopControls > button.p144NoteChip,
+html body #tafsirAyahs .v194T2Ayah[data-bq160-ready="1"] .p146TopMic > button.p144NoteChip{
+ display:none!important;
+}
+/* The B231 row has four original-intent tools, RTL: Follow, Copy, Compare, Favorite. */
+html body #tafsirAyahs .v194T2Ayah[data-bq160-ready="1"] .basairB231AyahActions[data-bq160-four-tools="1"]{
+ display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;
+ grid-auto-columns:minmax(0,1fr)!important;grid-auto-flow:row!important;
+ gap:4px!important;max-height:none!important;overflow:visible!important;
+}
+html body #tafsirAyahs .v194T2Ayah[data-bq160-ready="1"] .basairB231AyahActions > button[data-r2-action="note"],
+html body #tafsirAyahs .v194T2Ayah[data-bq160-ready="1"] .basairB231AyahActions > button.p147NoteTool,
+html body #tafsirAyahs .v194T2Ayah[data-bq160-ready="1"] .basairB231AyahActions > button.p148NoteTool,
+html body #tafsirAyahs .v194T2Ayah[data-bq160-ready="1"] .basairB231AyahActions > .p149NoteSlot,
+html body #tafsirAyahs .v194T2Ayah[data-bq160-ready="1"] .basairB231AyahActions > button[data-p150-note-proxy],
+html body #tafsirAyahs .v194T2Ayah[data-bq160-ready="1"] .basairB231AyahActions > button[data-bq155-follow],
+html body #tafsirAyahs .v194T2Ayah[data-bq160-ready="1"] .basairB231AyahActions > button[data-bq156-follow]{display:none!important}
+/* Remove old P153 visual-only fifth placeholder, without changing any R2/R3 state. */
+html body #tafsirAyahs .v194T2Ayah[data-bq160-ready="1"] .basairB231AyahActions::after{
+ display:none!important;content:none!important;
+}
+html body #tafsirAyahs .v194T2Ayah[data-bq160-ready="1"] .basairB231AyahActions > button[data-bq160-follow="1"]{
+ display:inline-flex!important;grid-column:1/span 1!important;grid-row:1!important;
+ flex-direction:column!important;align-items:center!important;justify-content:center!important;
+ min-width:0!important;max-width:100%!important;min-height:44px!important;
+ height:46px!important;max-height:48px!important;margin:0!important;padding:3px 1px!important;
+ background:var(--paper,#fff)!important;color:var(--green,#185b40)!important;
+ border:1px solid #b7c6b9!important;border-radius:9px!important;
+ font:750 11px/1.15 Arial,Tahoma,sans-serif!important;touch-action:manipulation;
+}
+html body #tafsirAyahs .v194T2Ayah .basairB231AyahActions > button[data-bq160-follow] span{
+ font-size:15px!important;line-height:1!important;
+}
+html body #tafsirAyahs .v194T2Ayah .basairB231AyahActions > button[data-bq160-follow] b{
+ font:750 10.5px/1.1 Arial,Tahoma,sans-serif!important;
+}
+html body #tafsirAyahs .v194T2Ayah .basairB231AyahActions > button[data-bq160-follow][aria-pressed="true"]{
+ background:#e5f2e7!important;border-color:#6f9f7a!important;color:#14583b!important;
+}
+/* Existing narrator never gains a second bottom placement in a ready row. */
+html body #tafsirAyahs .v194T2Ayah[data-bq160-ready="1"] .p146TopMic:not(.bq160UpperControlHost),
+html body #tafsirAyahs .v194T2Ayah[data-bq160-ready="1"] .p145TopControls:not(.bq160UpperControlHost):empty{
+ display:none!important;
+}
+.dark #tafsirAyahs .v194T2Ayah button.bq160NoteChip,
+body[data-p147-night="1"] #tafsirAyahs .v194T2Ayah button.bq160NoteChip{
+ background:#283c2f!important;color:#e6f3e8!important;border-color:#77907a!important;
+}
+.dark #tafsirAyahs .v194T2Ayah button.bq160NoteChip.has-note,
+body[data-p147-night="1"] #tafsirAyahs .v194T2Ayah button.bq160NoteChip.has-note{
+ background:#493f2b!important;color:#ffebbf!important;border-color:#bca16c!important;
+}
+@media(max-width:380px){
+ html body #tafsirAyahs .v194T2Ayah button.bq160NoteChip{
+  width:72px!important;min-width:72px!important;max-width:72px!important;
+  font-size:10px!important;padding:3px 4px!important;
+ }
+ html body #tafsirAyahs .v194T2Ayah[data-bq160-ready="1"] .basairB231AyahActions{gap:2px!important}
+}
