@@ -1,0 +1,49 @@
+<!doctype html><html lang="ar" dir="rtl" class="dark"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../../p121/owner-qa/modules/tafsir/p150-reader-polish.css">
+<style>body{background:#152b21;color:#fff;font-family:Arial,Tahoma,sans-serif;margin:0;padding:8px}
+.basairB231AyahActions{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:3px;padding:3px}
+.v194T2Ayah{margin-bottom:12px;border:1px solid #56765b;padding:8px}
+.v194T2Qrow{font-size:20px;padding:4px}
+.basairB231AyahActions>button{font-size:11px;min-width:0}
+</style></head>
+<body><section id="tafsirReader" class="active"><div id="basairTafsirPrimaryTabs"></div>
+<div id="tafsirAyahs">
+<article class="v194T2Ayah" data-t2ayah="2" id="missing">
+<div class="v194T2Qrow">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>
+<div class="v194T2Body">المعنى والبيان</div>
+<button class="p144MicButton" aria-pressed="false"><b>الناطق</b></button>
+<div class="basairB231AyahActions"><button>متابعة</button><button>نسخ</button><button>مقارنة</button><button>مفضلة</button></div>
+</article>
+<article class="v194T2Ayah" data-t2ayah="3" id="disabled">
+<div class="v194T2Qrow">الرَّحْمَٰنِ الرَّحِيمِ</div><div class="v194T2Body">شرح الآية</div>
+<button class="p144MicButton" aria-pressed="false"><b>الناطق</b></button>
+<button class="b263r3NoteChip" data-r3-note-pos="1" hidden disabled><b>ملاحظة</b></button>
+<div class="basairB231AyahActions"><button>متابعة</button><button>نسخ</button><button>مقارنة</button><button>مفضلة</button></div>
+</article></div></section>
+<pre id="qa">PENDING</pre>
+<script>window.__BASAIR_TAFSIR_STEP2__={state:()=>({s:1,a:2}),open:()=>{}};</script>
+<script src="../../p121/owner-qa/modules/tafsir/p150-reader-polish.js"></script>
+<script>window.addEventListener('DOMContentLoaded',()=>{
+ setTimeout(()=>{
+ try{
+ const api=window.__BASAIR_TAFSIR_P150__;api.refresh();
+ const first=document.getElementById('missing'),second=document.getElementById('disabled');
+ const bar=first.querySelector('.basairB231AyahActions'),bar2=second.querySelector('.basairB231AyahActions');
+ const slot=bar.querySelector('.p149NoteSlot'),slot2=bar2.querySelector('.p149NoteSlot');
+ const provisional=slot.querySelector('button[data-p150-provisional-note="1"]');
+ const native=second.querySelector('button.b263r3NoteChip');
+ const before=!!provisional&&!provisional.disabled&&!provisional.hidden&&native.parentElement===slot2&&!native.disabled&&!native.hidden;
+ const columns=getComputedStyle(bar).gridTemplateColumns.trim().split(/\s+/);
+ const fifthVisible=columns.length===5&&
+   provisional.getBoundingClientRect().width>=38&&provisional.getBoundingClientRect().height>=44&&
+   provisional.getBoundingClientRect().left>=bar.getBoundingClientRect().left-2;
+ const off=getComputedStyle(first.querySelector('.p144MicButton'),'::after').content.includes('متوقف');
+ const late=document.createElement('button');late.className='b263r3NoteChip';late.dataset.r3NotePos='1';late.innerHTML='<b>ملاحظة</b>';first.appendChild(late);
+ api.refresh();
+ const replaced=late.parentElement===slot&&!slot.querySelector('[data-p150-provisional-note]');
+ const result={pass:before&&fifthVisible&&off&&replaced,before,fifthVisible,off,replaced,columns:columns.length};
+ document.getElementById('qa').textContent=JSON.stringify(result);
+ }catch(e){document.getElementById('qa').textContent='ERROR '+e.stack}
+ },160);
+});</script></body></html>
