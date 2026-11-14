@@ -125,6 +125,11 @@
   }
   if(note.parentElement!==pair)pair.appendChild(note);
   if(favorite.parentElement!==pair)pair.appendChild(favorite);
+  if(favorite.getAttribute('data-bq157-normalized')!=='1'){
+   favorite.setAttribute('data-bq157-normalized','1');
+   favorite.setAttribute('aria-label','فتح الآيات المفضلة');
+   favorite.innerHTML='<span aria-hidden="true">☆</span><b>المفضلة</b>';
+  }
   if(favorite.getAttribute('data-bq157-favorite-hook')!=='1'){
    favorite.setAttribute('data-bq157-favorite-hook','1');
    // Preserve B233's original favorite event handler and Saved store.
