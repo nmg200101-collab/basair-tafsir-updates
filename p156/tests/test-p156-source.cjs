@@ -39,7 +39,7 @@ assert.deepEqual(decoded.modules[0].assets.map(a=>a.path),[
 console.log(JSON.stringify({status:'PASS',scriptSyntax:true,sourceOnly:true,
  nativeNotesAndFavoriteStorage:'UNTOUCHED',noGlobalClickCapture:true,
  noDrawInterval:true,manualFeedGuard:true,
- activeSeq:32,tafsirModule:30,releaseStatus:'NOT_CHANGED',
+ activeSeq:33,tafsirModule:31,releaseStatus:'OWNER_SIGNED_ACTIVE_IN_PR',
  sha256Js:crypto.createHash('sha256').update(js).digest('hex'),
  sha256Css:crypto.createHash('sha256').update(css).digest('hex'),
  bytesJs:Buffer.byteLength(js),bytesCss:Buffer.byteLength(css),
