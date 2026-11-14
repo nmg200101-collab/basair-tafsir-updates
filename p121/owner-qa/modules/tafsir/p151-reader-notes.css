@@ -950,3 +950,11 @@ html.dark body #p151NotesHub :is(.p151SearchRow input,.p151NotesEditor input,.p1
  #p151NotesHub .p151NotesSheet{padding:7px!important}
  #p151NotesHub .p151SearchRow{flex-wrap:wrap!important}
 }
+
+/* The saved-state gold hint is owned by P151, not P150's legacy has-note. */
+html body #tafsirAyahs .v194T2Ayah .p149NoteSlot > button.p151NoteAction[data-p151-saved="1"]{
+ border-color:#c3a164!important;background:#fff3d8!important;color:#805819!important;
+}
+html.dark body #tafsirAyahs .v194T2Ayah .p149NoteSlot > button.p151NoteAction[data-p151-saved="1"]{
+ border-color:#c6a368!important;background:#453822!important;color:#ffe8b6!important;
+}
