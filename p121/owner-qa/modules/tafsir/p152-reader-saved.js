@@ -835,10 +835,27 @@
   w.addEventListener('click',function(e){
    var target=e.target,button=target&&target.closest&&
      target.closest('#basairTafsirB233TopBar button[data-p152-saved]');
-   if(!button)return;
+   if(button){
+    e.preventDefault();e.stopPropagation();
+    if(e.stopImmediatePropagation)e.stopImmediatePropagation();
+    openSavedTab(button.getAttribute('data-p152-saved'));
+    return
+   }
+   // Hot OTA upgrades can temporarily retain P151 document-level click
+   // listeners. Preempt them at WINDOW capture as well: each verse note
+   // opens exactly ONE original B263 R2 editor, never two stacked editors.
+   var verse=target&&target.closest&&target.closest(
+    '#tafsirAyahs .v194T2Ayah button.p150NoteProxy,'+
+    '#tafsirAyahs .v194T2Ayah button.p152StableNoteAction');
+   if(!verse)return;
    e.preventDefault();e.stopPropagation();
    if(e.stopImmediatePropagation)e.stopImmediatePropagation();
-   openSavedTab(button.getAttribute('data-p152-saved'));
+   var row=verse.closest('.v194T2Ayah'),p=pos(row);
+   if(!p)return;
+   var r2=w.__BASAIR_TAFSIR_R2__;
+   if(r2&&typeof r2.openNote==='function'){
+    try{r2.openNote(p.s,p.a)}catch(_){openEditor(p.s,p.a)}
+   }else openEditor(p.s,p.a)
   },true);
   d.addEventListener('click',function(e){
    var button=e.target&&e.target.closest&&e.target.closest('button.p150NoteProxy,button.p151NoteAction');
