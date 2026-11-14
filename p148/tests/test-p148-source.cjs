@@ -28,16 +28,19 @@ assert.ok(css.includes('height:44px!important'));
 const next=JSON.parse(read('p148/P148-SEQ25-UNSIGNED-CANDIDATE.json').toString('utf8'));
 const rollback=JSON.parse(read('p121/owner-qa/release-p147-seq24-before-p148-20261114.json').toString('utf8'));
 const active=JSON.parse(read('p121/owner-qa/release.json').toString('utf8'));
-assert.deepEqual(rollback,active,'current signed P147 must remain active');
+const published=JSON.parse(read('p148/P148-SEQ25-OWNER-SIGNED-RELEASE.json').toString('utf8'));
+assert.deepEqual(rollback,JSON.parse(read('p147/P147-SEQ24-OWNER-SIGNED-RELEASE.json').toString('utf8')),
+ 'P147 rollback must exactly match published signed P147');
+assert.deepEqual(active,published,'P148 owner-signed Seq25 must be the active release');
 const p147=JSON.parse(Buffer.from(rollback.payload,'base64').toString('utf8'));
 assert.equal(p147.sequence,24);assert.equal(p147.modules[0].version,22);
 assert.equal(next.status,'UNSIGNED_OWNER_QA_CANDIDATE_DO_NOT_PUBLISH');
-assert.equal(next.published,false);assert.equal(next.signing,null);
+assert.equal(next.published,false);assert.equal(next.signing,null); // original unsigned candidate is historic, not the active release
 const p=next.proposedPayload;
 assert.equal(p.sequence,25);assert.equal(p.modules[0].version,23);
 assert.equal(p.channel,'owner-qa');assert.equal(p.deliveryMode,'notify');
 assert.equal(p.minAppVersion,694);assert.equal(p.applicationId,p147.applicationId);
-assert.equal(p.issuedAt,null);assert.equal(p.expiresAt,null);
+assert.equal(p.issuedAt,null);assert.equal(p.expiresAt,null); // unsigned draft only
 assert.equal(p.modules[0].assets.length,8);
 for(const [i,asset] of p.modules[0].assets.entries()){
  if(i<6)assert.deepEqual(asset,p147.modules[0].assets[i]);
@@ -48,6 +51,6 @@ for(const [i,asset] of p.modules[0].assets.entries()){
 }
 assert.equal(p.modules[0].assets[6].path,'modules/tafsir/p148-reader-polish.css');
 assert.equal(p.modules[0].assets[7].path,'modules/tafsir/p148-reader-polish.js');
-console.log(JSON.stringify({status:'PASS',stage:'P148-DRAFT',sequence:25,
+console.log(JSON.stringify({status:'PASS',stage:'P148-SIGNED-OWNER-QA',sequence:25,
  notes:'original button retained; microtask correction',lessons:'actual v194T104 classes',
  baseline:24,rollback:'signed P147 identical',protectedQA050:'untouched',android:'NOT TESTED'}));
