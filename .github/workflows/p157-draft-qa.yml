@@ -16,6 +16,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: node p157/tests/test-p157-source.cjs
+      - name: Manifest asset sizes and SHA256 (public files only)
+        run: |
+          sha256sum p121/owner-qa/modules/tafsir/p157-merged-saved-reader.js p121/owner-qa/modules/tafsir/p157-merged-saved-reader.css
+          wc -c p121/owner-qa/modules/tafsir/p157-merged-saved-reader.js p121/owner-qa/modules/tafsir/p157-merged-saved-reader.css
       - run: node p156/tests/test-p156-source.cjs
   chromium:
     runs-on: ubuntu-24.04
