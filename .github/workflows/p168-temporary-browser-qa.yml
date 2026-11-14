@@ -1,0 +1,28 @@
+name: P168 temporary actual browser integration QA
+on:
+  pull_request:
+    paths:
+      - "p168/**"
+      - "p121/owner-qa/modules/tafsir/p168-*"
+      - ".github/workflows/p168-temporary-browser-qa.yml"
+permissions:
+  contents: read
+jobs:
+  p168-real-follow:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: |
+          node --check p121/owner-qa/modules/tafsir/p168-tafsir-single-follow-runtime.js
+          node --check p121/owner-qa/modules/tafsir/p168-tafsir-no-duplicate-follow-adapter.js
+      - run: |
+          npm install --no-save playwright
+          npx playwright install --with-deps chromium
+      - name: Actual P130 Android touch/stop baseline
+        run: node p168/tests/test-p168-android-touch-after-stop.cjs
+      - name: Actual P130 native toolbar rebuild and delayed SPA
+        run: node p168/tests/test-p168-dynamic-toolbar.cjs
