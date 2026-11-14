@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="ar" dir="rtl" class="dark"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="stylesheet" href="../../p121/owner-qa/modules/tafsir/p148-reader-polish.css">
+<style>
+body{background:#fbfcfa;color:#263c30;font-family:Arial,Tahoma,sans-serif;margin:0;padding:8px;font-size:100%}
+html.dark body{background:#122a20;color:#f1f6f2}
+#v194T104HubBody{padding:0 9px}
+.v194T104Panel{display:grid;gap:8px}
+.v194T104Section{border:1px solid #3c5f54;border-radius:14px;background:#14291f;padding:10px}
+.v194T104Section h3{font-size:.7rem;color:#528b67;margin:0 0 6px}
+.v194T104Thread{display:grid;gap:7px}
+.v194T104ThreadItem{position:relative;padding:9px 10px 9px 30px;border:1px solid #375648;border-radius:12px;background:#193a2f}
+.v194T104ThreadItem:before{content:'•';position:absolute;left:11px;top:7px;color:#b88a2e}
+.v194T104ThreadItem b{display:block;font-size:.54rem;color:#5d9776;margin-bottom:3px}
+.v194T104ThreadItem span{display:block;font-size:.59rem;line-height:1.68;color:#e4ece5}
+.v194T2Ayah{border:1px solid #335649;padding:8px;margin-top:14px}
+.v194T2Qrow{font-size:21px;color:#ecf4e8}
+.b263r3NoteChip{width:100px!important;height:94px!important;padding:14px!important}
+.basairB231AyahActions{display:grid;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:3px}
+</style></head>
+<body data-basair-tafsir-main-tab="thread">
+<div id="basairTafsirPrimaryTabs"><button data-basair-main-tab="tafsir">التفسير</button>
+<button data-basair-main-tab="intro">مقدمة السورة</button>
+<button class="on" aria-selected="true" data-basair-main-tab="thread">خيط السورة</button></div>
+<section id="tafsirReader" class="active">
+<div id="v194T104HubBody"><div class="v194T104Panel">
+<section class="v194T104Section"><h3>أبرز الدروس</h3><div class="v194T104Thread">
+<div class="v194T104ThreadItem" id="lesson1">
+<b id="lessonTitle">درس من الآية 1</b><span id="lessonBody">الإنسان قد يبدأ العمل وهو معتمد على مهارته أو خطته وحدها؛ والآية تعيد ترتيب الداخل: ابدأ بالله قبل أن تبدأ بنفسك.</span></div>
+<div class="v194T104ThreadItem"><b>درس من الآية 3</b><span>صورة الإنسان عن الله تؤثر في عبادته؛ من عرفه بالرحمة لم ييأس.</span></div>
+</div></section>
+<section class="v194T104Section"><h3>الربط بين بداية السورة ونهايتها</h3><p>تبدأ السورة من معنى قريب من «ابدأ بالله»، ثم تتدرج مقاطعها لخدمة محورها.</p></section>
+</div></div></section>
+<div id="tafsirAyahs"><article class="v194T2Ayah">
+<div class="v194T2Qrow">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div><div class="v194T2Body">تفسير الآية الأولى</div>
+<button class="p144NoteChip" id="staleNote" type="button">مكرر</button>
+<button class="b263r3NoteChip" data-r3-note-pos="1" id="note" type="button">ملاحظة</button>
+<button class="p144MicButton" id="mic" type="button">الناطق</button>
+<div class="basairB231AyahActions" id="tools">
+<button type="button">متابعة</button><button type="button">نسخ</button>
+<button type="button">مقارنة</button><button type="button">مفضلة</button></div>
+</article></div>
+<pre id="p148qa">RUNNING</pre>
+<script>
+window.__BASAIR_TAFSIR_STEP2__={state:()=>({s:1,a:1,type:'basair'}),open:()=>{}};
+window.__BASAIR_TAFSIR_CORE__={getMuyassarSurah:()=>new Promise(()=>{})};
+window.__clicks=0;document.querySelector('#note').addEventListener('click',()=>window.__clicks++);
+</script>
+<script src="../../p121/owner-qa/modules/tafsir/p148-reader-polish.js"></script>
+<script>
+window.addEventListener('DOMContentLoaded',function(){
+ setTimeout(function(){
+  try{
+   const api=window.__BASAIR_TAFSIR_P148__,note=document.getElementById('note'),
+     stale=document.getElementById('staleNote'),tools=document.getElementById('tools'),
+     lesson=document.getElementById('lesson1'),title=document.getElementById('lessonTitle'),
+     copy=document.getElementById('lessonBody');
+   const titleSize=parseFloat(getComputedStyle(title).fontSize),
+      bodySize=parseFloat(getComputedStyle(copy).fontSize);
+   note.click();
+   const initial=tools.children.length===5&&note.parentElement===tools&&stale.disabled&&stale.hidden;
+   const micNear=document.getElementById('mic').parentElement.classList.contains('p146TopMic');
+   const noteSize=note.getBoundingClientRect().height;
+   const barStyle=tools.style.getPropertyValue('grid-template-columns');
+   // Legacy script rewrites the grid; observer must repair before paint.
+   tools.style.setProperty('grid-template-columns','repeat(4,minmax(0,1fr))','important');
+   setTimeout(function(){
+    const gridRestored=tools.style.getPropertyValue('grid-template-columns')==='repeat(5,minmax(0,1fr))';
+    // Legacy script moves the original note out of its anchor.
+    document.querySelector('.v194T2Ayah').appendChild(note);
+    setTimeout(function(){
+     const movedBack=note.parentElement===tools;
+     const nightColor=getComputedStyle(copy).color,nightBackground=getComputedStyle(lesson).backgroundColor;
+     const nightTextReadable=nightColor!=='rgb(13, 69, 49)'&&nightBackground!=='rgb(255, 255, 255)';
+     document.documentElement.classList.remove('dark');
+     api.syncVisualMode();
+     const dayBackground=getComputedStyle(lesson).backgroundColor;
+     const dayRestored=nightBackground!==dayBackground;
+     const result={pass:initial&&micNear&&gridRestored&&movedBack&&nightTextReadable&&dayRestored&&window.__clicks===1&&titleSize>=18&&bodySize>=16.9&&noteSize<=44.5,
+      initial,micNear,gridRestored,movedBack,nightTextReadable,dayRestored,titleSize,bodySize,noteHeight:noteSize,nightBackground,dayBackground,noteCount:tools.querySelectorAll('.p148NoteTool').length};
+     document.getElementById('p148qa').textContent=JSON.stringify(result);
+    },100);
+   },100);
+  }catch(e){document.getElementById('p148qa').textContent='ERROR '+e.stack}
+ },150);
+});
+</script></body></html>
