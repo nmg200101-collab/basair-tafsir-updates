@@ -1,0 +1,32 @@
+name: P166 Tafsir single-owner QA
+
+on:
+  pull_request:
+    paths:
+      - "p166/**"
+      - "p121/owner-qa/release.json"
+      - "p121/owner-qa/modules/tafsir/p166-*"
+      - ".github/workflows/p166-tafsir-qa.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  p166-source-and-browser:
+    name: p166-original-owner-and-real-p130
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Verify original-owner signed release and exact asset hashes
+        run: node p166/tests/test-p166-signed-source.cjs
+      - name: Install Chromium test runtime
+        run: |
+          npm install --no-save playwright
+          npx playwright install --with-deps chromium
+      - name: Run actual P130 follow/manual and P166 narrator integration
+        run: node p166/tests/test-p166-real-p130-browser.cjs
