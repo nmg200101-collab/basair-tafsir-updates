@@ -1,0 +1,66 @@
+/* P163: ONLY note presentation. P162 narrator, R114 follow, native scrolling unchanged. */
+html body #tafsirAyahs .v194T2Ayah > .bq163NoteLower{
+ display:flex!important;align-items:center!important;justify-content:flex-start!important;
+ flex-direction:row!important;direction:rtl!important;box-sizing:border-box!important;
+ width:100%!important;max-width:100%!important;min-height:37px!important;height:37px!important;
+ margin:3px 0 4px!important;padding:0 9px!important;gap:0!important;
+ border:0!important;background:transparent!important;box-shadow:none!important;
+ position:static!important;visibility:visible!important;opacity:1!important;
+}
+html body #tafsirAyahs .v194T2Ayah > .bq163NoteLower > button.bq163NoteChip{
+ box-sizing:border-box!important;display:inline-flex!important;align-items:center!important;
+ justify-content:center!important;flex-direction:row!important;gap:4px!important;
+ width:82px!important;min-width:82px!important;max-width:82px!important;
+ height:34px!important;min-height:34px!important;max-height:34px!important;
+ margin:0!important;padding:3px 7px!important;
+ border:1px solid #b5c7bb!important;border-radius:17px!important;
+ background:#f1f5ef!important;color:#315b44!important;
+ font:700 10.5px/1.05 Arial,Tahoma,sans-serif!important;
+ white-space:nowrap!important;box-shadow:none!important;touch-action:manipulation;
+ visibility:visible!important;opacity:1!important;pointer-events:auto!important;
+}
+html body #tafsirAyahs .v194T2Ayah > .bq163NoteLower > button.bq163NoteChip span{
+ font:700 13px/1 Arial,Tahoma,sans-serif!important;
+}
+html body #tafsirAyahs .v194T2Ayah > .bq163NoteLower > button.bq163NoteChip b{
+ font:700 10.5px/1 Arial,Tahoma,sans-serif!important;white-space:nowrap!important;
+}
+html body #tafsirAyahs .v194T2Ayah > .bq163NoteLower > button.bq163NoteChip.has-note{
+ background:#fff3dc!important;border-color:#b99f68!important;color:#70541b!important;
+}
+/* Hide legacy note entry points ONLY after our independent lower button exists.
+   Original R3 hidden anchor and P153 proxy remain in DOM for state synchronization. */
+html body #tafsirAyahs .v194T2Ayah[data-bq163-note-ready="1"] > button.b263r3NoteChip,
+html body #tafsirAyahs .v194T2Ayah[data-bq163-note-ready="1"] .p146BottomNote,
+html body #tafsirAyahs .v194T2Ayah[data-bq163-note-ready="1"] button.p144NoteChip,
+html body #tafsirAyahs .v194T2Ayah[data-bq163-note-ready="1"] .bq160NoteChip,
+html body #tafsirAyahs .v194T2Ayah[data-bq163-note-ready="1"] .bq158NoteChip{
+ display:none!important;visibility:hidden!important;
+}
+html body #tafsirAyahs .v194T2Ayah[data-bq163-note-ready="1"][data-bq162-note-owner="proxy"] .basairB231AyahActions[data-bq162-four-tools="1"] > .p149NoteSlot,
+html body #tafsirAyahs .v194T2Ayah[data-bq163-note-ready="1"] .basairB231AyahActions[data-p149-note-layout] > .p149NoteSlot,
+html body #tafsirAyahs .v194T2Ayah[data-bq163-note-ready="1"] .basairB231AyahActions > .p149NoteSlot{
+ display:none!important;visibility:hidden!important;
+}
+/* Removing P153's now-hidden fifth note slot must not leave the 4 native tools on a second row. */
+html body #tafsirAyahs .v194T2Ayah[data-bq163-note-ready="1"] .basairB231AyahActions[data-bq162-four-tools="1"] > button[data-bq162-follow],
+html body #tafsirAyahs .v194T2Ayah[data-bq163-note-ready="1"] .basairB231AyahActions[data-bq162-four-tools="1"] > button[data-b231-action]{
+ grid-row:1!important;
+}
+html body #tafsirAyahs .v194T2Ayah[data-bq163-note-ready="1"] .basairB231AyahActions[data-bq162-four-tools="1"]::after{
+ display:none!important;content:none!important;
+}
+html.dark body #tafsirAyahs .v194T2Ayah > .bq163NoteLower > button.bq163NoteChip,
+body[data-p147-night="1"] #tafsirAyahs .v194T2Ayah > .bq163NoteLower > button.bq163NoteChip{
+ background:#293c32!important;border-color:#6b8a72!important;color:#e6f5e9!important;
+}
+html.dark body #tafsirAyahs .v194T2Ayah > .bq163NoteLower > button.bq163NoteChip.has-note,
+body[data-p147-night="1"] #tafsirAyahs .v194T2Ayah > .bq163NoteLower > button.bq163NoteChip.has-note{
+ background:#51462d!important;border-color:#bda674!important;color:#ffedc6!important;
+}
+@media(max-width:380px){
+ html body #tafsirAyahs .v194T2Ayah > .bq163NoteLower{padding-inline:5px!important}
+ html body #tafsirAyahs .v194T2Ayah > .bq163NoteLower > button.bq163NoteChip{
+  width:76px!important;min-width:76px!important;max-width:76px!important;
+ }
+}
