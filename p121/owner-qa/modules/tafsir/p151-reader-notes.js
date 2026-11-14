@@ -759,9 +759,24 @@
   else favorite.insertAdjacentElement('afterend',btn);
   btn.setAttribute('data-count',String(allNotes().length));
  }
+ function guardBack(){
+  // When Android forwards its Back key to basairBack, dismiss the Notes
+  // editor/list first without abandoning Tafsir or losing draft text.
+  var old=w.basairBack;
+  if(typeof old!=='function'||old.__p151NotesBack)return;
+  var bridge=function(){
+   if(hub&&!hub.hidden){
+    if(mode==='editor')showList();else close();
+    return false;
+   }
+   return old.apply(this,arguments)
+  };
+  bridge.__p151NotesBack=true;bridge.__base=old;
+  w.basairBack=bridge;
+ }
  function sync(){
   var host=d.getElementById('tafsirAyahs');if(host){host.querySelectorAll('.v194T2Ayah').forEach(ensureRow)}
-  indexControls();updateIndicators()
+  indexControls();updateIndicators();guardBack()
  }
  var pending=false;
  function schedule(){if(pending)return;pending=true;w.setTimeout(function(){pending=false;sync()},75)}
