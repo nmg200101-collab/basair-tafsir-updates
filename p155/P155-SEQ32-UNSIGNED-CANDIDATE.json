@@ -1,0 +1,43 @@
+{
+  "status": "UNSIGNED_OWNER_QA_DRAFT_NOT_PUBLISHED",
+  "signed": false,
+  "published": false,
+  "onlyNewAssets": true,
+  "inheritedLayoutAssetsRemoved": true,
+  "qa050Protected": true,
+  "androidAccepted": false,
+  "baselineSha": "2d70ea8039cd968c326937bc33a0aa232075ce83",
+  "rollback": "p121/owner-qa/release-p154-seq31-before-p155-20261114.json",
+  "proposedPayload": {
+    "schema": "basair-universal-ota-v1",
+    "channel": "owner-qa",
+    "applicationId": "app.basair.qurv2",
+    "sequence": 32,
+    "id": "P155-TAFSIR-NATIVE-FIRST-STABLE-FOUNDATION-20261114",
+    "title": "إعادة تأسيس واجهة التفسير الموحدة مع الملاحظات والمفضلة وأدوات الآية الأصلية",
+    "minAppVersion": 694,
+    "deliveryMode": "automatic",
+    "issuedAt": null,
+    "expiresAt": null,
+    "modules": [
+      {
+        "id": "tafsir",
+        "version": 30,
+        "assets": [
+          {
+            "path": "modules/tafsir/p155-native-foundation.css",
+            "kind": "css",
+            "size": 3416,
+            "sha256": "74156b5678214234f534a5b18fb291c594ac9eebd31c764c1977e0d3f329e146"
+          },
+          {
+            "path": "modules/tafsir/p155-native-foundation.js",
+            "kind": "js",
+            "size": 7723,
+            "sha256": "70ec42211bf134cda88b3c8db4a14ba0e0c1c7426de92569ad657fe225a67c99"
+          }
+        ]
+      }
+    ]
+  }
+}

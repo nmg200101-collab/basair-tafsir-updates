@@ -1,0 +1,71 @@
+/* BASAIR P155 — isolated native Tafsir layout, no global toolbar redesign.
+   B231 owns verse tools, B233 owns index/favorites, R2/R3 own saved notes.
+   Do not carry forward P144/P152 OTA CSS. */
+#tafsirIndex #basairTafsirB233TopBar [data-bq155-notes="1"]{
+ box-sizing:border-box;min-width:0;display:flex;flex-direction:column;
+ justify-content:center;align-items:center;gap:1px;
+ border:1px solid var(--line,#c7d2c7);border-radius:12px;
+ background:var(--paper,#fff);color:var(--green,#185d40);
+ padding:4px 2px;touch-action:manipulation;cursor:pointer;
+}
+#tafsirIndex #basairTafsirB233TopBar [data-bq155-notes="1"] span{
+ font-size:18px;line-height:1;
+}
+#tafsirIndex #basairTafsirB233TopBar [data-bq155-notes="1"] b{
+ font-size:clamp(10px,2.6vw,12px);line-height:1.15;
+ white-space:nowrap;font-weight:750;
+}
+#tafsirIndex #basairTafsirB233TopBar #basairTafsirB232FavoritesBtn{
+ touch-action:manipulation;pointer-events:auto;
+}
+/* One consistent fifth tool: original native note + original
+   copy/compare/favorite + a lightweight follow button. */
+#tafsirAyahs .v194T2Ayah .basairB231AyahActions[data-bq155-tools="1"]{
+ display:grid;grid-template-columns:repeat(5,minmax(0,1fr));
+ gap:3px;min-height:0;max-height:none;overflow:visible;
+}
+#tafsirAyahs .v194T2Ayah .basairB231AyahActions[data-bq155-tools="1"] > button{
+ box-sizing:border-box;min-width:0;min-height:44px;height:auto;
+ max-width:100%;padding:4px 1px;margin:0;border-radius:9px;
+ touch-action:manipulation;pointer-events:auto;
+}
+#tafsirAyahs .v194T2Ayah .basairB231AyahActions [data-r2-action="note"] > b{
+ font-size:0!important;
+}
+#tafsirAyahs .v194T2Ayah .basairB231AyahActions [data-r2-action="note"] > b::after{
+ content:"ملاحظة";font-size:11px;line-height:1.15;
+}
+#tafsirAyahs .v194T2Ayah .basairB231AyahActions .bq155-note-saved{
+ border-color:#c2a269;background:#fff3da;color:#79551c;
+}
+#tafsirAyahs .v194T2Ayah .basairB231AyahActions [data-bq155-follow] [aria-hidden="true"]{
+ font-size:15px;line-height:1;
+}
+#tafsirAyahs .v194T2Ayah .basairB231AyahActions [data-bq155-follow][aria-pressed="true"]{
+ border-color:var(--green,#216747);background:var(--soft,#edf4eb);color:var(--green,#216747);
+}
+/* Hide only the redundant top-of-ayah R3 note. Its original data,
+   editor and click handlers are left intact by Javascript. */
+#tafsirAyahs .v194T2Ayah > button.b263r3NoteChip,
+#tafsirAyahs .v194T2Ayah > .b263r3NoteChip{
+ display:none!important;
+}
+#tafsirIndex #bq155Status{
+ margin:4px 8px;color:var(--green,#1b6644);
+ font-size:12px;line-height:1.3;
+}
+#tafsirIndex #bq155Status:empty{display:none}
+/* Increase real Basair lessons, not synthetic wrappers. */
+#tafsirReader .v194T104ThreadItem > b,
+#tafsirAyahs .v194T104ThreadItem > b{font-size:clamp(17px,4.1vw,20px);line-height:1.6}
+#tafsirReader .v194T104ThreadItem > span,
+#tafsirAyahs .v194T104ThreadItem > span{font-size:clamp(16px,3.9vw,19px);line-height:1.9}
+.dark #tafsirAyahs .v194T2Ayah .basairB231AyahActions .bq155-note-saved,
+body[data-p147-night="1"] #tafsirAyahs .v194T2Ayah .basairB231AyahActions .bq155-note-saved{
+ border-color:#bea36d;background:#463b28;color:#ffe7b7;
+}
+@media(max-width:390px){
+ #tafsirAyahs .v194T2Ayah .basairB231AyahActions[data-bq155-tools="1"]{gap:2px;padding:4px}
+ #tafsirAyahs .v194T2Ayah .basairB231AyahActions[data-bq155-tools="1"] > button{padding:3px 1px}
+ #tafsirIndex #basairTafsirB233TopBar [data-bq155-notes="1"] b{font-size:10px}
+}
