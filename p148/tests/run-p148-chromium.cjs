@@ -25,6 +25,15 @@ try{
  const p=cp.spawnSync(chrome,args,{encoding:'utf8',timeout:28000,maxBuffer:6*1024*1024});
  assert.equal(p.status,0,'browser failed: '+String(p.stderr||'').slice(-1200));
  const m=p.stdout.match(/<pre[^>]*id="p148qa"[^>]*>([\s\S]*?)<\/pre>/i);
+ if(!m){
+  console.error('P148 browser DOM diagnostics',JSON.stringify({
+    stdoutBytes:String(p.stdout||'').length,
+    stderrTail:String(p.stderr||'').slice(-1400),
+    stdoutHead:String(p.stdout||'').slice(0,700),
+    stdoutTail:String(p.stdout||'').slice(-1300),
+    fixtureExists:fs.existsSync(file)
+  }));
+ }
  assert.ok(m,'P148 result element missing');
  const raw=m[1].replace(/&quot;/g,'"').replace(/&amp;/g,'&')
   .replace(/&lt;/g,'<').replace(/&gt;/g,'>').trim();
