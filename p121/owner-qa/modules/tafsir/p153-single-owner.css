@@ -842,3 +842,27 @@ html body #tafsirAyahs .v194T2Ayah .basairB231AyahActions:not([data-p149-note-la
 html.dark body #tafsirAyahs .v194T2Ayah .basairB231AyahActions:not([data-p149-note-layout])::after{
  background:#26513d!important;color:#e6f9eb!important;border-color:#7fa78b!important;
 }
+
+
+/* P153 exact B233 window-capture collision fix:
+   retain the original favorite ID for internal storage/count wiring,
+   but display only the independent trigger users can actually tap. */
+html body #tafsirIndex #basairTafsirB233TopBar[data-p153-ready="1"] > #basairTafsirB232FavoritesBtn{
+ display:none!important;visibility:hidden!important;pointer-events:none!important;
+}
+html body #tafsirIndex #basairTafsirB233TopBar > #p153FavoritesIndex{
+ min-width:0!important;max-width:none!important;
+ display:flex!important;align-items:center!important;justify-content:center!important;
+ gap:3px!important;margin:0!important;padding:3px 2px!important;
+ background:var(--paper,#fbfcf9)!important;color:var(--green,#1c5d42)!important;
+ border:1px solid var(--line,#c0cdbf)!important;border-radius:9px!important;
+ font-family:inherit!important;white-space:nowrap!important;
+ visibility:visible!important;opacity:1!important;pointer-events:auto!important;
+}
+html body #tafsirIndex #basairTafsirB233TopBar > #p153FavoritesIndex > span{
+ font-size:.62rem!important;line-height:1!important;color:var(--green,#1c5d42)!important;
+}
+html body #tafsirIndex #basairTafsirB233TopBar > #p153FavoritesIndex > b{
+ font-size:.39rem!important;line-height:1.25!important;font-weight:800!important;
+ color:inherit!important;white-space:nowrap!important;
+}
