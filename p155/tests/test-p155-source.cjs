@@ -17,9 +17,9 @@ assert.ok(!css.includes('position:fixed'),'Never create a full-screen touch bloc
 assert.ok(!css.includes('pointer-events:none!important')||css.includes('.b263r3NoteChip'),'No global blocked pointer events');
 const previous=read('p121/owner-qa/release.json');
 const rollback=read('p121/owner-qa/release-p154-seq31-before-p155-20261114.json');
-assert.deepEqual(previous,rollback,'The draft must not change the active signed release');
-assert.deepEqual(previous,read('p154/P154-SEQ31-OWNER-SIGNED-RELEASE.json'),'Signed Seq31 must be preserved');
-const old=JSON.parse(Buffer.from(JSON.parse(previous).payload,'base64').toString('utf8'));
+assert.deepEqual(rollback,read('p154/P154-SEQ31-OWNER-SIGNED-RELEASE.json'),'Signed Seq31 rollback must be preserved');
+assert.deepEqual(previous,read('p155/P155-SEQ32-OWNER-SIGNED-RELEASE.json'),'Active release must be owner signed Seq32');
+const old=JSON.parse(Buffer.from(JSON.parse(rollback).payload,'base64').toString('utf8'));
 const candidate=JSON.parse(read('p155/P155-SEQ32-UNSIGNED-CANDIDATE.json').toString('utf8'));
 const next=candidate.proposedPayload;
 assert.equal(candidate.signed,false);assert.equal(candidate.published,false);
