@@ -797,16 +797,17 @@ html.dark body #tafsirAyahs .v194T2Ayah .p149NoteSlot > button.p151NoteAction.ha
 /* Index: replace the redundant small search icon next to Favorites, but
    leave the full independent Surah/Ayah/Page search row entirely unchanged. */
 #tafsirIndex button.p151NotesIndexButton{
- min-height:52px!important;min-width:78px!important;max-width:118px!important;
+ min-height:52px!important;min-width:62px!important;max-width:82px!important;
+ flex:0 1 74px!important;
  display:inline-flex!important;flex-direction:column!important;justify-content:center!important;align-items:center!important;
- gap:1px!important;padding:6px 8px!important;border-radius:16px!important;
+ gap:1px!important;padding:5px 5px!important;border-radius:15px!important;
  border:1px solid #b9cbbb!important;background:#eaf4ed!important;
  color:#185943!important;font-family:inherit!important;
  font-size:12px!important;font-weight:800!important;line-height:1.2!important;
  box-shadow:none!important;white-space:nowrap!important;
 }
-#tafsirIndex button.p151NotesIndexButton > span{font-size:20px!important;line-height:1.1!important}
-#tafsirIndex button.p151NotesIndexButton > b{font-size:11px!important;line-height:1.2!important}
+#tafsirIndex button.p151NotesIndexButton > span{font-size:17px!important;line-height:1.1!important}
+#tafsirIndex button.p151NotesIndexButton > b{font-size:10px!important;line-height:1.2!important}
 #tafsirIndex button.p151NotesIndexButton[data-count]:not([data-count="0"]):after{
  content:attr(data-count);position:absolute;inset-inline-start:3px;top:2px;
  background:#c5a261;color:#102c20;font-size:10px;min-width:17px;padding:1px 3px;
