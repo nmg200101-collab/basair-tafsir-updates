@@ -119,6 +119,15 @@
     nativeNoteByRow.set(row,original);
     original.classList.remove('p148NoteTool','p147NoteTool');
     original.classList.add('p149NoteTool','p144NoteChip');
+    // P134 may search ANY descendant of the original four-button bar for
+    // [data-r2-action="note"] and convert it into "متابعة". The original
+    // R3 note uses data-r3-note-pos / b263r3NoteChip, not that R2 follow tag.
+    if(original.getAttribute('data-r2-action')==='note'&&
+       (original.hasAttribute('data-r3-note-pos')||original.classList.contains('b263r3NoteChip'))){
+     original.setAttribute('data-p149-preserved-r2-action','note');
+     original.removeAttribute('data-r2-action');
+    }
+
     if(original.hidden)original.hidden=false;
     if(original.disabled)original.disabled=false;
     if(original.getAttribute('aria-hidden')==='true')original.removeAttribute('aria-hidden');
