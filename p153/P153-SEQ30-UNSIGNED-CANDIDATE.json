@@ -1,0 +1,79 @@
+{
+  "status": "UNSIGNED_DRAFT_NOT_ACTIVE",
+  "signed": false,
+  "published": false,
+  "ownerAuthorizedFix": true,
+  "automaticDeliveryProposed": true,
+  "priorSignedRelease": "p121/owner-qa/release-p152-seq29-before-p153-20261114.json",
+  "nativeStoreUntouched": true,
+  "qa050Protected": true,
+  "deviceVerified": false,
+  "proposedPayload": {
+    "schema": "basair-universal-ota-v1",
+    "channel": "owner-qa",
+    "applicationId": "app.basair.qurv2",
+    "sequence": 30,
+    "id": "P153-TAFSIR-STABLE-NOTES-SINGLE-OWNER-QA-20261114",
+    "title": "استقرار الملاحظات والمفضلة في واجهة التفسير دون تبدل الشكل",
+    "minAppVersion": 694,
+    "deliveryMode": "automatic",
+    "issuedAt": null,
+    "expiresAt": null,
+    "modules": [
+      {
+        "id": "tafsir",
+        "version": 28,
+        "assets": [
+          {
+            "path": "modules/tafsir/p131-verse-tools.css",
+            "kind": "css",
+            "size": 5717,
+            "sha256": "a41e96fb1b9c079e6aa6e4b962b49bbed76162c99fa5fb3fb1101fff5b8dce77"
+          },
+          {
+            "path": "modules/tafsir/p144-natiq.css",
+            "kind": "css",
+            "size": 35547,
+            "sha256": "c23a89096b23172f18614b600e83404abc0f528a1c4de1dda950e7931e2bbf3b"
+          },
+          {
+            "path": "modules/tafsir/p134-verse-tools.js",
+            "kind": "js",
+            "size": 43085,
+            "sha256": "cd492a5cd06207377d8a76468814d600fd52749de83c56895e36f81bbcae5fe4"
+          },
+          {
+            "path": "modules/tafsir/p136-ayah-catalog.js",
+            "kind": "js",
+            "size": 3734,
+            "sha256": "d5126157a176b6b32fd40d88cd71d323d428e2e5ebeae8546b1752c9ab8279f2"
+          },
+          {
+            "path": "modules/tafsir/p136-reciter-bridge.js",
+            "kind": "js",
+            "size": 7358,
+            "sha256": "2b3ef7d3a3f25180298f2828fec537d88962a575c138852bb13300a602b56c43"
+          },
+          {
+            "path": "modules/tafsir/p144-natiq.js",
+            "kind": "js",
+            "size": 59259,
+            "sha256": "ca458ef6665f353d8de508256757482d32df436492dbf202208e368116760eba"
+          },
+          {
+            "path": "modules/tafsir/p153-single-owner.css",
+            "kind": "css",
+            "size": 42845,
+            "sha256": "47f706d36b97d42286b50a4fd5040661ff411d3e8c6eeef9935fc7294194ca31"
+          },
+          {
+            "path": "modules/tafsir/p153-single-owner.js",
+            "kind": "js",
+            "size": 32170,
+            "sha256": "08dd2a75f3ce6c6c15d53a85b228bf203e11a112a84cb456854d4249a4057748"
+          }
+        ]
+      }
+    ]
+  }
+}
