@@ -1,0 +1,58 @@
+/* P164 — one compact narrator placed INSIDE the title of meaning/Tafsir,
+   without creating a blank toolbar row or touching notes/scroll/follow. */
+html body #tafsirAyahs .v194T2Ayah .v194T2FieldTitle > button.bq164InlineNarrator{
+ display:inline-flex!important;align-items:center!important;justify-content:center!important;
+ box-sizing:border-box!important;flex:0 0 auto!important;flex-direction:row!important;
+ gap:3px!important;width:60px!important;min-width:60px!important;max-width:60px!important;
+ height:25px!important;min-height:25px!important;max-height:25px!important;
+ margin:0 2px!important;padding:2px 5px!important;
+ border:1px solid #a8c6b6!important;border-radius:13px!important;
+ background:#edf7ef!important;color:#276346!important;
+ font:700 10px/1 Arial,Tahoma,sans-serif!important;
+ vertical-align:middle!important;white-space:nowrap!important;
+ box-shadow:none!important;touch-action:manipulation;
+}
+html body #tafsirAyahs .v194T2Ayah .v194T2FieldTitle > button.bq164InlineNarrator > span{
+ font:700 15px/1 Arial,Tahoma,sans-serif!important;
+}
+html body #tafsirAyahs .v194T2Ayah .v194T2FieldTitle > button.bq164InlineNarrator > b{
+ font:700 10px/1 Arial,Tahoma,sans-serif!important;white-space:nowrap!important;
+}
+html body #tafsirAyahs .v194T2Ayah .v194T2FieldTitle > button.bq164InlineNarrator[data-bq164-icon-only="1"]{
+ width:28px!important;min-width:28px!important;max-width:28px!important;
+ padding:2px!important;
+}
+html body #tafsirAyahs .v194T2Ayah .v194T2FieldTitle > button.bq164InlineNarrator[data-bq164-icon-only="1"] > b{
+ display:none!important;
+}
+html body #tafsirAyahs .v194T2Ayah .v194T2FieldTitle > button.bq164InlineNarrator[aria-pressed="true"]{
+ background:#d9eddf!important;border-color:#639a74!important;color:#125338!important;
+}
+/* Once the accessible inline control is ready, visually suppress the ORIGINAL
+   P153 microphone row. Its real button/handler remains in the DOM and receives
+   forwarded clicks. No hidden row may consume height or occupy verse text. */
+html body #tafsirAyahs .v194T2Ayah[data-bq164-narrator-ready="1"] > .p146TopMic,
+html body #tafsirAyahs .v194T2Ayah[data-bq164-narrator-ready="1"] .p145TopControls:has(> button.p144MicButton),
+html body #tafsirAyahs .v194T2Ayah[data-bq164-narrator-ready="1"] .bq161NarratorTop:has(> button.p144MicButton){
+ display:none!important;visibility:hidden!important;
+ min-height:0!important;max-height:0!important;height:0!important;
+ margin:0!important;padding:0!important;border:0!important;
+}
+html body #tafsirAyahs .v194T2Ayah[data-bq164-narrator-ready="1"] button.p144MicButton{
+ visibility:hidden!important;
+}
+/* Preserve original title/source layout and all P163 note selectors unchanged. */
+html.dark body #tafsirAyahs .v194T2Ayah .v194T2FieldTitle > button.bq164InlineNarrator,
+body[data-p147-night="1"] #tafsirAyahs .v194T2Ayah .v194T2FieldTitle > button.bq164InlineNarrator{
+ background:#244c39!important;color:#e4f6e8!important;border-color:#658f78!important;
+}
+html.dark body #tafsirAyahs .v194T2Ayah .v194T2FieldTitle > button.bq164InlineNarrator[aria-pressed="true"],
+body[data-p147-night="1"] #tafsirAyahs .v194T2Ayah .v194T2FieldTitle > button.bq164InlineNarrator[aria-pressed="true"]{
+ background:#35664b!important;color:#f1ffef!important;
+}
+@media(max-width:380px){
+ html body #tafsirAyahs .v194T2Ayah .v194T2FieldTitle > button.bq164InlineNarrator{
+  width:52px!important;min-width:52px!important;max-width:52px!important;
+  font-size:9px!important;padding:2px 3px!important;
+ }
+}
