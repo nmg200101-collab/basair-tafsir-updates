@@ -5,11 +5,20 @@ const js=read('p121/owner-qa/modules/tafsir/p150-reader-polish.js').toString('ut
 css=read('p121/owner-qa/modules/tafsir/p150-reader-polish.css').toString('utf8');
 new vm.Script(js,{filename:'p150-reader-polish.js'});
 assert.ok(js.includes('P150-NOTE-VISIBILITY-R3-OWNER-QA'));
-assert.ok(js.includes("data-p150-provisional-note"));
-assert.ok(js.includes("slot.appendChild(original)"));
-assert.ok(js.includes("if(original.disabled)original.disabled=false"));
-assert.ok(js.includes("provisional.remove()"));
-assert.ok(js.includes("original.setAttribute('data-r3-note-pos','1')"));
+assert.ok(js.includes("data-p150-note-proxy"));
+assert.ok(js.includes("slot.appendChild(proxy)"));
+assert.ok(js.includes("row.appendChild(native)"),
+ 'actual R3 syncAyahNotes requires the native note as a direct article child');
+assert.ok(js.includes("if(!native.hidden)native.hidden=true"));
+assert.ok(js.includes("data-r3-note-pos',versePos"),
+ 'native R3 delegated click expects surah:ayah, never the old literal 1');
+assert.ok(js.includes("row.getAttribute('data-t5-s')")&&
+ js.includes("row.getAttribute('data-t5-a')"),
+ 'correct s:a must be derived from each ayah, not page state alone');
+assert.ok(js.includes("proxy.classList.toggle('has-note',hasNote)"),
+ 'proxy must reflect original saved note status');
+assert.ok(!js.includes("original.setAttribute('data-r3-note-pos','1')"),
+ 'the previous proxy incorrectly opened first-surah notes');
 assert.ok(!js.includes('cloneNode('));
 assert.ok(js.includes('watchMic(mic)'));
 assert.ok(css.includes('.p149NoteSlot > button.p150ProvisionalNote'));
