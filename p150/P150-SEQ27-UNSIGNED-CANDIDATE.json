@@ -1,8 +1,8 @@
 {
   "status": "UNSIGNED_DRAFT_NOT_PUBLISHED",
-  "approved": false,
+  "approved": true,
   "deviceClickVerified": false,
-  "reason": "P150 provisional note must be proven to open the existing native note editor before release",
+  "reason": "Owner approved OTA publication; native R3 delegated routing and direct-child sync were verified from V694 APK source; Android physical device acceptance remains pending.",
   "baseline": {
     "sequence": 26,
     "tafsirVersion": 24,
@@ -69,11 +69,19 @@
           {
             "path": "modules/tafsir/p150-reader-polish.js",
             "kind": "js",
-            "size": 24853,
-            "sha256": "6d5bfb016cb9a7b9e36d037c617b383cd2f2d151bf2c6752b20bbbf718ca5544"
+            "size": 26409,
+            "sha256": "a3d18b7fd27a4a1222ad1d3823472a81090994efe24ee22b28e529d89e3788bc"
           }
         ]
       }
     ]
+  },
+  "validation": {
+    "actualV694R3SourceExamined": true,
+    "nativeDirectChildRequired": true,
+    "proxyRouteFormat": "surah:ayah",
+    "sourceSyntax": "PASS",
+    "browser": "BLOCKED_BY_RUNTIME_POLICY",
+    "device": "PENDING_OWNER_VERIFICATION"
   }
 }
