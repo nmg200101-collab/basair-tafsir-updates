@@ -1,0 +1,78 @@
+<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="stylesheet" href="../../p121/owner-qa/modules/tafsir/p151-reader-notes.css">
+<style>
+body{margin:0;background:#f5f6f1;font-family:Arial,Tahoma,sans-serif;color:#214332}
+#tafsirIndex,#tafsirReader{padding:12px}
+.actions{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.actions button{padding:9px;border:1px solid #b4cdb9;border-radius:11px}
+.basairB231AyahActions{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:3px}
+.basairB231AyahActions>button{min-height:44px}
+.v194T2Ayah{padding:8px;border:1px solid #abc4ae;margin:15px 0}
+</style></head><body>
+<section id="tafsirIndex" class="view active">
+ <div class="actions"><button>آخر موضع</button><button>متابعة التفسير</button>
+  <button id="fav">☆ المفضلة</button><button id="oldSearch" title="بحث" aria-label="بحث">🔍</button>
+ </div>
+ <div><input id="tafsirSearch" placeholder="ابحث عن سورة أو آية"><button>السورة</button><button>الآية</button><button>الصفحة</button></div>
+</section>
+<section id="tafsirReader" class="view active">
+ <div id="basairTafsirPrimaryTabs"></div>
+ <div id="tafsirAyahs"><article class="v194T2Ayah" id="ta-2-3" data-t5-s="2" data-t5-a="3">
+  <div class="v194T2Qrow">الرَّحْمَنِ الرَّحِيمِ</div><div class="v194T2Body">تفسير الآية</div>
+  <button class="p144MicButton" aria-pressed="false">الناطق</button>
+  <button class="b263r3NoteChip" data-r3-note-pos="2:3" hidden>الأصلية</button>
+  <div class="basairB231AyahActions"><button>متابعة</button><button>نسخ</button><button>مقارنة</button><button>مفضلة</button></div>
+ </article></div>
+</section>
+<pre id="qa" aria-live="polite">PENDING</pre>
+<script>
+window.__BASAIR_TAFSIR_STEP2__={state:()=>({s:2,a:3,type:'basair'}),open:(s,a,t)=>{window.__jump=[s,a,t]}};
+window.__BASAIR_TAFSIR_CORE__={getMuyassarSurah:()=>new Promise(()=>{})};
+localStorage.removeItem('basair:tafsir:p151:notes:v1');
+localStorage.setItem('basair:tafsir-notes:v1',JSON.stringify({schema:'basair-tafsir-notes-v1',version:1,items:{}}));
+window.__BASAIR_TAFSIR_R2__={notes:{
+ all:()=>JSON.parse(localStorage.getItem('basair:tafsir-notes:v1')).items,
+ set:(s,a,text)=>{
+  const k='basair:tafsir-notes:v1',store=JSON.parse(localStorage.getItem(k)),id=s+':'+a;
+  if(text.trim())store.items[id]={s,a,text,updatedAt:Date.now()};
+  else delete store.items[id];
+  localStorage.setItem(k,JSON.stringify(store));
+ }
+}};
+window.__noteEvents=[];
+</script>
+<script src="../../p121/owner-qa/modules/tafsir/p151-reader-notes.js"></script>
+<script>
+window.addEventListener('DOMContentLoaded',()=>setTimeout(async()=>{
+ try{
+  const api=window.__BASAIR_TAFSIR_P151_NOTES__;
+  api.refresh();
+  const button=document.getElementById('p151NotesIndex');
+  const control=document.querySelector('.p150NoteProxy');
+  const visible=!!button&&!!control&&!control.hidden&&!control.disabled&&
+    document.getElementById('oldSearch')===null&&document.getElementById('tafsirSearch')!==null;
+  control.click();
+  const hub=document.getElementById('p151NotesHub');
+  const opened=!hub.hidden&&hub.querySelector('[data-p151-editor]').hidden===false;
+  hub.querySelector('[data-p151-title]').value='فائدة هامة';
+  hub.querySelector('[data-p151-text]').value='هذه ملاحظة محفوظة للآية الثالثة من سورة البقرة';
+  hub.querySelector('[data-p151-action="save"]').click();
+  const saved=api.allNotes().some(x=>x.s===2&&x.a===3&&x.title==='فائدة هامة')&&
+    JSON.parse(localStorage.getItem('basair:tafsir-notes:v1')).items['2:3']?.text==='هذه ملاحظة محفوظة للآية الثالثة من سورة البقرة';
+  hub.querySelector('[data-p151-action="back"]').click();
+  const count=hub.querySelectorAll('.p151NoteCard').length;
+  hub.querySelector('[data-p151-filter]').value='فائدة';
+  hub.querySelector('[data-p151-filter]').dispatchEvent(new Event('input',{bubbles:true}));
+  const searched=hub.querySelectorAll('.p151NoteCard').length===1;
+  hub.querySelector('[data-p151-action="edit"]').click();
+  hub.querySelector('[data-p151-action="goto"]').click();
+  const navigates=JSON.stringify(window.__jump)==='[2,3,"basair"]';
+  // Ensure notes and favorites never share storage or mutate the bookmark.
+  const independent=!localStorage.getItem('basair:tafsir:favorites:p151');
+  const result={pass:visible&&opened&&saved&&count===1&&searched&&navigates&&independent,
+   visible,opened,saved,count,searched,navigates,independent,notes:api.allNotes().length};
+  document.getElementById('qa').textContent=JSON.stringify(result);
+ }catch(e){document.getElementById('qa').textContent='ERROR '+String(e.stack)}
+},180));
+</script></body></html>

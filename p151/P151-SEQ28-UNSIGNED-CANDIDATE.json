@@ -1,0 +1,78 @@
+{
+  "status": "UNSIGNED_OWNER_QA_DRAFT_DO_NOT_PUBLISH",
+  "ownerApprovalRequired": true,
+  "signed": false,
+  "published": false,
+  "sourceBranch": "fix/p151-unified-notes-hub-owner-qa-20261114",
+  "legacyNotesPreserved": true,
+  "deviceAcceptancePending": true,
+  "rollback": "p121/owner-qa/release-p150-seq27-before-p151-20261114.json",
+  "proposedPayload": {
+    "schema": "basair-universal-ota-v1",
+    "channel": "owner-qa",
+    "applicationId": "app.basair.qurv2",
+    "sequence": 28,
+    "id": "P151-TAFSIR-UNIFIED-AYAH-NOTES-OWNER-QA-20261114",
+    "title": "ملاحظات التفسير الموحدة: زر ثابت وقائمة مستقلة بجانب المفضلة",
+    "minAppVersion": 694,
+    "deliveryMode": "notify",
+    "issuedAt": null,
+    "expiresAt": null,
+    "modules": [
+      {
+        "id": "tafsir",
+        "version": 26,
+        "assets": [
+          {
+            "path": "modules/tafsir/p131-verse-tools.css",
+            "kind": "css",
+            "size": 5717,
+            "sha256": "a41e96fb1b9c079e6aa6e4b962b49bbed76162c99fa5fb3fb1101fff5b8dce77"
+          },
+          {
+            "path": "modules/tafsir/p144-natiq.css",
+            "kind": "css",
+            "size": 35547,
+            "sha256": "c23a89096b23172f18614b600e83404abc0f528a1c4de1dda950e7931e2bbf3b"
+          },
+          {
+            "path": "modules/tafsir/p134-verse-tools.js",
+            "kind": "js",
+            "size": 43085,
+            "sha256": "cd492a5cd06207377d8a76468814d600fd52749de83c56895e36f81bbcae5fe4"
+          },
+          {
+            "path": "modules/tafsir/p136-ayah-catalog.js",
+            "kind": "js",
+            "size": 3734,
+            "sha256": "d5126157a176b6b32fd40d88cd71d323d428e2e5ebeae8546b1752c9ab8279f2"
+          },
+          {
+            "path": "modules/tafsir/p136-reciter-bridge.js",
+            "kind": "js",
+            "size": 7358,
+            "sha256": "2b3ef7d3a3f25180298f2828fec537d88962a575c138852bb13300a602b56c43"
+          },
+          {
+            "path": "modules/tafsir/p144-natiq.js",
+            "kind": "js",
+            "size": 59259,
+            "sha256": "ca458ef6665f353d8de508256757482d32df436492dbf202208e368116760eba"
+          },
+          {
+            "path": "modules/tafsir/p151-reader-notes.css",
+            "kind": "css",
+            "size": 48866,
+            "sha256": "0807c4a6021354eddc7a66420398e77fecdd08f79f1e5957f36c8776fc0e88cb"
+          },
+          {
+            "path": "modules/tafsir/p151-reader-notes.js",
+            "kind": "js",
+            "size": 47412,
+            "sha256": "2fc164ecf514636093ac29b362bae846ebf69acd6946fc7a73de45d53c038862"
+          }
+        ]
+      }
+    ]
+  }
+}
