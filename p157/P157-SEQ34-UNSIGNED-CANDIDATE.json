@@ -3,7 +3,7 @@
   "signed": false,
   "published": false,
   "fieldAndroidVerified": false,
-  "ownerApprovalToPublish": false,
+  "ownerApprovalToPublish": true,
   "preservesTilawaQA050": true,
   "preservesNativeNotes": true,
   "mandatoryRestart": "Force-stop application and reopen to discard P156 in-memory observers",
@@ -41,5 +41,7 @@
         ]
       }
     ]
-  }
+  },
+  "publishAuthorization": "استكمال طلب المالك بإصلاح ونشر تحديثات التفسير على قناة owner-qa بعد موافقته على التنفيذ المباشر وتزويده مفتاح التوقيع الأصلي؛ لا نشر عام",
+  "releaseStage": "OWNER_QA_SIGNED_STAGED_FOR_MERGE"
 }
