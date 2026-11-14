@@ -52,6 +52,16 @@ with sync_playwright() as p:
  const x=window.__fixture={notes:0,favorites:0,tab:'',copies:0,compares:0,follow:false,loads:0,opens:0};
  document.querySelector('#basairTafsirB232FavoritesBtn').addEventListener('click',()=>{
    x.favorites++;document.querySelector('#basairTafsirB232FavoritesPanel').classList.add('show')});
+ // Native B233 can intercept Favorites on WINDOW capture and stop bubbling.
+ window.addEventListener('click',e=>{
+   if(e.target.closest&&e.target.closest('#basairTafsirB232FavoritesBtn')){
+     e.stopImmediatePropagation();x.favorites++;
+     document.querySelector('#basairTafsirB232FavoritesPanel').classList.add('show');
+   }
+ },true);
+ x.search=0;
+ document.querySelector('[data-b233-top="search"]').addEventListener('click',()=>{x.search++});
+
  for(const tab of document.querySelectorAll('[data-r3-saved-tab]'))
    tab.addEventListener('click',()=>{x.tab=tab.dataset.r3SavedTab});
  document.addEventListener('click', e=>{
@@ -120,6 +130,7 @@ with sync_playwright() as p:
  assert page.locator('[data-bq157-notes="1"]').count()==1
  page.locator('[data-bq157-notes="1"]').click()
  assert page.evaluate('window.__fixture.tab')=='notes'
+ assert page.evaluate('window.__fixture.search')==0,'Old native Search must never fire'
  # Neither first load nor mere refresh may reassign the native main tab.
  assert page.locator('#tafsirReader').get_attribute('data-basair-main-tab')=='tafsir'
 
@@ -141,6 +152,26 @@ with sync_playwright() as p:
  page.locator('[data-bq157-notes="1"]').click()
  assert page.evaluate('window.__fixture.tab')=='notes'
  assert page.locator('#basairTafsirB233TopBar button').count()==5
+ page.locator('#basairTafsirB232FavoritesBtn').click()
+ page.wait_for_function("() => window.__fixture.tab==='favorites'")
+ assert page.evaluate('window.__fixture.favorites')==2
+ # Native R2 can mount a delayed toolbar inside an existing verse.
+ page.evaluate("""() => {
+   const h=document.querySelector('#tafsirAyahs');
+   const row=document.createElement('article');row.className='v194T2Ayah';
+   row.setAttribute('data-t2ayah','999');
+   row.innerHTML='<div class="basairB231AyahActions" data-s="1" data-a="999"></div>';
+   h.insertBefore(row,document.querySelector('#v194T5Sentinel'));
+   setTimeout(()=>{
+    row.querySelector('.basairB231AyahActions').insertAdjacentHTML('beforeend',
+      '<button data-r2-action="note">ملاحظة</button>');
+   },40);
+ }""")
+ page.wait_for_function("""() => {
+   const r=document.querySelector('.v194T2Ayah[data-t2ayah="999"]');
+   return !!r&&!!r.querySelector('[data-bq157-follow="1"]');
+ }""")
+ page.evaluate('() => document.querySelector(\'.v194T2Ayah[data-t2ayah="999"]\').remove()')
  # Sequential manual loading, with uniqueness and transitions across surahs.
  for n in range(25):
   ok=page.evaluate('window.__BASAIR_TAFSIR_P157_RECOVERY__.manualNext()')
