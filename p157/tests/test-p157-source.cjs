@@ -1,0 +1,23 @@
+'use strict';
+const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),vm=require('node:vm');
+const root=path.resolve(__dirname,'../..');
+const file=p=>fs.readFileSync(path.join(root,p));
+const js=file('p121/owner-qa/modules/tafsir/p157-merged-saved-reader.js').toString('utf8');
+const css=file('p121/owner-qa/modules/tafsir/p157-merged-saved-reader.css').toString('utf8');
+new vm.Script(js,{filename:'p157-merged-saved-reader.js'});
+assert.ok(js.includes('__BASAIR_TAFSIR_P157_RECOVERY__'));
+assert.ok(js.includes("oldSearch.replaceWith(note)"),'No recycled native search listeners');
+assert.ok(js.includes(".bq157SavedPair"),'Index must merge favorites and notes');
+assert.ok(js.includes("if(mode==='p129-manual'&&old==='tafsir'&&!fromUser)return;"),'Do not change reader mode on first render');
+assert.ok(js.includes("v194T5Generated')&&row.getAttribute('data-t5-a')"),'Generated cursor must take priority');
+assert.ok(js.includes("toolsObserver.observe(h,{childList:true,subtree:true})"),'Late native toolbar should be detected');
+assert.ok(!js.includes('localStorage.setItem')&&!js.includes('indexedDB.deleteDatabase'));
+assert.ok(!js.includes('stopImmediatePropagation')&&!js.includes('setInterval('));
+assert.ok(css.includes("grid-template-columns:1fr 1fr"),'Saved group must have equal halves');
+assert.ok(css.includes("@keyframes bq157-index-failsafe"),'Index first-paint fail-safe required');
+const env=JSON.parse(file('p121/owner-qa/release.json').toString('utf8'));
+const active=JSON.parse(Buffer.from(env.payload,'base64').toString('utf8'));
+assert.equal(active.sequence,33);assert.equal(active.modules[0].version,31);
+assert.deepEqual(file('p121/owner-qa/release-p155-seq32-before-p156-20261114.json'),
+ file('p155/P155-SEQ32-OWNER-SIGNED-RELEASE.json'),'Keep rollback signed Seq32 unchanged');
+console.log(JSON.stringify({pass:true,stage:'P157 unsigned draft only',activeSeq:33,reader:'first-paint-preserved',index:'merged',protectedTilawa:'untouched'}));
