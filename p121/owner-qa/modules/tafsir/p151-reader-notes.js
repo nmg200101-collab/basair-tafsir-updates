@@ -733,8 +733,13 @@
   var index=d.getElementById('tafsirIndex');if(!index)return;
   var existing=d.getElementById('p151NotesIndex');
   if(existing&&index.contains(existing))return;
-  var buttons=Array.from(index.querySelectorAll('button'));
-  var favorite=buttons.find(function(b){return /المفضلة/.test(b.textContent||'')});
+  var favorite=index.querySelector('#basairTafsirB233TopBar #basairTafsirB232FavoritesBtn')||
+    index.querySelector('#basairTafsirB233TopBar [aria-label="المفضلة"]');
+  if(!favorite){
+   var buttons=Array.from(index.querySelectorAll('button'));
+   favorite=buttons.find(function(b){return /المفضلة/.test(b.textContent||'')&&
+     b.getClientRects&&b.getClientRects().length});
+  }
   if(!favorite)return;
   var parent=favorite.parentElement;if(!parent)return;
   var btn=d.createElement('button');btn.type='button';btn.id='p151NotesIndex';
@@ -744,11 +749,12 @@
   btn.addEventListener('click',function(e){e.preventDefault();e.stopPropagation();open()});
   // Replace ONLY the redundant compact search icon near Favorites.
   // Keep the full search field/search selector underneath unchanged.
-  var near=Array.from(parent.querySelectorAll('button')).find(function(b){
-   if(b===favorite)return false;
-   var desc=(b.getAttribute('aria-label')||'')+' '+(b.title||'')+' '+(b.textContent||'');
-   return ((/بحث|search/i.test(desc)||/🔎|🔍|⌕/.test(desc))&&((b.textContent||'').trim().length<12))
-  });
+  var near=parent.querySelector('button[data-b233-top="search"]')||
+   Array.from(parent.querySelectorAll('button')).find(function(b){
+    if(b===favorite)return false;
+    var desc=(b.getAttribute('aria-label')||'')+' '+(b.title||'')+' '+(b.textContent||'');
+    return ((/بحث|search/i.test(desc)||/🔎|🔍|⌕/.test(desc))&&((b.textContent||'').trim().length<12))
+   });
   if(near&&near.parentElement===parent)near.replaceWith(btn);
   else favorite.insertAdjacentElement('afterend',btn);
   btn.setAttribute('data-count',String(allNotes().length));
