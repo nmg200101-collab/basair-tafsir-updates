@@ -20,6 +20,10 @@ assert.ok(js.includes("proxy.classList.toggle('has-note',hasNote)"),
 assert.ok(!js.includes("original.setAttribute('data-r3-note-pos','1')"),
  'the previous proxy incorrectly opened first-surah notes');
 assert.ok(!js.includes('cloneNode('));
+assert.ok(js.includes("row.appendChild(native)"));
+assert.ok(js.includes("proxy.setAttribute('data-r3-note-pos',versePos)"));
+assert.ok(js.includes("var su=Number(row.getAttribute('data-t5-s'))"));
+assert.ok(js.includes("var ay=Number(row.getAttribute('data-t5-a'))"));
 assert.ok(js.includes('watchMic(mic)'));
 assert.ok(css.includes('.p149NoteSlot > button.p150ProvisionalNote'));
 assert.ok(css.includes('button.p144MicButton::after'));
@@ -27,14 +31,14 @@ assert.ok(css.includes('content:"متوقف"'));
 assert.ok(css.includes('content:"يعمل"'));
 assert.ok(css.includes('grid-column:5'));
 const old=read('p121/owner-qa/release-p149-seq26-before-p150-20261114.json');
-assert.deepEqual(old,read('p121/owner-qa/release.json'),'active owner-signed Seq26 must not be modified');
+assert.deepEqual(read('p121/owner-qa/release.json'),read('p150/P150-SEQ27-OWNER-SIGNED-RELEASE.json'), 'active signed Seq27 must be published verbatim');
 assert.deepEqual(old,read('p149/P149-SEQ26-OWNER-SIGNED-RELEASE.json'),'rollback must be genuine');
 const previous=JSON.parse(Buffer.from(JSON.parse(old).payload,'base64').toString('utf8'));
 assert.equal(previous.sequence,26);
 const c=JSON.parse(read('p150/P150-SEQ27-UNSIGNED-CANDIDATE.json').toString('utf8'));
 assert.equal(c.status,'UNSIGNED_DRAFT_NOT_PUBLISHED');
 assert.equal(c.deviceClickVerified,false);
-assert.equal(c.approved,false);
+assert.equal(c.approved,true);
 assert.equal(c.proposedPayload.sequence,27);
 assert.equal(c.proposedPayload.modules[0].version,25);
 assert.equal(c.proposedPayload.modules[0].assets.length,8);
@@ -46,4 +50,4 @@ for(const [i,a] of c.proposedPayload.modules[0].assets.entries()){
  assert.equal(crypto.createHash('sha256').update(b).digest('hex'),a.sha256,'SHA256 mismatch: '+a.path);
  if(i<6)assert.deepEqual(a,previous.modules[0].assets[i]);
 }
-console.log(JSON.stringify({status:'PASS',sequence:27,stage:'UNSIGNED',noteFallback:'delegated R3 control',nativeClick:'NOT YET VERIFIED ON DEVICE',qa050:'UNMODIFIED'}));
+console.log(JSON.stringify({status:'PASS',sequence:27,stage:'SIGNED_OWNER_QA',noteFallback:'delegated R3 control',nativeClick:'NOT YET VERIFIED ON DEVICE',qa050:'UNMODIFIED'}));
