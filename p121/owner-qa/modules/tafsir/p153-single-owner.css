@@ -1,0 +1,868 @@
+/* P147 owner-QA derived from P146: preserve the original subtle segmented tabs.
+   Only the selected tab gains an accent; do not inflate tab height. */
+#tafsirReader.active #basairTafsirPrimaryTabs,
+body[data-basair-tafsir-main-tab] #basairTafsirPrimaryTabs{
+ display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;
+ gap:3px!important;margin:3px 7px 3px!important;padding:2px!important;
+ background:#f0f4ef!important;border:1px solid #d6e2d9!important;
+ border-radius:10px!important;box-shadow:none!important;
+}
+#tafsirReader.active #basairTafsirPrimaryTabs button[data-basair-main-tab],
+body[data-basair-tafsir-main-tab] #basairTafsirPrimaryTabs button[data-basair-main-tab]{
+ box-sizing:border-box!important;min-height:34px!important;height:34px!important;
+ border:1px solid transparent!important;border-radius:8px!important;
+ box-shadow:none!important;background:transparent!important;
+ color:#6c796e!important;font:700 12px/1.15 Tahoma,Arial,sans-serif!important;
+ padding:4px 3px!important;white-space:nowrap!important;
+}
+#tafsirReader.active #basairTafsirPrimaryTabs button[data-basair-main-tab].on,
+#tafsirReader.active #basairTafsirPrimaryTabs button[data-basair-main-tab][aria-selected="true"],
+body[data-basair-tafsir-main-tab] #basairTafsirPrimaryTabs button[data-basair-main-tab].on,
+body[data-basair-tafsir-main-tab] #basairTafsirPrimaryTabs button[data-basair-main-tab][aria-selected="true"]{
+ color:#0c6243!important;background:#e0f3e6!important;
+ border:1px solid #7bae94!important;box-shadow:none!important;
+}
+#tafsirReader.active #basairTafsirPrimaryTabs button[data-basair-main-tab="intro"].on,
+#tafsirReader.active #basairTafsirPrimaryTabs button[data-basair-main-tab="intro"][aria-selected="true"],
+body[data-basair-tafsir-main-tab] #basairTafsirPrimaryTabs button[data-basair-main-tab="intro"].on,
+body[data-basair-tafsir-main-tab] #basairTafsirPrimaryTabs button[data-basair-main-tab="intro"][aria-selected="true"]{
+ color:#745016!important;background:#fff0cf!important;border-color:#d7aa50!important;
+}
+#tafsirReader.active #basairTafsirPrimaryTabs button[data-basair-main-tab="thread"].on,
+#tafsirReader.active #basairTafsirPrimaryTabs button[data-basair-main-tab="thread"][aria-selected="true"],
+body[data-basair-tafsir-main-tab] #basairTafsirPrimaryTabs button[data-basair-main-tab="thread"].on,
+body[data-basair-tafsir-main-tab] #basairTafsirPrimaryTabs button[data-basair-main-tab="thread"][aria-selected="true"]{
+ color:#275b91!important;background:#e5f1ff!important;border-color:#91b5d9!important;
+}
+/* Wave microphone remains directly beside/under the Quran ayah, one control. */
+#tafsirAyahs .p146TopMic,
+#tafsirReader.active #tafsirAyahs .p146TopMic{
+ box-sizing:border-box!important;display:flex!important;align-items:center!important;
+ justify-content:flex-start!important;flex-direction:row!important;
+ min-height:46px!important;max-height:48px!important;
+ margin:0!important;padding:1px 7px!important;gap:3px!important;
+ direction:rtl!important;background:transparent!important;
+ border:0!important;box-shadow:none!important;
+}
+/* The original note stays at the lower Tafsir tools, not with the mic. */
+#tafsirAyahs .p146BottomNote,
+#tafsirReader.active #tafsirAyahs .p146BottomNote{
+ box-sizing:border-box!important;display:flex!important;flex-direction:row!important;
+ align-items:center!important;justify-content:flex-start!important;
+ min-height:44px!important;max-height:46px!important;
+ padding:0 8px!important;margin:2px 0!important;gap:4px!important;
+ direction:rtl!important;background:transparent!important;
+ border:0!important;box-shadow:none!important;
+}
+#tafsirAyahs .p146TopMic button.p144MicButton,
+#tafsirAyahs .p146BottomNote button.p144NoteChip,
+#tafsirAyahs .p146BottomNote button.b263r3NoteChip,
+#tafsirReader.active #tafsirAyahs .p146TopMic button.p144MicButton,
+#tafsirReader.active #tafsirAyahs .p146BottomNote button.p144NoteChip,
+#tafsirReader.active #tafsirAyahs .p146BottomNote button.b263r3NoteChip{
+ box-sizing:border-box!important;display:inline-flex!important;flex-direction:column!important;
+ align-items:center!important;justify-content:center!important;gap:1px!important;
+ width:49px!important;min-width:49px!important;max-width:49px!important;
+ height:44px!important;min-height:44px!important;max-height:44px!important;
+ padding:3px 2px!important;margin:0 2px!important;
+ border-radius:10px!important;border:1px solid #b3cdbb!important;
+ background:#f0f8f2!important;color:#1b5d45!important;
+ font-family:inherit!important;font-weight:700!important;font-size:10px!important;
+ line-height:1.06!important;box-shadow:none!important;white-space:nowrap!important;
+}
+#tafsirAyahs .p146BottomNote button{
+ background:#f5f7f0!important;color:#476c54!important;border-color:#c7d4c6!important;
+}
+#tafsirAyahs .p146TopMic svg,
+#tafsirAyahs .p146BottomNote svg{
+ display:block!important;flex:none!important;width:16px!important;height:16px!important;
+ min-width:16px!important;max-width:16px!important;
+ stroke:currentColor!important;fill:none!important;
+}
+#tafsirAyahs .p146TopMic b,
+#tafsirAyahs .p146BottomNote b{
+ display:block!important;font-size:9.5px!important;line-height:1.1!important;
+ margin:0!important;padding:0!important;white-space:nowrap!important;
+}
+/* Earlier injected P145 strip must not steal space after the app restarts. */
+#tafsirAyahs .p145TopControls:empty{
+ display:none!important;margin:0!important;padding:0!important;
+ min-height:0!important;max-height:0!important;height:0!important;
+}
+#tafsirAyahs .basairB231AyahActions{
+ max-height:58px!important;padding:2px!important;gap:3px!important;
+}
+#tafsirAyahs .basairB231AyahActions>button{
+ min-height:44px!important;height:46px!important;max-height:46px!important;
+ padding:2px!important;
+}
+#tafsirAyahs .p145WaitHint{
+ margin:10px 0 6px!important;color:#486456!important;
+ font-size:12px!important;line-height:1.55!important;
+}
+#tafsirAyahs button.p145Retry{
+ min-height:44px!important;padding:8px 14px!important;
+ border-radius:11px!important;border:1px solid #8bb8a0!important;
+ background:#e6f6e9!important;color:#195c3e!important;
+ font-family:inherit!important;font-weight:700!important;font-size:12px!important;
+}
+/* In-app source preview prevents accidental WebView navigation away from Basair. */
+#p145SourceOverlay{
+ position:fixed!important;inset:0!important;z-index:2147483460!important;
+ display:flex!important;align-items:center!important;justify-content:center!important;
+ background:rgba(9,36,27,.72)!important;padding:12px!important;direction:rtl!important;
+}
+#p145SourceOverlay[hidden]{display:none!important}
+#p145SourceOverlay .p145SourceSheet{
+ display:flex!important;flex-direction:column!important;
+ box-sizing:border-box!important;width:100%!important;max-width:760px!important;
+ height:min(88vh,880px)!important;background:#fffefa!important;
+ border:1px solid #b9cfc1!important;border-radius:16px!important;
+ padding:10px!important;gap:7px!important;color:#173f2f!important;
+}
+#p145SourceOverlay header{
+ display:flex!important;align-items:center!important;justify-content:space-between!important;
+ gap:8px!important;
+}
+#p145SourceOverlay button,#p145SourceOverlay footer a{
+ display:inline-flex!important;align-items:center!important;justify-content:center!important;
+ min-height:44px!important;padding:7px 12px!important;
+ border-radius:11px!important;border:1px solid #96b8a3!important;
+ background:#e6f2e9!important;color:#174d35!important;
+ text-decoration:none!important;font-weight:700!important;font-size:13px!important;
+}
+#p145SourceOverlay p{font-size:11px!important;line-height:1.5!important;margin:0!important;color:#5d6e62!important}
+#p145SourceOverlay iframe{
+ flex:1!important;min-height:120px!important;width:100%!important;
+ border:1px solid #ccdacf!important;border-radius:10px!important;background:#fff!important;
+}
+#p145SourceOverlay footer{display:flex!important;justify-content:center!important}
+
+body.dark #tafsirAyahs .p146TopMic,
+body.dark #tafsirAyahs .p146BottomNote{
+ background:transparent!important;border:0!important;
+}
+body.dark #tafsirAyahs .p146TopMic button,
+body.dark #tafsirAyahs .p146BottomNote button{
+ background:#294537!important;color:#eaf7ec!important;border-color:#648a70!important;
+}
+body.dark #basairTafsirPrimaryTabs{
+ background:#24382c!important;border-color:#536e5a!important;
+}
+body.dark #basairTafsirPrimaryTabs button[data-basair-main-tab]:not(.on):not([aria-selected="true"]){
+ background:transparent!important;color:#b4c9ba!important;
+}
+body.dark #p145SourceOverlay .p145SourceSheet{
+ background:#20372a!important;color:#e9f7ed!important;
+}
+@media(max-width:360px){
+ #basairTafsirPrimaryTabs button[data-basair-main-tab]{
+  font-size:10.5px!important;
+ }
+}
+
+
+/* P147: the original note action is now ONE of FIVE equal bottom tools.
+   This rule applies only inside Tafsir, never to protected Tilawa QA-050. */
+html body #tafsirReader.active #tafsirAyahs .v194T2Ayah .basairB231AyahActions[data-p147-stable-tools="5"],
+html body #tafsirAyahs .v194T2Ayah .basairB231AyahActions[data-p147-stable-tools="5"]{
+ display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;
+ align-items:stretch!important;gap:3px!important;
+ max-height:none!important;min-height:46px!important;
+ overflow:visible!important;padding:2px!important;margin:4px 0 5px!important;
+}
+html body #tafsirReader.active #tafsirAyahs .basairB231AyahActions > button.p147NoteTool,
+html body #tafsirAyahs .v194T2Ayah .basairB231AyahActions > button.p147NoteTool{
+ box-sizing:border-box!important;display:flex!important;flex-direction:column!important;
+ align-items:center!important;justify-content:center!important;flex:1 1 0!important;
+ width:100%!important;min-width:0!important;max-width:100%!important;
+ height:46px!important;min-height:44px!important;max-height:46px!important;
+ margin:0!important;padding:2px 1px!important;gap:1px!important;
+ border-radius:9px!important;box-shadow:none!important;
+ background:#f5f7f0!important;color:#476c54!important;border:1px solid #c7d4c6!important;
+ font-family:inherit!important;font-size:10px!important;line-height:1.12!important;
+}
+html body #tafsirAyahs .basairB231AyahActions > button.p147NoteTool svg{
+ width:16px!important;height:16px!important;min-width:16px!important;max-width:16px!important;
+ flex:none!important;margin:0!important;stroke:currentColor!important;fill:none!important;
+}
+html body #tafsirAyahs .basairB231AyahActions > button.p147NoteTool b{
+ font-size:10px!important;line-height:1.12!important;margin:0!important;white-space:nowrap!important;
+}
+html body #tafsirAyahs .p146BottomNote:empty{display:none!important;height:0!important;min-height:0!important;margin:0!important;padding:0!important}
+html body #tafsirAyahs .v194T2Ayah button.p147NoteTool[hidden]{display:none!important}
+body.dark #tafsirAyahs .basairB231AyahActions > button.p147NoteTool,
+.dark #tafsirAyahs .basairB231AyahActions > button.p147NoteTool{
+ background:#303f34!important;color:#eaf5ed!important;border-color:#668070!important;
+}
+
+/* P147: typography is applied to actual *small prose leaves* by JS, only
+   inside the two reading tabs. Preserve already-large opening paragraphs. */
+body[data-p147-reading-tab="intro"] #tafsirReader .p147ReadingHeading,
+body[data-p147-reading-tab="thread"] #tafsirReader .p147ReadingHeading,
+body[data-p147-reading-tab="intro"] #tafsirAyahs .p147ReadingHeading,
+body[data-p147-reading-tab="thread"] #tafsirAyahs .p147ReadingHeading{
+ font-family:inherit!important;font-size:clamp(18px,4.7vw,21px)!important;
+ line-height:1.5!important;font-weight:800!important;color:#126149!important;
+ letter-spacing:normal!important;margin-block:3px 9px!important;
+}
+body[data-p147-reading-tab] #tafsirReader .p147ReadingCopy,
+body[data-p147-reading-tab] #tafsirAyahs .p147ReadingCopy{
+ font-family:inherit!important;font-size:clamp(18px,4.8vw,20.5px)!important;
+ line-height:1.88!important;font-weight:500!important;
+ color:#253e32!important;letter-spacing:normal!important;
+ text-align:start!important;overflow-wrap:break-word!important;
+}
+body[data-p147-reading-tab] #tafsirReader .p147ReadingCard,
+body[data-p147-reading-tab] #tafsirAyahs .p147ReadingCard{
+ box-sizing:border-box!important;
+ border-color:#dae4db!important;
+ box-shadow:none!important;
+ padding:clamp(11px,2.6vw,18px)!important;
+ margin-block:10px!important;
+ background:#fcfdfa!important;
+ border-radius:16px!important;
+}
+body[data-p147-reading-tab] #tafsirReader .p147ReadingPoint,
+body[data-p147-reading-tab] #tafsirAyahs .p147ReadingPoint{
+ box-sizing:border-box!important;
+ border:1px solid #dce6dd!important;
+ background:#f3f8f4!important;
+ border-radius:13px!important;box-shadow:none!important;
+ margin-block:8px!important;padding:12px 14px!important;
+}
+body.dark[data-p147-reading-tab] #tafsirReader .p147ReadingCard,
+body.dark[data-p147-reading-tab] #tafsirAyahs .p147ReadingCard{
+ background:#23362c!important;border-color:#465d4c!important;
+}
+body.dark[data-p147-reading-tab] #tafsirReader .p147ReadingPoint,
+body.dark[data-p147-reading-tab] #tafsirAyahs .p147ReadingPoint{
+ background:#2c4235!important;border-color:#526e5b!important;
+}
+body.dark[data-p147-reading-tab] #tafsirReader .p147ReadingHeading,
+body.dark[data-p147-reading-tab] #tafsirAyahs .p147ReadingHeading{color:#a9e4c3!important}
+body.dark[data-p147-reading-tab] #tafsirReader .p147ReadingCopy,
+body.dark[data-p147-reading-tab] #tafsirAyahs .p147ReadingCopy{color:#e9f6ec!important}
+
+@media(max-width:359px){
+ html body #tafsirAyahs .basairB231AyahActions[data-p147-stable-tools="5"]{gap:2px!important}
+ html body #tafsirAyahs .basairB231AyahActions>button.p147NoteTool{font-size:9px!important;padding-inline:0!important}
+}
+
+
+/* P147 night-mode contrast and visual hierarchy — V695 uses multiple theme
+   markers; JavaScript applies data-p147-night to the actual Tafsir BODY.
+   Only Tafsir main tabs/ayah fields and the two reading tabs are affected. */
+html body[data-p147-night="1"] #tafsirReader.active #basairTafsirPrimaryTabs{
+ background:#1d382d!important;color:#e7f3e9!important;
+ border:1px solid #597463!important;box-shadow:none!important;
+}
+html body[data-p147-night="1"] #tafsirReader.active #basairTafsirPrimaryTabs button[data-basair-main-tab]{
+ background:transparent!important;color:#d1e2d6!important;
+ border-color:transparent!important;box-shadow:none!important;
+ text-shadow:none!important;font-weight:700!important;
+}
+html body[data-p147-night="1"] #tafsirReader.active #basairTafsirPrimaryTabs button[data-basair-main-tab="tafsir"].on,
+html body[data-p147-night="1"] #tafsirReader.active #basairTafsirPrimaryTabs button[data-basair-main-tab="tafsir"][aria-selected="true"]{
+ background:#305a45!important;color:#effff3!important;border-color:#72a58b!important;
+}
+html body[data-p147-night="1"] #tafsirReader.active #basairTafsirPrimaryTabs button[data-basair-main-tab="intro"].on,
+html body[data-p147-night="1"] #tafsirReader.active #basairTafsirPrimaryTabs button[data-basair-main-tab="intro"][aria-selected="true"]{
+ background:#5a462a!important;color:#ffe6b1!important;border-color:#b5955c!important;
+}
+html body[data-p147-night="1"] #tafsirReader.active #basairTafsirPrimaryTabs button[data-basair-main-tab="thread"].on,
+html body[data-p147-night="1"] #tafsirReader.active #basairTafsirPrimaryTabs button[data-basair-main-tab="thread"][aria-selected="true"]{
+ background:#334e6a!important;color:#e5f1ff!important;border-color:#83a7c5!important;
+}
+/* Tafsir per-ayah section labels (الْمَعْنَى، اللمسة البيانية، التدبر). */
+html body[data-p147-night="1"] #tafsirAyahs .v194T2Body .v194T2FieldTitle,
+html body[data-p147-night="1"] #tafsirAyahs .v194T2Body .v194T2SectionTitle,
+html body[data-p147-night="1"] #tafsirAyahs .v194T2Body .v194T2Heading,
+html body[data-p147-night="1"] #tafsirAyahs .v194T2Body [data-tafsir-section-title]{
+ color:#d8eddf!important;font-weight:800!important;
+ background:transparent!important;text-shadow:none!important;
+ font-size:clamp(16px,4.25vw,19px)!important;line-height:1.55!important;
+}
+html body[data-p147-night="1"] #tafsirAyahs .v194T2Body .v194T2FieldTitle b,
+html body[data-p147-night="1"] #tafsirAyahs .v194T2Body .v194T2SectionTitle b,
+html body[data-p147-night="1"] #tafsirAyahs .v194T2Body .v194T2Heading b{
+ color:inherit!important;font-size:inherit!important;font-weight:800!important;
+ text-shadow:none!important;
+}
+html body[data-p147-night="1"] #tafsirAyahs .v194T2FieldTitle small{
+ color:#bfd5c8!important;font-size:clamp(12px,3.1vw,14px)!important;
+ line-height:1.55!important;opacity:1!important;text-shadow:none!important;
+}
+html body[data-p147-night="1"] #tafsirAyahs .v194T2Body [data-p147-field-tone="meaning"]{
+ color:#f0d7a4!important;
+}
+html body[data-p147-night="1"] #tafsirAyahs .v194T2Body [data-p147-field-tone="bayani"]{
+ color:#b5eed5!important;
+}
+html body[data-p147-night="1"] #tafsirAyahs .v194T2Body [data-p147-field-tone="tadabbur"]{
+ color:#b5d6ff!important;
+}
+html body[data-p147-night="1"] #tafsirAyahs .v194T2Body [data-p147-field-tone="summary"]{
+ color:#f3c7cf!important;
+}
+/* On dark backgrounds, keep the genuine original colored field outline,
+   but make its thin divider easy to see instead of dark-green-on-dark-green. */
+html body[data-p147-night="1"] #tafsirAyahs .v194T2Field{
+ border-top-color:#4c6d5a!important;border-bottom-color:#4c6d5a!important;
+}
+/* Reading tabs: rich content first, subtle surface and smaller card chrome. */
+html body[data-p147-night="1"][data-p147-reading-tab="intro"] #tafsirReader .p147ReadingCard,
+html body[data-p147-night="1"][data-p147-reading-tab="thread"] #tafsirReader .p147ReadingCard,
+html body[data-p147-night="1"][data-p147-reading-tab] #tafsirAyahs .p147ReadingCard{
+ background:#1c3429!important;border:1px solid #496755!important;
+ border-radius:14px!important;box-shadow:none!important;
+ padding:clamp(12px,2.9vw,18px)!important;
+}
+html body[data-p147-night="1"][data-p147-reading-tab] #tafsirReader .p147ReadingPoint,
+html body[data-p147-night="1"][data-p147-reading-tab] #tafsirAyahs .p147ReadingPoint{
+ background:#254235!important;border:1px solid #557963!important;
+ border-radius:12px!important;box-shadow:none!important;
+ padding:clamp(11px,2.7vw,16px)!important;
+}
+html body[data-p147-night="1"][data-p147-reading-tab] #tafsirReader .p147ReadingHeading,
+html body[data-p147-night="1"][data-p147-reading-tab] #tafsirAyahs .p147ReadingHeading{
+ color:#bfe8cd!important;font-size:clamp(18px,4.6vw,21px)!important;
+ font-weight:800!important;text-shadow:none!important;
+}
+html body[data-p147-night="1"][data-p147-reading-tab] #tafsirReader .p147ReadingCopy,
+html body[data-p147-night="1"][data-p147-reading-tab] #tafsirAyahs .p147ReadingCopy{
+ color:#f0f8f0!important;font-size:clamp(18px,4.85vw,21px)!important;
+ line-height:1.86!important;font-weight:500!important;
+ text-shadow:none!important;
+}
+html body[data-p147-night="1"][data-p147-reading-tab] #tafsirReader :is(p,li,blockquote),
+html body[data-p147-night="1"][data-p147-reading-tab] #tafsirAyahs :is(p,li,blockquote){
+ color:#ecf5ed!important;line-height:1.83!important;text-shadow:none!important;
+}
+html body[data-p147-night="1"][data-p147-reading-tab] #tafsirReader .p147ReadingCard :is(small,em),
+html body[data-p147-night="1"][data-p147-reading-tab] #tafsirAyahs .p147ReadingCard :is(small,em){
+ color:#c5dcca!important;opacity:1!important;
+}
+html body[data-p147-night="1"][data-p147-reading-tab] #tafsirReader .p147ReadingCard .p147ReadingCopy,
+html body[data-p147-night="1"][data-p147-reading-tab] #tafsirAyahs .p147ReadingCard .p147ReadingCopy{
+ color:#f0f8f0!important;
+}
+html body[data-p147-night="1"] #tafsirAyahs .p146TopMic button.p144MicButton{
+ background:#294b3a!important;color:#e8f9ed!important;border-color:#6f9c81!important;
+}
+html body[data-p147-night="1"] #tafsirAyahs .basairB231AyahActions > button.p147NoteTool{
+ background:#2b4033!important;color:#eaf6eb!important;border-color:#6d8a76!important;
+}
+
+
+/* P148: style the REAL V694/V695 Surah Hub renderer, not synthetic
+   headings under #tafsirReader. Applies to Intro + Thread only. */
+#v194T104HubBody .v194T104Panel,
+body[data-basair-tafsir-main-tab="intro"] .v194T104Panel,
+body[data-basair-tafsir-main-tab="thread"] .v194T104Panel{
+ gap:9px!important;
+}
+#v194T104HubBody .v194T104Section,
+body[data-basair-tafsir-main-tab="intro"] .v194T104Section,
+body[data-basair-tafsir-main-tab="thread"] .v194T104Section{
+ box-sizing:border-box!important;
+ padding:12px 13px!important; margin:0!important;
+ background:#fdfefa!important;border:1px solid #d5e1d8!important;
+ border-radius:14px!important;box-shadow:none!important;
+}
+#v194T104HubBody .v194T104Section h3,
+body[data-basair-tafsir-main-tab] .v194T104Section h3{
+ font-family:inherit!important;font-size:clamp(19px,4.8vw,22px)!important;
+ line-height:1.45!important; font-weight:800!important;
+ color:#155b42!important; margin:0 0 9px!important;
+}
+#v194T104HubBody .v194T104Section > p,
+body[data-basair-tafsir-main-tab] .v194T104Section > p{
+ font-family:inherit!important;font-size:clamp(17px,4.3vw,20px)!important;
+ font-weight:500!important;line-height:1.83!important;
+ color:#293e33!important; margin:0!important;text-align:start!important;
+}
+#v194T104HubBody .v194T104Thread,
+body[data-basair-tafsir-main-tab] .v194T104Thread{
+ display:grid!important;gap:8px!important;
+}
+#v194T104HubBody .v194T104ThreadItem,
+body[data-basair-tafsir-main-tab] .v194T104ThreadItem{
+ box-sizing:border-box!important;position:relative!important;
+ padding:11px 14px!important; margin:0!important;
+ min-height:0!important;
+ background:#f2f8f3!important; border:1px solid #d5e4d8!important;
+ border-inline-start:3px solid #9b7b36!important;
+ border-radius:12px!important;box-shadow:none!important;
+ text-align:start!important;
+}
+#v194T104HubBody .v194T104ThreadItem::before,
+body[data-basair-tafsir-main-tab] .v194T104ThreadItem::before{
+ content:none!important;display:none!important;
+}
+#v194T104HubBody .v194T104ThreadItem > b,
+body[data-basair-tafsir-main-tab] .v194T104ThreadItem > b{
+ display:block!important;
+ color:#165c45!important;
+ font-family:inherit!important;font-size:clamp(18px,4.5vw,20px)!important;
+ font-weight:800!important;line-height:1.52!important;
+ margin:0 0 4px!important;letter-spacing:normal!important;
+}
+#v194T104HubBody .v194T104ThreadItem > span,
+body[data-basair-tafsir-main-tab] .v194T104ThreadItem > span{
+ display:block!important;
+ color:#263c30!important;font-family:inherit!important;
+ font-size:clamp(17px,4.3vw,19px)!important;
+ font-weight:500!important;line-height:1.78!important;
+ margin:0!important;letter-spacing:normal!important;
+ overflow-wrap:anywhere!important;text-align:start!important;
+}
+#v194T104HubBody .v194T104Info,
+body[data-basair-tafsir-main-tab] .v194T104Info{
+ padding:9px 10px!important;border-radius:10px!important;
+ box-shadow:none!important;
+}
+#v194T104HubBody .v194T104Info b,
+body[data-basair-tafsir-main-tab] .v194T104Info b{
+ font-size:clamp(15px,3.8vw,17px)!important;line-height:1.45!important;
+}
+#v194T104HubBody .v194T104Info span,
+body[data-basair-tafsir-main-tab] .v194T104Info span{
+ font-size:clamp(16px,4.1vw,18px)!important;line-height:1.7!important;
+}
+
+/* Night mode: preserve high contrast; make prose the foreground, not the frame.
+   .dark can belong to HTML or BODY. */
+.dark #v194T104HubBody .v194T104Section,
+body[data-p147-night="1"] #v194T104HubBody .v194T104Section,
+body[data-p148-night="1"] .v194T104Section{
+ background:#152c23!important;border-color:#466253!important;
+ color:#e9f3ed!important;
+}
+.dark #v194T104HubBody .v194T104Section h3,
+body[data-p147-night="1"] #v194T104HubBody .v194T104Section h3,
+body[data-p148-night="1"] .v194T104Section h3{
+ color:#c3e8cf!important;
+}
+.dark #v194T104HubBody .v194T104Section > p,
+body[data-p147-night="1"] #v194T104HubBody .v194T104Section > p,
+body[data-p148-night="1"] .v194T104Section > p{
+ color:#eef7f0!important;
+}
+.dark #v194T104HubBody .v194T104ThreadItem,
+body[data-p147-night="1"] #v194T104HubBody .v194T104ThreadItem,
+body[data-p148-night="1"] .v194T104ThreadItem{
+ background:#1c3c30!important;border-color:#48685a!important;
+ border-inline-start-color:#c6a361!important;
+}
+.dark #v194T104HubBody .v194T104ThreadItem > b,
+body[data-p147-night="1"] #v194T104HubBody .v194T104ThreadItem > b,
+body[data-p148-night="1"] .v194T104ThreadItem > b{
+ color:#b5e5c8!important;
+}
+.dark #v194T104HubBody .v194T104ThreadItem > span,
+body[data-p147-night="1"] #v194T104HubBody .v194T104ThreadItem > span,
+body[data-p148-night="1"] .v194T104ThreadItem > span{
+ color:#edf7ef!important;
+}
+.dark #v194T104HubBody .v194T104Info,
+body[data-p148-night="1"] .v194T104Info{
+ background:#213d31!important;border-color:#4f6c5e!important;
+}
+.dark #v194T104HubBody .v194T104Info :is(b,span),
+body[data-p148-night="1"] .v194T104Info :is(b,span){
+ color:#e6f2e9!important;
+}
+
+/* P148: five stable compact actions; a 44px touch area, a smaller note icon
+   and visual label. Override legacy P144's four-column inline styles. */
+html body #tafsirAyahs .v194T2Ayah .basairB231AyahActions[data-p148-notes="locked"]{
+ display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;
+ align-items:stretch!important;gap:3px!important;
+ height:auto!important;min-height:44px!important;max-height:none!important;
+ padding:2px!important;overflow:visible!important;
+}
+html body #tafsirAyahs .v194T2Ayah .basairB231AyahActions[data-p148-notes="locked"] > button{
+ box-sizing:border-box!important;display:flex!important;flex-direction:column!important;
+ align-items:center!important;justify-content:center!important;
+ width:100%!important;min-width:0!important;max-width:100%!important;
+ height:44px!important;min-height:44px!important;max-height:44px!important;
+ margin:0!important;padding:2px 1px!important;gap:1px!important;
+ border-radius:8px!important;font-size:9.3px!important;line-height:1.1!important;
+ white-space:nowrap!important;overflow:hidden!important;
+}
+html body #tafsirAyahs .v194T2Ayah .basairB231AyahActions > button.p148NoteTool{
+ box-shadow:none!important;
+ background:#f5f8f3!important;color:#31684c!important;border:1px solid #cbdccc!important;
+ font-family:inherit!important;font-size:9px!important;font-weight:700!important;
+}
+html body #tafsirAyahs .v194T2Ayah .basairB231AyahActions > button.p148NoteTool svg{
+ width:14px!important;height:14px!important;min-width:14px!important;max-width:14px!important;
+ flex:none!important;margin:0!important;
+}
+html body #tafsirAyahs .v194T2Ayah .basairB231AyahActions > button.p148NoteTool b{
+ font-size:9px!important;line-height:1.05!important;margin:0!important;
+}
+html body #tafsirAyahs .v194T2Ayah .basairB231AyahActions > button.p148NoteTool[hidden],
+html body #tafsirAyahs .v194T2Ayah button.p144NoteChip[hidden],
+html body #tafsirAyahs .v194T2Ayah button.b263r3NoteChip[hidden]{
+ display:none!important;
+}
+.dark #tafsirAyahs .v194T2Ayah .basairB231AyahActions > button.p148NoteTool,
+body[data-p147-night="1"] #tafsirAyahs .v194T2Ayah .basairB231AyahActions > button.p148NoteTool{
+ background:#2b4838!important;color:#e4f6e9!important;border-color:#708e7b!important;
+}
+@media(max-width:359px){
+ #v194T104HubBody .v194T104ThreadItem > b{font-size:17px!important}
+ #v194T104HubBody .v194T104ThreadItem > span{font-size:16px!important}
+ html body #tafsirAyahs .basairB231AyahActions[data-p148-notes="locked"]{gap:2px!important}
+}
+
+
+/* P149 FINAL: four original native tools + one stable implicit fifth slot.
+   Unlike P147/P148, NEVER fight P144's explicit four-column reset. */
+html body #tafsirAyahs .v194T2Ayah .basairB231AyahActions[data-p149-note-layout="native-four-plus-slot"] {
+ display:grid!important;
+ grid-template-columns:repeat(4,minmax(0,1fr))!important;
+ grid-auto-columns:minmax(0,1fr)!important;
+ grid-auto-flow:row!important;
+ align-items:center!important;
+ gap:3px!important;
+ box-sizing:border-box!important;
+ width:100%!important;
+ min-height:48px!important;
+ max-height:none!important;
+ overflow:visible!important;
+}
+html body #tafsirAyahs .v194T2Ayah .basairB231AyahActions[data-p149-note-layout="native-four-plus-slot"] > .p149NoteSlot {
+ grid-column:5 / span 1!important;
+ grid-row:1!important;
+ display:flex!important;
+ justify-content:stretch!important;
+ align-items:center!important;
+ box-sizing:border-box!important;
+ width:100%!important;
+ height:48px!important;
+ min-width:0!important;
+ margin:0!important;
+ padding:2px 0!important;
+ border:0!important;
+ background:transparent!important;
+ overflow:visible!important;
+}
+html body #tafsirAyahs .v194T2Ayah .basairB231AyahActions .p149NoteSlot > button.p149NoteTool {
+ box-sizing:border-box!important;
+ display:flex!important;
+ flex-direction:column!important;
+ align-items:center!important;
+ justify-content:center!important;
+ width:100%!important;
+ min-width:0!important;max-width:100%!important;
+ height:44px!important;min-height:44px!important;max-height:44px!important;
+ padding:2px 1px!important;margin:0!important;gap:0!important;
+ border-radius:8px!important;
+ background:#edf6ef!important;color:#246148!important;
+ border:1px solid #b7d2bd!important;
+ font-family:inherit!important;font-weight:700!important;font-size:9px!important;line-height:1.08!important;
+ box-shadow:none!important;
+ white-space:nowrap!important;
+ overflow:hidden!important;
+ visibility:visible!important;
+}
+html body #tafsirAyahs .v194T2Ayah .basairB231AyahActions .p149NoteSlot > button.p149NoteTool svg{
+ display:block!important;
+ width:14px!important;height:14px!important;
+ min-width:14px!important;max-width:14px!important;
+ margin:0!important;flex:none!important;
+}
+html body #tafsirAyahs .v194T2Ayah .basairB231AyahActions .p149NoteSlot > button.p149NoteTool b{
+ display:block!important;font-size:9px!important;line-height:1.08!important;margin:0!important;
+}
+/* Legacy above-the-ayah note stays invisible before the native control
+   is moved into its permanent slot; prevents intermittent flash at top. */
+#tafsirAyahs .v194T2Ayah > button.b263r3NoteChip:not(.p149NoteTool),
+#tafsirAyahs .v194T2Ayah > button.p144NoteChip:not(.p149NoteTool),
+#tafsirAyahs .v194T2Ayah .p146BottomNote button.b263r3NoteChip,
+#tafsirAyahs .v194T2Ayah .p146BottomNote button.p144NoteChip{
+ visibility:hidden!important;
+ opacity:0!important;
+ pointer-events:none!important;
+}
+#tafsirAyahs .v194T2Ayah button.b263r3NoteChip[hidden],
+#tafsirAyahs .v194T2Ayah button.p144NoteChip[hidden]{
+ display:none!important;
+}
+.dark #tafsirAyahs .v194T2Ayah .basairB231AyahActions .p149NoteSlot > button.p149NoteTool,
+body[data-p147-night="1"] #tafsirAyahs .v194T2Ayah .basairB231AyahActions .p149NoteSlot > button.p149NoteTool{
+ background:#244738!important;color:#e3f6e9!important;border-color:#6b9d7a!important;
+}
+
+/* Mic: reflect the real P144 aria-pressed/p132-on state, never infer it
+   from a tap. Visual state is readable in both day and night. */
+html body #tafsirAyahs .v194T2Ayah .p146TopMic button.p144MicButton[data-p149-mic-state] {
+ box-sizing:border-box!important;
+ display:flex!important;
+ flex-direction:column!important;
+ align-items:center!important;
+ justify-content:center!important;
+ gap:0!important;
+ padding:2px 4px!important;
+ border-radius:10px!important;
+ border:1px solid #839e8d!important;
+ background:#eef3ef!important;
+ color:#466451!important;
+ box-shadow:none!important;
+}
+html body #tafsirAyahs .v194T2Ayah .p146TopMic button.p144MicButton[data-p149-mic-state="on"] {
+ background:#156b49!important;
+ border-color:#88d6a2!important;
+ color:#ffffff!important;
+ box-shadow:0 0 0 2px rgba(75,174,116,.19)!important;
+}
+html body #tafsirAyahs .v194T2Ayah .p146TopMic button.p144MicButton .p149MicState {
+ display:block!important;
+ font:800 9px/1.05 Arial,Tahoma,sans-serif!important;
+ color:inherit!important;
+ opacity:1!important;
+ margin:1px 0 0!important;
+}
+.dark #tafsirAyahs .v194T2Ayah .p146TopMic button.p144MicButton[data-p149-mic-state="off"],
+body[data-p147-night="1"] #tafsirAyahs .v194T2Ayah .p146TopMic button.p144MicButton[data-p149-mic-state="off"] {
+ background:#284237!important;color:#cee5d6!important;border-color:#667e70!important;
+}
+.dark #tafsirAyahs .v194T2Ayah .p146TopMic button.p144MicButton[data-p149-mic-state="on"],
+body[data-p147-night="1"] #tafsirAyahs .v194T2Ayah .p146TopMic button.p144MicButton[data-p149-mic-state="on"] {
+ background:#17714e!important;color:#ffffff!important;border-color:#a1e5b6!important;
+}
+
+/* P149 readable Surah lessons: actual V695 DOM, including intro and thread.
+   Text is the primary element; cards are compact, not decorative. */
+html body #v194T104HubBody .v194T104ThreadItem > b,
+html body #v194T104HubBody .v194T104ThreadItem > strong {
+ font-family:Arial,Tahoma,sans-serif!important;
+ font-size:clamp(22px,5.6vw,25px)!important;
+ font-weight:800!important;
+ line-height:1.44!important;
+ margin:0 0 5px!important;
+ letter-spacing:normal!important;
+}
+html body #v194T104HubBody .v194T104ThreadItem > span{
+ font-family:Arial,Tahoma,sans-serif!important;
+ font-size:clamp(20px,5.1vw,23px)!important;
+ font-weight:600!important;
+ line-height:1.72!important;
+ margin:0!important;
+ letter-spacing:normal!important;
+}
+html body #v194T104HubBody .v194T104Section h3{
+ font-size:clamp(21px,5.4vw,24px)!important;
+ line-height:1.48!important;
+ font-weight:800!important;
+}
+html body #v194T104HubBody .v194T104Section > p{
+ font-size:clamp(19px,4.95vw,22px)!important;
+ line-height:1.78!important;
+ font-weight:500!important;
+}
+html body #v194T104HubBody .v194T104ThreadItem{
+ padding:10px 12px!important;
+ border-width:1px!important;
+ border-radius:11px!important;
+ box-shadow:none!important;
+}
+html body #v194T104HubBody .v194T104Thread{
+ gap:8px!important;
+}
+html body #v194T104HubBody .v194T104Info span{
+ font-size:clamp(18px,4.7vw,21px)!important;
+ line-height:1.7!important;
+}
+/* Keep night contrast even if .dark lives on HTML rather than BODY. */
+html.dark body #v194T104HubBody .v194T104ThreadItem > b,
+html body[data-p147-night="1"] #v194T104HubBody .v194T104ThreadItem > b{
+ color:#c2efd5!important;
+}
+html.dark body #v194T104HubBody .v194T104ThreadItem > span,
+html body[data-p147-night="1"] #v194T104HubBody .v194T104ThreadItem > span{
+ color:#f0f9f1!important;
+}
+@media(max-width:359px){
+ html body #v194T104HubBody .v194T104ThreadItem > b{font-size:20px!important}
+ html body #v194T104HubBody .v194T104ThreadItem > span{font-size:19px!important}
+ html body #tafsirAyahs .basairB231AyahActions[data-p149-note-layout] {gap:2px!important}
+}
+
+
+/* P150 — rectify the blank fifth cell seen in the owner 10:01 screenshot.
+   The note is ALWAYS a real button in its P149 slot when the JS runs, not
+   a text-only pseudo element; inherited event delegation remains intact. */
+html body #tafsirAyahs .v194T2Ayah .basairB231AyahActions[data-p149-note-layout="native-four-plus-slot"] > .p149NoteSlot{
+ box-sizing:border-box!important;grid-column:5 / span 1!important;grid-row:1!important;
+ display:flex!important;align-items:stretch!important;justify-content:stretch!important;
+ min-width:0!important;max-width:none!important;min-height:48px!important;
+ visibility:visible!important;opacity:1!important;pointer-events:auto!important;
+}
+html body #tafsirAyahs .v194T2Ayah .basairB231AyahActions .p149NoteSlot > button.p150ProvisionalNote,
+html body #tafsirAyahs .v194T2Ayah .basairB231AyahActions .p149NoteSlot > button.p149NoteTool{
+ display:flex!important;visibility:visible!important;opacity:1!important;
+ pointer-events:auto!important;
+ width:100%!important;min-width:0!important;max-width:100%!important;
+ height:44px!important;min-height:44px!important;max-height:44px!important;
+ margin:0!important;padding:2px 1px!important;
+ box-sizing:border-box!important;flex-direction:column!important;
+ justify-content:center!important;align-items:center!important;
+ border-radius:8px!important;border:1px solid #b7d2bd!important;
+ background:#edf6ef!important;color:#246148!important;
+ font-family:inherit!important;font-size:10px!important;font-weight:800!important;
+ line-height:1.08!important;gap:0!important;
+}
+/* If R3 already mounted a real note that an old patch hid, only P150 may
+   re-enable the canonical node; the obsolete duplicate remains hidden. */
+html body #tafsirAyahs .v194T2Ayah .p149NoteSlot > button.p149NoteTool:not([hidden]) {
+ display:flex!important;visibility:visible!important;
+}
+html.dark body #tafsirAyahs .v194T2Ayah .p149NoteSlot > button.p149NoteTool,
+html.dark body #tafsirAyahs .v194T2Ayah .p149NoteSlot > button.p150ProvisionalNote,
+body[data-p147-night="1"] #tafsirAyahs .v194T2Ayah .p149NoteSlot > button.p149NoteTool{
+ background:#244738!important;color:#e3f6e9!important;border-color:#77a98a!important;
+}
+/* Mic on/off must remain visible even if the P149 UI observer has not yet
+   decorated the button. P144's own aria-pressed/.p132-on is authoritative. */
+html body #tafsirAyahs .v194T2Ayah .p146TopMic button.p144MicButton{
+ position:relative!important;height:52px!important;min-height:52px!important;max-height:52px!important;
+}
+html body #tafsirAyahs .v194T2Ayah .p146TopMic button.p144MicButton .p149MicState{
+ display:none!important;
+}
+html body #tafsirAyahs .v194T2Ayah .p146TopMic button.p144MicButton::after{
+ content:"متوقف";display:block!important;
+ font-family:Arial,Tahoma,sans-serif!important;font-weight:800!important;
+ font-size:9px!important;line-height:1.05!important;
+ color:#647b6d!important;margin:1px 0 0!important;
+ white-space:nowrap!important;
+}
+html body #tafsirAyahs .v194T2Ayah .p146TopMic button.p144MicButton[aria-pressed="true"]::after,
+html body #tafsirAyahs .v194T2Ayah .p146TopMic button.p144MicButton.p132-on::after{
+ content:"يعمل";color:#ffffff!important;
+}
+html.dark body #tafsirAyahs .v194T2Ayah .p146TopMic button.p144MicButton:not(.p132-on):not([aria-pressed="true"])::after{
+ color:#d1e4d8!important;
+}
+
+
+
+/* P153 — Tafsir only. One source of layout truth: B233 (index),
+   B231 (four native verse tools), B263 R3 (native notes), and one
+   visual proxy. No competing P151/P152 layout frameworks. */
+html.p153-boot #tafsirIndex #basairTafsirB233TopBar:not([data-p153-ready="1"]){
+ visibility:hidden!important;
+}
+/* Preserve the original B233 grid/order. Repurpose only the existing
+   mini search control in-place as Notes adjacent to Favorites. */
+#tafsirIndex #basairTafsirB233TopBar > #p153NotesIndex{
+ min-width:0!important;max-width:none!important;
+ display:flex!important;align-items:center!important;justify-content:center!important;
+ gap:3px!important;margin:0!important;padding:3px 2px!important;
+ background:var(--paper,#fbfcf9)!important;color:var(--green,#1c5d42)!important;
+ border:1px solid var(--line,#c0cdbf)!important;border-radius:9px!important;
+ font-family:inherit!important;white-space:nowrap!important;
+ visibility:visible!important;opacity:1!important;pointer-events:auto!important;
+}
+#tafsirIndex #basairTafsirB233TopBar > #p153NotesIndex > span{
+ font-size:.62rem!important;line-height:1!important;
+}
+#tafsirIndex #basairTafsirB233TopBar > #p153NotesIndex > b{
+ font-size:.39rem!important;font-weight:800!important;
+ white-space:nowrap!important;text-overflow:clip!important;
+ color:inherit!important;line-height:1.25!important;
+}
+/* Reserve a fifth equal track without competing with P144's repeat(4)
+   inline-important template. The extra auto-grid column stays equal. */
+html body #tafsirAyahs .v194T2Ayah .basairB231AyahActions{
+ grid-auto-columns:minmax(0,1fr)!important;overflow:visible!important;
+ max-height:none!important;
+}
+html body #tafsirAyahs .v194T2Ayah .basairB231AyahActions > .p149NoteSlot{
+ grid-column:5/span 1!important;grid-row:1!important;
+ min-width:0!important;display:flex!important;align-items:center!important;
+ justify-content:stretch!important;overflow:visible!important;
+}
+html body #tafsirAyahs .v194T2Ayah .p149NoteSlot > button.p153NoteProxy{
+ display:flex!important;flex-direction:column!important;align-items:center!important;
+ justify-content:center!important;gap:1px!important;
+ width:100%!important;min-width:0!important;max-width:100%!important;
+ height:44px!important;min-height:44px!important;max-height:44px!important;
+ margin:0!important;padding:2px 1px!important;box-sizing:border-box!important;
+ background:#e5f4e9!important;color:#145e42!important;
+ border:1px solid #9bbfad!important;border-radius:9px!important;
+ visibility:visible!important;opacity:1!important;pointer-events:auto!important;
+ font:800 10px/1.12 Arial,Tahoma,sans-serif!important;
+ white-space:nowrap!important;overflow:hidden!important;transition:none!important;
+}
+html body #tafsirAyahs .v194T2Ayah .p149NoteSlot > button.p153NoteProxy > span{
+ display:block!important;font-size:16px!important;line-height:1!important;
+}
+html body #tafsirAyahs .v194T2Ayah .p149NoteSlot > button.p153NoteProxy > b{
+ display:block!important;font-size:10px!important;line-height:1.1!important;
+ color:inherit!important;font-weight:800!important;
+}
+html body #tafsirAyahs .v194T2Ayah .p149NoteSlot > button.p153NoteProxy.has-note{
+ background:#fff3d8!important;border-color:#c3a164!important;color:#805819!important;
+}
+html.dark body #tafsirAyahs .v194T2Ayah .p149NoteSlot > button.p153NoteProxy,
+body[data-p147-night="1"] #tafsirAyahs .v194T2Ayah .p149NoteSlot > button.p153NoteProxy{
+ background:#26513d!important;color:#e6f9eb!important;border-color:#7fa78b!important;
+}
+html.dark body #tafsirAyahs .v194T2Ayah .p149NoteSlot > button.p153NoteProxy.has-note{
+ background:#453822!important;color:#ffe8b6!important;border-color:#c6a368!important;
+}
+/* The original R3 control remains the hidden synchronization anchor.
+   Never display an independent top-of-ayah note. */
+html body #tafsirAyahs .v194T2Ayah > button.b263r3NoteChip[hidden]{
+ display:none!important;visibility:hidden!important;
+}
+/* Same-size visual reserve BEFORE JS creates the actual button: it
+   never receives clicks, and disappears as soon as the real slot mounts. */
+html body #tafsirAyahs .v194T2Ayah .basairB231AyahActions:not([data-p149-note-layout])::after{
+ content:"✎\A ملاحظة";white-space:pre!important;
+ display:flex!important;grid-column:5/span 1!important;grid-row:1!important;
+ min-width:0!important;height:44px!important;
+ flex-direction:column!important;align-items:center!important;justify-content:center!important;
+ margin:0!important;padding:2px 1px!important;box-sizing:border-box!important;
+ border:1px solid #9bbfad!important;border-radius:9px!important;
+ color:#145e42!important;background:#e5f4e9!important;
+ font:800 10px/1.18 Arial,Tahoma,sans-serif!important;
+ pointer-events:none!important;transition:none!important;
+}
+@supports selector(:has(*)){
+ html body #tafsirAyahs .v194T2Ayah .basairB231AyahActions:not([data-p149-note-layout]):has(> .p149NoteSlot)::after{
+  display:none!important;content:none!important;
+ }
+}
+html.dark body #tafsirAyahs .v194T2Ayah .basairB231AyahActions:not([data-p149-note-layout])::after{
+ background:#26513d!important;color:#e6f9eb!important;border-color:#7fa78b!important;
+}
+
+
+/* P153 exact B233 window-capture collision fix:
+   retain the original favorite ID for internal storage/count wiring,
+   but display only the independent trigger users can actually tap. */
+html body #tafsirIndex #basairTafsirB233TopBar[data-p153-ready="1"] > #basairTafsirB232FavoritesBtn{
+ display:none!important;visibility:hidden!important;pointer-events:none!important;
+}
+html body #tafsirIndex #basairTafsirB233TopBar > #p153FavoritesIndex{
+ min-width:0!important;max-width:none!important;
+ display:flex!important;align-items:center!important;justify-content:center!important;
+ gap:3px!important;margin:0!important;padding:3px 2px!important;
+ background:var(--paper,#fbfcf9)!important;color:var(--green,#1c5d42)!important;
+ border:1px solid var(--line,#c0cdbf)!important;border-radius:9px!important;
+ font-family:inherit!important;white-space:nowrap!important;
+ visibility:visible!important;opacity:1!important;pointer-events:auto!important;
+}
+html body #tafsirIndex #basairTafsirB233TopBar > #p153FavoritesIndex > span{
+ font-size:.62rem!important;line-height:1!important;color:var(--green,#1c5d42)!important;
+}
+html body #tafsirIndex #basairTafsirB233TopBar > #p153FavoritesIndex > b{
+ font-size:.39rem!important;line-height:1.25!important;font-weight:800!important;
+ color:inherit!important;white-space:nowrap!important;
+}
