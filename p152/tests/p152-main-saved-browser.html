@@ -1,0 +1,94 @@
+<!doctype html><html lang="ar" dir="rtl" class="dark"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="stylesheet" href="../../p121/owner-qa/modules/tafsir/p152-reader-saved.css">
+<style>
+:root{--paper:#f8faf5;--soft:#edf2ec;--green:#185d40;--line:#bdcdbd;--muted:#77857b;--b263r3-gold:#a68c51}
+body{background:#f8faf5;color:#185d40;font-family:Arial,Tahoma,sans-serif;margin:0;padding:8px}
+#tafsirIndex{padding:8px}
+#basairTafsirB233TopBar{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:4px}
+#basairTafsirB233TopBar>button{min-height:44px;border:1px solid #bdcdbd;border-radius:10px;background:#f7faf6;color:#195e42}
+#basairTafsirB233TopBar .b233TypeMain{grid-column:span 2}
+#basairTafsirB233TopBar>button>b{display:block;font-size:13px}
+#basairTafsirB232FavoritesPanel{display:none}
+#basairTafsirB232FavoritesPanel.show{display:block}
+.basairB231AyahActions{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:3px;padding:2px}
+.v194T2Ayah{margin:12px 0;padding:8px;border:1px solid #a5bca7}
+</style></head>
+<body>
+<section id="tafsirIndex" class="active">
+<div id="basairTafsirB233TopBar">
+ <button class="b233TypeMain" id="type">نوع التفسير</button>
+ <button data-b233-top="library" id="library">المكتبة</button>
+ <button data-b233-top="search" id="miniSearch">بحث</button>
+ <button id="basairTafsirB232FavoritesBtn" aria-label="المفضلة"><span>★</span><b>المفضلة</b><small id="basairTafsirB232FavoriteCount">0</small></button>
+ <button data-b233-top="resume" id="resume">آخر موضع</button>
+</div>
+<div id="bigSearch"><input id="v194T104SurahSearchInput" placeholder="ابحث عن سورة أو آية"/>
+<button>السورة</button><button>الآية</button><button>الصفحة</button></div>
+</section>
+<section id="basairTafsirB232FavoritesPanel" aria-hidden="true">
+<div id="basairTafsirR3SavedTabs"><button data-r3-saved-tab="favorites">★ المفضلة</button><button data-r3-saved-tab="notes">✎ الملاحظات</button></div>
+<div id="basairTafsirB232FavoritesList">قائمة المفضلة</div><div id="basairTafsirR3NotesList">قائمة الملاحظات</div>
+</section>
+<section id="tafsirReader">
+<div id="tafsirAyahs">
+<article class="v194T2Ayah" id="ta-2-3" data-t5-s="2" data-t5-a="3">
+<div class="v194T2Qrow">ذَلِكَ الْكِتَابُ لَا رَيْبَ ۛ فِيهِ</div>
+<div class="v194T2Body">تفسير الآية</div>
+<button class="b263r3NoteChip" data-r3-note-pos="2:3">ملاحظة أصلية</button>
+<div class="basairB231AyahActions"><button>متابعة</button><button>نسخ</button><button>مقارنة</button><button>مفضلة</button></div>
+</article></div></section>
+<pre id="qa">PENDING</pre>
+<script>
+window.noteActions=[];
+window.__BASAIR_TAFSIR_STEP2__={state:()=>({s:2,a:3,type:'basair'}),open:()=>{}};
+window.__BASAIR_TAFSIR_R2__={notes:{all:()=>({'2:3':{s:2,a:3,text:'ملاحظة محفوظة'}})},openNote:(s,a)=>window.noteActions.push([s,a])};
+localStorage.setItem('basair:tafsir-notes:v1',JSON.stringify({schema:'basair-tafsir-notes-v1',items:{'2:3':{s:2,a:3,text:'ملاحظة محفوظة'}}}));
+window.panelsOpened=0;window.selectedTab='';window.legacyFavoritesCaptures=0;
+window.__BASAIR_TAFSIR_FINAL_B233__={favorites:{open:()=>{window.panelsOpened++;document.getElementById('basairTafsirB232FavoritesPanel').classList.add('show')}},
+ ui:{index:()=>{}}};
+window.__BASAIR_TAFSIR_R3__={favoritesUpgrade:()=>{}};
+document.querySelectorAll('#basairTafsirR3SavedTabs button').forEach(button=>button.addEventListener('click',()=>{
+ window.selectedTab=button.getAttribute('data-r3-saved-tab')
+}));
+document.addEventListener('click',event=>{
+ if(event.target.closest('#basairTafsirB232FavoritesBtn')){event.stopImmediatePropagation();window.legacyFavoritesCaptures++}
+},true);
+</script>
+<script src="../../p121/owner-qa/modules/tafsir/p152-reader-saved.js"></script>
+<script>
+window.addEventListener('DOMContentLoaded',()=>setTimeout(()=>{
+try{
+ const API=window.__BASAIR_TAFSIR_P152_NOTES__,READER=window.__BASAIR_TAFSIR_P152_READER__;
+ API.refresh();
+ const bar=document.getElementById('basairTafsirB233TopBar');
+ const fav=document.getElementById('basairTafsirB232FavoritesBtn');
+ const notes=document.getElementById('p151NotesIndex');
+ const toolbarReady=!!notes&&bar.children.length===5&&fav.nextElementSibling===notes&&
+   !document.getElementById('miniSearch')&&!!document.getElementById('v194T104SurahSearchInput');
+ notes.click();const enteredNotes=window.selectedTab==='notes';
+ fav.click();const enteredFavorites=window.selectedTab==='favorites';
+ notes.click();const returnedNotes=window.selectedTab==='notes';
+ const capturedBeforeLegacy=window.legacyFavoritesCaptures===0&&window.panelsOpened===3;
+ API.refresh();API.refresh();API.refresh();
+ const noDuplicate=document.querySelectorAll('#p151NotesIndex').length===1&&bar.children.length===5;
+ document.getElementById('tafsirReader').classList.add('active');
+ READER.refresh();API.refresh();
+ const native=document.querySelector('.v194T2Ayah > .b263r3NoteChip'),proxy=document.querySelector('.p152StableNoteAction');
+ const before=proxy?.innerHTML;
+ native.classList.add('has-note');
+ for(let i=0;i<6;i++){READER.refresh();API.refresh()}
+ const noteStable=!!proxy&&proxy.innerHTML===before&&
+   document.querySelectorAll('.p149NoteSlot > button').length===1&&
+   native.parentElement===document.getElementById('ta-2-3')&&native.hidden;
+ proxy.click();
+ const noteOpensNative=JSON.stringify(window.noteActions)==='[[2,3]]';
+ const result={pass:toolbarReady&&enteredNotes&&enteredFavorites&&returnedNotes&&
+  capturedBeforeLegacy&&noDuplicate&&noteStable&&noteOpensNative,
+  toolbarReady,enteredNotes,enteredFavorites,returnedNotes,capturedBeforeLegacy,
+  noDuplicate,noteStable,noteOpensNative,panelsOpened:window.panelsOpened,
+  children:Array.from(bar.children).map(x=>x.id),noteText:proxy?.textContent};
+ document.getElementById('qa').textContent=JSON.stringify(result);
+}catch(e){document.getElementById('qa').textContent='ERROR '+String(e.stack)}
+},200));
+</script></body></html>
