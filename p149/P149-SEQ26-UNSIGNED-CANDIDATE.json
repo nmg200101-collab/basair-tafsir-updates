@@ -1,0 +1,81 @@
+{
+  "status": "UNSIGNED_CANDIDATE_NOT_PUBLISHED",
+  "ownerApprovalRequired": true,
+  "published": false,
+  "sourceBranch": "fix/p149-note-slot-mic-state-reading-20261114",
+  "baseline": {
+    "sequence": 25,
+    "tafsirVersion": 23,
+    "rollback": "p121/owner-qa/release-p148-seq25-before-p149-20261114.json",
+    "signedBlob": "507c45c3e9bc19ad5899413d484b07d3025bb2ee"
+  },
+  "signing": null,
+  "proposedPayload": {
+    "schema": "basair-universal-ota-v1",
+    "channel": "owner-qa",
+    "applicationId": "app.basair.qurv2",
+    "sequence": 26,
+    "id": "P149-TAFSIR-NOTE-MIC-LESSONS-OWNER-QA-20261114",
+    "title": "تثبيت الملاحظات وإظهار حالة الناطق وتكبير دروس السورة",
+    "minAppVersion": 694,
+    "deliveryMode": "notify",
+    "issuedAt": null,
+    "expiresAt": null,
+    "modules": [
+      {
+        "id": "tafsir",
+        "version": 24,
+        "assets": [
+          {
+            "path": "modules/tafsir/p131-verse-tools.css",
+            "kind": "css",
+            "size": 5717,
+            "sha256": "a41e96fb1b9c079e6aa6e4b962b49bbed76162c99fa5fb3fb1101fff5b8dce77"
+          },
+          {
+            "path": "modules/tafsir/p144-natiq.css",
+            "kind": "css",
+            "size": 35547,
+            "sha256": "c23a89096b23172f18614b600e83404abc0f528a1c4de1dda950e7931e2bbf3b"
+          },
+          {
+            "path": "modules/tafsir/p134-verse-tools.js",
+            "kind": "js",
+            "size": 43085,
+            "sha256": "cd492a5cd06207377d8a76468814d600fd52749de83c56895e36f81bbcae5fe4"
+          },
+          {
+            "path": "modules/tafsir/p136-ayah-catalog.js",
+            "kind": "js",
+            "size": 3734,
+            "sha256": "d5126157a176b6b32fd40d88cd71d323d428e2e5ebeae8546b1752c9ab8279f2"
+          },
+          {
+            "path": "modules/tafsir/p136-reciter-bridge.js",
+            "kind": "js",
+            "size": 7358,
+            "sha256": "2b3ef7d3a3f25180298f2828fec537d88962a575c138852bb13300a602b56c43"
+          },
+          {
+            "path": "modules/tafsir/p144-natiq.js",
+            "kind": "js",
+            "size": 59259,
+            "sha256": "ca458ef6665f353d8de508256757482d32df436492dbf202208e368116760eba"
+          },
+          {
+            "path": "modules/tafsir/p149-reader-polish.css",
+            "kind": "css",
+            "size": 34365,
+            "sha256": "cce9241f0e82fa97743dedd03b18403a5a14df420206bd9098050e15bc13c9ef"
+          },
+          {
+            "path": "modules/tafsir/p149-reader-polish.js",
+            "kind": "js",
+            "size": 23317,
+            "sha256": "1d208de7df4008e554730cd4b235be3e5f300489256ba4aeedd2c39fb7932567"
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,75 @@
+<!doctype html><html lang="ar" dir="rtl" class="dark"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="stylesheet" href="../../p121/owner-qa/modules/tafsir/p149-reader-polish.css">
+<style>
+body{font-family:Arial,Tahoma,sans-serif;background:#132b20;color:#eff5ec;margin:0;padding:12px}
+#v194T104HubBody{padding:4px}.v194T104Thread{display:grid;gap:7px}
+.v194T104ThreadItem{padding:12px;border:1px solid #476453;border-radius:12px;background:#1b3b30}
+.v194T104ThreadItem b{display:block;font-size:.54rem}.v194T104ThreadItem span{display:block;font-size:.59rem}
+.basairB231AyahActions{display:grid;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:3px}
+.basairB231AyahActions>button{height:48px}.v194T2Ayah{padding:8px;border:1px solid #536956}
+</style></head>
+<body data-basair-tafsir-main-tab="thread">
+<section id="tafsirReader" class="active">
+<div id="basairTafsirPrimaryTabs"><button class="on" data-basair-main-tab="thread">خيط السورة</button></div>
+<div id="v194T104HubBody"><div class="v194T104Panel"><section class="v194T104Section">
+<h3>أبرز الدروس</h3><div class="v194T104Thread"><div class="v194T104ThreadItem">
+<b id="lessonHeading">درس من الآية 1</b>
+<span id="lessonText">الإنسان قد يبدأ العمل معتمدًا على مهارته، والآية تعيد ترتيب الداخل: ابدأ بالله قبل أن تبدأ بنفسك، ولا يلهيك اعتمادك على الأسباب عن مسببها.</span>
+</div></div></section></div></div>
+</section>
+<div id="tafsirAyahs"><article class="v194T2Ayah">
+<div class="v194T2Qrow">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>
+<div class="v194T2Body">التفسير</div>
+<button class="p144NoteChip" id="duplicate">نسخة قديمة</button>
+<button class="b263r3NoteChip" id="original" data-r3-note-pos="1" data-r2-action="note">ملاحظة</button>
+<button class="p144MicButton" id="mic" aria-pressed="false">الناطق</button>
+<div id="bar" class="basairB231AyahActions">
+<button type="button" data-p125-follow>متابعة</button>
+<button type="button" data-b231-action="copy">نسخ</button>
+<button type="button">مقارنة</button><button type="button">مفضلة</button>
+</div></article></div>
+<pre id="status">PENDING</pre>
+<script>
+window.__BASAIR_TAFSIR_STEP2__={state:()=>({s:1,a:1,type:'basair'}),open:()=>{}};
+window.__BASAIR_TAFSIR_CORE__={getMuyassarSurah:()=>new Promise(()=>{})};
+window.noteClicks=0;
+document.getElementById('original').addEventListener('click',()=>window.noteClicks++);
+</script>
+<script src="../../p121/owner-qa/modules/tafsir/p149-reader-polish.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded',function(){
+ setTimeout(async function(){
+  try{
+   const api=window.__BASAIR_TAFSIR_P149__,bar=document.getElementById('bar'),
+      note=document.getElementById('original'),dup=document.getElementById('duplicate'),
+      mic=document.getElementById('mic');
+   api.refresh();
+   const slot=bar.querySelector('.p149NoteSlot');
+   note.click();
+   const base=!!slot&&note.parentElement===slot&&bar.children.length===5&&dup.hidden&&dup.disabled&&
+    note.getAttribute('data-r2-action')===null&&window.noteClicks===1;
+   // P144 deliberately writes four explicit columns, which must now be SAFE.
+   bar.style.setProperty('grid-template-columns','repeat(4,minmax(0,1fr))','important');
+   const cssTracks=getComputedStyle(bar).gridTemplateColumns.trim().split(/\s+/).length;
+   const fifth=cssTracks===5&&note.parentElement===slot;
+   mic.setAttribute('aria-pressed','true');mic.classList.add('p132-on');
+   await new Promise(resolve=>setTimeout(resolve,35));
+   const on=mic.getAttribute('data-p149-mic-state')==='on'&&mic.querySelector('.p149MicState')?.textContent==='يعمل';
+   mic.setAttribute('aria-pressed','false');mic.classList.remove('p132-on');
+   await new Promise(resolve=>setTimeout(resolve,35));
+   const off=mic.getAttribute('data-p149-mic-state')==='off'&&mic.querySelector('.p149MicState')?.textContent==='متوقف';
+   // An old hot-upgraded patch tries to relocate the note; the row watcher
+   // must restore its original DOM node before the next frame.
+   bar.parentElement.appendChild(note);
+   await new Promise(resolve=>setTimeout(resolve,35));
+   const returned=note.parentElement===slot;
+   const bodySize=parseFloat(getComputedStyle(document.getElementById('lessonText')).fontSize);
+   const titleSize=parseFloat(getComputedStyle(document.getElementById('lessonHeading')).fontSize);
+   const result={pass:base&&fifth&&on&&off&&returned&&bodySize>=20&&titleSize>=22,
+    base,fifth,on,off,returned,cssTracks,titleSize,bodySize};
+   document.getElementById('status').textContent=JSON.stringify(result);
+  }catch(e){document.getElementById('status').textContent='ERROR '+String(e.stack)}
+ },160);
+});
+</script></body></html>
