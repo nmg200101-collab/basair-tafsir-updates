@@ -16,9 +16,10 @@ assert.ok(css.includes('.p153-boot')&&css.includes('data-p153-ready'));
 assert.ok(css.length<47000,'Previously stacked 56K CSS must be reduced');
 const native=read('p121/owner-qa/release.json'),
  backup=read('p121/owner-qa/release-p152-seq29-before-p153-20261114.json');
-assert.deepEqual(native,backup,'Unsigned draft MUST leave current P152 active');
+assert.deepEqual(native,read('p153/P153-SEQ30-OWNER-SIGNED-RELEASE.json'),
+ 'Active candidate must be byte-exact signed Seq30');
 assert.deepEqual(backup,read('p152/P152-SEQ29-OWNER-SIGNED-RELEASE.json'),'Rollback must be exact signed P152');
-const previous=JSON.parse(Buffer.from(JSON.parse(native).payload,'base64').toString('utf8'));
+const previous=JSON.parse(Buffer.from(JSON.parse(backup).payload,'base64').toString('utf8'));
 const c=JSON.parse(read('p153/P153-SEQ30-UNSIGNED-CANDIDATE.json').toString('utf8'));
 assert.equal(c.status,'UNSIGNED_DRAFT_NOT_ACTIVE');
 assert.equal(c.signed,false);assert.equal(c.published,false);
