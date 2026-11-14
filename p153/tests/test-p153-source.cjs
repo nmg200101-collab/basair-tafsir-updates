@@ -11,7 +11,8 @@ assert.ok(js.includes("proxy.removeAttribute('data-r3-note-pos')"),'Remove P144 
 assert.ok(!js.includes("proxy.setAttribute('data-r3-note-pos'"),'Never expose native R3 note position on visual proxy');
 assert.ok(!js.includes("/* BASAIR P151 — independent Ayah Notes Hub"),'Competing P151 UI module removed');
 assert.ok(!js.includes('setInterval(function(){if(d.getElementById'), 'Duplicate note timer removed');
-assert.ok(css.includes('p153NoteProxy')&&css.includes('p153NotesIndex'));
+assert.ok(css.includes('p153NoteProxy')&&css.includes('p153NotesIndex')&&css.includes('p153FavoritesIndex'));
+assert.ok(js.includes("fav.insertAdjacentElement('afterend',favProxy)"),'B233 original Favorites capture requires a separate visible trigger');
 assert.ok(css.includes('.p153-boot')&&css.includes('data-p153-ready'));
 assert.ok(css.length<47000,'Previously stacked 56K CSS must be reduced');
 const native=read('p121/owner-qa/release.json'),
