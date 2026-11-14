@@ -1,0 +1,22 @@
+name: P148 Temporary Owner QA
+on:
+  push:
+    branches:
+      - fix/p148-lesson-cards-note-anchor-20261114
+  pull_request:
+    branches:
+      - main
+jobs:
+  p148-chromium:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - name: Source and integrity checks
+        run: |
+          node --version
+          node p148/tests/test-p148-source.cjs
+      - name: Chromium visual and interaction regression
+        run: |
+          google-chrome --version || chromium --version
+          node p148/tests/run-p148-chromium.cjs
