@@ -1,0 +1,29 @@
+name: Basair P157 isolated draft QA (temporary)
+on:
+  push:
+    branches:
+      - fix/p157-merged-saved-reader-stability-20261114
+    paths:
+      - p157/**
+      - p121/owner-qa/modules/tafsir/p157-*
+      - .github/workflows/p157-draft-qa.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  source:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: node p157/tests/test-p157-source.cjs
+      - run: node p156/tests/test-p156-source.cjs
+  chromium:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install playwright for mobile-sized Chromium simulation
+        run: |
+          python3 -m pip install --quiet playwright==1.56.0
+          python3 -m playwright install --with-deps chromium
+      - name: Exercise Tafsir index, reader gestures, saved tabs and 25 verses
+        run: python3 p157/tests/test-p157-browser.py
