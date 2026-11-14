@@ -654,12 +654,15 @@
   open();message('تعذر فتح الآية مباشرة؛ افتح السورة من الفهرس.')
  }
  function updateIndicators(){
+  var notes=allNotes(),indexes=new Set(notes.map(function(x){return x.s+':'+x.a}));
   d.querySelectorAll('#tafsirAyahs .p150NoteProxy').forEach(function(b){
-   var row=b.closest('.v194T2Ayah'),p=pos(row),entry=p&&get(p.s,p.a);
-   b.classList.toggle('has-note',!!entry);
-   b.setAttribute('aria-label',entry?'تعديل ملاحظة الآية':'إضافة ملاحظة للآية');
+   var row=b.closest('.v194T2Ayah'),p=pos(row),exists=!!p&&indexes.has(p.s+':'+p.a);
+   b.classList.toggle('has-note',exists);
+   var label=exists?'تعديل ملاحظة الآية':'إضافة ملاحظة للآية';
+   if(b.getAttribute('aria-label')!==label)b.setAttribute('aria-label',label);
   });
-  var b=E('#p151NotesIndex');if(b)b.setAttribute('data-count',String(allNotes().length));
+  var b=E('#p151NotesIndex');if(b&&b.getAttribute('data-count')!==String(notes.length))
+   b.setAttribute('data-count',String(notes.length));
  }
  function ensureRow(row){
   if(!row||!row.querySelector)return;
@@ -731,7 +734,7 @@
    if(host)observer.observe(host,{childList:true,subtree:true});
    if(idx)observer.observe(idx,{childList:true,subtree:true});
   }
-  w.setInterval(function(){if(d.getElementById('tafsirIndex')||d.getElementById('tafsirAyahs'))sync()},2400);
+  w.setInterval(function(){if(d.getElementById('tafsirIndex')||d.getElementById('tafsirAyahs'))sync()},3600);
  }
  w.__BASAIR_TAFSIR_P151_NOTES__={open:open,openEditor:openEditor,close:close,allNotes:allNotes,refresh:sync,
   storageKey:KEY,status:function(){return {count:allNotes().length,hubOpen:!!hub&&!hub.hidden}}};
