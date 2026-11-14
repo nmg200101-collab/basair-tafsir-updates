@@ -1,0 +1,44 @@
+{
+  "status": "UNSIGNED_OWNER_QA_DRAFT_NOT_PUBLISHED",
+  "signed": false,
+  "published": false,
+  "androidAccepted": false,
+  "qa050Protected": true,
+  "appIdUnchanged": true,
+  "publishAuthorization": false,
+  "baseline": "P155 signed Seq32 / Tafsir v30",
+  "rollback": "p155/P155-SEQ32-OWNER-SIGNED-RELEASE.json",
+  "note": "Do not replace active release.json before explicit owner approval and original owner RSA signature. Physical Android WebView still pending.",
+  "proposedPayload": {
+    "schema": "basair-universal-ota-v1",
+    "channel": "owner-qa",
+    "applicationId": "app.basair.qurv2",
+    "sequence": 33,
+    "id": "P156-TAFSIR-STABILITY-RECOVERY-V695-20261114",
+    "title": "إصلاح ثبات فهرس التفسير والملاحظات واستمرار التمرير اليدوي",
+    "minAppVersion": 695,
+    "deliveryMode": "automatic",
+    "issuedAt": null,
+    "expiresAt": null,
+    "modules": [
+      {
+        "id": "tafsir",
+        "version": 31,
+        "assets": [
+          {
+            "path": "modules/tafsir/p156-tafsir-recovery.css",
+            "kind": "css",
+            "size": 3279,
+            "sha256": "633cb22952ba2a93970365ff4f8a5b69b700f925cf3682687fe87cda819f93b7"
+          },
+          {
+            "path": "modules/tafsir/p156-tafsir-recovery.js",
+            "kind": "js",
+            "size": 16678,
+            "sha256": "4d3d23f28f1ae2bcf2c76720d63e1757cc96e66dc97a3f64d291c93312426369"
+          }
+        ]
+      }
+    ]
+  }
+}
