@@ -62,14 +62,14 @@
           {
             "path": "modules/tafsir/p151-reader-notes.css",
             "kind": "css",
-            "size": 48391,
-            "sha256": "8ac79895bfd32b273c06348b91cbc0e84ebfee957c041e644f71764b26f24be0"
+            "size": 48841,
+            "sha256": "3cd9bb54fff367e5f6915d0ddc1ffd494ab022cd2421e5b30994e74103e262dc"
           },
           {
             "path": "modules/tafsir/p151-reader-notes.js",
             "kind": "js",
-            "size": 44348,
-            "sha256": "57eba0ca3945d0c610306dc7ca790892d221ffb340d21860153fa3f9bc2463ac"
+            "size": 44614,
+            "sha256": "d08b22504032f2ffbd015aec2cfe8c2826582b896faffd6c5074fb40ffdd27d6"
           }
         ]
       }
