@@ -804,7 +804,15 @@
    if(host)observer.observe(host,{childList:true,subtree:true});
    if(idx)observer.observe(idx,{childList:true,subtree:true});
   }
-  w.setInterval(function(){if(d.getElementById('tafsirIndex')||d.getElementById('tafsirAyahs'))sync()},3600);
+  // Safety check only while Tafsir is visible; never scan stored notes
+  // repeatedly while the user is in Tilawa, Library, or Home.
+  w.setInterval(function(){
+   var idx=d.getElementById('tafsirIndex'),reader=d.getElementById('tafsirReader');
+   var active=!!(idx&&idx.classList.contains('active')||
+    reader&&reader.classList.contains('active')||
+    d.getElementById('v194T104Hub')&&d.getElementById('v194T104Hub').classList.contains('show'));
+   if(active)sync()
+  },8000);
  }
  w.__BASAIR_TAFSIR_P151_NOTES__={open:open,openEditor:openEditor,close:close,allNotes:allNotes,refresh:sync,
   storageKey:KEY,status:function(){return {count:allNotes().length,hubOpen:!!hub&&!hub.hidden}}};
