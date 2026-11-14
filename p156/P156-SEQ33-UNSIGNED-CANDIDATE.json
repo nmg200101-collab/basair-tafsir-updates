@@ -5,10 +5,10 @@
   "androidAccepted": false,
   "qa050Protected": true,
   "appIdUnchanged": true,
-  "publishAuthorization": false,
+  "publishAuthorization": true,
   "baseline": "P155 signed Seq32 / Tafsir v30",
   "rollback": "p155/P155-SEQ32-OWNER-SIGNED-RELEASE.json",
-  "note": "Do not replace active release.json before explicit owner approval and original owner RSA signature. Physical Android WebView still pending.",
+  "note": "Owner explicitly approved immediate owner-QA P156 publication on 2026-11-14. Publish remains mechanically blocked until original RSA3072 signed envelope verified; Android handset acceptance still pending. Never publish unsigned JSON.",
   "proposedPayload": {
     "schema": "basair-universal-ota-v1",
     "channel": "owner-qa",
@@ -40,5 +40,6 @@
         ]
       }
     ]
-  }
+  },
+  "ownerApprovalRecorded": true
 }
