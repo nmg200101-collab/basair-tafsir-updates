@@ -30,6 +30,16 @@ body{margin:0;background:#f5f6f1;font-family:Arial,Tahoma,sans-serif;color:#2143
 window.__BASAIR_TAFSIR_STEP2__={state:()=>({s:2,a:3,type:'basair'}),open:(s,a,t)=>{window.__jump=[s,a,t]}};
 window.__BASAIR_TAFSIR_CORE__={getMuyassarSurah:()=>new Promise(()=>{})};
 localStorage.removeItem('basair:tafsir:p151:notes:v1');
+localStorage.setItem('basair:tafsir-notes:v1',JSON.stringify({schema:'basair-tafsir-notes-v1',version:1,items:{}}));
+window.__BASAIR_TAFSIR_R2__={notes:{
+ all:()=>JSON.parse(localStorage.getItem('basair:tafsir-notes:v1')).items,
+ set:(s,a,text)=>{
+  const k='basair:tafsir-notes:v1',store=JSON.parse(localStorage.getItem(k)),id=s+':'+a;
+  if(text.trim())store.items[id]={s,a,text,updatedAt:Date.now()};
+  else delete store.items[id];
+  localStorage.setItem(k,JSON.stringify(store));
+ }
+}};
 window.__noteEvents=[];
 </script>
 <script src="../../p121/owner-qa/modules/tafsir/p151-reader-notes.js"></script>
@@ -48,7 +58,8 @@ window.addEventListener('DOMContentLoaded',()=>setTimeout(async()=>{
   hub.querySelector('[data-p151-title]').value='فائدة هامة';
   hub.querySelector('[data-p151-text]').value='هذه ملاحظة محفوظة للآية الثالثة من سورة البقرة';
   hub.querySelector('[data-p151-action="save"]').click();
-  const saved=api.allNotes().some(x=>x.s===2&&x.a===3&&x.title==='فائدة هامة');
+  const saved=api.allNotes().some(x=>x.s===2&&x.a===3&&x.title==='فائدة هامة')&&
+    JSON.parse(localStorage.getItem('basair:tafsir-notes:v1')).items['2:3']?.text==='هذه ملاحظة محفوظة للآية الثالثة من سورة البقرة';
   hub.querySelector('[data-p151-action="back"]').click();
   const count=hub.querySelectorAll('.p151NoteCard').length;
   hub.querySelector('[data-p151-filter]').value='فائدة';
