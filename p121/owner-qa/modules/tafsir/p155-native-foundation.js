@@ -48,6 +48,24 @@
    });
    counts.index++;
   }
+  // B233's original window-capture handler owns the Favorites click.
+  // A small pre-click pointer/keyboard hook selects its correct tab AFTER
+  // B233 opens the native panel, without overriding or cloning its button.
+  if(favorite.getAttribute('data-bq155-favorites-hook')!=='1'){
+   favorite.setAttribute('data-bq155-favorites-hook','1');
+   var selectFavorites=function(){
+    w.setTimeout(function(){
+     var panel=E('basairTafsirB232FavoritesPanel');
+     if(!panel||!panel.classList.contains('show'))return;
+     var tab=d.querySelector('#basairTafsirR3SavedTabs [data-r3-saved-tab="favorites"]');
+     if(tab)tab.click();
+    },0);
+   };
+   favorite.addEventListener('pointerdown',selectFavorites,{passive:true});
+   favorite.addEventListener('keydown',function(e){
+    if(e.key==='Enter'||e.key===' ')selectFavorites();
+   });
+  }
   // Do not modify the full Surah/Ayah/Page search below the compact toolbar.
   idx.setAttribute('data-bq155-ready','1');
   if(indexRoot!==idx&&w.MutationObserver){
