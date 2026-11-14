@@ -30,13 +30,14 @@ assert.ok(css.includes('font-size:clamp(22px,5.6vw,25px)'),
 const current=read('p121/owner-qa/release.json');
 const backup=read('p121/owner-qa/release-p148-seq25-before-p149-20261114.json');
 const signed=read('p148/P148-SEQ25-OWNER-SIGNED-RELEASE.json');
-assert.deepEqual(current,backup,'live signed Seq25 must remain untouched');
-assert.deepEqual(signed,backup,'rollback must be the exact signed owner release');
-const old=JSON.parse(Buffer.from(JSON.parse(current).payload,'base64').toString('utf8'));
+assert.deepEqual(signed,backup,'rollback must be the exact signed owner Seq25 release');
+assert.deepEqual(current,read('p149/P149-SEQ26-OWNER-SIGNED-RELEASE.json'),
+ 'active release must be byte-exact signed owner Seq26');
+const old=JSON.parse(Buffer.from(JSON.parse(backup).payload,'base64').toString('utf8'));
 assert.equal(old.sequence,25);
 const candidate=JSON.parse(read('p149/P149-SEQ26-UNSIGNED-CANDIDATE.json'));
 assert.equal(candidate.status,'UNSIGNED_CANDIDATE_NOT_PUBLISHED');
-assert.equal(candidate.published,false);
+assert.equal(candidate.published,false); // archival draft remains unsigned
 assert.equal(candidate.signing,null);
 const next=candidate.proposedPayload;
 assert.equal(next.sequence,26);assert.equal(next.modules[0].version,24);
@@ -53,6 +54,6 @@ for(const [i,asset] of next.modules[0].assets.entries()){
 }
 assert.equal(next.modules[0].assets[6].path,'modules/tafsir/p149-reader-polish.css');
 assert.equal(next.modules[0].assets[7].path,'modules/tafsir/p149-reader-polish.js');
-console.log(JSON.stringify({status:'PASS',sequence:26,mode:'UNSIGNED_DRAFT',
+console.log(JSON.stringify({status:'PASS',sequence:26,mode:'SIGNED_OWNER_QA',
  originalNoteHandlers:'preserved',nativeColumns:4,visualSlots:5,micStatus:'aria-pressed on/off',
  lessonBody:'20-23px',qa050:'no protected files modified',device:'NOT TESTED'}));
