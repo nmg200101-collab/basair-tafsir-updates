@@ -499,18 +499,55 @@
   if(!a)a=+(st&&st.a||0);
   return valid(s,a)?{s:s,a:a}:null;
  }
+ // The B263 R2/R3 canonical notes store is the SINGLE source of truth.
+ // The new P151 key holds optional titles and legacy import metadata only.
+ var NATIVE_KEY='basair:tafsir-notes:v1',NATIVE_SCHEMA='basair-tafsir-notes-v1';
+ function meta(){
+  try{var x=JSON.parse(w.localStorage.getItem(KEY)||'{}');return x&&typeof x==='object'?x:{}}catch(_){return {}}
+ }
+ function mutedLegacy(){var x=meta().hiddenLegacy;return Array.isArray(x)?x.filter(function(v){return /^\d{1,3}:\d{1,3}$/.test(v)}):[]}
+ function titles(){var x=meta().titles;return x&&typeof x==='object'&&!Array.isArray(x)?x:{}}
+ function metaUpdate(id,title,remove){
+  try{
+   var m=meta(),v=Object.assign({},titles());if(remove)delete v[id];
+   else v[id]={title:String(title||'').slice(0,120),updatedAt:Date.now()};
+   m.version=2;m.titles=v;
+   // Suppress other historical stores only for a deliberate delete.
+   var hidden=new Set(mutedLegacy());if(remove)hidden.add(id);else hidden.delete(id);
+   m.hiddenLegacy=Array.from(hidden);
+   w.localStorage.setItem(KEY,JSON.stringify(m));return true
+  }catch(e){message('تعذر تحديث بيانات الملاحظة.');return false}
+ }
+ function nativeMap(){
+  var data=null;
+  try{data=JSON.parse(w.localStorage.getItem(NATIVE_KEY)||'null')}catch(_){}
+  if(!data||data.schema!==NATIVE_SCHEMA||!data.items||typeof data.items!=='object'||Array.isArray(data.items)){
+   try{var api=w.__BASAIR_TAFSIR_R2__;data={items:api&&api.notes&&api.notes.all&&api.notes.all()||{}}}catch(_){data={items:{}}}
+  }
+  return data.items||{}
+ }
+ function nativeSet(s,a,txt){
+  try{
+   var r=w.__BASAIR_TAFSIR_R2__,fn=r&&r.notes&&r.notes.set;
+   if(typeof fn!=='function'){message('محرر الملاحظات الأصلي غير متاح؛ لم يتم حفظ أي تغيير.');return false}
+   fn(s,a,txt);
+   // The native storage is authoritative. Verify the write before success.
+   var current=nativeMap()[s+':'+a];
+   if(txt&&(!current||String(current.text||'')!==txt)){message('لم يُتحقق من حفظ الملاحظة.');return false}
+   if(!txt&&current){message('لم يُتحقق من حذف الملاحظة.');return false}
+   return true
+  }catch(e){message('تعذر حفظ الملاحظة في المحرر الأصلي.');return false}
+ }
  function own(){
-  try{var obj=JSON.parse(w.localStorage.getItem(KEY)||'{}'),list=Array.isArray(obj.notes)?obj.notes:[];
-   return list.filter(function(x){return x&&valid(x.s,x.a)&&typeof x.text==='string'&&x.text.trim()})
-      .map(function(x){return {s:+x.s,a:+x.a,title:String(x.title||'').slice(0,120),text:x.text.slice(0,MAX),created:+x.created||0,updated:+x.updated||0,source:'p151'}})
-  }catch(_){return []}
- }
- function mutedLegacy(){
-  try{var state=JSON.parse(w.localStorage.getItem(KEY)||'{}');return Array.isArray(state.hiddenLegacy)?state.hiddenLegacy.filter(function(v){return /^\d{1,3}:\d{1,3}$/.test(v)}):[]}catch(_){return []}
- }
- function save(list,muted){
-  try{w.localStorage.setItem(KEY,JSON.stringify({version:1,notes:list,hiddenLegacy:muted==null?mutedLegacy():muted}));return true}
-  catch(e){message('تعذر حفظ الملاحظة. تحقق من مساحة التخزين.');return false}
+  var m=nativeMap(),T=titles(),ret=[];
+  Object.keys(m).forEach(function(k){
+   var n=m[k],p=decodePos(k);if(!p||!n||typeof n.text!=='string'||!n.text.trim())return;
+   var x=T[k]||{};
+   ret.push({s:p.s,a:p.a,title:String(x.title||'').slice(0,120),
+    text:n.text.slice(0,MAX),created:+n.createdAt||0,
+    updated:+n.updatedAt||+x.updatedAt||0,source:'native'})
+  });
+  return ret;
  }
  function extractLegacy(key,v){
   var found=[],limit=0;
@@ -539,13 +576,17 @@
   return found;
  }
  function allNotes(){
-  var map=new Map(),user=own(),muted=new Set(mutedLegacy());user.forEach(function(x){map.set(x.s+':'+x.a,x)});
-  // Read legacy B263/R3 or tafsir note collections WITHOUT modifying them.
+  var map=new Map(),user=own(),muted=new Set(mutedLegacy()),T=titles();
+  user.forEach(function(x){map.set(x.s+':'+x.a,x)});
+  // Read other historical formats when present, but never write to them.
+  // B263 canonical data above is always preferred and is never masked.
   try{for(var i=0;i<w.localStorage.length;i++){
-   var k=w.localStorage.key(i);if(!k||k===KEY)continue;
+   var k=w.localStorage.key(i);if(!k||k===KEY||k===NATIVE_KEY)continue;
    if(!/(note|notes|memo|ملاحظ)/i.test(k)||!/(tafsir|b263|r3|ayah|quran)/i.test(k))continue;
    extractLegacy(k,w.localStorage.getItem(k)).forEach(function(x){
-    var id=x.s+':'+x.a;if(!map.has(id)&&!muted.has(id))map.set(id,x)
+    var id=x.s+':'+x.a;if(map.has(id)||muted.has(id))return;
+    var title=T[id];if(title)x.title=String(title.title||'').slice(0,120);
+    map.set(id,x)
    });
   }}catch(_){}
   return Array.from(map.values()).sort(function(a,b){return (b.updated||0)-(a.updated||0)||a.s-b.s||a.a-b.a})
@@ -620,24 +661,28 @@
  }
  function saveEdit(){
   if(!current||busy)return;
-  var text=E('[data-p151-text]',hub).value.trim(),title=E('[data-p151-title]',hub).value.trim();
+  var text=E('[data-p151-text]',hub).value.trim(),
+    title=E('[data-p151-title]',hub).value.trim();
   if(!text){message('اكتب نص الملاحظة أولًا.');return}
-  var entries=own(),prior=get(current.s,current.a),now=Date.now(),id=current.s+':'+current.a;
-  entries=entries.filter(function(x){return x.s+':'+x.a!==id});
-  entries.push({s:current.s,a:current.a,text:text.slice(0,MAX),title:title.slice(0,120),
-   created:prior&&prior.created||now,updated:now});
-  var muted=mutedLegacy().filter(function(x){return x!==id});
-  if(save(entries,muted)){message('تم حفظ الملاحظة.');updateIndicators();listRender()}
+  busy=true;
+  try{
+   if(!nativeSet(current.s,current.a,text.slice(0,MAX)))return;
+   metaUpdate(current.s+':'+current.a,title,false);
+   message('تم حفظ الملاحظة وربطها بالآية في التطبيق.');
+   updateIndicators();
+  }finally{busy=false}
  }
  function deleteEdit(){
-  if(!current||!w.confirm('هل تريد حذف هذه الملاحظة؟'))return;
+  if(!current||busy||!w.confirm('هل تريد حذف ملاحظة هذه الآية؟'))return;
   var s=current.s,a=current.a,existing=get(s,a);if(!existing)return;
-  // Deleting a legacy note hides it in the new hub but preserves its
-  // original R3 bytes as a rollback safeguard. Deleting a copied note
-  // must not accidentally make the older legacy version reappear.
-  var id=s+':'+a,arr=own().filter(function(x){return x.s!==s||x.a!==a});
-  var muted=mutedLegacy();if(muted.indexOf(id)<0)muted.push(id);
-  if(save(arr,muted)){updateIndicators();showList();message('أزيلت الملاحظة من القائمة. وحُفظت النسخة التاريخية دون تغيير.')}
+  busy=true;
+  try{
+   // Native note data is edited/deleted through the original R2 API.
+   // No parallel notes table: deletion in P151 is also visible in R3.
+   if(existing.source==='native'&&!nativeSet(s,a,''))return;
+   if(!metaUpdate(s+':'+a,'',true))return;
+   updateIndicators();showList();message('حُذفت الملاحظة من القائمة.')
+  }finally{busy=false}
  }
  function copyEdit(){
   var text=E('[data-p151-text]',hub).value||'';if(!text)return;
