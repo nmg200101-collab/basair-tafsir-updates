@@ -505,8 +505,11 @@
       .map(function(x){return {s:+x.s,a:+x.a,title:String(x.title||'').slice(0,120),text:x.text.slice(0,MAX),created:+x.created||0,updated:+x.updated||0,source:'p151'}})
   }catch(_){return []}
  }
- function save(list){
-  try{w.localStorage.setItem(KEY,JSON.stringify({version:1,notes:list}));return true}
+ function mutedLegacy(){
+  try{var state=JSON.parse(w.localStorage.getItem(KEY)||'{}');return Array.isArray(state.hiddenLegacy)?state.hiddenLegacy.filter(function(v){return /^\d{1,3}:\d{1,3}$/.test(v)}):[]}catch(_){return []}
+ }
+ function save(list,muted){
+  try{w.localStorage.setItem(KEY,JSON.stringify({version:1,notes:list,hiddenLegacy:muted==null?mutedLegacy():muted}));return true}
   catch(e){message('تعذر حفظ الملاحظة. تحقق من مساحة التخزين.');return false}
  }
  function extractLegacy(key,v){
@@ -536,13 +539,13 @@
   return found;
  }
  function allNotes(){
-  var map=new Map(),user=own();user.forEach(function(x){map.set(x.s+':'+x.a,x)});
+  var map=new Map(),user=own(),muted=new Set(mutedLegacy());user.forEach(function(x){map.set(x.s+':'+x.a,x)});
   // Read legacy B263/R3 or tafsir note collections WITHOUT modifying them.
   try{for(var i=0;i<w.localStorage.length;i++){
    var k=w.localStorage.key(i);if(!k||k===KEY)continue;
    if(!/(note|notes|memo|ملاحظ)/i.test(k)||!/(tafsir|b263|r3|ayah|quran)/i.test(k))continue;
    extractLegacy(k,w.localStorage.getItem(k)).forEach(function(x){
-    var id=x.s+':'+x.a;if(!map.has(id))map.set(id,x)
+    var id=x.s+':'+x.a;if(!map.has(id)&&!muted.has(id))map.set(id,x)
    });
   }}catch(_){}
   return Array.from(map.values()).sort(function(a,b){return (b.updated||0)-(a.updated||0)||a.s-b.s||a.a-b.a})
@@ -623,15 +626,18 @@
   entries=entries.filter(function(x){return x.s+':'+x.a!==id});
   entries.push({s:current.s,a:current.a,text:text.slice(0,MAX),title:title.slice(0,120),
    created:prior&&prior.created||now,updated:now});
-  if(save(entries)){message('تم حفظ الملاحظة.');updateIndicators();listRender()}
+  var muted=mutedLegacy().filter(function(x){return x!==id});
+  if(save(entries,muted)){message('تم حفظ الملاحظة.');updateIndicators();listRender()}
  }
  function deleteEdit(){
   if(!current||!w.confirm('هل تريد حذف هذه الملاحظة؟'))return;
   var s=current.s,a=current.a,existing=get(s,a);if(!existing)return;
-  // Historical R3 notes are NEVER deleted or overwritten by P151.
-  if(existing.source!=='p151'){message('هذه ملاحظة قديمة؛ لن تُحذف بياناتها الأصلية. يمكنك تعديلها وحفظ نسخة جديدة.');return}
-  var arr=own().filter(function(x){return x.s!==s||x.a!==a});
-  if(save(arr)){updateIndicators();showList();message('تم حذف الملاحظة.')}
+  // Deleting a legacy note hides it in the new hub but preserves its
+  // original R3 bytes as a rollback safeguard. Deleting a copied note
+  // must not accidentally make the older legacy version reappear.
+  var id=s+':'+a,arr=own().filter(function(x){return x.s!==s||x.a!==a});
+  var muted=mutedLegacy();if(muted.indexOf(id)<0)muted.push(id);
+  if(save(arr,muted)){updateIndicators();showList();message('أزيلت الملاحظة من القائمة. وحُفظت النسخة التاريخية دون تغيير.')}
  }
  function copyEdit(){
   var text=E('[data-p151-text]',hub).value||'';if(!text)return;
