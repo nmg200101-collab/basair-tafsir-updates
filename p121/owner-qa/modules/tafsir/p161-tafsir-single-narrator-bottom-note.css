@@ -1,0 +1,82 @@
+/* P161 — UI-only: one compact narrator above verse; original R3 note below verse. */
+html body #tafsirAyahs .v194T2Ayah .bq161NarratorTop{
+ box-sizing:border-box!important;display:flex!important;direction:rtl!important;
+ flex-direction:row!important;justify-content:flex-start!important;align-items:center!important;
+ flex-wrap:nowrap!important;gap:4px!important;margin:2px 9px 4px!important;
+ padding:0 3px!important;min-height:35px!important;max-height:40px!important;
+ background:transparent!important;border:0!important;box-shadow:none!important;
+}
+html body #tafsirAyahs .v194T2Ayah .bq161NarratorTop > button.p144MicButton{
+ box-sizing:border-box!important;display:inline-flex!important;flex-direction:row!important;
+ align-items:center!important;justify-content:center!important;gap:4px!important;
+ flex:0 0 auto!important;width:auto!important;min-width:84px!important;max-width:115px!important;
+ height:34px!important;min-height:34px!important;max-height:34px!important;
+ padding:3px 9px!important;margin:0!important;
+ font-size:11px!important;line-height:1!important;border-radius:18px!important;
+ white-space:nowrap!important;box-shadow:none!important;touch-action:manipulation;
+}
+html body #tafsirAyahs .v194T2Ayah .bq161NarratorTop > button.p144MicButton svg{
+ width:15px!important;height:15px!important;min-width:15px!important;max-width:15px!important;
+}
+/* Hide only duplicate microphone instances within the same ayah; keep original buttons/listeners. */
+html body #tafsirAyahs .v194T2Ayah button.p144MicButton[data-bq161-secondary-narrator="1"]{
+ display:none!important;visibility:hidden!important;
+}
+html body #tafsirAyahs .v194T2Ayah .p146TopMic:empty,
+html body #tafsirAyahs .v194T2Ayah .p145TopControls:empty,
+html body #tafsirAyahs .v194T2Ayah .bq160UpperControlHost:empty{
+ display:none!important;min-height:0!important;height:0!important;margin:0!important;padding:0!important;
+}
+/* Older generated top notes are never reintroduced by P161; original R3 bottom control stays. */
+html body #tafsirAyahs .v194T2Ayah .bq160NoteChip,
+html body #tafsirAyahs .v194T2Ayah .bq158NoteChip,
+html body #tafsirAyahs .v194T2Ayah button[data-bq160-note],
+html body #tafsirAyahs .v194T2Ayah button[data-bq158-verse-note]{display:none!important}
+/* Native R3 note: after Tafsir content, before native action bar, unchanged text/state/editor. */
+html body #tafsirAyahs .v194T2Ayah[data-bq161-bottom-note="1"] > button.b263r3NoteChip:not([hidden]){
+ display:inline-flex!important;align-items:center!important;justify-content:center!important;
+ gap:6px!important;box-sizing:border-box!important;position:static!important;
+ width:auto!important;min-width:99px!important;max-width:170px!important;
+ height:44px!important;min-height:44px!important;max-height:48px!important;
+ margin:6px 8px 5px!important;padding:5px 12px!important;
+ white-space:nowrap!important;visibility:visible!important;
+}
+html body #tafsirAyahs .v194T2Ayah > button.b263r3NoteChip[hidden]{display:none!important}
+/* Four original-intent tools; native Note stays outside the strip and Follow stays inside. */
+html body #tafsirAyahs .v194T2Ayah .basairB231AyahActions[data-bq161-four-tools="1"]{
+ display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;
+ grid-auto-columns:minmax(0,1fr)!important;grid-auto-flow:row!important;
+ gap:4px!important;max-height:none!important;overflow:visible!important;
+}
+html body #tafsirAyahs .v194T2Ayah .basairB231AyahActions > button[data-r2-action="note"],
+html body #tafsirAyahs .v194T2Ayah .basairB231AyahActions > button[data-bq155-follow],
+html body #tafsirAyahs .v194T2Ayah .basairB231AyahActions > button[data-bq156-follow],
+html body #tafsirAyahs .v194T2Ayah .basairB231AyahActions > button[data-bq160-follow],
+html body #tafsirAyahs .v194T2Ayah .basairB231AyahActions > .p149NoteSlot{
+ display:none!important;
+}
+html body #tafsirAyahs .v194T2Ayah .basairB231AyahActions[data-bq161-four-tools="1"]::after{
+ display:none!important;content:none!important;
+}
+html body #tafsirAyahs .v194T2Ayah .basairB231AyahActions > button[data-bq161-follow="1"]{
+ display:inline-flex!important;grid-column:1/span 1!important;grid-row:1!important;
+ flex-direction:column!important;align-items:center!important;justify-content:center!important;
+ box-sizing:border-box!important;width:100%!important;min-width:0!important;max-width:100%!important;
+ min-height:44px!important;height:46px!important;max-height:48px!important;
+ margin:0!important;padding:3px 1px!important;background:var(--paper,#fff)!important;
+ color:var(--green,#185b40)!important;border:1px solid #b7c6b9!important;
+ border-radius:9px!important;font:750 11px/1.15 Arial,Tahoma,sans-serif!important;
+ touch-action:manipulation;
+}
+html body #tafsirAyahs .v194T2Ayah .basairB231AyahActions > button[data-bq161-follow] span{font-size:15px!important;line-height:1!important}
+html body #tafsirAyahs .v194T2Ayah .basairB231AyahActions > button[data-bq161-follow] b{font:750 10.5px/1.1 Arial,Tahoma,sans-serif!important}
+html body #tafsirAyahs .v194T2Ayah .basairB231AyahActions > button[data-bq161-follow][aria-pressed="true"]{
+ background:#e5f2e7!important;border-color:#6f9f7a!important;color:#14583b!important;
+}
+@media(max-width:380px){
+ html body #tafsirAyahs .v194T2Ayah .bq161NarratorTop{margin-inline:5px!important}
+ html body #tafsirAyahs .v194T2Ayah .bq161NarratorTop > button.p144MicButton{
+  min-width:78px!important;max-width:104px!important;padding:2px 6px!important;font-size:10.5px!important;
+ }
+ html body #tafsirAyahs .v194T2Ayah .basairB231AyahActions[data-bq161-four-tools="1"]{gap:2px!important}
+}
