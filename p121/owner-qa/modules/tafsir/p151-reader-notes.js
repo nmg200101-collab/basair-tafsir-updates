@@ -487,7 +487,7 @@
  function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
  function valid(s,a){return Number.isInteger(Number(s))&&Number(s)>=1&&Number(s)<=114&&Number.isInteger(Number(a))&&Number(a)>0&&Number(a)<=300}
  function name(s){return names[s-1]||('سورة '+s)}
- function stamp(t){try{return new Date(Number(t)||Date.now()).toLocaleDateString('ar',{year:'numeric',month:'short',day:'numeric'})}catch(_){return ''}}
+ function stamp(t){if(!Number(t))return 'غير مؤرخ';try{return new Date(Number(t)).toLocaleDateString('ar',{year:'numeric',month:'short',day:'numeric'})}catch(_){return 'غير مؤرخ'}}
  function decodePos(x){var m=String(x||'').match(/^(\d{1,3}):(\d{1,3})$/);return m&&valid(+m[1],+m[2])?{s:+m[1],a:+m[2]}:null}
  function pos(row){
   if(!row)return null;
@@ -698,7 +698,7 @@
   var near=Array.from(parent.querySelectorAll('button')).find(function(b){
    if(b===favorite)return false;
    var desc=(b.getAttribute('aria-label')||'')+' '+(b.title||'')+' '+(b.textContent||'');
-   return (/بحث|search/i.test(desc)&&((b.textContent||'').trim().length<12))
+   return ((/بحث|search/i.test(desc)||/🔎|🔍|⌕/.test(desc))&&((b.textContent||'').trim().length<12))
   });
   if(near&&near.parentElement===parent)near.replaceWith(btn);
   else favorite.insertAdjacentElement('afterend',btn);
