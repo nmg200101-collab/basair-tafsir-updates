@@ -19,17 +19,22 @@ assert.ok(!js.includes('setInterval('),'No repeated repaint/watchdog loops');
 assert.ok(!js.includes("document.write"),'No wholesale native DOM replacement');
 assert.ok(css.includes('button[data-b233-top="search"]')&&css.includes('button[data-bq156-notes="1"]'));
 assert.ok(!css.includes('position:fixed')&&!css.includes('pointer-events:none'),'No global touch blocker');
-const release=read('p121/owner-qa/release.json');
-const signed=read('p155/P155-SEQ32-OWNER-SIGNED-RELEASE.json');
-assert.deepEqual(release,signed,'Active release must remain P155 signed Seq32');
-const decoded=JSON.parse(Buffer.from(JSON.parse(release).payload,'base64').toString('utf8'));
-assert.equal(decoded.sequence,32);
-assert.equal(decoded.modules[0].version,30);
+const rollback=read('p121/owner-qa/release-p155-seq32-before-p156-20261114.json');
+const signedP155=read('p155/P155-SEQ32-OWNER-SIGNED-RELEASE.json');
+const signedP156=read('p156/P156-SEQ33-OWNER-SIGNED-RELEASE.json');
+const active=read('p121/owner-qa/release.json');
+assert.deepEqual(rollback,signedP155,'Original signed Seq32 rollback must be byte-exact');
+assert.deepEqual(active,signedP156,'Active owner release must be signed P156 Seq33');
+const old=JSON.parse(Buffer.from(JSON.parse(rollback).payload,'base64').toString('utf8'));
+const decoded=JSON.parse(Buffer.from(JSON.parse(active).payload,'base64').toString('utf8'));
+assert.equal(old.sequence,32);
+assert.equal(decoded.sequence,33);
+assert.equal(decoded.modules[0].version,31);
 assert.equal(decoded.applicationId,'app.basair.qurv2');
 assert.equal(decoded.modules.length,1);
 assert.deepEqual(decoded.modules[0].assets.map(a=>a.path),[
- 'modules/tafsir/p155-native-foundation.css',
- 'modules/tafsir/p155-native-foundation.js'
+ 'modules/tafsir/p156-tafsir-recovery.css',
+ 'modules/tafsir/p156-tafsir-recovery.js'
 ]);
 console.log(JSON.stringify({status:'PASS',scriptSyntax:true,sourceOnly:true,
  nativeNotesAndFavoriteStorage:'UNTOUCHED',noGlobalClickCapture:true,
