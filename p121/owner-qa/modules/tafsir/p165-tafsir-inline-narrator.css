@@ -1,0 +1,40 @@
+/* BASAIR P165: compact narrator in first actual Tafsir heading, not a toolbar row. */
+html body #tafsirAyahs .v194T2Ayah button.bq165InlineNarrator{
+ display:inline-flex!important;align-items:center!important;justify-content:center!important;
+ vertical-align:middle!important;flex:0 0 auto!important;gap:3px!important;
+ box-sizing:border-box!important;width:56px!important;min-width:56px!important;max-width:56px!important;
+ height:25px!important;min-height:25px!important;max-height:25px!important;
+ padding:2px 5px!important;margin:0 3px!important;
+ border-radius:13px!important;border:1px solid #a8c6b6!important;
+ background:#edf7ef!important;color:#276346!important;
+ font:700 10px/1 Arial,Tahoma,sans-serif!important;white-space:nowrap!important;
+ box-shadow:none!important;touch-action:manipulation;cursor:pointer;
+}
+html body #tafsirAyahs .v194T2Ayah button.bq165InlineNarrator span{font-size:14px!important;line-height:1!important}
+html body #tafsirAyahs .v194T2Ayah button.bq165InlineNarrator b{font:700 10px/1 Arial,Tahoma,sans-serif!important}
+html body #tafsirAyahs .v194T2Ayah button.bq165InlineNarrator[aria-pressed="true"]{
+ background:#d9eddf!important;border-color:#639a74!important;color:#125338!important;
+}
+/* P153/P162 can reparent the native mic repeatedly. Hide the entire legacy
+   host when AND ONLY WHEN an accessible P165 control is connected to this row.
+   Avoid :has selectors, unsupported in older Android WebView implementations. */
+html body #tafsirAyahs#tafsirAyahs .v194T2Ayah[data-bq165-narrator-ready="1"] > .p146TopMic,
+html body #tafsirAyahs#tafsirAyahs .v194T2Ayah[data-bq165-narrator-ready="1"] .p145TopControls,
+html body #tafsirAyahs#tafsirAyahs .v194T2Ayah[data-bq165-narrator-ready="1"] .p144MicBar,
+html body #tafsirAyahs#tafsirAyahs .v194T2Ayah[data-bq165-narrator-ready="1"] .bq161NarratorTop{
+ display:none!important;visibility:hidden!important;min-height:0!important;height:0!important;
+ margin:0!important;padding:0!important;border:0!important;
+}
+html body #tafsirAyahs#tafsirAyahs .v194T2Ayah[data-bq165-narrator-ready="1"] button.p144MicButton{
+ visibility:hidden!important;
+}
+html body #tafsirAyahs .v194T2Ayah button.bq165InlineNarrator[disabled]{opacity:.55!important}
+body.dark #tafsirAyahs .v194T2Ayah button.bq165InlineNarrator,
+body[data-p147-night="1"] #tafsirAyahs .v194T2Ayah button.bq165InlineNarrator{
+ background:#244c39!important;color:#e4f6e8!important;border-color:#658f78!important;
+}
+@media(max-width:380px){
+ html body #tafsirAyahs .v194T2Ayah button.bq165InlineNarrator{
+  width:49px!important;min-width:49px!important;max-width:49px!important;padding:2px 3px!important;
+ }
+}
