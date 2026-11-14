@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """P156 owner OFFLINE signer. Does not upload, commit, publish or print credentials.
 Requires: python -m pip install cryptography
-Use ONLY with original OTA RSA-3072 private signing key (not Android PKCS12).
+Use ONLY original owner's RSA-3072 key. The verified owner PKCS12 shares the trusted OTA RSA public key.
 """
 import argparse
 import base64
@@ -12,8 +12,10 @@ import json
 import os
 from pathlib import Path
 import re
+import zipfile
 from cryptography.hazmat.primitives import hashes,serialization
 from cryptography.hazmat.primitives.asymmetric import padding,rsa
+from cryptography.hazmat.primitives.serialization import pkcs12
 
 ROOT=Path(__file__).resolve().parents[2]
 JS=ROOT/'p146/tests/test-p146-signed-release.cjs'
@@ -41,14 +43,31 @@ def verify_envelope(raw,pub):
     pub.verify(signature,payload,padding.PKCS1v15(),hashes.SHA256())
     return json.loads(payload)
 def load_private(path):
+    suffix=path.suffix.lower()
+    if suffix=='.zip':
+        # Original owner ZIP is read only in private/local memory; no extraction or upload.
+        with zipfile.ZipFile(path,'r') as archive:
+            raw=archive.read('OWNER-SIGNING-KEY.p12')
+            credentials=archive.read('SIGNING-CREDENTIALS-PRIVATE.txt').decode('utf-8')
+        found=re.search(r'(?m)^Keystore password:\s*(.*?)\s*$',credentials)
+        if not found:raise SystemExit('No keystore password inside private ZIP')
+        private,cert,_=pkcs12.load_key_and_certificates(raw,found.group(1).encode('utf-8'))
+        if not private or not cert:raise SystemExit('No usable original private key/certificate in ZIP')
+        return private
+    if suffix in ('.p12','.pfx'):
+        password=getpass.getpass('Owner PKCS12 password: ').encode('utf-8')
+        private,cert,_=pkcs12.load_key_and_certificates(path.read_bytes(),password)
+        if not private or not cert:raise SystemExit('No usable original private key in PKCS12')
+        return private
     raw=path.read_bytes()
     try:return serialization.load_pem_private_key(raw,password=None)
     except TypeError:
-        pw=getpass.getpass('Original OTA RSA private-key password: ').encode('utf-8')
+        pw=getpass.getpass('Owner RSA PEM password: ').encode('utf-8')
         return serialization.load_pem_private_key(raw,password=pw)
+
 def main():
     p=argparse.ArgumentParser()
-    p.add_argument('--key',required=True,type=Path,help='Private owner OTA RSA-3072 PEM local path (do not upload)')
+    p.add_argument('--key',required=True,type=Path,help='Original owner RSA key in private ZIP, PKCS12 or PEM; never upload')
     p.add_argument('--out',type=Path,default=OUTPUT,help='Local signed JSON output')
     a=p.parse_args()
     pub=verifier()
