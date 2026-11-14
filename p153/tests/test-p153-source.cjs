@@ -37,6 +37,7 @@ assert.ok(section.startsWith('/* P153'),'P153 UI module absent');
 class El {
  constructor(tag='div',id=''){this.tagName=tag.toUpperCase();this.id=id;this.children=[];this.parentElement=null;this.attrs={};this.innerHTML=''}
  appendChild(e){this.children.push(e);e.parentElement=this;return e}
+ insertAdjacentElement(position,e){assert.equal(position,'afterend');const parent=this.parentElement;assert.ok(parent);parent.children.splice(parent.children.indexOf(this)+1,0,e);e.parentElement=parent;return e}
  contains(e){for(let n=e;n;n=n.parentElement)if(n===this)return true;return false}
  getAttribute(k){return this.attrs[k]??null}
  setAttribute(k,v){this.attrs[k]=String(v)}
@@ -45,6 +46,7 @@ class El {
   const nodes=this.walk();
   if(s==='#basairTafsirB232FavoritesBtn')return nodes.find(x=>x.id==='basairTafsirB232FavoritesBtn')||null;
   if(s==='#p153NotesIndex')return nodes.find(x=>x.id==='p153NotesIndex')||null;
+  if(s==='#p153FavoritesIndex')return nodes.find(x=>x.id==='p153FavoritesIndex')||null;
   if(s==='button[data-b233-top="search"]')return nodes.find(x=>x.tagName==='BUTTON'&&x.attrs['data-b233-top']==='search')||null;
   return null
  }
@@ -70,7 +72,7 @@ const document={readyState:'complete',hidden:false,
  documentElement:{classList:{add:x=>classes.add(x),remove:x=>classes.delete(x)}},
  getElementById:id=>[rootDom.i,rootDom.b,...rootDom.i.walk()].find(x=>x.id===id)||null,
  querySelector:s=>({click(){tabs.push(s.includes('notes')?'notes':'favorites')}}),
- querySelectorAll:()=>[],addEventListener(){}};
+ querySelectorAll:()=>[],addEventListener(){},createElement:tag=>new El(tag)};
 const window={addEventListener:(n,fn,c)=>(listeners[n]??=[]).push(fn),
  setTimeout(){},requestAnimationFrame:fn=>fn(),MutationObserver:class{observe(){}disconnect(){}},
  __BASAIR_TAFSIR_FINAL_B233__:{favorites:{open(){opens.push('panel')}}},
@@ -81,20 +83,23 @@ const api=window.__BASAIR_TAFSIR_P153_STABLE__;
 assert.ok(api);
 const notes=rootDom.b.querySelector('#p153NotesIndex');
 assert.equal(notes,rootDom.search,'Original search button must be reused, not replaced');
-assert.equal(rootDom.b.children.length,5);
+assert.equal(rootDom.b.children.length,6,'Five visible controls plus one hidden native B233 favorites anchor');
+const favProxy=rootDom.b.querySelector('#p153FavoritesIndex');
+assert.ok(favProxy&&favProxy!==rootDom.fav,'Original B233 capture must never intercept visible favorite');
 assert.equal(notes.getAttribute('data-b233-top'),null);
 const click=target=>listeners.click[0]({target,preventDefault(){},stopPropagation(){},stopImmediatePropagation(){}});
 click(notes);assert.equal(tabs.at(-1),'notes');
-click(rootDom.fav);assert.equal(tabs.at(-1),'favorites');
+click(favProxy);assert.equal(tabs.at(-1),'favorites');
 for(let i=0;i<40;i++)api.refresh();
-assert.equal(rootDom.b.children.length,5,'Repeated mount must be idempotent');
+assert.equal(rootDom.b.children.length,6,'Repeated mount must be idempotent');
 assert.equal(rootDom.b.querySelector('#p153NotesIndex'),notes);
 const proxy=new El('button');proxy.setAttribute('data-p153-note-pos','2:3');
 click(proxy);assert.ok(opens.includes('2:3'),'Note must open native R2 editor at exact verse');
 rootDom=toolbar();api.refresh();
-assert.equal(rootDom.b.children.length,5);
+assert.equal(rootDom.b.children.length,6);
 assert.ok(rootDom.b.querySelector('#p153NotesIndex'));
+assert.ok(rootDom.b.querySelector('#p153FavoritesIndex'));
 console.log(JSON.stringify({status:'PASS',syntactic:true,sha256Assets:8,
  b233ReusedInPlace:true,rebuiltIndex:true,repeatedMounts:40,noDuplicates:true,
- originalFavorites:true,originalNotes:true,originalVerseEditor:true,
+ originalFavorites:true,originalNotes:true,nativeB233FavoriteAnchorPreserved:true,originalVerseEditor:true,
  parallelStorage:false,priorSignedSeq29Exact:true,tilawaQA050:'UNCHANGED'}));
