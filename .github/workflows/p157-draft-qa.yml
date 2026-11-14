@@ -12,13 +12,13 @@ permissions:
   contents: read
 jobs:
   source:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
       - run: node p157/tests/test-p157-source.cjs
       - run: node p156/tests/test-p156-source.cjs
   chromium:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
       - name: Install playwright for mobile-sized Chromium simulation
