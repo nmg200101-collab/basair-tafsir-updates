@@ -657,6 +657,10 @@
   var notes=allNotes(),indexes=new Set(notes.map(function(x){return x.s+':'+x.a}));
   d.querySelectorAll('#tafsirAyahs .p150NoteProxy').forEach(function(b){
    var row=b.closest('.v194T2Ayah'),p=pos(row),exists=!!p&&indexes.has(p.s+':'+p.a);
+   // P150 may repaint native R3 has-note based on the OLD store; P151's
+   // own marker survives that repaint so the saved-note visual is stable.
+   var saved=exists?'1':'0';
+   if(b.getAttribute('data-p151-saved')!==saved)b.setAttribute('data-p151-saved',saved);
    b.classList.toggle('has-note',exists);
    var label=exists?'تعديل ملاحظة الآية':'إضافة ملاحظة للآية';
    if(b.getAttribute('aria-label')!==label)b.setAttribute('aria-label',label);
