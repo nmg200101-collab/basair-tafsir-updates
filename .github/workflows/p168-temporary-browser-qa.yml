@@ -22,6 +22,8 @@ jobs:
       - run: |
           npm install --no-save playwright
           npx playwright install --with-deps chromium
+      - name: Verify owner RSA-3072 signed Seq45 and ten source hashes
+        run: node p168/tests/test-p168-owner-signed-source.cjs
       - name: Actual P130 Android touch/stop baseline
         run: node p168/tests/test-p168-android-touch-after-stop.cjs
       - name: Actual P130 native toolbar rebuild and delayed SPA
