@@ -405,7 +405,7 @@
  if(d.readyState==='loading')d.addEventListener('DOMContentLoaded',init,{once:true});
  else init();
  w.__BASAIR_TAFSIR_P157_RECOVERY__={version:VERSION,refresh:schedule,openNotes:openNotes,
-  manualNext:function(){manual.gesture=Date.now();return manualNext(true)},
+  manualNext:function(){manual.gesture=Date.now();syncMode(true);return manualNext(true)},
   status:function(){return {version:VERSION,active:active(),indexMounted:!!liveBar,mode:manual.lastMode,
    follow:running(),cursor:locKey(tail()&&tail().p),pending:!!manual.pending,
    completed:manual.completed.size,faulted:manual.faulted.size,counters:Object.assign({},counters)}}};
