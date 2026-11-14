@@ -1,49 +1,72 @@
 <!doctype html><html lang="ar" dir="rtl" class="dark"><head><meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <link rel="stylesheet" href="../../p121/owner-qa/modules/tafsir/p150-reader-polish.css">
-<style>body{background:#152b21;color:#fff;font-family:Arial,Tahoma,sans-serif;margin:0;padding:8px}
-.basairB231AyahActions{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:3px;padding:3px}
-.v194T2Ayah{margin-bottom:12px;border:1px solid #56765b;padding:8px}
-.v194T2Qrow{font-size:20px;padding:4px}
-.basairB231AyahActions>button{font-size:11px;min-width:0}
-</style></head>
-<body><section id="tafsirReader" class="active"><div id="basairTafsirPrimaryTabs"></div>
+<style>
+body{background:#152b21;color:#eaf4ee;font:16px Arial,Tahoma,sans-serif;margin:0;padding:12px}
+.v194T2Ayah{border:1px solid #638371;margin:8px 0;padding:8px}
+.v194T2Qrow{padding:9px 0;font-size:22px}
+.basairB231AyahActions{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:3px;padding:2px}
+.basairB231AyahActions > button{height:46px}
+</style></head><body>
+<div id="tafsirReader" class="active"></div><div id="basairTafsirPrimaryTabs"></div>
 <div id="tafsirAyahs">
-<article class="v194T2Ayah" data-t2ayah="2" id="missing">
-<div class="v194T2Qrow">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>
-<div class="v194T2Body">المعنى والبيان</div>
-<button class="p144MicButton" aria-pressed="false"><b>الناطق</b></button>
-<div class="basairB231AyahActions"><button>متابعة</button><button>نسخ</button><button>مقارنة</button><button>مفضلة</button></div>
+<article class="v194T2Ayah" id="ta-2-3" data-t5-s="2" data-t5-a="3">
+ <div class="v194T2Qrow">الرَّحْمَٰنِ الرَّحِيمِ</div><div class="v194T2Body">شرح الآية</div>
+ <button class="p144MicButton" aria-pressed="false">الناطق</button>
+ <button class="b263r3NoteChip" data-r3-note-pos="2:3" hidden>الأصلية</button>
+ <div class="basairB231AyahActions" id="bar"><button>متابعة</button><button>نسخ</button><button>مقارنة</button><button>مفضلة</button></div>
 </article>
-<article class="v194T2Ayah" data-t2ayah="3" id="disabled">
-<div class="v194T2Qrow">الرَّحْمَٰنِ الرَّحِيمِ</div><div class="v194T2Body">شرح الآية</div>
-<button class="p144MicButton" aria-pressed="false"><b>الناطق</b></button>
-<button class="b263r3NoteChip" data-r3-note-pos="1" hidden disabled><b>ملاحظة</b></button>
-<div class="basairB231AyahActions"><button>متابعة</button><button>نسخ</button><button>مقارنة</button><button>مفضلة</button></div>
-</article></div></section>
-<pre id="qa">PENDING</pre>
-<script>window.__BASAIR_TAFSIR_STEP2__={state:()=>({s:1,a:2}),open:()=>{}};</script>
+<article class="v194T2Ayah" id="ta-3-6" data-t5-s="3" data-t5-a="6">
+ <div class="v194T2Qrow">شرح الآية السادسة</div><div class="v194T2Body">التفسير</div>
+ <button class="p144MicButton" aria-pressed="false">الناطق</button>
+ <div class="basairB231AyahActions"><button>متابعة</button><button>نسخ</button><button>مقارنة</button><button>مفضلة</button></div>
+</article></div><pre id="qa">PENDING</pre>
+<script>
+window.__BASAIR_TAFSIR_STEP2__={state:()=>({s:2,a:3,type:'basair'}),open:()=>{}};
+window.__BASAIR_TAFSIR_CORE__={getMuyassarSurah:()=>new Promise(()=>{})};
+window.noteEditorCalls=[];
+window.__BASAIR_TAFSIR_R2__={openNote:(s,a)=>window.noteEditorCalls.push([s,a])};
+// Mirrors the actual B263-R3 delegated click route in the signed V694 app.
+document.addEventListener('click',function(ev){
+ const b=ev.target.closest('button');if(!b)return;
+ const pos=b.getAttribute('data-r3-note-pos')||b.getAttribute('data-r3-note-edit');
+ if(pos){const x=String(pos).split(':');
+  window.__BASAIR_TAFSIR_R2__.openNote(Number(x[0]),Number(x[1]))}
+});
+function reproduceNativeR3Sync(row){
+ // Mirrors B263-R3 syncAyahNotes scope requirement.
+ let chip=row.querySelector(':scope > .b263r3NoteChip');
+ if(!chip){chip=document.createElement('button');chip.className='b263r3NoteChip';row.appendChild(chip)}
+ chip.setAttribute('data-r3-note-pos',row.dataset.t5S+':'+row.dataset.t5A);
+ return row.querySelectorAll(':scope > .b263r3NoteChip').length;
+}
+</script>
 <script src="../../p121/owner-qa/modules/tafsir/p150-reader-polish.js"></script>
-<script>window.addEventListener('DOMContentLoaded',()=>{
- setTimeout(()=>{
+<script>
+window.addEventListener('DOMContentLoaded',()=>setTimeout(async function(){
  try{
- const api=window.__BASAIR_TAFSIR_P150__;api.refresh();
- const first=document.getElementById('missing'),second=document.getElementById('disabled');
- const bar=first.querySelector('.basairB231AyahActions'),bar2=second.querySelector('.basairB231AyahActions');
- const slot=bar.querySelector('.p149NoteSlot'),slot2=bar2.querySelector('.p149NoteSlot');
- const provisional=slot.querySelector('button[data-p150-provisional-note="1"]');
- const native=second.querySelector('button.b263r3NoteChip');
- const before=!!provisional&&!provisional.disabled&&!provisional.hidden&&native.parentElement===slot2&&!native.disabled&&!native.hidden;
- const columns=getComputedStyle(bar).gridTemplateColumns.trim().split(/\s+/);
- const fifthVisible=columns.length===5&&
-   provisional.getBoundingClientRect().width>=38&&provisional.getBoundingClientRect().height>=44&&
-   provisional.getBoundingClientRect().left>=bar.getBoundingClientRect().left-2;
- const off=getComputedStyle(first.querySelector('.p144MicButton'),'::after').content.includes('متوقف');
- const late=document.createElement('button');late.className='b263r3NoteChip';late.dataset.r3NotePos='1';late.innerHTML='<b>ملاحظة</b>';first.appendChild(late);
- api.refresh();
- const replaced=late.parentElement===slot&&!slot.querySelector('[data-p150-provisional-note]');
- const result={pass:before&&fifthVisible&&off&&replaced,before,fifthVisible,off,replaced,columns:columns.length};
- document.getElementById('qa').textContent=JSON.stringify(result);
+  const api=window.__BASAIR_TAFSIR_P150__,r1=document.getElementById('ta-2-3'),
+   r2=document.getElementById('ta-3-6'),native=r1.querySelector(':scope > .b263r3NoteChip');
+  api.refresh();
+  const first=r1.querySelector('.p150NoteProxy'),
+   second=r2.querySelector('.p150NoteProxy'),bar=r1.querySelector('.basairB231AyahActions');
+  const initial=first?.getAttribute('data-r3-note-pos')==='2:3'&&
+    second?.getAttribute('data-r3-note-pos')==='3:6'&&!!native?.hidden;
+  first.click();second.click();
+  const routed=JSON.stringify(window.noteEditorCalls)==='[[2,3],[3,6]]';
+  reproduceNativeR3Sync(r1);reproduceNativeR3Sync(r1);reproduceNativeR3Sync(r1);
+  const duplicates=r1.querySelectorAll(':scope > .b263r3NoteChip').length;
+  const existingProxy=r1.querySelectorAll('.p149NoteSlot > button.p150NoteProxy').length;
+  const tracks=getComputedStyle(bar).gridTemplateColumns.trim().split(/\s+/).length;
+  const visible=first.getBoundingClientRect().height>=44&&first.getBoundingClientRect().width>20;
+  // No native note yet on r2, emulate R3 creating one later.
+  reproduceNativeR3Sync(r2);api.refresh();
+  const lateNative=r2.querySelector(':scope > .b263r3NoteChip');
+  const late=lateNative?.hidden&&
+    r2.querySelectorAll('.p149NoteSlot > button.p150NoteProxy').length===1;
+  const micOff=getComputedStyle(r1.querySelector('button.p144MicButton'),'::after').content.includes('متوقف');
+  document.getElementById('qa').textContent=JSON.stringify({pass:initial&&routed&&duplicates===1&&existingProxy===1&&tracks===5&&visible&&late&&micOff,
+   initial,routed,duplicates,existingProxy,tracks,visible,late,micOff,noteEditorCalls:window.noteEditorCalls});
  }catch(e){document.getElementById('qa').textContent='ERROR '+e.stack}
- },160);
-});</script></body></html>
+},180));
+</script></body></html>
