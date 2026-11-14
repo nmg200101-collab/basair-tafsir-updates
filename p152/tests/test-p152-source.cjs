@@ -24,9 +24,9 @@ for(const selector of ['#basairTafsirB233TopBar','button.p152SavedTrigger',
 const before=read('p121/owner-qa/release-p151-seq28-before-p152-20261114.json'),
  live=read('p121/owner-qa/release.json'),
  signed=read('p151/P151-SEQ28-OWNER-SIGNED-RELEASE.json');
-assert.deepEqual(before,live,'P152 draft may not modify the current signed release');
 assert.deepEqual(before,signed,'P151 Seq28 rollback must be byte-exact');
-const previous=JSON.parse(Buffer.from(JSON.parse(live).payload,'base64').toString('utf8'));
+assert.deepEqual(live,read('p152/P152-SEQ29-OWNER-SIGNED-RELEASE.json'),'Active release must be signed P152 Seq29');
+const previous=JSON.parse(Buffer.from(JSON.parse(before).payload,'base64').toString('utf8'));
 const cand=JSON.parse(read('p152/P152-SEQ29-UNSIGNED-CANDIDATE.json').toString('utf8'));
 assert.equal(previous.sequence,28);assert.equal(previous.modules[0].version,26);
 assert.equal(cand.published,false);assert.equal(cand.signed,false);
@@ -43,6 +43,6 @@ for(const [i,a] of next.modules[0].assets.entries()){
 }
 assert.equal(next.modules[0].assets[6].path,'modules/tafsir/p152-reader-saved.css');
 assert.equal(next.modules[0].assets[7].path,'modules/tafsir/p152-reader-saved.js');
-console.log(JSON.stringify({status:'PASS',stage:'UNSIGNED_DRAFT',sequence:29,tafsir:27,
+console.log(JSON.stringify({status:'PASS',stage:'SIGNED_OWNER_QA',sequence:29,tafsir:27,
  nativeSavedPanel:true,topFavoritesAndNotes:true,originalNativeNotes:true,
  noteButtonVisualStable:true,rollbackSeq28:true,tilawaQA050:'UNCHANGED',android:'NOT TESTED'}));
