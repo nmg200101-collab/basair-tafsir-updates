@@ -1,0 +1,58 @@
+/* BASAIR P158 — visual-only note placement matching owner's 2026-11-13 screenshot.
+   Preserve the existing four bottom actions and their DOM/event order. */
+#tafsirAyahs .v194T2Ayah .bq158NoteUpperRow{
+ box-sizing:border-box;display:flex;align-items:center;justify-content:flex-start;
+ direction:rtl;gap:6px;margin:4px 6px 5px;padding:0 4px;min-height:44px;
+}
+#tafsirAyahs .v194T2Ayah button.bq158NoteChip{
+ box-sizing:border-box!important;display:inline-flex!important;align-items:center!important;
+ justify-content:center!important;flex-direction:row!important;gap:6px!important;
+ width:auto!important;min-width:94px!important;max-width:126px!important;
+ height:44px!important;min-height:44px!important;max-height:44px!important;
+ margin:0 2px!important;padding:5px 11px!important;
+ border:1px solid #b9c5b5!important;border-radius:24px!important;
+ background:#f0f4ec!important;color:#41634d!important;
+ font:700 11.5px/1.1 Arial,Tahoma,sans-serif!important;
+ white-space:nowrap!important;box-shadow:none!important;
+ text-align:center!important;touch-action:manipulation;cursor:pointer;
+}
+#tafsirAyahs .v194T2Ayah button.bq158NoteChip span{font-size:15px!important;line-height:1!important}
+#tafsirAyahs .v194T2Ayah button.bq158NoteChip b{font:inherit!important;white-space:nowrap!important}
+#tafsirAyahs .v194T2Ayah button.bq158NoteChip.has-note{
+ border-color:#c5a663!important;background:#fff3da!important;color:#78591c!important;
+}
+#tafsirAyahs .v194T2Ayah[data-bq158-note-ready="1"] .basairB231AyahActions{
+ display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;
+ grid-auto-columns:minmax(0,1fr)!important;gap:5px!important;
+ min-height:0!important;max-height:none!important;overflow:visible!important;
+}
+/* Keep original R2/R3 buttons and listeners in the DOM for native state sync,
+   but leave exactly four visible tools once the top Note button is installed. */
+#tafsirAyahs .v194T2Ayah[data-bq158-note-ready="1"] .basairB231AyahActions > button[data-r2-action="note"],
+#tafsirAyahs .v194T2Ayah[data-bq158-note-ready="1"] .basairB231AyahActions > button.p147NoteTool,
+#tafsirAyahs .v194T2Ayah[data-bq158-note-ready="1"] .basairB231AyahActions > button.p148NoteTool,
+#tafsirAyahs .v194T2Ayah[data-bq158-note-ready="1"] .basairB231AyahActions > .p149NoteSlot,
+#tafsirAyahs .v194T2Ayah[data-bq158-note-ready="1"] .basairB231AyahActions > button[data-p150-note-proxy]{
+ display:none!important;
+}
+/* Original top R3 node remains the hidden direct-child synchronization anchor. */
+#tafsirAyahs .v194T2Ayah[data-bq158-note-ready="1"] > button.b263r3NoteChip{
+ display:none!important;
+}
+#tafsirAyahs .v194T2Ayah[data-bq158-note-ready="1"] .basairB231AyahActions > button{
+ min-width:0!important;max-width:100%!important;box-sizing:border-box!important;
+}
+.dark #tafsirAyahs .v194T2Ayah button.bq158NoteChip,
+body[data-p147-night="1"] #tafsirAyahs .v194T2Ayah button.bq158NoteChip{
+ border-color:#68816b!important;background:#293d30!important;color:#eff8ef!important;
+}
+.dark #tafsirAyahs .v194T2Ayah button.bq158NoteChip.has-note,
+body[data-p147-night="1"] #tafsirAyahs .v194T2Ayah button.bq158NoteChip.has-note{
+ background:#544325!important;border-color:#baa06c!important;color:#ffe5aa!important;
+}
+@media(max-width:380px){
+ #tafsirAyahs .v194T2Ayah button.bq158NoteChip{
+  min-width:80px!important;padding:5px 8px!important;font-size:11px!important;
+ }
+ #tafsirAyahs .v194T2Ayah[data-bq158-note-ready="1"] .basairB231AyahActions{gap:3px!important}
+}
