@@ -1,0 +1,30 @@
+name: P156 Tafsir Draft QA (NO PUBLISH)
+on:
+  pull_request:
+    paths:
+      - "p156/**"
+      - "p121/owner-qa/modules/tafsir/p156-*"
+      - ".github/workflows/p156-draft-qa.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  source:
+    name: Source and owner release freeze
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Check P156 source and signed P155 freeze
+        run: node p156/tests/test-p156-source.cjs
+  browser:
+    name: Android-size Chromium functionality (NOT real Android)
+    runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright/python:v1.56.0-noble
+    steps:
+      - uses: actions/checkout@v4
+      - name: Chromium regression
+        run: python p156/tests/test-p156-browser.py
