@@ -1,0 +1,48 @@
+{
+  "status": "OWNER_SIGNED_TESTED_STAGED_NOT_PUBLISHED",
+  "signed": true,
+  "published": false,
+  "androidDeviceVerified": false,
+  "ownerApprovalRecorded": true,
+  "publicationScope": "owner-qa automatic OTA only",
+  "previousActive": "P157 signed Seq34 / Tafsir v32",
+  "rollback": "p121/owner-qa/release-p157-seq34-before-p158-20261114.json",
+  "signedEnvelope": "p158/P158-SEQ35-OWNER-SIGNED-RELEASE.json",
+  "qa050Protected": true,
+  "preservesNotesStorage": true,
+  "preservesFavorites": true,
+  "preservesNativeScroll": true,
+  "changes": "Only the compact verse Note chip is shown next to the original narrator; bottom four native actions remain in original order. P157 index/assets retained verbatim.",
+  "sequence": 35,
+  "tafsirVersion": 33,
+  "appId": "app.basair.qurv2",
+  "minAppVersion": 695,
+  "assets": [
+    {
+      "path": "modules/tafsir/p157-native-saved-stability.css",
+      "kind": "css",
+      "size": 2461,
+      "sha256": "4c9bfd8d8e5a67a63b77cad89387e3d0632ac4a9e5a2300f1db83ef27af1cf24"
+    },
+    {
+      "path": "modules/tafsir/p158-tafsir-note-above-tools.css",
+      "kind": "css",
+      "size": 3484,
+      "sha256": "59c6ac61e255fe97343dee60ab8c9b94f676a903b7c2c9aacd343f8cc36383d3"
+    },
+    {
+      "path": "modules/tafsir/p157-native-saved-stability.js",
+      "kind": "js",
+      "size": 4995,
+      "sha256": "4cfc680ce96a58d58e735f22bdd894c812f4b497b44c19699057d58c3e22f91c"
+    },
+    {
+      "path": "modules/tafsir/p158-tafsir-note-above-tools.js",
+      "kind": "js",
+      "size": 5311,
+      "sha256": "8458729e9031d8f6d678876b96aa0de83d0b32c82478398432eb16ef214020b1"
+    }
+  ],
+  "browserQA": "PASS Chromium mobile 360,390,430 px; 26 verses; correct note positions; native 4 tools; P157 index preserved; no STEP5 calls, zero JS errors",
+  "ownerDeviceQA": "PENDING"
+}
