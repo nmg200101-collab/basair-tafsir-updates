@@ -1,0 +1,47 @@
+{
+  "status": "UNSIGNED_OWNER_QA_REVIEW_NOT_PUBLISHED",
+  "signed": false,
+  "published": false,
+  "fieldAndroidVerified": false,
+  "ownerApprovalToPublish": true,
+  "preservesTilawaQA050": true,
+  "preservesNativeNotes": true,
+  "mandatoryRestart": "Force-stop application and reopen to discard P156 in-memory observers",
+  "diagnosis": "P156 changes native reader data-basair-main-tab to p129-manual and installs an overlapping STEP5 feed; remove both entirely. Replace old Search/Favorites visual triggers with single two-tab favorites-and-notes group without cloning native data stores or overriding B231/R114/STEP5.",
+  "baseline": "P156 signed Seq33 / Tafsir v31",
+  "rollback": "p121/owner-qa/release-p156-seq33-before-p157-20261114.json",
+  "proposedPayload": {
+    "schema": "basair-universal-ota-v1",
+    "channel": "owner-qa",
+    "applicationId": "app.basair.qurv2",
+    "sequence": 34,
+    "id": "P157-TAFSIR-NATIVE-STABLE-SAVED-GROUP-V695-20261114",
+    "title": "توحيد المفضلة والملاحظات وإزالة تعارض واجهة التفسير والتمرير",
+    "minAppVersion": 695,
+    "deliveryMode": "automatic",
+    "issuedAt": null,
+    "expiresAt": null,
+    "modules": [
+      {
+        "id": "tafsir",
+        "version": 32,
+        "assets": [
+          {
+            "path": "modules/tafsir/p157-native-saved-stability.css",
+            "kind": "css",
+            "size": 2461,
+            "sha256": "4c9bfd8d8e5a67a63b77cad89387e3d0632ac4a9e5a2300f1db83ef27af1cf24"
+          },
+          {
+            "path": "modules/tafsir/p157-native-saved-stability.js",
+            "kind": "js",
+            "size": 4995,
+            "sha256": "4cfc680ce96a58d58e735f22bdd894c812f4b497b44c19699057d58c3e22f91c"
+          }
+        ]
+      }
+    ]
+  },
+  "publishAuthorization": "استكمال طلب المالك بإصلاح ونشر تحديثات التفسير على قناة owner-qa بعد موافقته على التنفيذ المباشر وتزويده مفتاح التوقيع الأصلي؛ لا نشر عام",
+  "releaseStage": "OWNER_QA_SIGNED_STAGED_FOR_MERGE"
+}
