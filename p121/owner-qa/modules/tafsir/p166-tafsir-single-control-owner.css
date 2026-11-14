@@ -1,0 +1,60 @@
+/* BASAIR P166 — no floating voice strip or competing Follow button.
+ * Keep P163 note below content and P157 index exactly as they were. */
+html body #tafsirAyahs .v194T2Ayah button.bq166Voice{
+ display:inline-flex!important;align-items:center!important;justify-content:center!important;
+ box-sizing:border-box!important;flex:0 0 auto!important;gap:3px!important;
+ width:55px!important;min-width:55px!important;max-width:55px!important;
+ height:26px!important;min-height:26px!important;max-height:26px!important;
+ padding:2px 5px!important;margin:0 5px!important;
+ border:1px solid #abc6b4!important;border-radius:14px!important;
+ background:#eef6ee!important;color:#216044!important;box-shadow:none!important;
+ font:700 10px/1 Arial,Tahoma,sans-serif!important;white-space:nowrap!important;
+ vertical-align:middle!important;touch-action:manipulation;cursor:pointer;
+}
+html body #tafsirAyahs .v194T2Ayah button.bq166Voice span{font-size:14px!important;line-height:1!important}
+html body #tafsirAyahs .v194T2Ayah button.bq166Voice b{font:700 10px/1 Arial,Tahoma,sans-serif!important}
+html body #tafsirAyahs .v194T2Ayah button.bq166Voice[aria-pressed="true"]{
+ background:#dceee2!important;border-color:#6b9c77!important;color:#14523b!important;
+}
+/* Only suppress original P144 after one working visual entrance is installed. */
+html body #tafsirAyahs .v194T2Ayah[data-bq166-voice-ready="1"] .p146TopMic,
+html body #tafsirAyahs .v194T2Ayah[data-bq166-voice-ready="1"] .p145TopControls,
+html body #tafsirAyahs .v194T2Ayah[data-bq166-voice-ready="1"] .p144MicBar,
+html body #tafsirAyahs .v194T2Ayah[data-bq166-voice-ready="1"] .bq161NarratorTop{
+ display:none!important;visibility:hidden!important;height:0!important;min-height:0!important;
+ margin:0!important;padding:0!important;border:0!important;
+}
+html body #tafsirAyahs .v194T2Ayah[data-bq166-voice-ready="1"] button.p144MicButton{
+ visibility:hidden!important;
+}
+/* P130 single-owner Follow lives in the first native action cell (RTL). */
+html body #tafsirAyahs .v194T2Ayah .basairB231AyahActions[data-bq166-four-actions="1"]{
+ display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;
+ grid-auto-flow:row!important;gap:4px!important;overflow:visible!important;
+ max-height:none!important;
+}
+html body #tafsirAyahs .v194T2Ayah .basairB231AyahActions[data-bq166-four-actions="1"] > button[data-p125-follow]{
+ grid-column:1!important;grid-row:1!important;display:inline-flex!important;
+ flex-direction:column!important;align-items:center!important;justify-content:center!important;
+ width:100%!important;min-width:0!important;min-height:44px!important;height:46px!important;
+ box-sizing:border-box!important;margin:0!important;padding:3px 1px!important;
+ color:var(--green,#185b40)!important;background:var(--paper,#fff)!important;
+ border:1px solid #b7c6b9!important;border-radius:9px!important;
+ font:750 11px/1.15 Arial,Tahoma,sans-serif!important;touch-action:manipulation;
+}
+html body #tafsirAyahs .v194T2Ayah .basairB231AyahActions > [data-b231-action="copy"]{grid-column:2!important;grid-row:1!important}
+html body #tafsirAyahs .v194T2Ayah .basairB231AyahActions > [data-b231-action="compare"]{grid-column:3!important;grid-row:1!important}
+html body #tafsirAyahs .v194T2Ayah .basairB231AyahActions > [data-b231-action="mark"]{grid-column:4!important;grid-row:1!important}
+html body #tafsirAyahs .v194T2Ayah[data-bq163-note-ready="1"] .basairB231AyahActions > .p149NoteSlot,
+html body #tafsirAyahs .v194T2Ayah .basairB231AyahActions > button[data-r2-action="note"],
+html body #tafsirAyahs .v194T2Ayah .basairB231AyahActions > button[data-bq162-follow],
+html body #tafsirAyahs .v194T2Ayah .basairB231AyahActions > button[data-bq165-follow]{display:none!important}
+html body #tafsirAyahs .v194T2Ayah .basairB231AyahActions[data-bq166-four-actions="1"]::after{display:none!important;content:none!important}
+body.dark #tafsirAyahs .v194T2Ayah button.bq166Voice,
+body[data-p147-night="1"] #tafsirAyahs .v194T2Ayah button.bq166Voice{
+ background:#254a36!important;color:#f0faef!important;border-color:#688d74!important;
+}
+@media(max-width:380px){
+ html body #tafsirAyahs .v194T2Ayah button.bq166Voice{width:48px!important;min-width:48px!important;max-width:48px!important;padding:2px 3px!important}
+ html body #tafsirAyahs .v194T2Ayah .basairB231AyahActions[data-bq166-four-actions="1"]{gap:2px!important}
+}
