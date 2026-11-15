@@ -1,0 +1,176 @@
+/* P174 — approved index design. Single existing P153/R3 saved control,
+ * full Tafsir-source label, no mini search. Scoped: index B233 ONLY. */
+html body #tafsirIndex #basairTafsirB233TopBar,
+html body [data-basair-tafsir-index="1"] #basairTafsirB233TopBar {
+  display: grid !important;
+  grid-template-columns: minmax(0,1.55fr) minmax(0,1.42fr) minmax(0,.95fr) minmax(0,.82fr) !important;
+  direction: rtl !important;
+  align-items: stretch !important;
+  gap: 5px !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  box-sizing: border-box !important;
+  margin: 0 0 7px !important;
+  animation: none !important;
+  transition: none !important;
+}
+/* Hide mini-search or P153's separately-retasked Notes, preserving search below. */
+html body #tafsirIndex #basairTafsirB233TopBar button[data-b233-top="search"],
+html body #tafsirIndex #basairTafsirB233TopBar #p153NotesIndex,
+html body #tafsirIndex #basairTafsirB233TopBar button[data-bq155-notes],
+html body #tafsirIndex #basairTafsirB233TopBar button[data-bq156-notes],
+html body [data-basair-tafsir-index="1"] #basairTafsirB233TopBar button[data-b233-top="search"],
+html body [data-basair-tafsir-index="1"] #basairTafsirB233TopBar #p153NotesIndex,
+html body #tafsirIndex #bq157SavedGroup,
+html body [data-basair-tafsir-index="1"] #bq157SavedGroup {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+/* Native B233 Favorites is an INTERNAL anchor and intercepts click during
+ * WINDOW capture; never expose it as the final visible button. */
+html body #tafsirIndex #basairTafsirB233TopBar #basairTafsirB232FavoritesBtn,
+html body #tafsirIndex[data-bq157-saved-ready="1"] #basairTafsirB233TopBar.bq173-bar #basairTafsirB232FavoritesBtn[data-bq173-old="1"],
+html body [data-basair-tafsir-index="1"] #basairTafsirB233TopBar #basairTafsirB232FavoritesBtn {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+/* P171/P173 synthetic proxies are also hidden when P153 existing control is present. */
+html body #tafsirIndex[data-bq174-ready="1"] #basairTafsirB233TopBar button[data-bq171-saved="1"]:not(#p153FavoritesIndex),
+html body #tafsirIndex[data-bq174-ready="1"] #basairTafsirB233TopBar button[data-bq173-owner="1"]:not(#p153FavoritesIndex) {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+html body #tafsirIndex #basairTafsirB233TopBar > *,
+html body [data-basair-tafsir-index="1"] #basairTafsirB233TopBar > * {
+  box-sizing: border-box !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  width: 100% !important;
+  min-height: 72px !important;
+  height: auto !important;
+  margin: 0 !important;
+  padding: 7px 4px !important;
+  border-radius: 15px !important;
+  animation: none !important;
+  transition: none !important;
+}
+/* First B233 child is the source chooser. Existing native list remains active. */
+html body #tafsirIndex #basairTafsirB233TopBar > :first-child,
+html body #tafsirIndex #basairTafsirB233TopBar [data-bq174-type="1"],
+html body [data-basair-tafsir-index="1"] #basairTafsirB233TopBar [data-bq174-type="1"] {
+  grid-column: 1 !important;
+  grid-row: 1 !important;
+  order: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: stretch !important;
+  justify-content: center !important;
+  padding: 7px 8px !important;
+  text-align: right !important;
+  background: var(--soft,#e9f2ed) !important;
+  border: 1px solid var(--line,#bfd0c3) !important;
+  white-space: normal !important;
+  overflow: visible !important;
+  overflow-wrap: anywhere !important;
+  text-overflow: clip !important;
+}
+html body #tafsirIndex #basairTafsirB233TopBar [data-bq174-type="1"] *,
+html body #tafsirIndex #basairTafsirB233TopBar > :first-child * {
+  box-sizing: border-box !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  white-space: normal !important;
+  overflow: visible !important;
+  overflow-wrap: anywhere !important;
+  text-overflow: clip !important;
+  line-height: 1.3 !important;
+}
+html body #tafsirIndex #basairTafsirB233TopBar [data-bq174-type="1"] [data-bq174-value="1"] {
+  display: block !important;
+  font-size: 12px !important;
+  font-weight: 750 !important;
+  line-height: 1.35 !important;
+  white-space: normal !important;
+  color: var(--green,#14583f) !important;
+  text-align: right !important;
+  padding: 2px 0 !important;
+}
+/* Native select itself stays operable above the full-value mirror. */
+html body #tafsirIndex #basairTafsirB233TopBar [data-bq174-has-select="1"] {
+  position: relative !important;
+}
+html body #tafsirIndex #basairTafsirB233TopBar [data-bq174-has-select="1"] select {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  z-index: 3 !important;
+  opacity: 0 !important;
+  pointer-events: auto !important;
+  cursor: pointer !important;
+}
+/* Reuse P153's ORIGINAL already-functioning Favorites proxy. Its data-p153-tab
+ * handler opens the existing R3 Favorites+Notes panel, no storage duplicate. */
+html body #tafsirIndex #basairTafsirB233TopBar #p153FavoritesIndex,
+html body #tafsirIndex #basairTafsirB233TopBar.bq173-bar #p153FavoritesIndex[data-bq174-saved="1"],
+html body [data-basair-tafsir-index="1"] #basairTafsirB233TopBar #p153FavoritesIndex {
+  display: flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  grid-column: 2 !important;
+  grid-row: 1 !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 2px !important;
+  padding: 5px 3px !important;
+  border: 1px solid var(--line,#cfc9b7) !important;
+  background: var(--paper,#fffefa) !important;
+  color: var(--green,#14583f) !important;
+  text-align: center !important;
+}
+html body #tafsirIndex #basairTafsirB233TopBar #p153FavoritesIndex span {
+  display: block !important;
+  font-size: 23px !important;
+  line-height: 1 !important;
+}
+html body #tafsirIndex #basairTafsirB233TopBar #p153FavoritesIndex b {
+  display: block !important;
+  font-size: 11px !important;
+  font-weight: 750 !important;
+  line-height: 1.25 !important;
+  white-space: normal !important;
+  text-align: center !important;
+}
+/* Very narrow phones: prioritize full type text without horizontal overflow. */
+@media(max-width:350px) {
+  html body #tafsirIndex #basairTafsirB233TopBar {
+    grid-template-columns: repeat(6,minmax(0,1fr)) !important;
+  }
+  html body #tafsirIndex #basairTafsirB233TopBar > :first-child,
+  html body #tafsirIndex #basairTafsirB233TopBar [data-bq174-type="1"] {
+    grid-column: 1 / span 3 !important;
+    grid-row: 1 !important;
+  }
+  html body #tafsirIndex #basairTafsirB233TopBar #p153FavoritesIndex,
+  html body #tafsirIndex #basairTafsirB233TopBar.bq173-bar #p153FavoritesIndex[data-bq174-saved="1"] {
+    grid-column: 4 / span 3 !important;
+    grid-row: 1 !important;
+  }
+  html body #tafsirIndex #basairTafsirB233TopBar > :not(:first-child):not(#p153FavoritesIndex):not(#p153NotesIndex):not(#basairTafsirB232FavoritesBtn):not([data-b233-top]):not([data-bq171-saved]):not([data-bq173-owner]) {
+    grid-column: span 3 !important;
+    grid-row: 2 !important;
+  }
+}
+body.dark #tafsirIndex #basairTafsirB233TopBar > :first-child,
+body.dark #tafsirIndex #basairTafsirB233TopBar #p153FavoritesIndex,
+body[data-p147-night="1"] #tafsirIndex #basairTafsirB233TopBar > :first-child,
+body[data-p147-night="1"] #tafsirIndex #basairTafsirB233TopBar #p153FavoritesIndex {
+  background: #22392f !important;
+  color: #e8f4ec !important;
+  border-color: #537b67 !important;
+}
