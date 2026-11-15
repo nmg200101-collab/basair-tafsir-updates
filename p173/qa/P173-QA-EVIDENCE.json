@@ -42,6 +42,18 @@
       "p171LateDuplicateProxyAvoided": true,
       "recheckedCases": 40,
       "recheckedPassed": 40
+    },
+    "attributeRerender": {
+      "watched": [
+        "class",
+        "style",
+        "hidden",
+        "aria-hidden"
+      ],
+      "activeRootSwitchWithoutChildList": true,
+      "noOpAttributeMutationsIgnored": true,
+      "noObserverInfiniteLoop": true,
+      "checkedWithinBrowserCases": 40
     }
   },
   "unchanged": [
