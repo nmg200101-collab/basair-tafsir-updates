@@ -120,7 +120,8 @@
    search.setAttribute('data-bq173-mini','1');
    search.setAttribute('data-bq171-mini','1');
   }
-  bar.classList.add('bq173-bar','bq171-tools');
+  if(!bar.classList.contains('bq173-bar'))bar.classList.add('bq173-bar');
+  if(!bar.classList.contains('bq171-tools'))bar.classList.add('bq171-tools');
   i.setAttribute('data-bq173-ready','1');
   i.setAttribute('data-bq171-ready','1');
   if(i!==lastRoot){lastRoot=i;boots++}repairs++;
@@ -132,6 +133,17 @@
  }
  function relates(m){
   var t=m.target;
+  // Native navigation sometimes switches between two existing index roots
+  // by changing .active/style only; no childList mutation is generated.
+  if(m.type==='attributes'){
+   if(!t||t.nodeType!==1)return false;
+   // Ignore no-op classList.add calls made by pre-existing P171 helpers.
+   if(m.oldValue===t.getAttribute(m.attributeName))return false;
+   if(t.matches&&t.matches('#tafsirIndex,[data-basair-tafsir-index="1"],#basairTafsirB233TopBar'))return true;
+   if(t.closest&&t.closest('.bq173-bar,.bq171-tools'))return true;
+   if(t.querySelector&&t.querySelector('#tafsirIndex,[data-basair-tafsir-index="1"]'))return true;
+   return false;
+  }
   if(t&&t.nodeType===1){
    if(t.closest&&t.closest('[data-bq173-owner],#tafsirReader,#tafsirAyahs'))return false;
    if(t.matches&&t.matches('#tafsirIndex,[data-basair-tafsir-index="1"]'))return true;
@@ -152,7 +164,8 @@
    // The previous P171 body guard skipped precisely this scenario.
    for(var j=0;j<ms.length;j++)if(relates(ms[j])){schedule();return}
   });
-  observer.observe(d.body,{childList:true,subtree:true});
+  observer.observe(d.body,{childList:true,subtree:true,attributes:true,
+   attributeFilter:['class','style','hidden','aria-hidden'],attributeOldValue:true});
  }
  function boot(){install();watch()}
  w.addEventListener('click',onClick,true);
