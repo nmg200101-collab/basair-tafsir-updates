@@ -1,0 +1,49 @@
+{
+  "project": "Basair Quran",
+  "phase": "P170",
+  "status": "CANDIDATE_SIGNED_NOT_PUBLISHED",
+  "baseline": "P169/Seq46",
+  "baseCommit": "71ca1878ca5ab8aa958f371869eb3577a14a1540",
+  "branch": "fix/p170-tafsir-index-unified-saved-type-stable-20261115",
+  "pr": 99,
+  "browser": {
+    "engines": [
+      "Chromium"
+    ],
+    "widths": [
+      320,
+      360,
+      390,
+      430
+    ],
+    "modes": [
+      "light",
+      "dark"
+    ],
+    "scenarios": 8,
+    "passed": 8
+  },
+  "legacyIntegration": {
+    "source": "P157 exact GitHub blob",
+    "sourceGitSha": "aefda7bd3d5d59fe183b7821c218c6cc1f1b6d81",
+    "scenarios": 8,
+    "passed": 8
+  },
+  "candidate": {
+    "signed": true,
+    "signature": "RSA-3072/SHA-256 owner original",
+    "sequence": 47,
+    "tafsirVersion": 45,
+    "priorAssetsUntouched": 12,
+    "newAssets": 2,
+    "envelope_sha256": "5a6a6262a9e396b5b808f73d0fd79e67d6162e873d7bf997092eedd95035641e",
+    "signedManifestPath": "p170/P170-SEQ47-OWNER-SIGNED-CANDIDATE.json",
+    "publication": false
+  },
+  "limitations": [
+    "No Android V695 field test yet",
+    "Cold-start flicker before OTA CSS loading requires real device verification",
+    "No live manifest changes or server publication"
+  ],
+  "createdAt": "2026-11-15T08:53:55Z"
+}
