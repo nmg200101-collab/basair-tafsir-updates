@@ -87,6 +87,27 @@ with sync_playwright() as p:
      results.append({'width':width,'night':dark,'source':opt,'pass':isOk,'topRowSameY':row,'secondSearchRow':searchBelow,'surahsBelow':surahsBelow,'overflow':s['overflow'],'topHeight':round(b[0]['height'],1) if b[0] else None,'mirror':s['mirror'],'errors':errors[:2]})
     except Exception as exc:
      results.append({'width':width,'night':dark,'source':opt,'pass':False,'error':str(exc),'errors':errors[:3]})
+   # Rebuild P118's toolbar, as native P118 does on reopening the index.
+   try:
+    page.evaluate("""() => {
+      const bar=document.getElementById('bqTf118Topbar');
+      const dash=document.getElementById('bqTf117Dashboard');
+      for(const child of [...bar.children]){
+       if(child.classList.contains('bq-tf117-type')||child.classList.contains('bq-tf117-actions'))
+        dash.insertBefore(child,bar);
+      }
+      bar.remove();
+      window.__BASAIR_P118_TAFSIR_INDEX_MATCH__.refresh();
+      window.__BASAIR_TAFSIR_P175_SINGLE_INDEX_OWNER__.refresh();
+    }""")
+    page.wait_for_function("document.querySelector('#bqTf118Topbar #bq175P118Saved')",timeout=1000)
+    snap=page.evaluate(SNAP)
+    bs=[snap[k] for k in ('typeBox','saveBox','followBox','lastBox')]
+    row=all(x is not None for x in bs) and max(abs(x['y']-bs[0]['y']) for x in bs)<=3
+    passed=all([row,snap['miniHidden'],snap['favHidden'],snap['saveVisible'],snap['overflow']<=3,not errors])
+    results.append({'width':width,'night':dark,'source':'native-rebuild','pass':passed,'sameRow':row,'overflow':snap['overflow'],'errors':errors[:2]})
+   except Exception as ex:
+    results.append({'width':width,'night':dark,'source':'native-rebuild','pass':False,'error':str(ex)})
    page.close()
  browser.close()
 print(json.dumps({'passed':sum(x['pass'] for x in results),'total':len(results),'results':results},ensure_ascii=False,indent=2))
