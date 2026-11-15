@@ -90,6 +90,8 @@ function verifyAssets(m){
 function verifyCandidate(m,mode,active){
  metadata(m);assertChoice(m,mode);
  metadata(active);
+ if(Date.parse(m.issuedAt)>Date.now()+300000)error('New release issuedAt lies in the future');
+ if(Date.parse(m.expiresAt)<=Date.now())error('New release is already expired');
  if(m.sequence<=active.sequence)error('OTA sequence must strictly exceed active signed sequence');
  if(m.minAppVersion<active.minAppVersion)
    error('Cannot reduce minimum app compatibility without separate owner review');
@@ -105,9 +107,9 @@ function plan(args){
  if(input.payload||input.signature)error('Do not edit signed envelopes; use an unsigned payload source');
  const next=JSON.parse(JSON.stringify(input));
  next.deliveryMode=MODE[args.mode];
- metadata(next);
- assertChoice(next,args.mode);
- if(next.sequence<=active.sequence)error('New sequence required: active='+active.sequence);
+ // Verify hashes, versions, expiry and signed-owner channel BEFORE requesting signing.
+ // A mismatched file must not be sent to the owner signer.
+ const filesChecked=verifyCandidate(next,args.mode,active);
  const out=path.resolve(args.out),live=path.resolve(args.active||DEFAULT_ACTIVE);
  if(out===live||out===path.join(ROOT,'p121/owner-qa/release.json')||
     out===path.resolve(args.input))error('Refusing to overwrite live or input manifest');
@@ -115,7 +117,7 @@ function plan(args){
  if(!fs.existsSync(outParent))error('Output directory must exist; create review folder first');
  fs.writeFileSync(out,JSON.stringify(next,null,2)+'\n',{flag:'wx',mode:0o600});
  return {action:'prepare',mode:args.mode,signedDeliveryMode:next.deliveryMode,
-  sequence:next.sequence,output:out,status:'UNSIGNED_ONLY — OWNER SIGNATURE REQUIRED, NOT PUBLISHED'};
+  sequence:next.sequence,assetsVerified:filesChecked,output:out,status:'UNSIGNED_ONLY — OWNER SIGNATURE REQUIRED, NOT PUBLISHED'};
 }
 function check(args){
  const active=signedEnvelope(args.active||DEFAULT_ACTIVE);
