@@ -197,7 +197,32 @@ def main():
   p2.wait_for_function("document.querySelector('#newVerse .p177VoiceDock > button.p144MicButton') !== null",timeout=2500)
   tested+=1
   p2.close()
+  # R3 panels created after OTA boot must still be watched for their close event.
+  p3=browser.new_page(viewport={'width':390,'height':830})
+  p3.set_content(HTML)
+  p3.evaluate(BOOT)
+  p3.evaluate("document.getElementById('basairTafsirB232FavoritesPanel').remove();document.getElementById('basairTafsirR2NoteSheet').remove()")
+  p3.add_style_tag(content=CSS);p3.add_script_tag(content=JS)
+  p3.evaluate('''() => {
+    document.querySelectorAll('.view').forEach(e=>e.classList.remove('active'));
+    document.getElementById('tafsirIndex').classList.add('active');
+    const saved=document.createElement('section');saved.id='basairTafsirB232FavoritesPanel';
+    saved.innerHTML='<button data-r3-note-edit="2:1">تعديل ملاحظة</button>';
+    const note=document.createElement('section');note.id='basairTafsirR2NoteSheet';
+    document.body.append(saved,note);
+  }''')
+  p3.wait_for_timeout(750) # late panel observers attach without full-page mutations
+  p3.evaluate("document.getElementById('basairTafsirB232FavoritesPanel').classList.add('show')")
+  p3.locator('[data-r3-note-edit]').dispatch_event('pointerdown')
+  p3.evaluate('''() => {
+    document.getElementById('basairTafsirB232FavoritesPanel').classList.remove('show');
+    document.getElementById('basairTafsirR2NoteSheet').classList.add('show');
+  }''')
+  p3.evaluate("document.getElementById('basairTafsirR2NoteSheet').classList.remove('show')")
+  p3.wait_for_function("document.getElementById('basairTafsirB232FavoritesPanel').classList.contains('show')",timeout=2000)
+  assert p3.evaluate('test.savedOpened')>=1
+  tested+=1;p3.close()
   browser.close()
-  print(f'PASS P177 Chromium: {tested} checks (10 responsive/night reader, 3 saved/back); original P144 button & R3 owner maintained')
+  print(f'PASS P177 Chromium: {tested} checks (responsive/night reader; Saved/Notes and late-mounted back; original P144+R3 preserved)')
 
 if __name__=='__main__': main()
