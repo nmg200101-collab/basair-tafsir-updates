@@ -1,7 +1,12 @@
 {
   "phase": "P177",
   "project": "Basair Quran",
-  "base": {"applicationId": "app.basair.qurv2", "apk": "V695", "activeOTASequence": 52, "tafsirVersion": 50},
+  "base": {
+    "applicationId": "app.basair.qurv2",
+    "apk": "V695",
+    "activeOTASequence": 52,
+    "tafsirVersion": 50
+  },
   "scope": "Tafsir reading controls and saved/notes return only",
   "changes": [
     "move original P144 narrator button to top verse anchor only when idle",
@@ -12,11 +17,24 @@
   ],
   "tests": {
     "jsSyntax": "PASS",
-    "chromium": {"passed": 15, "total": 15, "environment": "real chromium / mocked DOM and P144 + R3 APIs"},
+    "chromium": {
+      "passed": 16,
+      "total": 16,
+      "environment": "real chromium / mocked DOM and P144 + R3 APIs",
+      "additionalCase": "late-created saved/notes sheets retain R3 back sequence"
+    },
     "androidWebView": "NOT RUN",
     "nodeSourceContract": "CREATED, SHOULD RUN IN REPOSITORY",
     "tilawaQA050": "REQUIRES GITHUB ACTIONS BEFORE MERGE"
   },
-  "safety": {"noAPK": true, "noSigningKeyRequiredToPrepare": true, "noNewStorage": true, "noReplaceBasairBack": true, "preserveSeq52": true, "publication": false, "rollbackPlan": "new signed sequence strictly higher than future published candidate"},
+  "safety": {
+    "noAPK": true,
+    "noSigningKeyRequiredToPrepare": true,
+    "noNewStorage": true,
+    "noReplaceBasairBack": true,
+    "preserveSeq52": true,
+    "publication": false,
+    "rollbackPlan": "new signed sequence strictly higher than future published candidate"
+  },
   "status": "PREPARED_ONLY_PENDING_REVIEW"
 }
