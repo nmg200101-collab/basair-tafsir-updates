@@ -1,0 +1,73 @@
+/* P173 — scoped reconciliation after native toolbar recreation. */
+#tafsirIndex .bq173-bar,
+[data-basair-tafsir-index="1"] .bq173-bar{
+ display:flex!important;flex-wrap:wrap!important;direction:rtl!important;
+ align-items:stretch!important;gap:6px!important;animation:none!important;transition:none!important;
+}
+html body #tafsirIndex .bq173-bar [data-bq173-old="1"],
+html body #tafsirIndex .bq173-bar [data-bq173-mini="1"],
+html body #tafsirIndex .bq173-bar #p153NotesIndex,
+html body #tafsirIndex #bq157SavedGroup,
+html body [data-basair-tafsir-index="1"] .bq173-bar [data-bq173-old="1"],
+html body [data-basair-tafsir-index="1"] .bq173-bar [data-bq173-mini="1"],
+html body [data-basair-tafsir-index="1"] #bq157SavedGroup{
+ display:none!important;visibility:hidden!important;pointer-events:none!important;
+ animation:none!important;transition:none!important;
+}
+html body #tafsirIndex .bq173-bar > *,
+html body [data-basair-tafsir-index="1"] .bq173-bar > *{
+ box-sizing:border-box!important;min-width:0!important;max-width:none!important;
+ margin:0!important;transition:none!important;animation:none!important;
+}
+html body #tafsirIndex .bq173-bar [data-bq173-type="1"],
+html body [data-basair-tafsir-index="1"] .bq173-bar [data-bq173-type="1"]{
+ order:-1!important;flex:1 0 100%!important;width:100%!important;
+ min-height:58px!important;max-width:none!important;
+ border:1px solid var(--line,#cdd8cb)!important;border-radius:15px!important;
+ background:var(--soft,#edf5ef)!important;color:var(--green,#15563f)!important;
+ padding:7px 12px!important;text-align:right!important;white-space:normal!important;
+}
+html body #tafsirIndex .bq173-bar > :not([data-bq173-type="1"]):not([data-bq173-old="1"]):not([data-bq173-mini="1"]):not(#p153NotesIndex),
+html body [data-basair-tafsir-index="1"] .bq173-bar > :not([data-bq173-type="1"]):not([data-bq173-old="1"]):not([data-bq173-mini="1"]):not(#p153NotesIndex){
+ flex:1 1 calc(33.333% - 6px)!important;width:auto!important;min-height:52px!important;
+}
+html body #tafsirIndex .bq173-bar button[data-bq173-owner="1"],
+html body [data-basair-tafsir-index="1"] .bq173-bar button[data-bq173-owner="1"]{
+ display:flex!important;visibility:visible!important;opacity:1!important;
+ flex-direction:column!important;align-items:center!important;justify-content:center!important;
+ gap:2px!important;padding:4px 3px!important;
+ border:1px solid var(--line,#cdd8cb)!important;border-radius:15px!important;
+ background:var(--paper,#fffdfa)!important;color:var(--green,#15563f)!important;
+ font:inherit!important;font-weight:700!important;touch-action:manipulation!important;
+}
+.bq173-bar [data-bq173-owner] span{font-size:20px!important;line-height:1!important}
+.bq173-bar [data-bq173-owner] b{font-size:11px!important;line-height:1.2!important;text-align:center!important;white-space:normal!important}
+.bq173-bar [data-bq173-type] select,
+.bq173-bar [data-bq173-type] [role="combobox"]{
+ box-sizing:border-box!important;max-width:100%!important;min-width:0!important;width:100%!important;
+ direction:rtl!important;text-overflow:clip!important;font:inherit!important;
+}
+.dark .bq173-bar [data-bq173-owner],.dark .bq173-bar [data-bq173-type],
+body[data-p147-night="1"] .bq173-bar [data-bq173-owner],
+body[data-p147-night="1"] .bq173-bar [data-bq173-type]{
+ color:#edf6ef!important;background:#21392f!important;border-color:#668273!important;
+}
+@media(min-width:760px){
+ html body #tafsirIndex .bq173-bar,
+ html body [data-basair-tafsir-index="1"] .bq173-bar{flex-wrap:nowrap!important;}
+ html body #tafsirIndex .bq173-bar [data-bq173-type="1"],
+ html body [data-basair-tafsir-index="1"] .bq173-bar [data-bq173-type="1"]{
+  order:0!important;flex:2 1 42%!important;width:auto!important;min-width:0!important;
+ }
+ html body #tafsirIndex .bq173-bar > :not([data-bq173-type="1"]):not([data-bq173-old="1"]):not([data-bq173-mini="1"]),
+ html body [data-basair-tafsir-index="1"] .bq173-bar > :not([data-bq173-type="1"]):not([data-bq173-old="1"]):not([data-bq173-mini="1"]){
+  flex:1 1 16%!important;min-width:0!important;
+ }
+}
+
+/* P170's three-ID rule forces display:flex on the native Favorites anchor.
+ * This stronger scoped selector must win after every B233 rebuild. */
+html body #tafsirIndex #basairTafsirB233TopBar.bq173-bar #basairTafsirB232FavoritesBtn[data-bq173-old="1"],
+html body #tafsirIndex[data-bq157-saved-ready="1"] #basairTafsirB233TopBar.bq173-bar #basairTafsirB232FavoritesBtn[data-bq173-old="1"]{
+ display:none!important;visibility:hidden!important;pointer-events:none!important;
+}
