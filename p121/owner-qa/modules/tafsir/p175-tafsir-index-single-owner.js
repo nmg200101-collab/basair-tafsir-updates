@@ -6,7 +6,7 @@
 (function(w,d){'use strict';
  if(w.__BASAIR_TAFSIR_P175_SINGLE_INDEX_OWNER__)return;
  var VERSION='P175-TAFSIR-INDEX-SINGLE-OWNER',obs=null,scheduled=false,working=false;
- var ticks=0,success=0,missing=0,changes=0,lastReason='initial';
+ var ticks=0,success=0,missing=0,changes=0,lastReason='initial',opens=0,openErrors=0;
  var INDEX='#tafsirIndex,[data-basair-tafsir-index="1"]';
  var BAR='#basairTafsirB233TopBar';
  function all(q,r){return Array.prototype.slice.call((r||d).querySelectorAll(q));}
@@ -85,18 +85,53 @@
      put(mirror,'display','none');
    }
  }
- function apply(root,bar){
-   var saved=first('#p153FavoritesIndex',bar);
-   if(!saved&&w.__BASAIR_TAFSIR_P153_STABLE__&&typeof w.__BASAIR_TAFSIR_P153_STABLE__.refresh==='function'){
-     try{w.__BASAIR_TAFSIR_P153_STABLE__.refresh();}catch(_){ }
-     saved=first('#p153FavoritesIndex',bar);
+ // V695's OTA manifest does not ship P153.js by itself. It may be
+ // bundled in the signed APK, or entirely absent. Never assume availability.
+ // A fallback VIEW button is created only when the original P153 entry does
+ // not exist; both variants invoke the SAME native B233/R3 saved panel.
+ function openNativeSaved(){
+   try{
+     var v=w.__BASAIR_TAFSIR_P157_STABLE__;
+     if(v&&typeof v.openSaved==='function'&&v.openSaved('favorites')){opens++;return true;}
+     var b=w.__BASAIR_TAFSIR_FINAL_B233__,r=w.__BASAIR_TAFSIR_R3__;
+     if(!b||!b.favorites||typeof b.favorites.open!=='function')throw Error('Native saved API unavailable');
+     b.favorites.open();
+     if(r&&typeof r.favoritesUpgrade==='function')r.favoritesUpgrade();
+     var tab=first('#basairTafsirR3SavedTabs [data-r3-saved-tab="favorites"]',d);
+     if(tab)tab.click();
+     opens++;return true;
+   }catch(_){openErrors++;return false;}
+ }
+ function savedButton(bar){
+   var original=first('#p153FavoritesIndex',bar);
+   if(!original&&w.__BASAIR_TAFSIR_P153_STABLE__&&
+      typeof w.__BASAIR_TAFSIR_P153_STABLE__.refresh==='function'){
+     try{w.__BASAIR_TAFSIR_P153_STABLE__.refresh();}catch(_){}
+     original=first('#p153FavoritesIndex',bar);
    }
+   if(original)return original;
+   var fallback=first('#bq175SavedEntry',bar);
+   if(fallback)return fallback;
+   fallback=d.createElement('button');
+   fallback.id='bq175SavedEntry';fallback.type='button';
+   fallback.setAttribute('aria-label','فتح المفضلة والملاحظات');
+   fallback.innerHTML='<span aria-hidden="true">☆</span><b>المفضلة والملاحظات</b>';
+   fallback.addEventListener('click',function(e){
+     e.preventDefault();e.stopPropagation();
+     if(!openNativeSaved())fallback.setAttribute('title','تعذر فتح المحفوظات');
+   });
+   bar.appendChild(fallback);
+   return fallback;
+ }
+ function apply(root,bar){
    var type=resolveType(bar);
    var follow=findNamed(bar,/متابعة\s*التفسير/);
    var last=findNamed(bar,/آخر\s*موضع/);
-   if(!saved||!type||!follow||!last){missing++;return false;}
-   // Do not move, clone, replace, or remove native nodes. Their ORIGINAL
-   // B233/P153 event registrations still own all actions and saved state.
+   if(!type||!follow||!last){missing++;return false;}
+   var saved=savedButton(bar);
+   if(!saved){missing++;return false;}
+   // Original B233/P153 nodes are never moved or replaced; when P153 is
+   // absent, only ONE presentation button is added, with no data store.
    attr(root,'data-bq175-owned','1');attr(bar,'data-bq175-owned','1');
    attr(saved,'data-bq175-saved','1');
    attr(type,'data-bq175-type','1');
@@ -133,7 +168,7 @@
      put(title,'text-overflow','clip');put(title,'overflow','visible');}
    // Internal anchor + legacy P157/P170/P171/P173 duplicates remain mounted,
    // but never become visible even when an earlier stylesheet says !important.
-   var old=all('#basairTafsirB232FavoritesBtn,#p153NotesIndex,'+
+   var old=all('#basairTafsirB232FavoritesBtn,#p153NotesIndex,#bq175SavedEntry,'+
      'button[data-b233-top="search"],button[data-bq155-notes],button[data-bq156-notes],'+
      'button[data-bq171-saved="1"],button[data-bq173-owner="1"],#bq157SavedGroup',root);
    for(var k=0;k<old.length;k++)if(old[k]!==saved)hide(old[k]);
@@ -190,7 +225,7 @@
  d.addEventListener('visibilitychange',function(){if(!d.hidden)schedule('visibilitychange');});
  w.__BASAIR_TAFSIR_P175_SINGLE_INDEX_OWNER__={version:VERSION,refresh:reconcile,
    status:function(){return {version:VERSION,roots:roots().length,
-     owned:all(INDEX+'[data-bq175-owned="1"]').length,
-     ticks:ticks,success:success,missing:missing,changes:changes,lastReason:lastReason};}
+     owned:all('#tafsirIndex[data-bq175-owned="1"],[data-basair-tafsir-index="1"][data-bq175-owned="1"]').length,
+     ticks:ticks,success:success,missing:missing,changes:changes,opens:opens,openErrors:openErrors,lastReason:lastReason};}
  };
 })(window,document);
