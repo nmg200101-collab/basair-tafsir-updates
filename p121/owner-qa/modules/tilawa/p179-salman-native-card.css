@@ -1,0 +1,18 @@
+/* P179: same R109/P104/P105 classes and positions as standard reader cards. */
+#r108Sheet #p178SalmanReaderCard{display:grid;grid-template-columns:minmax(0,1fr) 126px;align-items:center;box-sizing:border-box;min-width:0}
+#r108Sheet #p178SalmanReaderCard[hidden]{display:none!important}
+#r108Sheet #p178SalmanReaderCard .r91ReaderDetails{min-width:0}
+#r108Sheet #p178SalmanReaderCard .r91Actions{position:relative;z-index:1}
+#p178FollowChoice{display:none!important}
+.p179InfoOverlay{position:fixed;inset:0;display:flex;align-items:flex-end;justify-content:center;
+ z-index:2147483601;background:rgba(4,28,19,.48);direction:rtl}
+.p179InfoOverlay[hidden]{display:none!important}
+.p179InfoSheet{width:min(100vw,560px);box-sizing:border-box;padding:19px 22px 28px;
+ border-radius:20px 20px 0 0;background:#fffaf1;color:#184b3b;
+ display:flex;flex-direction:column;gap:12px;border:1px solid #d7c9b4}
+.p179InfoSheet p{margin:0;line-height:1.8;font-size:.92rem}
+.p179SourceLink{color:#12634e;text-decoration:underline}
+.p179InfoClose{align-self:flex-start;min-height:42px;padding:8px 24px;background:#17624e;
+ color:#fff;border:0;border-radius:11px;font:inherit;cursor:pointer}
+body.dark .p179InfoSheet{background:#263e34;color:#ebf3eb;border-color:#768b79}
+body.dark .p179SourceLink{color:#b6e5cb}
