@@ -20,8 +20,8 @@
     "P118SHA256": "30a87fc1897bf0c6820cf830d18408cb2a654121ca98af92feb086d4c85b5fb5"
   },
   "chromium": {
-    "passed": 20,
-    "total": 20,
+    "passed": 30,
+    "total": 30,
     "widths": [
       320,
       360,
@@ -39,7 +39,9 @@
     ],
     "realP117P118Scripts": true,
     "realAndroidWebView": false,
-    "noHorizontalOverflow": true
+    "noHorizontalOverflow": true,
+    "nativeToolbarRebuildCases": 10,
+    "sourceSelectionCases": 20
   },
   "savedBack": {
     "passed": 3,
@@ -54,7 +56,8 @@
     "replacesGlobalBasairBack": false,
     "touchesTilawaQA050": false,
     "requiresOwnerSignatureBeforePublish": true,
-    "requiresOwnerApprovalBeforePublish": true
+    "requiresOwnerApprovalBeforePublish": true,
+    "rollbackRequiresNewHigherSequence": true
   },
   "limits": [
     "R3 native back must return to Tafsir index; P176 never forces navigating from Home to Index",
