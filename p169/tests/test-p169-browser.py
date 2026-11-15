@@ -2,10 +2,9 @@ from pathlib import Path
 from playwright.sync_api import sync_playwright
 from textwrap import dedent
 import json
-B=Path('/mnt/data')
-CSS=(B/'forensic/native_ref/tafsir-r114-reading-follow.css').read_text()
-CSS+='\n'+(B/'p169-tafsir-top-status-notes-back.css').read_text()
-JS=(B/'p169-tafsir-top-status-notes-back.js').read_text()
+B=Path(__file__).resolve().parents[2]
+CSS=(B/'p121/owner-qa/modules/tafsir/p169-tafsir-top-status-notes-back.css').read_text()
+JS=(B/'p121/owner-qa/modules/tafsir/p169-tafsir-top-status-notes-back.js').read_text()
 HTML=dedent('''<!DOCTYPE html><html dir="rtl" lang="ar"><head><meta name="viewport" content="width=device-width,initial-scale=1"></head><body>
 <main class="app"><header class="top" style="position:sticky;top:0;height:116px;background:#fafaf8;display:flex;align-items:center;justify-content:space-between"><button>السور</button><h1>تفسير بصائر القرآن</h1><button>125%</button></header>
 <div id="tafsirIndex" style="display:none"></div>
@@ -31,7 +30,7 @@ document.querySelector('[data-r2-note-close]').addEventListener('click',()=>clos
 window.basairBack=function(){const s=document.querySelector('#basairTafsirR2NoteSheet');if(s.classList.contains('show')){closeNote();return false};const saved=document.querySelector('#basairTafsirB232FavoritesPanel');if(saved.classList.contains('show')){saved.classList.remove('show');saved.style.display='none';return false}return true;};
 </script></body></html>''')
 with sync_playwright() as pw:
- b=pw.chromium.launch(headless=True,executable_path='/usr/bin/chromium',args=['--no-sandbox'])
+ b=pw.chromium.launch(headless=True,args=['--no-sandbox'])
  for width in (320,360,390,430):
   for dark in (False,True):
    page=b.new_page(viewport={'width':width,'height':780},has_touch=True,is_mobile=True)
