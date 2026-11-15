@@ -141,7 +141,26 @@ with sync_playwright() as pw:
                 }''')
                 p.wait_for_function("""() => document.querySelectorAll('#tafsirIndex.active button[data-bq173-owner="1"]').length === 1""")
                 assert root.locator('#mini').is_hidden(),(variant,w,dark,'nested rerender')
+                if second:
+                    # A second, previously hidden index becomes active via
+                    # style/class changes *without any childList mutation*.
+                    p.evaluate('''() => {
+                      const roots=document.querySelectorAll('#tafsirIndex');
+                      roots[0].style.display='';roots[0].classList.add('active');
+                      roots[1].style.display='none';roots[1].classList.remove('active');
+                    }''')
+                    p.wait_for_function('''() => {
+                       const roots=document.querySelectorAll('#tafsirIndex');
+                       return roots[0].querySelectorAll('button[data-bq173-owner="1"]').length===1 &&
+                          roots[0].querySelector('#mini').getAttribute('data-bq173-mini')==='1';
+                    }''')
+                    visible_proxy=p.locator('#tafsirIndex button[data-bq173-owner="1"]:visible')
+                    assert visible_proxy.count()==1,(variant,w,dark,'only active root has visible proxy')
                 assert not errors,(variant,w,dark,errors)
+                stable_repairs=p.evaluate('window.__BASAIR_TAFSIR_P173_REBUILD_GUARD__.status().repairs')
+                p.wait_for_timeout(75)
+                later_repairs=p.evaluate('window.__BASAIR_TAFSIR_P173_REBUILD_GUARD__.status().repairs')
+                assert later_repairs-stable_repairs<=1,(variant,w,dark,'observer retry loop',stable_repairs,later_repairs)
                 cases+=1;p.close()
     b.close()
     print('P173 Chromium field re-render regression PASS',cases,'/',cases)
