@@ -21,8 +21,8 @@
       "sha256": "010cc08506cb4b67bc5279a01771df0ff3977344e579ad69650f3578bf4ce477"
     },
     "modules/p178-salman-selected-follow.js": {
-      "size_bytes": 10273,
-      "sha256": "d04b435fa8052d1c8f109fa117a186a5b75991d6c79f5df6d8962f9914a7510f"
+      "size_bytes": 10846,
+      "sha256": "999970c6cd36ca722e36c12bfad038540d0665c9c53a97105f3fb051941a45eb"
     }
   },
   "checks": {
@@ -31,7 +31,8 @@
     "chromium_real_v695_R109": "6/6 PASS",
     "source_contract": "9/9 PASS",
     "android_network_mp3": "NOT TESTED",
-    "ayah_timing": "NOT VERIFIED"
+    "ayah_timing": "NOT VERIFIED",
+    "performance": "DOM observer restricted to native selected/follow widgets; no unrelated verse observers"
   },
   "owner_lock": {
     "id": "QA-050",
