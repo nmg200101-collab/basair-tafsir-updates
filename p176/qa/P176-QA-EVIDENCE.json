@@ -1,0 +1,81 @@
+{
+  "project": "Basair Quran",
+  "phase": "P176",
+  "baseline": {
+    "app": "1.0.0-v695",
+    "ota": "P175/Seq51",
+    "tafsirVersion": 49,
+    "delivery": "automatic",
+    "channel": "owner-qa"
+  },
+  "status": "DRAFT_ONLY_NOT_SIGNED_NOT_PUBLISHED",
+  "scope": [
+    "compact 4 items in one option row",
+    "original search and jumps in second row",
+    "full selected Tafsir source name",
+    "saved/notes return to same tab, list scroll and focused verse"
+  ],
+  "realAPKSource": {
+    "P117SHA256": "e25b4d6b8fc82c09ede63ecc2599284cf71e13daecaca018da15f76caae2dcfb",
+    "P118SHA256": "30a87fc1897bf0c6820cf830d18408cb2a654121ca98af92feb086d4c85b5fb5"
+  },
+  "chromium": {
+    "passed": 30,
+    "total": 30,
+    "widths": [
+      320,
+      360,
+      390,
+      430,
+      768
+    ],
+    "themes": [
+      "day",
+      "night"
+    ],
+    "typeChoices": [
+      "basair long",
+      "brief"
+    ],
+    "realP117P118Scripts": true,
+    "realAndroidWebView": false,
+    "noHorizontalOverflow": true,
+    "nativeToolbarRebuildCases": 10,
+    "sourceSelectionCases": 20
+  },
+  "savedBack": {
+    "passed": 3,
+    "total": 3,
+    "favoritesVerseReturn": true,
+    "notesVerseReturn": true,
+    "closeWithoutOpening": true
+  },
+  "security": {
+    "modifiesSignedSeq51Assets": false,
+    "modifiesNoteStorage": false,
+    "replacesGlobalBasairBack": false,
+    "touchesTilawaQA050": false,
+    "requiresOwnerSignatureBeforePublish": true,
+    "requiresOwnerApprovalBeforePublish": true,
+    "rollbackRequiresNewHigherSequence": true
+  },
+  "limits": [
+    "R3 native back must return to Tafsir index; P176 never forces navigating from Home to Index",
+    "Android field acceptance pending",
+    "P169 already owns note-editor return; this patch does not replace it"
+  ],
+  "assets": [
+    {
+      "file": "p176-tafsir-two-row-index.css",
+      "kind": "css",
+      "size": 7225,
+      "sha256": "69c12e4f7856276798ea9a6992a06cc4228fab3039a7d0d49672c8aa8d5da949"
+    },
+    {
+      "file": "p176-saved-return-context.js",
+      "kind": "js",
+      "size": 4748,
+      "sha256": "7dee584e3b7fb4661ef00b7c587b02c6e1a989c8e7a9ad8b94ee0eb3e601b982"
+    }
+  ]
+}
