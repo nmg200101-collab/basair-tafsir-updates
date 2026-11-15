@@ -10,19 +10,19 @@
     {
       "path": "modules/tafsir/p175-tafsir-index-single-owner.css",
       "kind": "css",
-      "size": 4135,
-      "sha256": "d9daac917316ccfe19734c1cf74fe01df0270c911b6fbc29857807579a49cd5c"
+      "size": 4200,
+      "sha256": "425d38065f7c042685a920561bdc80b879ccf1a7f65e26fe14918e98e5eeff4e"
     },
     {
       "path": "modules/tafsir/p175-tafsir-index-single-owner.js",
       "kind": "js",
-      "size": 10502,
-      "sha256": "f5f879a8ca051aaef4f9a8ca06b11de8bc508bc415b2ebddbdc8514b4deb6fdd"
+      "size": 12299,
+      "sha256": "a68649fa1a50386ccd262c99eb4de5fef721397a56d4f4fea34670206b519241"
     }
   ],
   "chromium": {
-    "passed": 20,
-    "total": 20,
+    "passed": 40,
+    "total": 40,
     "widths": [
       320,
       360,
@@ -45,7 +45,13 @@
       "follow and last click",
       "late B233 rebuild",
       "no duplicate visible buttons",
-      "mutation observer idle stability"
+      "mutation observer idle stability",
+      "late P153 installation replaces fallback visually",
+      "late P153 removal restores fallback without duplicate"
+    ],
+    "savedEntryCases": [
+      "P153 embedded in APK",
+      "P153 absent, P157 native panel fallback"
     ]
   },
   "limitations": [
