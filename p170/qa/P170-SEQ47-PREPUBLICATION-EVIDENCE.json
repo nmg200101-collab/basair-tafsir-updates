@@ -1,0 +1,134 @@
+{
+  "project": "Basair Quran",
+  "phase": "P170",
+  "status": "CANDIDATE_SIGNED_NOT_PUBLISHED",
+  "baseline": "P169/Seq46",
+  "baseCommit": "71ca1878ca5ab8aa958f371869eb3577a14a1540",
+  "branch": "fix/p170-tafsir-index-unified-saved-type-stable-20261115",
+  "pr": 99,
+  "browser": {
+    "engines": [
+      "Chromium"
+    ],
+    "widths": [
+      320,
+      360,
+      390,
+      430
+    ],
+    "modes": [
+      "light",
+      "dark"
+    ],
+    "scenarios": 8,
+    "passed": 8
+  },
+  "legacyIntegration": {
+    "source": "P157 exact GitHub blob",
+    "sourceGitSha": "aefda7bd3d5d59fe183b7821c218c6cc1f1b6d81",
+    "scenarios": 8,
+    "passed": 8
+  },
+  "candidate": {
+    "signed": true,
+    "signature": "RSA-3072/SHA-256 owner original",
+    "sequence": 47,
+    "tafsirVersion": 45,
+    "priorAssetsUntouched": 12,
+    "newAssets": 2,
+    "envelope_sha256": "5e48bb7326b5de88be857d1d4f6b323f2a77750b5419dfa0d67a33ee4a549a19",
+    "signedManifestPath": "p170/P170-SEQ47-OWNER-SIGNED-CANDIDATE.json",
+    "publication": false,
+    "cssSHA256": "62a868ed7d52d781bd8766d09161bda5d4d9bace3f9056d7abafc2225f08f2cb",
+    "jsSHA256": "fb90948f456293e3c25eabb90e6f62860b2edf00c91fabd026785e6e4f27d18e",
+    "signedEnvelopeGitBlob": "1d0b7724d68ea36349fd140fcc6fd8bb45e75c9b"
+  },
+  "limitations": [
+    "No Android V695 field test yet",
+    "Cold-start flicker before OTA CSS loading requires real device verification",
+    "No live manifest changes or server publication"
+  ],
+  "createdAt": "2026-11-15T08:53:55Z",
+  "tabletLayout": {
+    "widths": [
+      768,
+      1024
+    ],
+    "horizontalOverflow": [
+      0,
+      0
+    ],
+    "result": "PASS"
+  },
+  "browserRecheckedAfterTabletFix": {
+    "scenarios": 8,
+    "passed": 8
+  },
+  "legacyIntegrationRecheckedAfterTabletFix": {
+    "scenarios": 8,
+    "passed": 8
+  },
+  "independentReverification": {
+    "reportDate": "2026-11-15",
+    "source": "Re-execution in isolated Chromium/Playwright runtime and independent SHA-256/RSA verification",
+    "integratedP157P170": {
+      "passed": 8,
+      "total": 8,
+      "widths": [
+        320,
+        360,
+        390,
+        430
+      ],
+      "darkAndLight": true
+    },
+    "responsiveCssAcrossPhoneTablet": {
+      "passed": 12,
+      "total": 12,
+      "widths": [
+        320,
+        360,
+        390,
+        430,
+        768,
+        1024
+      ],
+      "darkAndLight": true,
+      "noHorizontalOverflow": true,
+      "criterion": "On phones type occupies >=92% of bar, on tablets >=30% with no horizontal overflow"
+    },
+    "nativeBehaviorMock": {
+      "favoritesOpened": true,
+      "notesTabSelected": true,
+      "surahSearchWorking": true,
+      "verseFollowClickWorking": true,
+      "rerenderRecovery": true
+    },
+    "rsaSignature": {
+      "verified": true,
+      "algorithm": "RSA-SHA256 PKCS#1 v1.5",
+      "publicKeyBits": 3072,
+      "publicKey": "Same original owner public key as p146/tests/test-p146-signed-release.cjs"
+    },
+    "css": {
+      "shaMatchesCandidate": true,
+      "bytesMatchCandidate": true
+    },
+    "js": {
+      "shaMatchesCandidate": true,
+      "bytesMatchCandidate": true
+    },
+    "reviewZip": {
+      "containsSigningKeys": false,
+      "memberCount": 6,
+      "candidateByteIdentical": true
+    },
+    "limitations": [
+      "Chromium exercises a DOM mock, not the actual V695 Android app",
+      "No native Android field test and no conclusive cold-start flash test yet",
+      "A separate old tablet script used an inappropriate phone-only 75% type-width threshold; its '0/2' does not indicate overflow failure; a tablet-aware responsive test passed"
+    ],
+    "ownerPublicationApproval": "NOT_OBTAINED",
+    "serverActivation": "NOT_PERFORMED"
+  }
+}
