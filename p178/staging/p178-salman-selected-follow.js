@@ -139,10 +139,21 @@
     addCard();installCompanion();
   }
   if(d.readyState==='loading')d.addEventListener('DOMContentLoaded',install,{once:true});else install();
-  var observer=new MutationObserver(function(){install();});
+  // Inspect only relevant native R109/V170 DOM changes; avoid scanning every verse render.
+  var observer=new MutationObserver(function(records){
+    for(var i=0;i<records.length;i++){
+      var x=records[i],target=x.target;
+      if(target&&target.closest&&target.closest('#r108Sheet,#sequenceSheetV10')){install();return;}
+      for(var j=0;j<x.addedNodes.length;j++){
+        var n=x.addedNodes[j];
+        if(n.nodeType===1&&(n.matches&&n.matches('#r108Sheet,#sequenceSheetV10')||
+             n.querySelector&&n.querySelector('#r108Sheet,#sequenceSheetV10'))){install();return;}
+      }
+    }
+  });
   observer.observe(d.documentElement,{childList:true,subtree:true});
   w.addEventListener('input',function(e){if(e.target&&e.target.id==='r109Search')w.setTimeout(addCard,0);},true);
-  w.addEventListener('change',function(e){if(e.target&&e.target.id==='r91Filter')w.setTimeout(addCard,0);},true);
+  w.addEventListener('change',function(e){if(e.target&&e.target.matches&&e.target.matches('select.r91Filter'))w.setTimeout(addCard,0);},true);
   // Native R109 may be injected after the P121 OTA module; low-cost reconciliation.
   w.setInterval(install,1600);
   w.__BASAIR_TILAWA_SALMAN_P178__={id:ID,name:NAME,source:SOURCE,mode:'surah-only',url:audioUrl,
