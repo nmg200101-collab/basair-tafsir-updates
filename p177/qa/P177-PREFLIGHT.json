@@ -1,0 +1,40 @@
+{
+  "phase": "P177",
+  "project": "Basair Quran",
+  "base": {
+    "applicationId": "app.basair.qurv2",
+    "apk": "V695",
+    "activeOTASequence": 52,
+    "tafsirVersion": 50
+  },
+  "scope": "Tafsir reading controls and saved/notes return only",
+  "changes": [
+    "move original P144 narrator button to top verse anchor only when idle",
+    "reflect real P144 running state; retain original settings long press",
+    "move transient narrator status card to top P169 offset",
+    "disable native selection only on displayed Tafsir verse text, preserve copy and note editor",
+    "restore original R3 modal back owner and P176 saved origin without global navigation rewrite"
+  ],
+  "tests": {
+    "jsSyntax": "PASS",
+    "chromium": {
+      "passed": 16,
+      "total": 16,
+      "environment": "real chromium / mocked DOM and P144 + R3 APIs",
+      "additionalCase": "late-created saved/notes sheets retain R3 back sequence"
+    },
+    "androidWebView": "NOT RUN",
+    "nodeSourceContract": "CREATED, SHOULD RUN IN REPOSITORY",
+    "tilawaQA050": "REQUIRES GITHUB ACTIONS BEFORE MERGE"
+  },
+  "safety": {
+    "noAPK": true,
+    "noSigningKeyRequiredToPrepare": true,
+    "noNewStorage": true,
+    "noReplaceBasairBack": true,
+    "preserveSeq52": true,
+    "publication": false,
+    "rollbackPlan": "new signed sequence strictly higher than future published candidate"
+  },
+  "status": "PREPARED_ONLY_PENDING_REVIEW"
+}
