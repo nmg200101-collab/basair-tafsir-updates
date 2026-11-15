@@ -1,0 +1,127 @@
+{
+  "project": "Basair Quran",
+  "stage": "P175 V695 exact source-aware repair",
+  "userProvidedAPK": {
+    "name": "basair-v695-owner-signed.apk",
+    "bytes": 102941369,
+    "sha256": "925f6116899ad8acf1cba2a9ec75d04db7951af66ad5b3de98b7cbc7cba9d384"
+  },
+  "verifiedExactFrontendSameAsV694": true,
+  "apkSourceFiles": [
+    {
+      "path": "assets/www/index.html",
+      "size": 4609699,
+      "sha256": "afa10e7f65032989ec9b974b39a7aafae56486b2ba2555c736b45752c7111648"
+    },
+    {
+      "path": "assets/www/tafsir-index-p117.js",
+      "size": 11384,
+      "sha256": "e25b4d6b8fc82c09ede63ecc2599284cf71e13daecaca018da15f76caae2dcfb"
+    },
+    {
+      "path": "assets/www/tafsir-index-p117.css",
+      "size": 9689,
+      "sha256": "2b232b8dc72d2ab2d94b012c52585febd26fc2818f5cc2a31c68c1e2a17b4576"
+    },
+    {
+      "path": "assets/www/p118-tafsir-visual-match.js",
+      "size": 15493,
+      "sha256": "30a87fc1897bf0c6820cf830d18408cb2a654121ca98af92feb086d4c85b5fb5"
+    },
+    {
+      "path": "assets/www/p118-tafsir-visual-match.css",
+      "size": 11658,
+      "sha256": "6446d97c315f4acd69a7072e15710fee186a3f994408160775bfa169a881b517"
+    },
+    {
+      "path": "assets/www/tafsir-final-ui-polish-b233.js",
+      "size": 107052,
+      "sha256": "c924a1f61eca09a89ace43f47b6738ce9c5cbcd848bf545e741bef24201f16a2"
+    },
+    {
+      "path": "assets/www/tafsir-final-ui-polish-b233.css",
+      "size": 31385,
+      "sha256": "2111a6ef4edd9b9fe155b60476e0ceb63c14794ce86e0bdb37644aa006022814"
+    },
+    {
+      "path": "assets/www/p121/universal-updates.js",
+      "size": 23502,
+      "sha256": "ddcf3cb98a2a10b821431ab690988ae15f4240b91f268d7e6cc9e87ac30fdfc4"
+    }
+  ],
+  "nativeRootCause": {
+    "p117TimerMilliseconds": 2200,
+    "p118TimerMilliseconds": 2300,
+    "b233HasFollowButton": false,
+    "p175OriginalHandledOnlyB233": true,
+    "p175NewNativePrimary": "#bqTf118Topbar",
+    "savedHub": "Existing P157/B233/R3 data and APIs, visual entry only",
+    "noNewDataStore": true
+  },
+  "test": {
+    "kind": "Chromium with genuine P117 and P118 script bytes extracted from V695 owner APK, synthetic host DOM",
+    "passed": 20,
+    "total": 20,
+    "dimensions": [
+      320,
+      360,
+      390,
+      430,
+      768
+    ],
+    "dayNight": true,
+    "injectOrders": [
+      "patch-first",
+      "patch-last"
+    ],
+    "realNativeToolbarRebuild": true,
+    "fullTafsirType": true,
+    "miniSearchHidden": true,
+    "singleSavedNotesAction": true,
+    "originalFollowAndSearch": true,
+    "androidWebViewTested": false
+  },
+  "newAssets": [
+    {
+      "path": "p121/owner-qa/modules/tafsir/p175-tafsir-index-single-owner.css",
+      "size": 8907,
+      "sha256": "1b3b00a53a5e20544091b068cbaea49cd80ccc6986ad040155accd568ca863ec"
+    },
+    {
+      "path": "p121/owner-qa/modules/tafsir/p175-tafsir-index-single-owner.js",
+      "size": 14971,
+      "sha256": "ae242dd8680f50c9240824746c2ad1a67ca174707119b982eb5435725504a7f2"
+    }
+  ],
+  "publishing": {
+    "signed": true,
+    "mode": "automatic",
+    "sequence": 51,
+    "moduleVersion": 49,
+    "ownerKey": "original RSA-3072 private key used locally; never uploaded",
+    "manifestChangedOnBranch": true,
+    "activeMainAtPreparation": 50,
+    "ready": "SIGNED_STAGED_REQUIRES_QA050_AND_MERGE",
+    "androidWebViewTested": false
+  },
+  "privacy": {
+    "apkNotUploadedToGithub": true,
+    "privateSigningKeyNeverUsed": false,
+    "privateNoteDataNeverAccessed": true,
+    "privateKeyUploadedToGithub": false
+  },
+  "signedCandidate": {
+    "path": "p175/P175-SEQ51-OWNER-SIGNED-AUTOMATIC.json",
+    "sha256": "9cd2c7efadced0559bcf1c64a62c0a34d1818f68a2975b5b008122e29b64d4e5",
+    "blob": "eb9defb4ef46f6114fbaaf4b97d39c0e40ea03ec",
+    "assetsTotal": 22,
+    "protectedAssetsUnchanged": 20,
+    "newAssets": 2
+  },
+  "recovery": {
+    "status": "LOCAL_SIGNED_NOT_PUBLISHED",
+    "sequence": 52,
+    "restoresSeq50Assets": true
+  },
+  "sourceContractUpdated": true
+}
