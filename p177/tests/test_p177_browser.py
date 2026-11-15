@@ -4,9 +4,13 @@ This is a real Chromium DOM/runtime test, not an Android WebView field test.
 from pathlib import Path
 from playwright.sync_api import sync_playwright
 
-ROOT=Path(__file__).resolve().parent
-JS=(ROOT/'p177-tafsir-reader-final.js').read_text()
-CSS=(ROOT/'p177-tafsir-reader-final.css').read_text()
+ROOT=Path(__file__).resolve().parents[2]
+ASSETS=ROOT/'p121/owner-qa/modules/tafsir'
+# Development fallback for the detached fixture, never for the GitHub project.
+if not (ASSETS/'p177-tafsir-reader-final.js').exists():
+ ASSETS=Path(__file__).resolve().parents[1]
+JS=(ASSETS/'p177-tafsir-reader-final.js').read_text()
+CSS=(ASSETS/'p177-tafsir-reader-final.css').read_text()
 
 HTML='''<!doctype html><html lang="ar" dir="rtl"><meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
