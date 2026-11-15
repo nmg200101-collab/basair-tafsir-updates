@@ -1,0 +1,9 @@
+/* Scoped accessory for the original R109 Selected Recitations and V170 follow panel. */
+#p178SalmanReaderCard{border:1px solid #c8d8cb;display:flex;gap:8px;justify-content:space-between;align-items:center;flex-wrap:wrap}
+#p178SalmanReaderCard .r91ReaderDetails{display:flex;flex-direction:column;gap:5px;min-width:150px}
+#r108List #p178SurahSelect{min-height:42px;max-width:100%;flex:1;direction:rtl}
+#r108List .r91SourceLink{display:block;margin-block:7px;color:#0a6854;text-decoration:underline}
+#p178FollowChoice{display:flex;align-items:center;flex-direction:column;gap:5px;padding:8px;margin-block-start:6px;border:1px solid #cfdbc9;border-radius:12px}
+#p178FollowChoice button{max-width:100%;white-space:normal;min-height:42px}
+#p178FollowChoice small{font-size:12px;opacity:.8;text-align:center}
+@media(max-width:390px){#p178SalmanReaderCard{flex-direction:column;align-items:stretch}}
