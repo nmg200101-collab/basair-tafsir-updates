@@ -1,0 +1,57 @@
+{
+  "project": "Basair Quran",
+  "phase": "P172",
+  "date": "2026-11-15",
+  "scope": "Owner publishing policy; no application/manifest changes",
+  "requiredChoice": [
+    "manual",
+    "automatic"
+  ],
+  "signedValues": {
+    "manual": "notify",
+    "automatic": "automatic"
+  },
+  "checks": {
+    "staticV8Policy": {
+      "passed": 8,
+      "total": 8,
+      "details": [
+        "valid payload",
+        "manual maps notify",
+        "automatic maps automatic",
+        "mode mismatch rejected",
+        "protected tilawa module blocked",
+        "unsafe asset path rejected",
+        "missing mode rejected",
+        "duplicate asset rejected"
+      ]
+    },
+    "historicalSource": {
+      "manualSeq7": "p121/owner-qa/release-p130-seq7-before-p131-20261111.json",
+      "automaticSeq47": "p121/owner-qa/release.json",
+      "receiverEvidence": "p121/owner-qa/p128-evidence/signed-ota.json",
+      "legacyTests": "17/17 passed for historical notify behavior"
+    },
+    "nodeTestSuite": "p172/tests/test-owner-delivery-policy.cjs",
+    "nodeSuiteExecution": "not yet executed in repository runtime"
+  },
+  "security": {
+    "doesNotSign": true,
+    "doesNotPublish": true,
+    "doesNotModifyRelease": true,
+    "qa050ProtectedFilesChanged": 0,
+    "signedEnvelopeModeImmutable": true
+  },
+  "fieldLimitations": [
+    "Screenshot displays V690 and active repair 50, not Seq47; relation requires receiver trace",
+    "Historical notify supported in in-app banner, not Android operating-system push notification",
+    "Owner must select mode before owner signing; switching after signing requires a new signature",
+    "Actual Android V690/V695 manual/auto field A/B test pending"
+  ],
+  "deployment": {
+    "activeMainSeq": 47,
+    "appInstalledChange": false,
+    "signingKeyUploaded": false,
+    "published": false
+  }
+}
