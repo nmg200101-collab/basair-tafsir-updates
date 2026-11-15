@@ -40,6 +40,18 @@
     if(x.tagName==='LABEL'&&x.parentElement&&x.parentElement.querySelector('select'))return x.parentElement;
     return x.closest('button')||x;
    }
+   // Some V695 index variants use a span/small title with a sibling SELECT.
+   // Target the smallest label wrapper, not the entire Index layout.
+   var leaf=i.querySelectorAll('span,small,b,strong,label');
+   for(var n=0;n<leaf.length;n++){
+    var label=leaf[n],name=(label.textContent||'').trim();
+    if(name.length>45||!/نوع\\s*التفسير/.test(name))continue;
+    var parent=label.parentElement;
+    if(!parent||parent.contains(fav))continue;
+    if(parent.querySelector('select,[role="combobox"]'))return parent;
+    if(parent.parentElement&&parent.parentElement.querySelector('select,[role="combobox"]')&&
+       !parent.parentElement.contains(fav))return parent.parentElement;
+   }
    return null;
  }
  function toolbar(i,fav,typ){
