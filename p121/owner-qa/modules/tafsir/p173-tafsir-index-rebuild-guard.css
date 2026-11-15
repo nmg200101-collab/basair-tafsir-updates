@@ -64,3 +64,10 @@ body[data-p147-night="1"] .bq173-bar [data-bq173-type]{
   flex:1 1 16%!important;min-width:0!important;
  }
 }
+
+/* P170's three-ID rule forces display:flex on the native Favorites anchor.
+ * This stronger scoped selector must win after every B233 rebuild. */
+html body #tafsirIndex #basairTafsirB233TopBar.bq173-bar #basairTafsirB232FavoritesBtn[data-bq173-old="1"],
+html body #tafsirIndex[data-bq157-saved-ready="1"] #basairTafsirB233TopBar.bq173-bar #basairTafsirB232FavoritesBtn[data-bq173-old="1"]{
+ display:none!important;visibility:hidden!important;pointer-events:none!important;
+}
