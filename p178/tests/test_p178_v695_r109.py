@@ -1,9 +1,11 @@
 """P178 executes exact tilawa-r109-selected.js from official V695 APK in Chromium."""
 from pathlib import Path
+import os
 import zipfile
 from playwright.sync_api import sync_playwright
 ROOT=Path(__file__).resolve().parents[1]
-APK=Path('/mnt/data/basair-v695-owner-signed.apk')
+APK=Path(os.environ.get('BASAIR_V695_APK','/mnt/data/basair-v695-owner-signed.apk'))
+if not APK.is_file(): raise SystemExit('V695 APK required locally: set BASAIR_V695_APK (never commit APK or private keys)')
 with zipfile.ZipFile(APK) as z:
     NATIVE=z.read('assets/www/tilawa-r109-selected.js').decode('utf-8')
 P178=(ROOT/'modules/p178-salman-selected-follow.js').read_text()
