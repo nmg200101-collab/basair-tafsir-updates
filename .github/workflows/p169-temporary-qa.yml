@@ -1,0 +1,27 @@
+name: P169 temporary signed and browser QA
+on:
+  pull_request:
+    paths:
+      - "p169/**"
+      - "p121/owner-qa/release.json"
+      - "p121/owner-qa/modules/tafsir/p169-*"
+      - ".github/workflows/p169-temporary-qa.yml"
+permissions:
+  contents: read
+jobs:
+  p169-signed-and-chromium:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify owner RSA Seq46 and exact 12 Tafsir assets
+        run: node p169/tests/test-p169-owner-signed-source.cjs
+      - name: Install Playwright and Chromium
+        run: |
+          python -m pip install playwright
+          python -m playwright install --with-deps chromium
+      - name: Verify R114 native stop bar and hierarchical notes Back
+        run: python p169/tests/test-p169-browser.py
