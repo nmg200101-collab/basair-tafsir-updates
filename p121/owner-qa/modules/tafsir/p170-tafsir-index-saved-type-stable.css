@@ -104,3 +104,15 @@ body[data-p147-night="1"] #tafsirIndex #basairTafsirB233TopBar #basairTafsirB232
  min-height:58px!important;min-width:0!important;padding:7px 13px!important;
  white-space:normal!important;text-overflow:clip!important;
 }
+
+/* Tablet/desktop: restore a single horizontal row without horizontal overflow. */
+@media(min-width:760px){
+ #tafsirIndex #basairTafsirB233TopBar > :first-child:not(#basairTafsirB232FavoritesBtn):not([data-b233-top="search"]),
+ #tafsirIndex #basairTafsirB233TopBar > [data-bq170-type="1"]{
+  flex:2 1 42%!important;width:auto!important;min-width:0!important;
+  max-width:none!important;min-height:52px!important;padding:7px 10px!important;
+ }
+ #tafsirIndex #basairTafsirB233TopBar > :not([data-bq170-type="1"]){
+  flex:1 1 16%!important;
+ }
+}
