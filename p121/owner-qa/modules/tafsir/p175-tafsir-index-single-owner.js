@@ -123,6 +123,52 @@
    bar.appendChild(fallback);
    return fallback;
  }
+ // V695 VERIFIED: P117 and P118 are identical to the user-supplied V694 APK.
+ // B233's toolbar has NO Follow button. P117/P118 render the actually visible
+ // Follow / Favorites / Type / Mini-search toolbar and revive it every 2.2/2.3s.
+ // Own THAT native toolbar when present, rather than mounting a second one.
+ function reconcileP118(root,topbar){
+   var type=topbar.querySelector('.bq-tf117-type'),
+       select=type&&type.querySelector('#bqTf117Type'),
+       actions=topbar.querySelector('.bq-tf117-actions'),
+       follow=topbar.querySelector('#bqTf117Resume'),
+       last=topbar.querySelector('#bqTf118Last');
+   if(!type||!select||!actions||!follow||!last){missing++;return false;}
+   attr(root,'data-bq175-native-p118','1');
+   attr(root,'data-bq175-owned','1');
+   attr(topbar,'data-bq175-native-p118','1');
+   var saved=topbar.querySelector('#bq175P118Saved');
+   if(!saved){
+     saved=d.createElement('button');saved.id='bq175P118Saved';saved.type='button';
+     saved.innerHTML='<span aria-hidden="true">☆</span><b>المفضلة والملاحظات</b>';
+     saved.setAttribute('aria-label','فتح المفضلة والملاحظات');
+     saved.addEventListener('click',function(e){
+       e.preventDefault();e.stopPropagation();
+       if(!openNativeSaved())saved.setAttribute('title','تعذر فتح المحفوظات');
+     });
+     // P118 moves its own controls, but doesn't remove unknown siblings.
+     topbar.insertBefore(saved,actions);
+   }
+   var val=sourceValue(type);
+   var mirror=type.querySelector('#bq175P118FullType');
+   if(!mirror){
+     mirror=d.createElement('span');mirror.id='bq175P118FullType';
+     mirror.setAttribute('aria-hidden','true');
+     type.appendChild(mirror);
+   }
+   if(mirror.textContent!==val)mirror.textContent=val;
+   attr(type,'data-bq175-type-enhanced','1');
+   // P117's own Favorites only expands its old bookmark list (no notes).
+   // Keep data/handlers mounted, but present one genuine Saved+Notes entry.
+   var oldFav=topbar.querySelector('#bqTf117Favorites');
+   if(oldFav)hide(oldFav);
+   var mini=topbar.querySelector('#bqTf118SearchAction');
+   if(mini)hide(mini);
+   // B233/P170-P174 may add a second bar later. Never expose it alongside P118.
+   var obsolete=all('#basairTafsirB233TopBar,#bq157SavedGroup',root);
+   for(var q=0;q<obsolete.length;q++)hide(obsolete[q]);
+   success++;return true;
+ }
  function apply(root,bar){
    var type=resolveType(bar);
    var follow=findNamed(bar,/متابعة\s*التفسير/);
@@ -179,7 +225,9 @@
    try{
      var any=false,list=roots();
      for(var i=0;i<list.length;i++){
-       var root=list[i],bs=bars(root);
+       var root=list[i],primary=root.querySelector('#bqTf118Topbar');
+       if(primary){any=reconcileP118(root,primary)||any;continue;}
+       var bs=bars(root);
        for(var j=0;j<bs.length;j++)any=apply(root,bs[j])||any;
      }
      return any;
@@ -194,8 +242,12 @@
      // Do not monitor every child style mutation: old P170-P174 runtimes
      // modify these styles and can create a self-sustaining microtask loop.
      if(m.attributeName==='style'){
-       return !!(m.target.matches&&m.target.matches(BAR)&&
-         w.getComputedStyle(m.target).display!=='grid');
+       if(m.target.matches&&m.target.matches(BAR)){
+         var parent=m.target.closest(INDEX);
+         var native=parent&&parent.querySelector('#bqTf118Topbar');
+         return w.getComputedStyle(m.target).display!==(native?'none':'grid');
+       }
+       return false;
      }
      if(m.target.matches&&m.target.matches(INDEX+','+BAR))return true;
      return false;
