@@ -1,8 +1,10 @@
 """P178 source/QA-050 contract against official V695 APK; no private keys."""
 from pathlib import Path
+import os
 import zipfile
 ROOT=Path(__file__).resolve().parents[1]
-APK=Path('/mnt/data/basair-v695-owner-signed.apk')
+APK=Path(os.environ.get('BASAIR_V695_APK','/mnt/data/basair-v695-owner-signed.apk'))
+if not APK.is_file(): raise SystemExit('V695 APK required locally: set BASAIR_V695_APK (never commit APK or private keys)')
 js=(ROOT/'modules/p178-salman-selected-follow.js').read_text()
 css=(ROOT/'modules/p178-salman-selected-follow.css').read_text()
 with zipfile.ZipFile(APK) as z:
