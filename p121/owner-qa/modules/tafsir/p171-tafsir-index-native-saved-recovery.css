@@ -1,0 +1,78 @@
+/* BASAIR P171 — true native index-only overlay on top of stable P170.
+ * No reader/verse/TTS changes, no global opacity or flash animation.
+ * Layout is activated only after the relevant controls are identified.
+ */
+#tafsirIndex .bq171-tools,
+[data-bq171-ready="1"] .bq171-tools{
+ display:flex!important;direction:rtl!important;
+ align-items:stretch!important;flex-wrap:wrap!important;gap:6px!important;
+ transition:none!important;animation:none!important;
+}
+html body #tafsirIndex .bq171-tools [data-bq171-mini="1"],
+html body #tafsirIndex .bq171-tools #p153NotesIndex,
+html body #tafsirIndex .bq171-tools #basairTafsirB232FavoritesBtn[data-bq171-native-anchor="1"],
+html body #tafsirIndex #basairTafsirB233TopBar.bq171-tools #basairTafsirB232FavoritesBtn,
+html body [data-bq171-ready="1"] .bq171-tools [data-bq171-native-anchor="1"]{
+ display:none!important;visibility:hidden!important;pointer-events:none!important;
+ animation:none!important;transition:none!important;
+}
+html body #tafsirIndex #bq157SavedGroup,
+html body [data-bq171-ready="1"] #bq157SavedGroup{
+ display:none!important;visibility:hidden!important;
+}
+html body #tafsirIndex .bq171-tools > *,
+html body [data-bq171-ready="1"] .bq171-tools > *{
+ box-sizing:border-box!important;min-width:0!important;
+ margin:0!important;animation:none!important;transition:none!important;
+}
+html body #tafsirIndex .bq171-tools > [data-bq171-type="1"],
+html body [data-bq171-ready="1"] .bq171-tools > [data-bq171-type="1"]{
+ order:-1!important;flex:1 0 100%!important;width:100%!important;
+ max-width:none!important;min-height:58px!important;
+ padding:6px 12px!important;border-radius:15px!important;
+ text-align:right!important;background:var(--soft,#eef5ef)!important;
+ border:1px solid var(--line,#ccd8cd)!important;
+ white-space:normal!important;overflow:visible!important;
+}
+html body #tafsirIndex .bq171-tools > :not([data-bq171-type="1"]):not([data-bq171-native-anchor="1"]):not([data-bq171-mini="1"]):not(#p153NotesIndex),
+html body [data-bq171-ready="1"] .bq171-tools > :not([data-bq171-type="1"]):not([data-bq171-native-anchor="1"]):not([data-bq171-mini="1"]):not(#p153NotesIndex){
+ order:0!important;flex:1 1 calc(33.33% - 6px)!important;
+ width:auto!important;max-width:none!important;min-width:0!important;
+ min-height:52px!important;
+}
+html body #tafsirIndex .bq171-tools button[data-bq171-saved="1"],
+html body [data-bq171-ready="1"] .bq171-tools button[data-bq171-saved="1"]{
+ display:flex!important;visibility:visible!important;opacity:1!important;
+ flex-direction:column!important;align-items:center!important;justify-content:center!important;
+ gap:2px!important;padding:4px 3px!important;touch-action:manipulation!important;
+ border:1px solid var(--line,#ccd8cd)!important;border-radius:15px!important;
+ font:inherit!important;font-weight:700!important;
+ background:var(--paper,#fffdf8)!important;color:var(--green,#155c43)!important;
+}
+.bq171-tools [data-bq171-saved] > span{font-size:21px;line-height:1;}
+.bq171-tools [data-bq171-saved] > b{font-size:11px!important;line-height:1.25;white-space:normal;text-align:center;}
+.bq171-tools [data-bq171-type] select,
+.bq171-tools [data-bq171-type] [role="combobox"]{
+ width:100%!important;min-width:0!important;max-width:100%!important;
+ font:inherit!important;direction:rtl!important;
+ text-overflow:clip!important;
+}
+.bq171-tools [data-bq171-type] > *{max-width:100%!important;}
+.dark .bq171-tools [data-bq171-type],
+body[data-p147-night="1"] .bq171-tools [data-bq171-type],
+.dark .bq171-tools [data-bq171-saved],
+body[data-p147-night="1"] .bq171-tools [data-bq171-saved]{
+ background:#223a30!important;color:#ebf4ed!important;border-color:#638472!important;
+}
+@media(min-width:760px){
+ html body #tafsirIndex .bq171-tools,
+ html body [data-bq171-ready="1"] .bq171-tools{flex-wrap:nowrap!important;}
+ html body #tafsirIndex .bq171-tools > [data-bq171-type="1"],
+ html body [data-bq171-ready="1"] .bq171-tools > [data-bq171-type="1"]{
+  order:0!important;flex:2 1 42%!important;max-width:none!important;width:auto!important;
+ }
+ html body #tafsirIndex .bq171-tools > :not([data-bq171-type="1"]):not([data-bq171-mini="1"]):not([data-bq171-native-anchor="1"]),
+ html body [data-bq171-ready="1"] .bq171-tools > :not([data-bq171-type="1"]):not([data-bq171-mini="1"]):not([data-bq171-native-anchor="1"]){
+  flex:1 1 16%!important;min-width:0!important;
+ }
+}
