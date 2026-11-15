@@ -1,0 +1,52 @@
+/* P180 — Scoped to the existing tilawa navigation sheet, page tab only. */
+#navSheet.p180-page-active .navPanel{
+  display:flex;flex-direction:column;height:min(88dvh,850px);max-height:92dvh;
+  box-sizing:border-box;padding:10px 12px calc(12px + env(safe-area-inset-bottom,0px));
+  background:linear-gradient(160deg,#172622 0%,#0b1413 52%,#10191a 100%);
+  color:#f6f4e9;border-top:2px solid #c5a465;border-radius:22px 22px 0 0;
+}
+#navSheet.p180-page-active .navTabs{flex:0 0 auto;background:#202c29;border:1px solid #56665b55;}
+#navSheet.p180-page-active .navTabs button.on{background:#1f6958;color:#fff4d8;}
+#navSheet .p180IndexHeading[hidden]{display:none!important;}
+#navSheet.p180-page-active .p180IndexHeading{display:flex;align-items:center;justify-content:space-between;gap:8px;
+  padding:12px 5px 3px;flex:0 0 auto;direction:rtl;}
+#navSheet .p180IndexCopy{display:flex;flex-direction:column;gap:4px;min-width:0;}
+#navSheet .p180IndexCopy b{font-size:1rem;color:#f7e7c4;}
+#navSheet .p180IndexCopy small{font-size:.8rem;color:#b7d4c9;}
+#navSheet .p180FindCurrent{background:#2d594b;color:#fff9ec;border:1px solid #ae9968;
+ border-radius:12px;font-size:.78rem;font-weight:750;white-space:nowrap;padding:9px 12px;min-height:39px;}
+#navSheet.p180-page-active #navSearch{flex:0 0 auto;min-height:44px;box-sizing:border-box;
+ background:#1b2925;border-color:#637e70;color:#f5f7f3;border-radius:12px;}
+#navSheet.p180-page-active #navList.pages{display:flex!important;flex-direction:column!important;
+ flex:1 1 auto;min-height:0;max-height:none!important;overflow-y:auto!important;overflow-x:hidden;
+ overscroll-behavior:contain;scrollbar-width:thin;gap:4px!important;position:relative;padding:4px 0 14px;}
+#navSheet.p180-page-active #navList.pages .p180PageRow{display:grid!important;
+ grid-template-columns:58px minmax(0,1fr) 46px 62px!important;
+ align-items:center!important;gap:8px!important;direction:rtl;
+ min-height:68px;width:100%;box-sizing:border-box;border:1px solid #35473e!important;
+ border-radius:11px!important;background:#1a2422!important;color:#fbfaf6!important;
+ margin:0!important;padding:7px 10px!important;text-align:right!important;
+ font-size:.93rem;position:relative;contain:layout style;
+}
+#navSheet.p180-page-active .p180Juz{color:#b0d0c1;font-size:.78rem;white-space:nowrap;font-weight:650;}
+#navSheet.p180-page-active .p180Surah{font-size:.96rem;font-weight:750;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+#navSheet.p180-page-active .p180Ornament{font-size:1.45rem;text-align:center;filter:saturate(.75);}
+#navSheet.p180-page-active .p180Page{font-size:1.12rem;text-align:center;color:#f3e6cf;
+ font-variant-numeric:tabular-nums;}
+#navSheet.p180-page-active #navList.pages .p180Current{background:#185744!important;
+ border:2px solid #dcb974!important;box-shadow:inset 0 0 0 1px #e0c38466,0 2px 11px #0005!important;}
+#navSheet.p180-page-active .p180Current::after{content:'الصفحة الحالية';position:absolute;
+ bottom:2px;left:6px;font-size:.53rem;color:#f6deb0;}
+#navSheet.p180-page-active .p180Current .p180Page{color:#ffdf93;}
+#navSheet.p180-page-active .p180PageRow:focus-visible,#navSheet .p180FindCurrent:focus-visible{
+ outline:3px solid #ffd483!important;outline-offset:2px;}
+@media(max-width:390px){
+ #navSheet.p180-page-active #navList.pages .p180PageRow{
+  grid-template-columns:47px minmax(0,1fr) 38px 46px!important;gap:5px!important;
+  min-height:62px;padding:6px 7px!important;}
+ #navSheet.p180-page-active .p180Surah{font-size:.82rem;}
+ #navSheet.p180-page-active .p180Juz{font-size:.70rem;}
+ #navSheet.p180-page-active .p180Ornament{font-size:1.2rem;}
+ #navSheet.p180-page-active .p180Page{font-size:1rem;}
+}
+@media(prefers-reduced-motion:reduce){#navSheet.p180-page-active *{scroll-behavior:auto!important;transition:none!important;}}
