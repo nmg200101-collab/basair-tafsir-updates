@@ -58,10 +58,19 @@ with sync_playwright() as pw:
                    document.querySelectorAll('#follow').forEach(e=>e.addEventListener('click',()=>window.hits.follow++));
                    if(document.querySelector('#oldProxy'))document.querySelector('#oldProxy').addEventListener('click',()=>window.hits.oldProxy++);
                 }''')
+                # Real Seq47 P170 has high-specificity !important style restoring
+                # the original favorite; the new guard must hide it anyway.
+                p.add_style_tag(content='''
+                html body #tafsirIndex #basairTafsirB233TopBar #basairTafsirB232FavoritesBtn,
+                html body #tafsirIndex[data-bq157-saved-ready="1"] #basairTafsirB233TopBar #basairTafsirB232FavoritesBtn{
+                 display:flex!important;visibility:visible!important;pointer-events:auto!important;}
+                html body #tafsirIndex .bq171-tools button[data-bq171-saved="1"]{
+                 display:flex!important;visibility:visible!important;}''')
                 p.add_style_tag(content=CSS)
                 p.add_script_tag(content=JS)
                 root=p.locator('#tafsirIndex.active')
                 assert p.locator('#tafsirIndex button[data-bq173-owner="1"]:visible').count()==1,(variant,w,dark,'initial proxy')
+                assert root.locator('button[data-bq171-saved="1"]').count()==1,(variant,w,dark,'P171 sees the same proxy')
                 assert root.locator('#mini').is_hidden(),(variant,w,dark,'mini')
                 assert root.locator('#basairTafsirB232FavoritesBtn').is_hidden(),(variant,w,dark,'native fav')
                 assert root.locator('#typeChooser').is_visible(),(variant,w,dark,'type')
@@ -108,6 +117,16 @@ with sync_playwright() as pw:
                     root.querySelector('#basairTafsirB232FavoritesBtn').getAttribute('data-bq173-old')==='1';
                 }''')
                 assert root.locator('button[data-bq173-owner="1"]').count()==1,(variant,w,dark,'rebuild no duplicates')
+                # P171's delayed refresh is still active; it must NOT create another proxy.
+                p.evaluate('''() => {
+                  const bar=document.querySelector('#tafsirIndex.active #basairTafsirB233TopBar');
+                  if(!bar.querySelector('button[data-bq171-saved="1"]')){
+                    const duplicate=document.createElement('button');
+                    duplicate.setAttribute('data-bq171-saved','1');
+                    duplicate.textContent='المفضلة';bar.appendChild(duplicate);
+                  }
+                }''')
+                assert root.locator('button[data-bq171-saved="1"]').count()==1,(variant,w,dark,'P171 delayed duplicate prevention')
                 assert root.locator('#mini').is_hidden(),(variant,w,dark,'mini hidden after replacement')
                 assert root.locator('#basairTafsirB232FavoritesBtn').is_hidden()
                 # Rerender via nested wrapper mutation, not direct Index child or known bar ID.
