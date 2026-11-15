@@ -1,0 +1,56 @@
+{
+  "project": "Basair Quran",
+  "phase": "P175",
+  "status": "DRAFT_NOT_PUBLISHED",
+  "parent_active": "P174 / Seq50 / tafsir v48",
+  "android_package": "app.basair.qurv2",
+  "manifest_touched": false,
+  "apk_generated": false,
+  "file_integrity": [
+    {
+      "path": "modules/tafsir/p175-tafsir-index-single-owner.css",
+      "kind": "css",
+      "size": 4135,
+      "sha256": "d9daac917316ccfe19734c1cf74fe01df0270c911b6fbc29857807579a49cd5c"
+    },
+    {
+      "path": "modules/tafsir/p175-tafsir-index-single-owner.js",
+      "kind": "js",
+      "size": 10502,
+      "sha256": "f5f879a8ca051aaef4f9a8ca06b11de8bc508bc415b2ebddbdc8514b4deb6fdd"
+    }
+  ],
+  "chromium": {
+    "passed": 20,
+    "total": 20,
+    "widths": [
+      320,
+      360,
+      390,
+      430,
+      768
+    ],
+    "modes": [
+      "light",
+      "dark"
+    ],
+    "sourceWidgets": [
+      "select",
+      "button"
+    ],
+    "verified": [
+      "native P153 saved click",
+      "type full label",
+      "search retained",
+      "follow and last click",
+      "late B233 rebuild",
+      "no duplicate visible buttons",
+      "mutation observer idle stability"
+    ]
+  },
+  "limitations": [
+    "Chromium fixture does not use V695 APK WebView.",
+    "Field acceptance not established.",
+    "No signed Seq51 candidate or server activation."
+  ]
+}
