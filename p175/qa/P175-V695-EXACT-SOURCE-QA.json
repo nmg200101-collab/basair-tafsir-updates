@@ -94,15 +94,34 @@
     }
   ],
   "publishing": {
-    "signed": false,
-    "manifestChanged": false,
-    "activeSeq": 50,
-    "ready": "DRAFT_ONLY",
-    "requires": "Owner review, signed new sequence, QA050 guard and Android V695 field test"
+    "signed": true,
+    "mode": "automatic",
+    "sequence": 51,
+    "moduleVersion": 49,
+    "ownerKey": "original RSA-3072 private key used locally; never uploaded",
+    "manifestChangedOnBranch": true,
+    "activeMainAtPreparation": 50,
+    "ready": "SIGNED_STAGED_REQUIRES_QA050_AND_MERGE",
+    "androidWebViewTested": false
   },
   "privacy": {
     "apkNotUploadedToGithub": true,
-    "privateSigningKeyNeverUsed": true,
-    "privateNoteDataNeverAccessed": true
-  }
+    "privateSigningKeyNeverUsed": false,
+    "privateNoteDataNeverAccessed": true,
+    "privateKeyUploadedToGithub": false
+  },
+  "signedCandidate": {
+    "path": "p175/P175-SEQ51-OWNER-SIGNED-AUTOMATIC.json",
+    "sha256": "9cd2c7efadced0559bcf1c64a62c0a34d1818f68a2975b5b008122e29b64d4e5",
+    "blob": "eb9defb4ef46f6114fbaaf4b97d39c0e40ea03ec",
+    "assetsTotal": 22,
+    "protectedAssetsUnchanged": 20,
+    "newAssets": 2
+  },
+  "recovery": {
+    "status": "LOCAL_SIGNED_NOT_PUBLISHED",
+    "sequence": 52,
+    "restoresSeq50Assets": true
+  },
+  "sourceContractUpdated": true
 }
