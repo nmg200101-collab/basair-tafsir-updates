@@ -28,6 +28,7 @@ html body #tafsirIndex #basairTafsirB233TopBar > [data-bq175-type="1"] {
   overflow: visible !important;
 }
 html body #tafsirIndex #basairTafsirB233TopBar #p153FavoritesIndex,
+html body #tafsirIndex #basairTafsirB233TopBar #bq175SavedEntry,
 html body #tafsirIndex #basairTafsirB233TopBar #p153FavoritesIndex[data-bq175-saved="1"] {
   grid-column: 1 !important;
   grid-row: 2 !important;
