@@ -1,0 +1,77 @@
+{
+  "phase": "P178",
+  "date": "2026-11-15",
+  "status": "SIGNED_STAGED_AWAITING_QA050_MERGE",
+  "ownerAuthorization": "Owner explicitly requested direct publication and supplied encrypted P119 approval key; passphrase recovered from separate preexisting private record, never committed",
+  "update": {
+    "id": "P178-SALMAN-OWNERQA-SEQ54-AUTO-20261115",
+    "sequence": 54,
+    "mode": "automatic",
+    "channel": "owner-qa",
+    "minAppVersion": 694,
+    "applicationId": "app.basair.qurv2",
+    "signedCandidate": "p178/P178-SEQ54-OWNER-SIGNED-AUTOMATIC.json",
+    "gitBlob": "40f2177bd4f84b99a5faac0a3e9d2a97f3126550",
+    "signedCandidateSHA256": "250923716e09a6bad3c706764db3849ecc113c82b07dcc40dff9a7a5b85f894c"
+  },
+  "trust": {
+    "V695RuntimeEd25519PublicRawSha256": "47fec7dbe6fc3949c01b000658b2f2d376adcbd98c42c02cdc280c313ec7dbcf",
+    "GitHubQA050GuardEd25519PublicRawSha256": "468a4b0de5066569eb55f22987e1768569de7ff96d95b716ff8ebbed1a90e1c7",
+    "trustMismatch": "Existing GitHub QA050 source-change guard uses an older verifier and cannot validate the newer V695 runtime approval; do not rotate public key without explicit separate migration",
+    "V695RuntimeOwnerApproval": "Ed25519 verified against bundled owner public key",
+    "RSA3072": "RSA SHA256 signed with original owner P12 and verified against V695 OTA public key",
+    "privateKeysUploaded": false
+  },
+  "modules": [
+    {
+      "id": "tafsir",
+      "version": 51,
+      "stableAssets": 26,
+      "changed": false
+    },
+    {
+      "id": "tilawa",
+      "version": 178,
+      "newAssets": 2,
+      "ownerApproval": "SIGNED",
+      "mode": "surah-only, no EveryAyah timing"
+    }
+  ],
+  "newAssets": [
+    {
+      "path": "modules/tilawa/p178-salman-selected-follow.css",
+      "size": 894,
+      "sha256": "010cc08506cb4b67bc5279a01771df0ff3977344e579ad69650f3578bf4ce477"
+    },
+    {
+      "path": "modules/tilawa/p178-salman-selected-follow.js",
+      "size": 10846,
+      "sha256": "999970c6cd36ca722e36c12bfad038540d0665c9c53a97105f3fb051941a45eb"
+    }
+  ],
+  "tests": {
+    "chromiumNativeV695R109": "PASS 6/6",
+    "chromiumSelectedAndFollow": "PASS 8/8",
+    "sourceContract": "PASS 9/9",
+    "signedCandidateRSAAndEd": "PASS",
+    "signedRecoveryRSAAndEd": "PASS",
+    "androidWebViewField": "NOT TESTED",
+    "liveMP3streamOnDevice": "NOT TESTED",
+    "sourceCommercialLicense": "NOT VERIFIED"
+  },
+  "rights": "Way2Quran permits personal educational devotional non-commercial use. QA test is streaming-only with attribution, no file copies or redistribution. Broad/commercial distribution requires separate source permission.",
+  "recovery": {
+    "sequence": 55,
+    "tilawaVersion": 179,
+    "tilawaAssets": 0,
+    "preservesTafsir": true,
+    "localEncryptedOwnerSigningKeyNeverUploaded": true,
+    "rollbackSignedLocally": true,
+    "rollbackNotPublished": true,
+    "ownerApprovalExpires": "2026-11-20T21:00:10Z"
+  },
+  "mainAtStaging": {
+    "sequence": 53,
+    "gitBlob": "8b04f31dbb0e7e780f1669d12166f8e115a1b9d2"
+  }
+}
