@@ -97,7 +97,9 @@ with sync_playwright() as p:
                 page.evaluate("""() => {
                   const b=document.querySelector('#basairTafsirB233TopBar');
                   const original=b.querySelector('#basairTafsirB232FavoritesBtn');
-                  const replacement=original.cloneNode(true);
+                  const replacement=document.createElement('button');
+                  replacement.id='basairTafsirB232FavoritesBtn';
+                  replacement.textContent='☆ المفضلة';
                   original.replaceWith(replacement);
                   replacement.addEventListener('click',
                     ()=>window.__BASAIR_TAFSIR_FINAL_B233__.favorites.open());
