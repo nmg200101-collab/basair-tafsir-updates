@@ -98,6 +98,14 @@ function verifyCandidate(m,mode,active){
  for(const old of active.modules){
   const n=m.modules.find(x=>x.id===old.id);
   if(n&&n.version<=old.version)error('New version required for existing module '+old.id);
+  if(n){
+   for(const previous of old.assets){
+    const current=n.assets.find(a=>a.path===previous.path);
+    if(!current||current.kind!==previous.kind||current.size!==previous.size||
+       current.sha256!==previous.sha256)
+      error('Protected active asset changed or removed: '+previous.path);
+   }
+  }
  }
  return verifyAssets(m);
 }
