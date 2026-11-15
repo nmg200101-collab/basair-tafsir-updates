@@ -36,6 +36,25 @@ try{
  const out=mod.plan({mode:'manual',input,out:draft});
  assert.equal(out.signedDeliveryMode,'notify');
  assert.equal(JSON.parse(fs.readFileSync(draft,'utf8')).deliveryMode,'notify');
+ assert.equal(out.assetsVerified,14,'Unsigned plan must validate all actual file hashes before signing');
+ const unsafe=structuredClone(payload);
+ unsafe.modules[0].assets[0].sha256='0'.repeat(64);
+ const unsafeFile=path.join(temp,'invalid-hash.json'),unsafeOut=path.join(temp,'rejected-hash.json');
+ fs.writeFileSync(unsafeFile,JSON.stringify(unsafe));
+ bad(()=>mod.plan({mode:'manual',input:unsafeFile,out:unsafeOut}),'size/SHA-256 mismatch');
+ assert.equal(fs.existsSync(unsafeOut),false,'Must not write draft with invalid asset hash');
+ const stale=structuredClone(payload);
+ stale.modules[0].version=automatic.modules[0].version;
+ const staleFile=path.join(temp,'old-version.json'),staleOut=path.join(temp,'rejected-version.json');
+ fs.writeFileSync(staleFile,JSON.stringify(stale));
+ bad(()=>mod.plan({mode:'manual',input:staleFile,out:staleOut}),'New version required');
+ assert.equal(fs.existsSync(staleOut),false,'Must not write draft with old module version');
+ const expired=structuredClone(payload);
+ expired.expiresAt='2026-11-15T09:00:01Z';
+ const expiredFile=path.join(temp,'expired.json'),expiredOut=path.join(temp,'rejected-expired.json');
+ fs.writeFileSync(expiredFile,JSON.stringify(expired));
+ bad(()=>mod.plan({mode:'automatic',input:expiredFile,out:expiredOut}),'already expired');
+ assert.equal(fs.existsSync(expiredOut),false,'Must not write expired draft');
  assert.deepEqual(fs.readFileSync(live),liveCopy,'Live signed release must never change');
  bad(()=>mod.plan({mode:'automatic',input,out:draft}),'EEXIST');
  bad(()=>mod.plan({mode:'manual',input,out:live}),'Refusing');
@@ -54,4 +73,5 @@ console.log(JSON.stringify({status:'PASS',historicalManualNotifySeq7:true,active
     originalOwnerRSA3072Verified:true,activeAssetsSHA256Verified:14,
     noConsentFetchInManualMode:'HISTORICAL_RECEIVER_TEST_ONLY',
     noProtectedModuleChanges:true,modeSelectionRequired:true,immutableSignedDeliveryMode:true,
-    liveSeq47Unchanged:true,privateKeyUsed:false,publication:false}));
+    liveSeq47Unchanged:true,preSignHashGuard:true,preSignVersionGuard:true,expiredDraftBlocked:true,
+    privateKeyUsed:false,publication:false}));
