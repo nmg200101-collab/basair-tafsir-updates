@@ -3,7 +3,12 @@
   "phase": "P173",
   "date": "2026-11-15",
   "status": "DRAFT_NO_SERVER_PUBLICATION",
-  "activeReference": {"phase": "P171", "sequence": 48, "channel": "owner-qa", "deliveryMode": "notify"},
+  "activeReference": {
+    "phase": "P171",
+    "sequence": 48,
+    "channel": "owner-qa",
+    "deliveryMode": "notify"
+  },
   "rootCauseConfirmedFromSource": [
     "P171 body MutationObserver returns early while old root remains connected",
     "P171 split type label fallback uses incorrect escaped whitespace regex"
@@ -13,12 +18,43 @@
     "browser": "Chromium",
     "testCases": 40,
     "passed": 40,
-    "viewportWidths": [320, 360, 390, 430, 768],
-    "modes": ["light", "dark"],
-    "domVariants": ["single native toolbar", "split type label", "duplicate hidden and active roots", "existing P171 proxy"],
+    "viewportWidths": [
+      320,
+      360,
+      390,
+      430,
+      768
+    ],
+    "modes": [
+      "light",
+      "dark"
+    ],
+    "domVariants": [
+      "single native toolbar",
+      "split type label",
+      "duplicate hidden and active roots",
+      "existing P171 proxy"
+    ],
     "rebuildsPerCase": 2,
-    "reconciledByNextFrame": true
+    "reconciledByNextFrame": true,
+    "legacyIntegration": {
+      "p170HighSpecificityFavoriteDisplayOverridden": true,
+      "p171LateDuplicateProxyAvoided": true,
+      "recheckedCases": 40,
+      "recheckedPassed": 40
+    }
   },
-  "unchanged": ["P171 Seq48 signed manifest", "Tafsir Follow", "Manual Scroll", "Natiq", "Saved Data", "QA-050 Tilawa"],
-  "limitations": ["No Android phone field test", "No native APK receiver trace", "No release signed or published"]
+  "unchanged": [
+    "P171 Seq48 signed manifest",
+    "Tafsir Follow",
+    "Manual Scroll",
+    "Natiq",
+    "Saved Data",
+    "QA-050 Tilawa"
+  ],
+  "limitations": [
+    "No Android phone field test",
+    "No native APK receiver trace",
+    "No release signed or published"
+  ]
 }
