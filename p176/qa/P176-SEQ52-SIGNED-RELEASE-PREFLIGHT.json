@@ -1,0 +1,59 @@
+{
+  "project": "Basair Quran",
+  "phase": "P176/Seq52",
+  "date": "2026-11-15",
+  "release": {
+    "sequence": 52,
+    "tafsirVersion": 50,
+    "deliveryMode": "automatic",
+    "channel": "owner-qa",
+    "applicationId": "app.basair.qurv2",
+    "minAppVersion": 694,
+    "signature": "original owner RSA-3072/SHA-256 verified locally",
+    "signedCandidate": "p176/P176-SEQ52-OWNER-SIGNED-AUTOMATIC.json",
+    "signedBlob": "9cfef73ceb2352031a56255dea55ebf51d682936"
+  },
+  "assets": {
+    "previousSequence": 51,
+    "previousSignedBlob": "eb9defb4ef46f6114fbaaf4b97d39c0e40ea03ec",
+    "original22Preserved": true,
+    "assetCount": 24,
+    "added": [
+      {
+        "path": "modules/tafsir/p176-tafsir-two-row-index.css",
+        "kind": "css",
+        "size": 7225,
+        "sha256": "69c12e4f7856276798ea9a6992a06cc4228fab3039a7d0d49672c8aa8d5da949"
+      },
+      {
+        "path": "modules/tafsir/p176-saved-return-context.js",
+        "kind": "js",
+        "size": 4748,
+        "sha256": "7dee584e3b7fb4661ef00b7c587b02c6e1a989c8e7a9ad8b94ee0eb3e601b982"
+      }
+    ]
+  },
+  "tests": {
+    "chromiumRealV695P117P118": "PASS 30/30",
+    "savedNotesBack": "PASS 3/3 after awaiting animation-frame focus",
+    "nodeSourceContract": "PASS",
+    "nodeSignedContract": "source committed, needs runtime execution if CI unavailable",
+    "androidWebViewField": "NOT YET TESTED"
+  },
+  "controls": {
+    "tilawaQA050": "GitHub workflow pending at staging",
+    "noAPK": true,
+    "noNoteStorageChange": true,
+    "noReaderEngineChange": true,
+    "ownerApprovedDeployment": true,
+    "ownerSelectedMode": "automatic retained from P175",
+    "newPrivateKeyUploaded": false
+  },
+  "rollback": {
+    "signedSequence": 53,
+    "restoresSeq51Assets": true,
+    "location": "private local only; never published",
+    "mustVerifyReceiverCompatibility": true
+  },
+  "status": "STAGED_SIGNED_BRANCH_ONLY_AWAITING_GITHUB_GUARD_AND_MERGE"
+}

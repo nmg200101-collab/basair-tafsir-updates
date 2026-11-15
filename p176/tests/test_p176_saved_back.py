@@ -50,6 +50,9 @@ with sync_playwright() as p:
   # Leave the reader using native navigation; P176 must NOT hijack window.basairBack.
   page.evaluate("document.querySelector('#tafsirReader').classList.remove('active');document.querySelector('#tafsirIndex').classList.add('active');")
   page.wait_for_function('window.test.opens===1')
+  # The original panel restores focus on the next animation frame.
+  # Wait for that frame, rather than racing R3's focus restoration.
+  page.wait_for_function("(tab) => document.activeElement?.getAttribute(tab==='notes'?'data-r3-note-open':'data-b232-fav-open') === (tab==='notes'?'1:3':'2:5')",arg=tab,timeout=1500)
   status=page.evaluate("window.__BASAIR_TAFSIR_P176_SAVED_RETURN__.status()")
   outcome=page.evaluate('''(tab)=>({panel:document.querySelector('#basairTafsirB232FavoritesPanel').classList.contains('show'),
     tab:document.querySelector('[aria-selected="true"]').dataset.r3SavedTab,
