@@ -31,3 +31,7 @@ body.dark.reader-active #mushafDock #p181DockFont{color:#a7ddc7!important;}
  #mushafDock #p181DockFont span{font-size:1.11rem!important;}
  #mushafDock #p181DockFont small{font-size:.48rem!important;}
 }
+
+/* The unified header already has a generic night toggle. Only the relocated
+   original reader night control is exposed during Tilawa. */
+#bqUnifiedSectionHeaderP26.p181NightHeader #bqP26Theme{display:none!important;}

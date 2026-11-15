@@ -10,7 +10,7 @@
  var variants=[
   {kind:'print',key:'original',name:'الطبعة الأصلية'},
   {kind:'print',key:'tajwid',name:'التجويد الملوّن'},
-  {kind:'print',key:'blue',name:'الطبعة العثمانية'},
+  // QA-050: the former 'blue' printed Uthmani page remains disabled.
   {kind:'auto',key:'auto',name:'الخط التلقائي'},
   {kind:'digital',key:'uthmani',name:'الخط العثماني الرقمي'},
   {kind:'digital',key:'digital',name:'النسخ الواضح'},
@@ -26,9 +26,9 @@
  function available(){PRINT=w.__BASAIR_RC18__;DIGITAL=w.__BASAIR_RC19__;return PRINT&&typeof PRINT.setPrint==='function'&&DIGITAL&&typeof DIGITAL.setFont==='function';}
  function auto(){var a=w.__BASAIR_PAGE_AUTO_FONT_V1__;return a&&typeof a.enabled==='function'&&a.enabled();}
  function current(){
-  if(auto())return 3;
+  if(auto())return 2;
   var f=read('stableFont','original');
-  if(f!=='original')for(var i=4;i<variants.length;i++)if(variants[i].key===f)return i;
+  if(f!=='original')for(var i=3;i<variants.length;i++)if(variants[i].key===f)return i;
   var p=read('v129PrintMode','original');
   if(p==='tajwid')return 1;if(p==='blue')return 2;
   return 0;

@@ -1,0 +1,81 @@
+{
+  "phase": "P181",
+  "date": "2026-11-16",
+  "status": "OWNER_SIGNED_BRANCH_READY_FOR_QA050_PR",
+  "change": "Relocate dockNight to Tilawa header and replace its bottom position with one-tap font cycle",
+  "ownerAuthorization": "Owner explicitly requested direct execution of night-toggle relocation and font-cycle option on the existing app.",
+  "release": {
+    "path": "p181/P181-SEQ59-OWNER-SIGNED-AUTOMATIC.json",
+    "sequence": 59,
+    "channel": "owner-qa",
+    "deliveryMode": "automatic",
+    "applicationId": "app.basair.qurv2",
+    "minAppVersion": 694,
+    "gitBlob": "392b4059c0c6a7bd6e751ac95ab15f7847dfd798",
+    "sha256": "52fe69a6a635957f3fddf5e78cd77c756b89fc8242976a1fa379992622d94e3f",
+    "ed25519ApprovalExpires": "2026-11-20T23:08:04Z"
+  },
+  "baselines": {
+    "priorSigned": "p180/P180-SEQ57-OWNER-SIGNED-BEFORE-P181.json",
+    "priorGitBlob": "10255223fe1d341363d123811a8b4445501c21b5",
+    "tafsir": {
+      "version": 51,
+      "oldAssets": 26,
+      "newAssets": 26,
+      "changed": false
+    },
+    "tilawa": {
+      "previousVersion": 180,
+      "version": 181,
+      "oldAssets": 6,
+      "newAssets": 8,
+      "changedOnlyAppendedTwoAssets": true
+    }
+  },
+  "assets": [
+    {
+      "path": "modules/tilawa/p181-tilawa-night-font-cycle.css",
+      "size": 2703,
+      "sha256": "3e352fab920efafa6a9625a92636f8791384356e5a2ea38527304f0ca9350737",
+      "gitBlob": "92f919a40af069fa8e182070dcb475f7208fd7be"
+    },
+    {
+      "path": "modules/tilawa/p181-tilawa-night-font-cycle.js",
+      "size": 7110,
+      "sha256": "80f88f01ee977a0ac7163d392fccf7c11bd9891facdd087dc75582e9af6de994",
+      "gitBlob": "b3f5589f89c5446e2316ddf736d718946d1c352e"
+    }
+  ],
+  "qa050": {
+    "tilawaLocked": true,
+    "disabledPrintedUthmani": "blue never offered",
+    "digitalUthmani": "unchanged and available",
+    "nativeReaderUnmodified": true,
+    "originalNightNodeMovedRatherThanCloned": true,
+    "duplicateHeaderNightHiddenInTilawa": true,
+    "originalTafsirUnmodified": true,
+    "privateKeysUploaded": false
+  },
+  "signatures": {
+    "rsa3072": "PASS signature against APK OTA public verifier",
+    "v695Ed25519": "PASS signature against bundled V695 runtime Ed25519 public raw SHA256 47fec7dbe6fc3949c01b000658b2f2d376adcbd98c42c02cdc280c313ec7dbcf",
+    "legacyGithubGuardKeyDifferent": true
+  },
+  "tests": {
+    "syntax": "PASS",
+    "chromiumFixture": "8/8 PASS (320/390/430/768 light/dark)",
+    "fontCycle": "9 options: original, tajwid, auto, uthmani digital, Naskh, Amiri, Ruqaa, Kufi, traditional",
+    "saveRestore": "PASS mocked",
+    "actualAndroidWebView": "PENDING USER FIELD QA",
+    "liveTajwidDownload": "NOT TESTED"
+  },
+  "rollback": {
+    "sequence": 60,
+    "status": "SIGNED_OFFLINE_NOT_PUBLISHED",
+    "path": "LOCAL_ONLY",
+    "sha256": "47a185004191564c518fb0633a5c65e07c2b62a334b9f16a930b0d77d35b37e5",
+    "preservesTafsir26": true,
+    "restoresTilawaSeq57Assets6": true
+  },
+  "notes": "No APK required. Do not claim user Android confirmation until P181 loaded and tested. If issues occur, offline Seq60 rollback is separately signed and not published."
+}
