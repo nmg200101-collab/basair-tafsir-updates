@@ -1,0 +1,31 @@
+{
+  "sequence": 50,
+  "tafsirVersion": 48,
+  "mode": "notify",
+  "minAppVersion": 694,
+  "priorAssetsProtected": 18,
+  "newAssets": [
+    {
+      "path": "modules/tafsir/p174-tafsir-index-native-final.css",
+      "kind": "css",
+      "size": 7654,
+      "sha256": "0f803def62e87a91644ffab7c4cd3eb7db19fe9d4804e3b52e618931542ebf8f"
+    },
+    {
+      "path": "modules/tafsir/p174-tafsir-index-native-final.js",
+      "kind": "js",
+      "size": 5535,
+      "sha256": "5af20c483e4aec3f4f60f72c42a2fdbbfa033918059af30a9ac6e2ba3f4ad40b"
+    }
+  ],
+  "oldAssetsChanged": false,
+  "originalOwnerSigningKeyRSA3072": true,
+  "newSignedEnvelopeSHA256": "26c1824b20bd1dcd83db9b6606e33f0cd94813fec14149d56a8aaf5bcbd34b95",
+  "recSignedEnvelopeSHA256": "d9b3f53e3f7fa229cf093880b57e1345134180f0d9980c17f46dda50315cd9ff",
+  "headRef": "fix/p174-tafsir-index-original-control-layout-full-type-20261115",
+  "browserScenarios": 20,
+  "browserPassed": 20,
+  "androidTest": "NOT YET DONE",
+  "APK": "unchanged",
+  "publication": "PENDING"
+}
