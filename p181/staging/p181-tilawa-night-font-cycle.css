@@ -1,0 +1,33 @@
+/* BASAIR P181 — scoped style for the original night toggle and new font cycle */
+#bqUnifiedSectionHeaderP26.p181NightHeader{position:relative!important;}
+#bqUnifiedSectionHeaderP26 #dockNight.p181NightTop{
+ position:absolute!important;left:8px!important;top:50%!important;
+ transform:translateY(-50%)!important;z-index:8!important;
+ display:flex!important;flex-direction:column;align-items:center;justify-content:center;gap:1px;
+ width:43px!important;height:43px!important;box-sizing:border-box;
+ background:linear-gradient(145deg,#fffaf0,#e7f1eb)!important;color:#195742!important;
+ border:1.5px solid #bca26f!important;border-radius:13px!important;
+ box-shadow:0 2px 9px #16453626!important;padding:3px!important;opacity:1!important;
+ visibility:visible!important;pointer-events:auto!important;
+}
+#bqUnifiedSectionHeaderP26 #dockNight.p181NightTop span{font-size:1.3rem!important;line-height:1.1!important;}
+#bqUnifiedSectionHeaderP26 #dockNight.p181NightTop small{font-size:.54rem!important;line-height:1.1!important;font-weight:850!important;}
+#bqUnifiedSectionHeaderP26 #dockNight.p181NightTop.p181NightActive{
+ background:linear-gradient(145deg,#16352f,#235b49)!important;color:#f4d68e!important;
+ box-shadow:0 0 0 2px #c49e6a44!important;
+}
+#bqUnifiedSectionHeaderP26 #dockNight.p181NightTop:focus-visible,
+#mushafDock #p181DockFont:focus-visible{outline:3px solid #dcb16e!important;outline-offset:2px!important;}
+#mushafDock #p181DockFont{display:flex!important;flex-direction:column;gap:2px;align-items:center;justify-content:center;
+ background:transparent!important;color:var(--green,#216d58)!important;min-height:52px!important;
+ font-weight:800!important;line-height:1.2!important;min-width:0!important;border:0!important;
+ padding:1px!important;}
+#mushafDock #p181DockFont span{font-family:inherit!important;font-size:1.25rem!important;font-weight:900!important;line-height:1.1!important;}
+#mushafDock #p181DockFont small{font-size:.55rem!important;white-space:nowrap!important;font-weight:850!important;}
+#mushafDock #p181DockFont.p181Busy{opacity:.6!important;pointer-events:none!important;}
+body.dark.reader-active #mushafDock #p181DockFont{color:#a7ddc7!important;}
+@media(max-width:390px){
+ #bqUnifiedSectionHeaderP26 #dockNight.p181NightTop{left:4px!important;width:38px!important;height:40px!important;border-radius:11px!important;}
+ #mushafDock #p181DockFont span{font-size:1.11rem!important;}
+ #mushafDock #p181DockFont small{font-size:.48rem!important;}
+}
