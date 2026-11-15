@@ -19,7 +19,8 @@ mod.assertChoice(manual,'manual');
 mod.assertChoice(automatic,'automatic');
 bad(()=>mod.assertChoice(manual,'automatic'),'Signed deliveryMode');
 bad(()=>mod.assertChoice(automatic,'manual'),'Signed deliveryMode');
-assert.equal(mod.verifyCandidate(automatic,'automatic',manual),14,'14 active OTA assets checked');
+assert.equal(mod.verifyAssets(automatic),14,'14 current signed OTA assets checked');
+bad(()=>mod.verifyCandidate(automatic,'automatic',manual),'Protected active asset changed or removed');
 bad(()=>mod.verifyCandidate(manual,'manual',automatic),'strictly exceed');
 bad(()=>mod.metadata({...manual,modules:[{...manual.modules[0],id:'tilawa'}]}),'Protected');
 bad(()=>mod.metadata({...manual,modules:[{...manual.modules[0],assets:[
@@ -49,6 +50,13 @@ try{
  fs.writeFileSync(staleFile,JSON.stringify(stale));
  bad(()=>mod.plan({mode:'manual',input:staleFile,out:staleOut}),'New version required');
  assert.equal(fs.existsSync(staleOut),false,'Must not write draft with old module version');
+ const missing=structuredClone(payload);
+ missing.modules[0].assets=missing.modules[0].assets.slice(1);
+ const missingFile=path.join(temp,'missing-active-asset.json');
+ const missingOut=path.join(temp,'rejected-missing-active-asset.json');
+ fs.writeFileSync(missingFile,JSON.stringify(missing));
+ bad(()=>mod.plan({mode:'manual',input:missingFile,out:missingOut}),'Protected active asset changed or removed');
+ assert.equal(fs.existsSync(missingOut),false,'Must not drop stable active assets');
  const expired=structuredClone(payload);
  expired.expiresAt='2026-11-15T09:00:01Z';
  const expiredFile=path.join(temp,'expired.json'),expiredOut=path.join(temp,'rejected-expired.json');
@@ -73,5 +81,5 @@ console.log(JSON.stringify({status:'PASS',historicalManualNotifySeq7:true,active
     originalOwnerRSA3072Verified:true,activeAssetsSHA256Verified:14,
     noConsentFetchInManualMode:'HISTORICAL_RECEIVER_TEST_ONLY',
     noProtectedModuleChanges:true,modeSelectionRequired:true,immutableSignedDeliveryMode:true,
-    liveSeq47Unchanged:true,preSignHashGuard:true,preSignVersionGuard:true,expiredDraftBlocked:true,
+    liveSeq47Unchanged:true,preSignHashGuard:true,preSignVersionGuard:true,protectedExistingAssetsGuard:true,expiredDraftBlocked:true,
     privateKeyUsed:false,publication:false}));
