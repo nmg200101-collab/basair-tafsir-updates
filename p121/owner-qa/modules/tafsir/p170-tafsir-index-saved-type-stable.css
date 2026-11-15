@@ -1,0 +1,99 @@
+/* BASAIR P170 — ONLY the Tafsir index B233 toolbar. The full surah/ayah/
+ * page search remains below, untouched. No opacity blanket over the screen. */
+#tafsirIndex #basairTafsirB233TopBar{
+ animation:none!important;transition:none!important;
+}
+#tafsirIndex #basairTafsirB233TopBar button[data-b233-top="search"],
+#tafsirIndex #basairTafsirB233TopBar button[data-bq155-notes],
+#tafsirIndex #basairTafsirB233TopBar button[data-bq156-notes],
+#tafsirIndex #basairTafsirB233TopBar #p153NotesIndex{
+ display:none!important;visibility:hidden!important;animation:none!important;
+}
+#tafsirIndex[data-bq170-index-ready="1"] #bq157SavedGroup{
+ display:none!important;visibility:hidden!important;animation:none!important;
+}
+#tafsirIndex[data-bq170-index-ready="1"] #basairTafsirB233TopBar{
+ display:flex!important;flex-wrap:wrap!important;gap:7px!important;
+ direction:rtl!important;align-items:stretch!important;
+ box-sizing:border-box!important;margin:0 0 6px!important;
+}
+#tafsirIndex[data-bq170-index-ready="1"] #basairTafsirB233TopBar > *{
+ box-sizing:border-box!important;min-width:0!important;
+ min-height:52px!important;margin:0!important;
+ border:1px solid var(--line,#d0d6c7)!important;
+ border-radius:15px!important;background:var(--paper,#fffdfa)!important;
+ color:var(--green,#15563f)!important;
+ box-shadow:0 1px 2px #163a2312!important;
+ transition:none!important;animation:none!important;
+}
+#tafsirIndex[data-bq170-index-ready="1"] #basairTafsirB233TopBar > :not([data-bq170-type="1"]){
+ flex:1 1 calc(33.333% - 7px)!important;
+ width:auto!important;max-width:none!important;min-width:0!important;
+}
+#tafsirIndex[data-bq170-index-ready="1"] #basairTafsirB233TopBar > [data-bq170-type="1"]{
+ order:-1!important;flex:1 0 100%!important;width:100%!important;
+ max-width:none!important;min-height:58px!important;
+ display:flex!important;flex-direction:column!important;align-items:stretch!important;
+ justify-content:center!important;padding:7px 13px!important;
+ text-align:right!important;line-height:1.4!important;
+ background:var(--soft,#eef5ef)!important;
+}
+#tafsirIndex #basairTafsirB233TopBar [data-bq170-type="1"] select,
+#tafsirIndex #basairTafsirB233TopBar [data-bq170-type="1"] [role="combobox"]{
+ width:100%!important;max-width:100%!important;min-width:0!important;
+ box-sizing:border-box!important;direction:rtl!important;
+ font:inherit!important;font-size:14px!important;
+ line-height:1.4!important;white-space:normal!important;
+ text-overflow:clip!important;
+}
+#tafsirIndex #basairTafsirB233TopBar [data-bq170-type="1"] > b,
+#tafsirIndex #basairTafsirB233TopBar [data-bq170-type="1"] > label,
+#tafsirIndex #basairTafsirB233TopBar [data-bq170-type="1"] > small{
+ text-align:right!important;white-space:normal!important;
+ overflow:visible!important;text-overflow:clip!important;
+}
+html body #tafsirIndex #basairTafsirB233TopBar #basairTafsirB232FavoritesBtn,
+html body #tafsirIndex[data-bq157-saved-ready="1"][data-bq170-index-ready="1"] #basairTafsirB233TopBar #basairTafsirB232FavoritesBtn{
+ display:flex!important;visibility:visible!important;pointer-events:auto!important;
+ opacity:1!important;animation:none!important;transition:none!important;
+}
+#tafsirIndex[data-bq170-index-ready="1"] #basairTafsirB233TopBar #basairTafsirB232FavoritesBtn[data-bq170-saved="1"]{
+ display:flex!important;flex-direction:column!important;justify-content:center!important;
+ align-items:center!important;gap:1px!important;text-align:center!important;
+ padding:4px 3px!important;font-size:0!important;white-space:normal!important;
+ overflow:visible!important;touch-action:manipulation!important;
+}
+#tafsirIndex #basairTafsirB233TopBar #basairTafsirB232FavoritesBtn[data-bq170-saved="1"] > *{
+ display:none!important;
+}
+#tafsirIndex #basairTafsirB233TopBar #basairTafsirB232FavoritesBtn[data-bq170-saved="1"]::before{
+ content:"☆";display:block;font-size:19px!important;line-height:1!important;
+ color:var(--green,#15563f)!important;
+}
+#tafsirIndex #basairTafsirB233TopBar #basairTafsirB232FavoritesBtn[data-bq170-saved="1"]::after{
+ content:"المفضلة والملاحظات";display:block;font-size:11px!important;
+ font-weight:750!important;line-height:1.2!important;
+ max-width:100%!important;white-space:normal!important;
+ color:var(--green,#15563f)!important;
+}
+#tafsirIndex #basairTafsirB233TopBar button:focus-visible{
+ outline:2px solid #b29c4f!important;outline-offset:2px!important;
+}
+.dark #tafsirIndex[data-bq170-index-ready="1"] #basairTafsirB233TopBar > *,
+body[data-p147-night="1"] #tafsirIndex[data-bq170-index-ready="1"] #basairTafsirB233TopBar > *{
+ background:#20392f!important;border-color:#5c7966!important;color:#e8f5eb!important;
+}
+.dark #tafsirIndex #basairTafsirB233TopBar #basairTafsirB232FavoritesBtn[data-bq170-saved="1"]::before,
+.dark #tafsirIndex #basairTafsirB233TopBar #basairTafsirB232FavoritesBtn[data-bq170-saved="1"]::after,
+body[data-p147-night="1"] #tafsirIndex #basairTafsirB233TopBar #basairTafsirB232FavoritesBtn[data-bq170-saved="1"]::before,
+body[data-p147-night="1"] #tafsirIndex #basairTafsirB233TopBar #basairTafsirB232FavoritesBtn[data-bq170-saved="1"]::after{
+ color:#eaf6eb!important;
+}
+@media(min-width:760px){
+ #tafsirIndex[data-bq170-index-ready="1"] #basairTafsirB233TopBar{
+  flex-wrap:nowrap!important;
+ }
+ #tafsirIndex[data-bq170-index-ready="1"] #basairTafsirB233TopBar > [data-bq170-type="1"]{
+  flex:2 1 40%!important;width:auto!important;
+ }
+}
