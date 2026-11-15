@@ -1,0 +1,74 @@
+{
+  "phase": "P180",
+  "date": "2026-11-16",
+  "status": "SIGNED_STAGED_AWAITING_QA050_CHECK_AND_MERGE",
+  "ownerAuthorization": "Owner explicitly requested direct implementation of 604-page Tilawa index; continue standard owner-qa automatic OTA delivery under QA-050 protection.",
+  "app": {
+    "version": "V695",
+    "applicationId": "app.basair.qurv2",
+    "minAppVersion": 694,
+    "channel": "owner-qa",
+    "deliveryMode": "automatic"
+  },
+  "previous": {
+    "sequence": 55,
+    "manifestGitBlob": "a3e1721509d497b775c0160854c88a93f0a55ac3",
+    "preservedCopy": "p179/P179-SEQ55-OWNER-SIGNED-BEFORE-P180.json"
+  },
+  "release": {
+    "sequence": 57,
+    "previousReservedUnpublishedSeq56": true,
+    "manifest": "p180/P180-SEQ57-OWNER-SIGNED-AUTOMATIC.json",
+    "manifestGitBlob": "10255223fe1d341363d123811a8b4445501c21b5",
+    "sha256": "f5203474e9b8edc3a83e5ab09a70e6913dc875b179b5c6652b9bfff8eb52bfec",
+    "ownerApprovalExpires": "2026-11-20T22:27:14Z"
+  },
+  "modules": [
+    {
+      "id": "tafsir",
+      "version": 51,
+      "assets": 26,
+      "changed": false
+    },
+    {
+      "id": "tilawa",
+      "version": 180,
+      "assets": 6,
+      "previousAssets": 4,
+      "added": [
+        {
+          "path": "modules/tilawa/p180-page-index.css",
+          "size": 3813,
+          "sha256": "5de53be58df22abdf0215f3067ea003237ad2114380a2e612efe1a6e8ef63ae4"
+        },
+        {
+          "path": "modules/tilawa/p180-page-index.js",
+          "size": 8042,
+          "sha256": "7f0fff579544b3a9c3d8d994de27e33464352272917e88b45bf210ef508ff51c"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "apkReference": "V694 native navSheet JS baseline extracted and matched against screenshot of V695. No direct V695 APK runtime test.",
+    "nodeSyntax": "PASS",
+    "chromiumNativeFixture": "12/12 PASS",
+    "gitBlobs": "Both P180 JS/CSS match exact locally tested bytes",
+    "signedEnvelope": "RSA-3072 PKCS1v1.5 SHA256 PASS against V694 OTA public key",
+    "signedOwnerApproval": "Ed25519 PASS against V694 receiver bundled public key; SHA256 raw 47fec7dbe6fc3949c01b000658b2f2d376adcbd98c42c02cdc280c313ec7dbcf",
+    "ownerCryptoSecretsInRepo": false,
+    "androidFieldAcceptance": "NOT TESTED"
+  },
+  "rollback": {
+    "sequence": 58,
+    "tilawaVersion": 181,
+    "tilawaAssets": 4,
+    "tafsirAssets": 26,
+    "signedOffline": true,
+    "published": false,
+    "file": "P180-SEQ58-OWNER-SIGNED-ROLLBACK-NOT-PUBLISHED.json",
+    "sha256": "258ecbde9c99ff84dbb725d90d9dba1c5426019515054f2a31be6596ad654f90",
+    "preservedInOwnerLibrary": true
+  },
+  "caveats": "GitHub guard legacy public key differs from APK runtime Ed25519. QA050 GitHub SUCCESS is path safety, not independent runtime proof; separate RSA+Ed offline verification performed. No APK generated. Android field acceptance pending owner test after merge."
+}
