@@ -6,7 +6,7 @@
  if(w.__BASAIR_TAFSIR_P177_FINAL__)return;
  var counter={mounted:0,moved:0,duplicates:0,voiceOn:0,settingsIntact:0,selectionCleared:0,
               backRestored:0,indexRecovered:0,backReinstalled:0,errors:0};
- var observer=null,readerObs=null,scheduled=false,lastVoice=null,fromSavedNote=false,
+ var observer=null,readerObs=null,sheetsWatched=[],scheduled=false,lastVoice=null,fromSavedNote=false,
      pendingHome=false,explicitHome=false,fromSavedAt=0;
  function byId(id){return d.getElementById(id)}
  function isShown(el){return !!(el&&el.classList&&el.classList.contains('show'))}
@@ -89,6 +89,14 @@
  }
  function savedPanel(){return byId('basairTafsirB232FavoritesPanel')}
  function notesPanel(){return byId('basairTafsirR2NoteSheet')}
+ function observeLateSheets(){
+  if(!readerObs)return;
+  var a=[savedPanel(),notesPanel()];
+  for(var i=0;i<a.length;i++)if(a[i]&&sheetsWatched.indexOf(a[i])<0){
+   readerObs.observe(a[i],{attributes:true,attributeFilter:['class']});
+   sheetsWatched.push(a[i]);
+  }
+ }
  function r3BackOwner(){
   if(!isShown(savedPanel())&&!isShown(notesPanel()))return;
   var r=w.__BASAIR_TAFSIR_R3__;
@@ -109,6 +117,7 @@
  }
  function isRecent(){return Date.now()-fromSavedAt<1800000;}
  function syncReturn(){
+  observeLateSheets();
   if(!isRecent()){fromSavedNote=false;pendingHome=false;return}
   r3BackOwner();
   if(fromSavedNote&&!isShown(notesPanel())&&isShown(savedPanel()))fromSavedNote=false;
@@ -156,9 +165,7 @@
    var index=byId('tafsirIndex'),home=byId('home');
    if(index)readerObs.observe(index,{attributes:true,attributeFilter:['class']});
    if(home)readerObs.observe(home,{attributes:true,attributeFilter:['class']});
-   var saved=savedPanel(),note=notesPanel();
-   if(saved)readerObs.observe(saved,{attributes:true,attributeFilter:['class']});
-   if(note)readerObs.observe(note,{attributes:true,attributeFilter:['class']});
+   observeLateSheets();
   }
   w.addEventListener('pointerdown',function(e){noteFromSaved(e);fromSavedVerse(e)},true);
   w.addEventListener('click',navCapture,true);
@@ -169,11 +176,13 @@
   d.addEventListener('visibilitychange',function(){if(!d.hidden)schedule()});
   // Poll only UI status; no DOM repaint on idle. Original P144 owns speech state.
   w.setInterval(function(){
+   observeLateSheets();
    if(readerActive()){
     updateSpeech();
     if(!speaking()&&d.querySelector('#tafsirAyahs .v194T2Ayah[data-p177-voice-pending]'))schedule();
    }
    if(isShown(savedPanel())||isShown(notesPanel()))r3BackOwner();
+   if(fromSavedNote&&!isShown(notesPanel()))syncReturn();
   },650);
  }
  if(d.readyState==='loading')d.addEventListener('DOMContentLoaded',init,{once:true});else init();
