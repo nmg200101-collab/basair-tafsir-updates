@@ -18,21 +18,22 @@ html body #tafsirIndex #basairTafsirB233TopBar #p153FavoritesIndex {grid-column:
 '''
 LABEL='تفسير بصائر القرآن — التفسير التدبري الشامل الموسع'
 
-def toolbar(mode):
+def toolbar(mode,p153=True):
     if mode=='select':
         t=f'''<div id="sourceType" class="source-type"><small>نوع التفسير</small><select id="sourceSel" aria-label="اختيار نوع التفسير"><option value="long">{LABEL}</option><option value="short">تفسير بصائر القرآن المختصر</option></select></div>'''
     else:
         t=f'''<button id="sourceType" class="source-type"><small>نوع التفسير</small><span>{LABEL}</span></button>'''
+    originals='''<button id="p153NotesIndex" data-p153-tab="notes">✎ الملاحظات</button>
+        <button id="p153FavoritesIndex" data-p153-tab="favorites"><span>☆</span><b>المفضلة</b></button>''' if p153 else ''
     return f'''<div id="basairTafsirB233TopBar" class="bq173-bar bq171-tools">{t}
         <button id="basairTafsirB232FavoritesBtn" data-bq173-old="1">☆ المفضلة</button>
         <button id="mini" data-b233-top="search">⌕</button>
-        <button id="p153NotesIndex" data-p153-tab="notes">✎ الملاحظات</button>
-        <button id="p153FavoritesIndex" data-p153-tab="favorites"><span>☆</span><b>المفضلة</b></button>
+        {originals}
         <button data-bq173-owner="1" data-bq171-saved="1">☆ المفضلة والملاحظات</button>
         <button id="follow">متابعة التفسير</button>
         <button id="last">آخر موضع</button></div>'''
 
-def html(mode):
+def html(mode,p153=True):
     return f'''<!doctype html><html lang="ar" dir="rtl"><head><meta name="viewport" content="width=device-width,initial-scale=1" />
     <style>body{{margin:0;background:#fafaf6;font:14px Arial;color:#12513c}}
     #tafsirIndex{{box-sizing:border-box;padding:8px;width:100%}}
@@ -40,7 +41,7 @@ def html(mode):
     #basairTafsirB233TopBar>button{{min-height:50px;border:1px solid #cfcab8;background:#fff;border-radius:12px}}
     #sourceType{{border:1px solid #cfcab8;background:#e9f2ed;border-radius:12px}}
     #savedPanel{{display:none}}#savedPanel.show{{display:block}}
-    </style></head><body><div id="tafsirIndex" class="active">{toolbar(mode)}
+    </style></head><body><div id="tafsirIndex" class="active">{toolbar(mode,p153)}
     <div id="search" style="padding:12px"><input id="v194T104SurahSearchInput" placeholder="ابحث عن سورة أو آية" /></div>
     <h2>فهرس السور</h2><div>سورة الفاتحة</div></div>
     <div id="savedPanel"><button id="notesTab">الملاحظات</button><button>المفضلة</button></div>
@@ -50,6 +51,9 @@ MOCK='''() => {
   window.events={saved:0,follow:0,last:0,verse:0,search:0,notes:0};
   window.__BASAIR_TAFSIR_P153_STABLE__={refresh(){}, openSaved(k){
      window.events.saved++;document.getElementById('savedPanel').classList.add('show');return true;
+  }};
+  window.__BASAIR_TAFSIR_P157_STABLE__={openSaved(k){
+    window.events.saved++;document.getElementById('savedPanel').classList.add('show');return true;
   }};
   window.addEventListener('click',e=>{
     const b=e.target.closest('#p153FavoritesIndex');
@@ -73,7 +77,7 @@ MOCK='''() => {
 
 CHECK='''() => {
   const bar=document.querySelector('#basairTafsirB233TopBar'),
-    type=document.querySelector('#sourceType'),saved=document.querySelector('#p153FavoritesIndex'),
+    type=document.querySelector('#sourceType'),saved=document.querySelector('#p153FavoritesIndex')||document.querySelector('#bq175SavedEntry'),
     follow=document.querySelector('#follow'),last=document.querySelector('#last'),
     name=type.querySelector('[data-bq175-full-value="1"]'),rect=x=>x.getBoundingClientRect(),
     show=x=>x&&getComputedStyle(x).display!=='none'&&getComputedStyle(x).visibility!=='hidden';
@@ -90,12 +94,13 @@ CHECK='''() => {
     sourceSelect:!!type.querySelector('select')}
 }'''
 
-def assert_view(page,mode,width):
+def assert_view(page,mode,width,p153):
     page.wait_for_function('document.querySelector("#basairTafsirB233TopBar").getAttribute("data-bq175-owned")==="1"')
     data=page.evaluate(CHECK)
     assert data['ready'] and data['saved'] and data['follow'] and data['last'],data
     assert data['hidden'],data
-    assert data['shown']==['p153FavoritesIndex','follow','last'] if mode=='select' else 'p153FavoritesIndex' in data['shown'],data
+    target='p153FavoritesIndex' if p153 else 'bq175SavedEntry'
+    assert set(data['shown'])==({target,'follow','last'} if mode=='select' else {target,'follow','last','sourceType'}),data
     assert data['typeWidth'] >= data['barWidth']-4,data
     assert data['rows'][1]>data['rows'][0] and abs(data['rows'][1]-data['rows'][2])<8 and abs(data['rows'][2]-data['rows'][3])<8,data
     assert data['fullSearch'] and not data['overflow'],data
@@ -108,50 +113,78 @@ def main():
     with sync_playwright() as p:
         browser=p.chromium.launch(headless=True,executable_path=shutil.which('chromium'),args=['--no-sandbox','--disable-dev-shm-usage'])
         for mode in ('select','button'):
-            for dark in (False,True):
-                for width in (320,360,390,430,768):
-                    page=browser.new_page(viewport={'width':width,'height':870},is_mobile=True,has_touch=True)
-                    page.set_default_timeout(5000)
-                    errors=[]
-                    page.on('pageerror',lambda e: errors.append(str(e)))
-                    page.set_content(html(mode))
-                    page.evaluate(MOCK)
-                    if dark:page.evaluate('document.body.classList.add("dark")')
-                    page.add_style_tag(content=CONFLICT)
-                    page.add_style_tag(content=OLD_CSS)
-                    page.add_script_tag(content=OLD_JS)
-                    page.add_style_tag(content=CSS)
-                    page.add_script_tag(content=JS)
-                    data=assert_view(page,mode,width)
-                    page.locator('#p153FavoritesIndex').click()
-                    assert page.evaluate('events.saved')==1
-                    page.locator('#follow').click()
-                    page.locator('#last').click()
-                    page.locator('#v194T104SurahSearchInput').fill('الفاتحة')
-                    page.evaluate("document.getElementById('verseFollow').click()")
-                    assert page.evaluate('events.follow==1&&events.last==1&&events.search==1&&events.verse==1')
-                    if mode=='select':
-                        page.evaluate("() => {const s=document.getElementById('sourceSel'); s.value='short';s.dispatchEvent(new Event('change',{bubbles:true}));}")
-                        page.wait_for_function("document.querySelector('[data-bq175-full-value]').textContent==='تفسير بصائر القرآن المختصر'")
-                        assert page.locator('[data-bq175-full-value]').count()==1
-                    # B233 rebuilds its entire toolbar AFTER the initial layout was installed.
-                    page.evaluate('(template)=>window.makeNativeBar(template)',toolbar(mode))
-                    assert_view(page,mode,width)
-                    # Native reset of type element style (without changing children).
-                    page.evaluate("() => {const b=document.querySelector('#basairTafsirB233TopBar'); b.style.display='flex';b.setAttribute('class','bq173-bar bq171-tools');}")
-                    page.wait_for_function("getComputedStyle(document.querySelector('#basairTafsirB233TopBar')).display==='grid'")
-                    assert_view(page,mode,width)
-                    # Verify no uncontrolled repeating repaint loops while idle.
-                    page.wait_for_timeout(150)
-                    before=page.evaluate('window.__BASAIR_TAFSIR_P175_SINGLE_INDEX_OWNER__.status().ticks')
-                    page.wait_for_timeout(250)
-                    after=page.evaluate('window.__BASAIR_TAFSIR_P175_SINGLE_INDEX_OWNER__.status().ticks')
-                    assert after-before<=2,(mode,dark,width,before,after)
-                    assert not errors,errors
-                    page.close()
-                    tested+=1
-                    print('pass',mode,'dark' if dark else 'light',width)
+            for p153 in (True,False):
+                for dark in (False,True):
+                    for width in (320,360,390,430,768):
+                        page=browser.new_page(viewport={'width':width,'height':870},is_mobile=True,has_touch=True)
+                        page.set_default_timeout(5000)
+                        errors=[]
+                        page.on('pageerror',lambda e: errors.append(str(e)))
+                        page.set_content(html(mode,p153))
+                        page.evaluate(MOCK)
+                        if not p153: page.evaluate('window.__BASAIR_TAFSIR_P153_STABLE__=undefined')
+                        if dark:page.evaluate('document.body.classList.add("dark")')
+                        page.add_style_tag(content=CONFLICT)
+                        page.add_style_tag(content=OLD_CSS)
+                        page.add_script_tag(content=OLD_JS)
+                        page.add_style_tag(content=CSS)
+                        page.add_script_tag(content=JS)
+                        data=assert_view(page,mode,width,p153)
+                        page.locator('#p153FavoritesIndex' if p153 else '#bq175SavedEntry').click()
+                        assert page.evaluate('events.saved')==1
+                        page.locator('#follow').click()
+                        page.locator('#last').click()
+                        page.locator('#v194T104SurahSearchInput').fill('الفاتحة')
+                        page.evaluate("document.getElementById('verseFollow').click()")
+                        assert page.evaluate('events.follow==1&&events.last==1&&events.search==1&&events.verse==1')
+                        if mode=='select':
+                            page.evaluate("() => {const s=document.getElementById('sourceSel'); s.value='short';s.dispatchEvent(new Event('change',{bubbles:true}));}")
+                            page.wait_for_function("document.querySelector('[data-bq175-full-value]').textContent==='تفسير بصائر القرآن المختصر'")
+                            assert page.locator('[data-bq175-full-value]').count()==1
+                        # B233 rebuilds its entire toolbar AFTER the initial layout was installed.
+                        page.evaluate('(template)=>window.makeNativeBar(template)',toolbar(mode,p153))
+                        assert_view(page,mode,width,p153)
+                        # Native reset of type element style (without changing children).
+                        page.evaluate("() => {const b=document.querySelector('#basairTafsirB233TopBar'); b.style.display='flex';b.setAttribute('class','bq173-bar bq171-tools');}")
+                        page.wait_for_function("getComputedStyle(document.querySelector('#basairTafsirB233TopBar')).display==='grid'")
+                        assert_view(page,mode,width,p153)
+                        # If P153 arrives after the fallback was shown, switch to
+                        # the native Favorites control; keep just one visible.
+                        if not p153:
+                            page.evaluate("""() => {
+                                const bar=document.querySelector('#basairTafsirB233TopBar');
+                                const native=document.createElement('button');
+                                native.id='p153FavoritesIndex';native.dataset.p153Tab='favorites';
+                                native.innerHTML='<span>☆</span><b>المفضلة</b>';
+                                bar.appendChild(native);
+                                window.__BASAIR_TAFSIR_P153_STABLE__={refresh(){}};
+                            }""")
+                            page.wait_for_function("""() => {
+                                const n=document.querySelector('#p153FavoritesIndex');
+                                const f=document.querySelector('#bq175SavedEntry');
+                                return n&&n.hasAttribute('data-bq175-saved')&&
+                                 getComputedStyle(n).display!=='none'&&getComputedStyle(f).display==='none';
+                            }""")
+                            native_state=page.evaluate(CHECK)
+                            assert set(native_state['shown'])==({'p153FavoritesIndex','follow','last'} if mode=='select' else {'p153FavoritesIndex','follow','last','sourceType'}),native_state
+                            page.locator('#p153FavoritesIndex').click()
+                            assert page.evaluate('events.saved')==2
+                            page.evaluate("document.getElementById('p153FavoritesIndex').remove()")
+                            page.wait_for_function("""() => {
+                              const f=document.querySelector('#bq175SavedEntry');
+                              return f&&f.getAttribute('data-bq175-saved')==='1'&&getComputedStyle(f).display!=='none';
+                            }""")
+                        # Verify no uncontrolled repeating repaint loops while idle.
+                        page.wait_for_timeout(150)
+                        before=page.evaluate('window.__BASAIR_TAFSIR_P175_SINGLE_INDEX_OWNER__.status().ticks')
+                        page.wait_for_timeout(250)
+                        after=page.evaluate('window.__BASAIR_TAFSIR_P175_SINGLE_INDEX_OWNER__.status().ticks')
+                        assert after-before<=2,(mode,dark,width,before,after)
+                        assert not errors,errors
+                        page.close()
+                        tested+=1
+                    print('pass',mode,'native-P153' if p153 else 'P157-fallback','dark' if dark else 'light',width)
         browser.close()
-    print(f'P175 Chromium browser: PASS {tested}/{tested}; original P153 control, full type, late rerender, idle stability')
+    print(f'P175 Chromium browser: PASS {tested}/{tested}; original P153 or P157 fallback, full type, late rerender, idle stability')
 
 if __name__=='__main__':main()
