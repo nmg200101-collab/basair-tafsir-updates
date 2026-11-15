@@ -106,13 +106,23 @@
    p.innerHTML='<span aria-hidden="true">☆</span><b>المفضلة والملاحظات</b>';
    f.insertAdjacentElement('afterend',p);
   }
+  // P171 concurrently watches the same index. Mark our single proxy as its
+  // existing proxy so its late refresh cannot create a second button.
+  p.setAttribute('data-bq171-saved','1');
   if(p.getAttribute('aria-label')!=='فتح المفضلة والملاحظات')
     p.setAttribute('aria-label','فتح المفضلة والملاحظات');
   p.setAttribute('data-bq173-owner','1');
   f.setAttribute('data-bq173-old','1');
+  f.setAttribute('data-bq171-native-anchor','1');
   t.setAttribute('data-bq173-type','1');
-  var search=mini(bar,f);if(search)search.setAttribute('data-bq173-mini','1');
-  bar.classList.add('bq173-bar');i.setAttribute('data-bq173-ready','1');
+  t.setAttribute('data-bq171-type','1');
+  var search=mini(bar,f);if(search){
+   search.setAttribute('data-bq173-mini','1');
+   search.setAttribute('data-bq171-mini','1');
+  }
+  bar.classList.add('bq173-bar','bq171-tools');
+  i.setAttribute('data-bq173-ready','1');
+  i.setAttribute('data-bq171-ready','1');
   if(i!==lastRoot){lastRoot=i;boots++}repairs++;
   return true;
  }
