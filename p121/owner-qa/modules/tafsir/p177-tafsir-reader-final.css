@@ -1,0 +1,72 @@
+/* BASAIR P177: Tafsir-only final reading tools; no Tilawa or saved-store styling. */
+html body #tafsirAyahs .v194T2Ayah:not(.b118CarryArticle) > .p177VoiceDock{
+  display:flex!important;align-items:center!important;justify-content:flex-start!important;
+  direction:rtl!important;gap:6px!important;margin:5px 10px 8px!important;
+  padding:0!important;min-height:37px!important;position:relative!important;
+  transition:none!important;animation:none!important;
+}
+html body #tafsirAyahs .v194T2Ayah > .p177VoiceDock > button.p144MicButton{
+  display:inline-flex!important;align-items:center!important;justify-content:center!important;
+  flex:0 0 auto!important;min-height:36px!important;height:36px!important;
+  min-width:86px!important;width:auto!important;padding:5px 11px!important;
+  gap:6px!important;border-radius:12px!important;
+  background:#edf5f0!important;color:#18563d!important;border:1px solid #b5d1c0!important;
+  box-shadow:none!important;font:700 12px/1.2 inherit!important;
+  -webkit-user-select:none!important;user-select:none!important;
+  -webkit-touch-callout:none!important;touch-action:manipulation!important;
+}
+html body #tafsirAyahs .v194T2Ayah[data-p177-speaking="1"] > .p177VoiceDock > button.p144MicButton,
+html body #tafsirAyahs .v194T2Ayah > .p177VoiceDock > button.p144MicButton[data-p177-audio="on"]{
+  background:#15664a!important;border-color:#15664a!important;color:#fff!important;
+  box-shadow:0 0 0 3px rgba(21,102,74,.16)!important;
+}
+html body #tafsirAyahs .v194T2Ayah[data-p177-speaking="1"] > .p177VoiceDock > button.p144MicButton::after{
+  content:'● يعمل'!important;color:#fff!important;font-weight:700!important;font-size:10px!important;
+}
+html body #tafsirAyahs .v194T2Ayah[data-p177-voice-ready="1"] .bq164InlineNarrator,
+html body #tafsirAyahs .v194T2Ayah[data-p177-voice-ready="1"] .bq165InlineNarrator,
+html body #tafsirAyahs .v194T2Ayah[data-p177-voice-ready="1"] .bq166Voice,
+html body #tafsirAyahs .v194T2Ayah button.p144MicButton[data-bq162-duplicate-mic],
+html body #tafsirAyahs .v194T2Ayah button.p144MicButton[hidden]{
+  display:none!important;visibility:hidden!important;pointer-events:none!important;
+}
+html body #tafsirAyahs .v194T2Ayah[data-p177-voice-ready="1"] .p144MicBar{display:none!important}
+/* One compact status near the TOP of the reader, instead of another bottom toast. */
+html body #p144SpeechFrame:not([hidden]){
+  position:fixed!important;top:var(--bq169-speech-top, 144px)!important;
+  bottom:auto!important;left:50%!important;transform:translateX(-50%)!important;
+  min-height:28px!important;max-width:300px!important;width:max-content!important;
+  padding:5px 10px!important;border-radius:11px!important;z-index:99998!important;
+  font-size:11px!important;line-height:1.4!important;
+}
+/* Disable Android long-press text selection ONLY for displayed verse/Tafsir prose.
+   Never disable textarea, buttons, links, note editors or explicit copy actions. */
+html body #tafsirAyahs .v194T2Ayah .v194T2Qrow,
+html body #tafsirAyahs .v194T2Ayah .v194T2Body,
+html body #tafsirAyahs .v194T2Ayah .v194T2Qrow *:not(button):not(input):not(textarea),
+html body #tafsirAyahs .v194T2Ayah .v194T2Body *:not(button):not(input):not(textarea):not(select):not([contenteditable="true"]){
+  -webkit-user-select:none!important;user-select:none!important;-webkit-touch-callout:none!important;
+}
+html body #tafsirAyahs input,html body #tafsirAyahs textarea,
+html body #tafsirAyahs [contenteditable="true"],html body #basairTafsirR2NoteSheet textarea{
+  -webkit-user-select:text!important;user-select:text!important;
+}
+body.dark #tafsirAyahs .v194T2Ayah > .p177VoiceDock > button.p144MicButton{
+  background:#264637!important;color:#e8f6ed!important;border-color:#648873!important;
+}
+body.dark #tafsirAyahs .v194T2Ayah[data-p177-speaking="1"] > .p177VoiceDock > button.p144MicButton{
+  background:#237d55!important;color:#fff!important;border-color:#74b08c!important;
+}
+
+/* A small settings affordance: long press uses P144's original 570 ms handler. */
+html body #tafsirAyahs .p177VoiceDock > button.p144MicButton::before{
+  content:'⚙'!important;font-size:12px!important;line-height:1!important;opacity:.75!important;
+}
+html body #tafsirAyahs .v194T2Ayah[data-p177-speaking="1"] .p177VoiceDock > button.p144MicButton::before{
+  color:#fff!important;opacity:1!important;
+}
+
+/* Newly rendered verses never flash a second bottom microphone during speech. */
+html body #tafsirAyahs .v194T2Ayah[data-p177-voice-pending="1"] .v194T2Body button.p144MicButton{
+  display:none!important;
+}
