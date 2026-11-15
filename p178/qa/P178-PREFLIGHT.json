@@ -1,0 +1,50 @@
+{
+  "phase": "P178",
+  "date": "2026-11-15",
+  "status": "DRAFT_SOURCE_ONLY_UNPUBLISHED",
+  "reciter": "سلمان عبيد المطيري",
+  "riwayah": "حفص عن عاصم",
+  "recording_type": "complete_surah_mp3",
+  "advertised_surahs": 114,
+  "source": "https://way2quran.com/ar/reciters/salman-obaid-al-mutairi/hafs-an-asim",
+  "source_rights": "personal/educational/noncommercial welcomed; commercial or mass distribution contact source/rights owner",
+  "v695_apk_sha256": "925f6116899ad8acf1cba2a9ec75d04db7951af66ad5b3de98b7cbc7cba9d384",
+  "v695_native_assets_sha256": {
+    "assets/www/tilawa-r109-selected.js": "67001f0404cd23811750722a2b64e96b77857bcd36a498e4d1abd82d21decdec",
+    "assets/www/p89-follow.js": "40372021c28e385f8c4ed3f8f58805e6cc6bf9676a570490e28ca138ffe6ccbc",
+    "assets/www/p121/universal-updates.js": "ddcf3cb98a2a10b821431ab690988ae15f4240b91f268d7e6cc9e87ac30fdfc4",
+    "assets/www/index.html": "afa10e7f65032989ec9b974b39a7aafae56486b2ba2555c736b45752c7111648"
+  },
+  "files": {
+    "modules/p178-salman-selected-follow.css": {
+      "size_bytes": 894,
+      "sha256": "010cc08506cb4b67bc5279a01771df0ff3977344e579ad69650f3578bf4ce477"
+    },
+    "modules/p178-salman-selected-follow.js": {
+      "size_bytes": 10273,
+      "sha256": "d04b435fa8052d1c8f109fa117a186a5b75991d6c79f5df6d8962f9914a7510f"
+    }
+  },
+  "checks": {
+    "JS_syntax": "PASS",
+    "chromium_mock_dom": "8/8 PASS",
+    "chromium_real_v695_R109": "6/6 PASS",
+    "source_contract": "9/9 PASS",
+    "android_network_mp3": "NOT TESTED",
+    "ayah_timing": "NOT VERIFIED"
+  },
+  "owner_lock": {
+    "id": "QA-050",
+    "scope": "tilawa selected recitations and audio follow",
+    "approval": "REQUIRES PRIVATE Ed25519 OWNER-APPROVAL KEY",
+    "password_in_repo": false,
+    "signed_exception": false,
+    "OTA_RSA_signed": false,
+    "release_manifest_modified": false
+  },
+  "active_stable": {
+    "base_apk": "V695",
+    "active_server": "P177 / Seq53 / tafsir v51"
+  },
+  "planned_next": "Source review; rights check; signed Ed25519 ownerApproval + RSA signed OTA under new sequence; Android V695 field test"
+}
