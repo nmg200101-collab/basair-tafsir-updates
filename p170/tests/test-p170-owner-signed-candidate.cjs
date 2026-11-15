@@ -6,7 +6,10 @@ const ROOT=path.resolve(__dirname,'../..');
 const read=p=>fs.readFileSync(path.join(ROOT,p));
 const live=read('p121/owner-qa/release.json');
 const frozen=read('p169/P169-SEQ46-OWNER-SIGNED-RELEASE.json');
-assert.deepEqual(live,frozen,'P169 Seq46 active manifest must be byte-identical');
+const signedCandidate=read('p170/P170-SEQ47-OWNER-SIGNED-CANDIDATE.json');
+const activeSeq47=live.equals(signedCandidate);
+assert.ok(live.equals(frozen)||activeSeq47,
+ 'Only frozen P169 Seq46 or owner-signed P170 Seq47 may be active');
 const fallback=read('p121/owner-qa/release-p168-seq45-before-p169-20261115.json');
 assert.deepEqual(fallback,read('p168/P168-SEQ45-OWNER-SIGNED-RELEASE.json'),
   'P168 rollback must remain byte-identical');
@@ -22,7 +25,7 @@ function unpack(raw){
   'Candidate signature does not match original owner key');
  return JSON.parse(payload.toString('utf8'));
 }
-const old=unpack(frozen),latest=unpack(read('p170/P170-SEQ47-OWNER-SIGNED-CANDIDATE.json'));
+const old=unpack(frozen),latest=unpack(signedCandidate);
 assert.equal(old.sequence,46);assert.equal(old.modules[0].version,44);
 assert.equal(latest.sequence,47);assert.equal(latest.modules[0].version,45);
 assert.equal(latest.schema,'basair-universal-ota-v1');
@@ -57,5 +60,5 @@ assert.ok(!css.includes('#tafsirReader')&&!css.includes('#tafsirAyahs'));
 assert.ok(!js.includes('indexedDB')&&!js.includes('localStorage'));
 console.log(JSON.stringify({result:'PASS',sequence:47,tafsirVersion:45,
  signedRSA3072:true,priorProtectedAssetsIdentical:12,
- verifiedAssets:14,originalSeq46StillActive:true,rollbackSeq45Preserved:true,
+ verifiedAssets:14,activeManifest:activeSeq47?'P170-Seq47':'P169-Seq46',rollbackSeq45Preserved:true,
  androidFieldTest:'PENDING',published:false}));
