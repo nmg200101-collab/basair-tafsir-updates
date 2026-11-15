@@ -36,14 +36,36 @@
     "tafsirVersion": 45,
     "priorAssetsUntouched": 12,
     "newAssets": 2,
-    "envelope_sha256": "5a6a6262a9e396b5b808f73d0fd79e67d6162e873d7bf997092eedd95035641e",
+    "envelope_sha256": "5e48bb7326b5de88be857d1d4f6b323f2a77750b5419dfa0d67a33ee4a549a19",
     "signedManifestPath": "p170/P170-SEQ47-OWNER-SIGNED-CANDIDATE.json",
-    "publication": false
+    "publication": false,
+    "cssSHA256": "62a868ed7d52d781bd8766d09161bda5d4d9bace3f9056d7abafc2225f08f2cb",
+    "jsSHA256": "fb90948f456293e3c25eabb90e6f62860b2edf00c91fabd026785e6e4f27d18e",
+    "signedEnvelopeGitBlob": "1d0b7724d68ea36349fd140fcc6fd8bb45e75c9b"
   },
   "limitations": [
     "No Android V695 field test yet",
     "Cold-start flicker before OTA CSS loading requires real device verification",
     "No live manifest changes or server publication"
   ],
-  "createdAt": "2026-11-15T08:53:55Z"
+  "createdAt": "2026-11-15T08:53:55Z",
+  "tabletLayout": {
+    "widths": [
+      768,
+      1024
+    ],
+    "horizontalOverflow": [
+      0,
+      0
+    ],
+    "result": "PASS"
+  },
+  "browserRecheckedAfterTabletFix": {
+    "scenarios": 8,
+    "passed": 8
+  },
+  "legacyIntegrationRecheckedAfterTabletFix": {
+    "scenarios": 8,
+    "passed": 8
+  }
 }
