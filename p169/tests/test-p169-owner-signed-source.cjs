@@ -1,0 +1,35 @@
+'use strict';
+const assert=require('node:assert/strict'),fs=require('node:fs'),crypto=require('node:crypto'),path=require('node:path'),vm=require('node:vm');
+const base=path.resolve(__dirname,'../..'),read=p=>fs.readFileSync(path.join(base,p));
+const previous=read('p121/owner-qa/release-p168-seq45-before-p169-20261115.json');
+const oldSigned=read('p168/P168-SEQ45-OWNER-SIGNED-RELEASE.json');
+const signed=read('p169/P169-SEQ46-OWNER-SIGNED-RELEASE.json');
+const active=read('p121/owner-qa/release.json');
+assert.deepEqual(previous,oldSigned,'Exact signed Seq45 rollback is mandatory');
+assert.deepEqual(signed,active,'Staged release must equal signed Seq46 byte for byte');
+const pub=read('p146/tests/test-p146-signed-release.cjs').toString().match(/const pub='([^']+)'/);assert.ok(pub);
+const key={key:Buffer.from(pub[1],'base64'),format:'der',type:'spki'};
+function unpack(buf){const e=JSON.parse(buf.toString()),raw=Buffer.from(e.payload,'base64'),sig=Buffer.from(e.signature,'base64');
+ assert.equal(sig.length,384);assert.ok(crypto.verify('RSA-SHA256',raw,key,sig),'Original owner RSA-3072 signature invalid');return JSON.parse(raw.toString())}
+const old=unpack(previous),next=unpack(signed);
+assert.equal(old.sequence,45);assert.equal(old.modules[0].version,43);
+assert.equal(next.sequence,46);assert.equal(next.modules[0].version,44);
+assert.equal(next.schema,'basair-universal-ota-v1');assert.equal(next.applicationId,'app.basair.qurv2');
+assert.equal(next.channel,'owner-qa');assert.equal(next.deliveryMode,'automatic');assert.equal(next.minAppVersion,694);
+assert.equal(next.modules.length,1);assert.equal(next.modules[0].id,'tafsir');
+assert.ok(Date.parse(next.issuedAt)<Date.now()+300000&&Date.parse(next.expiresAt)>Date.now());
+const older=old.modules[0].assets,assets=next.modules[0].assets;
+assert.equal(older.length,10);assert.equal(assets.length,12);
+for(let i=0;i<older.length;i++)assert.deepEqual(older[i],assets[i<5?i:i+1],`P168 protected asset changed ${i}`);
+assert.equal(assets[5].path,'modules/tafsir/p169-tafsir-top-status-notes-back.css');
+assert.equal(assets[11].path,'modules/tafsir/p169-tafsir-top-status-notes-back.js');
+for(const a of assets){const data=read('p121/owner-qa/'+a.path);
+ assert.equal(a.size,data.length,'Size mismatch '+a.path);
+ assert.equal(a.sha256,crypto.createHash('sha256').update(data).digest('hex'),'Hash mismatch '+a.path);
+ assert.equal(a.kind,a.path.split('.').at(-1));if(a.kind==='js')new vm.Script(data.toString(),{filename:a.path});}
+const js=read('p121/owner-qa/modules/tafsir/p169-tafsir-top-status-notes-back.js').toString();
+const css=read('p121/owner-qa/modules/tafsir/p169-tafsir-top-status-notes-back.css').toString();
+for(const term of ['basairTafsirR114Status','p144SpeechFrame','basairTafsirR2NoteSheet','basairTafsirB232FavoritesPanel','data-r2-note-close','scrollTop','returnFocus','noteBackKey'])assert.ok(js.includes(term),term);
+for(const term of ['bottom:auto!important','top:var(--bq169-follow-top','button#b114Stop'])assert.ok(css.includes(term),term);
+for(const forbidden of ['__BASAIR_TAFSIR_R114__.toggle()','__BASAIR_TAFSIR_STEP5__.loadNext','__BASAIR_TAFSIR_P130__.stop','localStorage.setItem','indexedDB.deleteDatabase'])assert.ok(!js.includes(forbidden),'Must not modify protected engines: '+forbidden);
+console.log(JSON.stringify({status:'PASS',signed:true,ownerRSA3072:true,seq46:true,moduleVersion44:true,existingAssetsIdentical:10,newAssets:2,narratorP144Untouched:true,followP168Untouched:true,notesR2Untouched:true}));

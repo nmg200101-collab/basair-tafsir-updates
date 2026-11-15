@@ -1,0 +1,48 @@
+/* P169: follow status is R114, NOT a second narrator. Keep its stop action
+   reachable but dock it compactly above the Tafsir text, not over the bottom. */
+html body #basairTafsirR114Status:not([hidden]){
+ position:fixed!important;top:var(--bq169-follow-top,216px)!important;
+ bottom:auto!important;left:auto!important;right:8px!important;
+ inset-inline:auto 8px!important;transform:none!important;
+ box-sizing:border-box!important;width:auto!important;min-width:0!important;
+ max-width:min(72vw,205px)!important;height:34px!important;min-height:34px!important;
+ margin:0!important;padding:2px 7px!important;gap:4px!important;
+ display:flex!important;flex-wrap:nowrap!important;align-items:center!important;
+ justify-content:center!important;border-radius:17px!important;
+ z-index:41!important;white-space:nowrap!important;overflow:hidden!important;
+ box-shadow:0 2px 10px #132d1e22!important;
+}
+html body #basairTafsirR114Status > span{font-size:10px!important;white-space:nowrap!important;}
+html body #basairTafsirR114Status > b{font-size:10px!important;}
+html body #basairTafsirR114Status > small{font-size:9px!important;white-space:nowrap!important;}
+html body #basairTafsirR114Status > button#b114Stop{
+ display:inline-flex!important;align-items:center!important;justify-content:center!important;
+ min-height:28px!important;height:28px!important;padding:1px 8px!important;
+ border-radius:15px!important;white-space:nowrap!important;font-size:10px!important;
+ touch-action:manipulation!important;pointer-events:auto!important;
+}
+/* A temporary speech message must not recreate another bottom floating panel. */
+html body #p144SpeechFrame:not([hidden]){
+ position:fixed!important;top:var(--bq169-speech-top,260px)!important;
+ bottom:auto!important;left:8px!important;right:auto!important;transform:none!important;
+ width:max-content!important;max-width:min(68vw,230px)!important;
+ min-height:28px!important;padding:4px 8px!important;font-size:10px!important;
+ border-radius:12px!important;z-index:42!important;
+}
+/* The original P144 microphone remains hidden only when a real inline
+   narrator exists. Its native button stays in DOM for audio handlers. */
+html body #tafsirAyahs .v194T2Ayah:has(button.bq166Voice) .p146TopMic,
+html body #tafsirAyahs .v194T2Ayah:has(button.bq166Voice) .p144MicBar,
+html body #tafsirAyahs .v194T2Ayah:has(button.bq166Voice) .p145TopControls{
+ display:none!important;visibility:hidden!important;height:0!important;
+ min-height:0!important;margin:0!important;padding:0!important;border:0!important;
+}
+/* The note editor remains native; only its back affordance gets clarity. */
+html body #basairTafsirR2NoteSheet.show .b263r2SheetHead > button[data-r2-note-close]{
+ min-width:66px!important;width:auto!important;height:38px!important;
+ padding:4px 10px!important;font-size:12px!important;
+}
+@media(max-width:375px){
+ html body #basairTafsirR114Status:not([hidden]){max-width:178px!important;gap:3px!important;padding-inline:5px!important;}
+ html body #basairTafsirR114Status > small{display:none!important;}
+}
