@@ -1,0 +1,64 @@
+{
+  "phase": "P179",
+  "status": "SIGNED_BRANCH_STAGED_AWAITING_PROTECTED_PR_CHECK",
+  "date": "2026-11-16",
+  "ownerInstruction": "Align Salman reader card with native readers and remove its Follow shortcut; then continue release. No other reader or Tilawa Follow behavior authorized.",
+  "currentReleasedBeforeMerge": {
+    "sequence": 54,
+    "gitBlob": "40f2177bd4f84b99a5faac0a3e9d2a97f3126550"
+  },
+  "candidate": {
+    "path": "p179/P179-SEQ55-OWNER-SIGNED-AUTOMATIC.json",
+    "gitBlob": "a3e1721509d497b775c0160854c88a93f0a55ac3",
+    "sha256": "c75009bcd401ef48c6efeb47041a6147e53d96fd36d9b7634917e76fd6487428",
+    "sequence": 55,
+    "channel": "owner-qa",
+    "deliveryMode": "automatic",
+    "applicationId": "app.basair.qurv2",
+    "minAppVersion": 694,
+    "approvalExpires": "2026-11-19T22:00:30Z"
+  },
+  "modules": [
+    {
+      "id": "tafsir",
+      "version": 51,
+      "oldAssets": 26,
+      "newAssets": 26,
+      "changed": false
+    },
+    {
+      "id": "tilawa",
+      "version": 179,
+      "oldAssets": 2,
+      "newAssets": 4,
+      "added": [
+        "modules/tilawa/p179-salman-native-card.css",
+        "modules/tilawa/p179-salman-native-card.js"
+      ]
+    }
+  ],
+  "cryptography": {
+    "ownerApproval": "Ed25519 matching V695 runtime raw public SHA256=47fec7dbe6fc3949c01b000658b2f2d376adcbd98c42c02cdc280c313ec7dbcf",
+    "RSA": "RSA-3072/PKCS1v1.5/SHA256 signed offline using original owner P12; verification with V694 included OTA public key PASS; P178 Seq54 signing key and V695 public verifier reportedly same",
+    "privateKeysOrPassphraseInRepo": false,
+    "legacyGuardKeyNotSameAsRuntime": true
+  },
+  "tests": {
+    "nodeCheck": "PASS",
+    "chromiumFixture": "8/8 PASS",
+    "exactSignedGitBlob": "PASS",
+    "rsaEdLocalCryptographicVerification": "PASS",
+    "nativeV695WebviewField": "PENDING"
+  },
+  "recovery": {
+    "sequence": 56,
+    "version": 180,
+    "retainsTafsir26": true,
+    "restoresP178Assets2": true,
+    "ownerSignedOffline": true,
+    "published": false,
+    "approvalExpires": "2026-11-19T22:01:33Z",
+    "sha256": "378abb282a810e8c7be29796795b3ee37c0e25a81144cc7f372eda9f61de4cc7"
+  },
+  "risk": "Screenshot-driven issue; no Android field acceptance claimed. Preserve original R109/13 readers, P89, V170 and previous Seq54 signed rollback. No APK."
+}
