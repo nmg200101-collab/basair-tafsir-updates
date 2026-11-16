@@ -1,0 +1,51 @@
+{
+  "stage": "P195",
+  "date": "2026-11-17",
+  "sourceHead": "a8b258b0da58a3dc24d4ba76a8ca3628c23139c1",
+  "app": "app.basair.qurv2",
+  "baseSequence": 85,
+  "releaseSequence": 87,
+  "rollbackSequence": 88,
+  "sourceAssets": [
+    {
+      "path": "modules/tilawa/p195-digital-paper-turn.js",
+      "kind": "js",
+      "size": 7249,
+      "sha256": "b31823125c951f4110a77c24aa748c8619ea3487b5a053399d25bf6d7ccf6b0b"
+    },
+    {
+      "path": "modules/tilawa/p195-digital-paper-turn.css",
+      "kind": "css",
+      "size": 5069,
+      "sha256": "c9f57e56d2c00cb5da4a8da69a64770d78d32efbe09f48ae39cc508c30a79af0"
+    }
+  ],
+  "sourceSha256": {
+    "js": "b31823125c951f4110a77c24aa748c8619ea3487b5a053399d25bf6d7ccf6b0b",
+    "css": "c9f57e56d2c00cb5da4a8da69a64770d78d32efbe09f48ae39cc508c30a79af0"
+  },
+  "rsa3072": "SIGNED_VERIFIED_APP_PINNED",
+  "ownerEd25519": "SIGNED_VERIFIED_APP_PINNED",
+  "payloadSha256": {
+    "release": "9d3b4928b3b5bf21d7c63ccae8bea7615d84c80c9979affff4a7b7870621d113",
+    "rollback": "008c217678190575f9a2c6d16b58064db74c76f8d93ee55589e3631d6ebfc26b"
+  },
+  "envelopeSha256": {
+    "release": "0dbcee42cb9d9294c1f68fe5c8c74f33211b6ad31d9822f869ec1f87e82e1d9a",
+    "rollback": "81fe06676bda43aa1057276d30ea5f7623dbdf3de43a962d23ecce6e9f873931"
+  },
+  "assets": {
+    "tafsirKept": 26,
+    "previousTilawaKept": 18,
+    "newTilawa": 20,
+    "rollbackTilawa": 18
+  },
+  "rollbackPublished": false,
+  "qa": {
+    "chromium": "18/18",
+    "nodeSyntax": "PASS",
+    "qa050": "REQUIRES_FINAL_HEAD",
+    "androidV695OwnerAcceptance": "PENDING"
+  },
+  "noAPK": true
+}

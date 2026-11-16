@@ -1,0 +1,91 @@
+/* BASAIR P195 | QA-050 | true two-leaf 3D turning for all digital fonts.
+   Never move #stableDigitalHost, #mushafPage, P193's ornament or Quran lines.
+   Only inert clones are transformed. P194 printed rotation stays unchanged.
+ */
+body.reader-active.stableDigital #mushafReader > .p195DigitalTurn {
+  position:fixed!important; z-index:36!important; display:block!important;
+  overflow:hidden!important; pointer-events:none!important; user-select:none!important;
+  -webkit-user-select:none!important; contain:layout paint style!important;
+  perspective:1250px!important; transform:translateZ(0)!important;
+  background:transparent!important; border:0!important; margin:0!important; padding:0!important;
+}
+body.reader-active.stableDigital #mushafReader > .p195DigitalTurn > .p195DigitalSheet {
+  position:absolute!important; inset:0!important; display:grid!important;
+  width:100%!important; height:100%!important; min-height:0!important;
+  max-height:none!important; box-sizing:border-box!important;
+  grid-template-rows:repeat(15,minmax(0,1fr))!important;
+  margin:0!important; padding:5.8% 4.8% 6%!important;
+  direction:rtl!important; background:var(--p195Paper,#fffdf5)!important;
+  color:#17120b!important; border-radius:3px!important;
+  overflow:hidden!important; pointer-events:none!important;
+  transform-style:preserve-3d!important;
+  backface-visibility:hidden!important; -webkit-backface-visibility:hidden!important;
+  will-change:transform,opacity; transition:none!important; animation:none!important;
+}
+body.reader-active.stableDigital #mushafReader > .p195DigitalTurn > .p195DigitalSheet.v160LocalFallback {
+  display:block!important; padding:6.6% 5.2% 6.4%!important;
+}
+/* Original renderer keys some line formatting to #stableDigitalHost;
+   replicate those essentials without duplicated IDs in the snapshot. */
+.p195DigitalTurn .p195DigitalSheet .exactLine {
+  display:flex!important; align-items:center!important; justify-content:center!important;
+  width:100%!important; min-height:0!important; overflow:hidden!important;
+}
+.p195DigitalTurn .p195DigitalSheet .unicodeLine {
+  display:inline-block!important; white-space:nowrap!important;
+  direction:rtl!important; font-family:var(--stable-font)!important;
+}
+.p195DigitalTurn .p195DigitalSheet .quranWord.divine {color:#b91c1c!important; text-shadow:none!important;}
+.p195DigitalTurn .p195DigitalSheet .exactLine.surah-header,
+.p195DigitalTurn .p195DigitalSheet .exactLine.bismillah {
+  font-family:var(--stable-font)!important; text-align:center!important;
+}
+.p195DigitalTurn .p195DigitalSheet.p195Incoming {z-index:1!important;}
+.p195DigitalTurn .p195DigitalSheet.p195Outgoing {z-index:2!important;}
+.p195DigitalTurn.p195Forward .p195Outgoing {transform-origin:right center!important;}
+.p195DigitalTurn.p195Forward .p195Incoming {transform-origin:left center!important;}
+.p195DigitalTurn.p195Backward .p195Outgoing {transform-origin:left center!important;}
+.p195DigitalTurn.p195Backward .p195Incoming {transform-origin:right center!important;}
+body.reader-active.stableDigital #mushafReader > .p195DigitalTurn.p195Animate.p195Forward > .p195Outgoing {
+  animation:p195FoldForward 540ms cubic-bezier(.20,.09,.22,.94) both!important;
+}
+body.reader-active.stableDigital #mushafReader > .p195DigitalTurn.p195Animate.p195Forward > .p195Incoming {
+  animation:p195UnfoldForward 540ms cubic-bezier(.20,.09,.22,.94) both!important;
+}
+body.reader-active.stableDigital #mushafReader > .p195DigitalTurn.p195Animate.p195Backward > .p195Outgoing {
+  animation:p195FoldBackward 540ms cubic-bezier(.20,.09,.22,.94) both!important;
+}
+body.reader-active.stableDigital #mushafReader > .p195DigitalTurn.p195Animate.p195Backward > .p195Incoming {
+  animation:p195UnfoldBackward 540ms cubic-bezier(.20,.09,.22,.94) both!important;
+}
+.p195DigitalTurn .p195DigitalSheet::after {
+  content:'';position:absolute;inset:0;pointer-events:none;opacity:.22;
+  background:linear-gradient(90deg,rgba(22,48,38,.22),transparent 28%,transparent 70%,rgba(21,45,35,.23));
+}
+@keyframes p195FoldForward {
+  0%{transform:rotateY(0deg) translateZ(1px);opacity:1;}
+  43%{transform:rotateY(36deg) translateZ(12px);opacity:1;}
+  82%{transform:rotateY(81deg) translateZ(0);opacity:.98;}
+  100%{transform:rotateY(99deg);opacity:0;}
+}
+@keyframes p195UnfoldForward {
+  0%{transform:rotateY(-75deg);opacity:.12;}
+  42%{transform:rotateY(-49deg);opacity:.60;}
+  85%{transform:rotateY(-9deg);opacity:1;}
+  100%{transform:rotateY(0deg);opacity:1;}
+}
+@keyframes p195FoldBackward {
+  0%{transform:rotateY(0deg) translateZ(1px);opacity:1;}
+  43%{transform:rotateY(-36deg) translateZ(12px);opacity:1;}
+  82%{transform:rotateY(-81deg) translateZ(0);opacity:.98;}
+  100%{transform:rotateY(-99deg);opacity:0;}
+}
+@keyframes p195UnfoldBackward {
+  0%{transform:rotateY(75deg);opacity:.12;}
+  42%{transform:rotateY(49deg);opacity:.60;}
+  85%{transform:rotateY(9deg);opacity:1;}
+  100%{transform:rotateY(0deg);opacity:1;}
+}
+@media(prefers-reduced-motion:reduce){
+  body.reader-active.stableDigital #mushafReader > .p195DigitalTurn {display:none!important;}
+}
