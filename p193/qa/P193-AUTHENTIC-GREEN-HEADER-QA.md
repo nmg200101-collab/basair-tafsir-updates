@@ -42,3 +42,17 @@ Next independent phase: P194 optional 3D page-turn effect.
 - CSS label group now spans top 3.05% / height 3.65%, center x28.5–71.5%, right x72.8–87%, left x13.3–27.5%; coordinates are based on actual frame geometry, not guessed pill positions.
 - Focused pixel assertions: center background PASS, left label backdrop PASS, right label backdrop PASS, first-ayah transparency PASS.
 - Device QA and release signing are STILL PENDING; no claim of Android acceptance or OTA activation.
+
+## Critical collision correction — V695 P191 vertical fit
+Reproduced the printed page 51 from the original V694 signed APK with the
+actual 720x1280 original frame and P191 image transform. A full-height unmasked
+native header would overlap the first ayah (at approx y76–80 in viewport).
+P193 therefore MUST NOT use CSS `mask-image:none` on the original overlay.
+Instead keep P190's mask, clone the existing top source image, and compress ONLY
+the top 1.5%–8.75% portion to 65% original vertical size. The remaining
+original image, decorations, first and final verses, bottom legend and frame
+are unmodified. Resulting header bottoms around y73; first verse remains clear.
+Scoped selectors and JS remove or hide the clone on genuine surah-opening pages.
+The middle ivory label uses dark green text; side badges use ivory text.
+This focused source-raster composite inspection is not a substitute for Android
+owner field acceptance. Sign only after the owner QA-050 guard passes on final PR.
