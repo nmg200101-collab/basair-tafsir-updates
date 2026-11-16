@@ -54,6 +54,8 @@
     b.setAttribute('aria-label',busy?'جاري تجهيز النمط التالي…':'تغيير الخط. الحالي: '+mode.label+'. اضغط للنمط التالي');
     b.title=busy?'جاري تجهيز النمط التالي':'تغيير الخط — '+mode.label;
     b.dataset.p182Current=mode.key;
+    var caption=b.querySelector('small');
+    if(caption)caption.textContent=busy?'جاري التبديل':'تغيير الخط';
     b.classList.toggle('p182FontBusy',busy);
   }
   function off(){var a=autoApi();if(a&&typeof a.disable==='function')a.disable();}
