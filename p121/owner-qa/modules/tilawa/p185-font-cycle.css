@@ -1,0 +1,42 @@
+/* P185: compact dock size consistent with native adjacent tools. */
+body.reader-active #mushafDock #p181DockFont.p185Legacy{display:none!important;}
+body.reader-active #mushafDock #p185FontButton{
+ display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;
+ gap:1px!important;min-width:0!important;max-width:100%!important;
+ padding:1px!important;margin:0!important;border:0!important;border-radius:8px!important;
+ background:transparent!important;box-shadow:none!important;color:#286754!important;
+ font-family:inherit!important;font-weight:700!important;touch-action:pan-y!important;
+}
+body.reader-active #mushafDock #p185FontButton .p185Glyph{font-size:1.08rem!important;line-height:1!important;font-weight:900!important;}
+body.reader-active #mushafDock #p185FontButton small{font-size:.56rem!important;line-height:1.1!important;font-weight:700!important;white-space:nowrap!important;}
+body.dark.reader-active #mushafDock #p185FontButton{color:#bedbcf!important;}
+body.reader-active #mushafDock #p185FontButton:focus-visible{outline:2px solid #b99d65!important;outline-offset:1px!important;}
+.p185Overlay{position:fixed!important;inset:0!important;z-index:2147480001!important;background:#06120ca6!important;
+ display:flex!important;align-items:flex-end!important;justify-content:center!important;direction:rtl!important;}
+.p185Overlay[hidden]{display:none!important;}
+.p185Sheet{width:min(100%,580px);max-height:min(82dvh,720px);overflow-y:auto;box-sizing:border-box;padding:17px 15px calc(22px + env(safe-area-inset-bottom,0px));
+ border-radius:21px 21px 0 0;background:#f7f8f3;color:#183f32;border:1px solid #c7d5ca;font-family:inherit;}
+.p185Sheet header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:9px;}
+.p185Sheet header strong{font-size:1.06rem;}
+.p185Sheet .p185Close{background:#276c55;border:0;border-radius:11px;padding:7px 15px;color:white;font:inherit;}
+.p185Sheet p{font-size:.79rem;line-height:1.7;margin:4px 0 12px;}
+.p185Grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;}
+.p185Grid button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
+ min-width:0;min-height:57px;padding:6px 4px;border-radius:11px;border:1px solid #c7d9ce;
+ background:#fffdf8;color:#274c3c;font:inherit;line-height:1.3;}
+.p185Grid button b{font-size:.72rem;text-align:center;}
+.p185Grid button small{font-size:.60rem;text-align:center;opacity:.8;}
+.p185Grid button.p185On{border:2px solid #258266;background:#e1f2e8;}
+.p185Feedback{display:block;min-height:20px;padding-top:7px;color:#8b531b;font-size:.75rem;}
+.p185Locked{color:#6d725e!important;font-size:.68rem!important;margin-top:6px!important;}
+body.dark .p185Sheet{background:#182c24;color:#f0f6ee;border-color:#567466;}
+body.dark .p185Grid button{background:#213b2e;color:#eff5ee;border-color:#527161;}
+body.dark .p185Grid button.p185On{background:#19583f;color:#ffe4ae;}
+body.reader-active #v140FontPane #p185ToolsPicker{padding:9px;border:1px solid var(--line,#becfc1);border-radius:12px;background:var(--paper,#f8faf6);}
+body.reader-active #v140FontPane #p185ToolsPicker>strong{display:block;font-size:.76rem;margin-bottom:8px;color:var(--green,#28624a);}
+body.reader-active #v140FontPane #p185ToolsPicker .p185Grid button{min-height:47px;}
+/* Only the obsolete font/print selectors are hidden; all other page tools stay. */
+body.reader-active #v140FontPane #v144OriginalPrintsPinned,
+body.reader-active #v140FontPane #vFinalAutoFontsPinned,
+body.reader-active #v140FontPane #v181FontPrimary{display:none!important;}
+@media(max-width:350px){.p185Grid{grid-template-columns:repeat(2,minmax(0,1fr));}}
