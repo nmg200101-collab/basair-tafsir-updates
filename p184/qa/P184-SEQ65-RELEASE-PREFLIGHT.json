@@ -1,0 +1,83 @@
+{
+  "phase": "P184",
+  "date": "2026-11-16",
+  "status": "SIGNED_SEQ65_CANDIDATE_FOR_QA050_GUARD",
+  "fieldObservation": "On V695 after P183 Seq63, printed original/coloured editions do not render; digital text extends beyond page frame; font button is oversized relative to other tools.",
+  "change": "Use a new compact dock button and a unified compact Tools selector, restoring native RC19 printed stage, native RC18 original/tajwid raster, and fitting digital text lines only when they overflow.",
+  "release": {
+    "sequence": 65,
+    "channel": "owner-qa",
+    "deliveryMode": "automatic",
+    "appId": "app.basair.qurv2",
+    "minAppVersion": 694,
+    "path": "p184/P184-SEQ65-OWNER-SIGNED-AUTO.json",
+    "activeProposed": "p121/owner-qa/release.json",
+    "sha256": "45d799687d6af47f7fc0cbaaa525d1c8249633624cde44bed04a2e50e444d3b9",
+    "gitBlob": "b7ef91dc16cbdec053e3bbc89b5fadf347f18407"
+  },
+  "previous": {
+    "sequence": 63,
+    "saved": "p183/P183-SEQ63-OWNER-SIGNED-BEFORE-P184.json",
+    "gitBlob": "dcf6c3c641cf3442e1804e169f1e968c3409e4ef",
+    "tafsirVersion": 51,
+    "tafsirAssets": 26,
+    "tilawaVersion": 183,
+    "tilawaAssets": 11
+  },
+  "new": {
+    "tilawaVersion": 184,
+    "tilawaAssets": 13,
+    "tafsirUnchanged": true,
+    "previousTilawaUnchanged": true,
+    "assets": [
+      {
+        "path": "modules/tilawa/p184-printed-digital-unified.css",
+        "size": 5238,
+        "sha256": "414188863daed7e02d23b6407035a44c9ba4dee19470eadd77429b63fa5b9b87",
+        "gitBlob": "db2e975997d74f5b1d8f4bdad9a47ad8eaa8bdac"
+      },
+      {
+        "path": "modules/tilawa/p184-printed-digital-unified.js",
+        "size": 13925,
+        "sha256": "b9dbc8cff7dc05a0722ef304983a27f2793efa6178b79816cf6147288ba50261",
+        "gitBlob": "479c6fdd58f3e37e33f36448c856011204aa6aa9"
+      }
+    ]
+  },
+  "trust": {
+    "rsaOwner3072": "PASS - signed payload verified against original public key pinned in APK V694/P121",
+    "edOwnerApproval": "PASS - proof verified against V695 runtime raw public SHA-256 47fec7dbe6fc3949c01b000658b2f2d376adcbd98c42c02cdc280c313ec7dbcf",
+    "oldSeq64Verified": "PASS",
+    "gitSourceExact": "PASS",
+    "privateKeysInRepo": false,
+    "legacyGithubGuardVerifierMayDiffer": true
+  },
+  "testing": {
+    "syntax": "PASS",
+    "browser": "8/8 PASS 320/390/430/768 light/dark simulated native RC18 and RC19",
+    "originalAfterDigital": "PASS in DOM fixture",
+    "coloredWhenImageAvailable": "PASS in DOM fixture",
+    "colorFailureDoesNotClaimSuccess": "PASS",
+    "toolsDirectSelection": "PASS",
+    "iconMatchesDockHeight": "PASS",
+    "digitalTextFit": "PASS",
+    "nativeV695OnDevice": "PENDING owner field test",
+    "onDeviceOfflineRaster": "NOT YET VERIFIED"
+  },
+  "ownerLock": {
+    "qa050": true,
+    "printedBlueStillDisabled": true,
+    "noNewApk": true,
+    "tilawaOnly": true,
+    "noP92OrNativeMutations": true
+  },
+  "recovery": {
+    "sequence": 66,
+    "signedOffline": true,
+    "published": false,
+    "sha256": "2f3b8caa8f565ce31db111561d8abdce27e3c15d5c79211119008c99bad87353",
+    "tilawaRestoredAssets": 11,
+    "tafsirPreserved": 26
+  },
+  "notes": "Source-browser tests do not establish an Android WebView runtime pass. Do not announce owner field acceptance until the user confirms actual printed and colored pages."
+}
