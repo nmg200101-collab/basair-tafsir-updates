@@ -1,0 +1,55 @@
+{
+  "phase": "P189",
+  "date": "2026-11-16",
+  "state": "SIGNED_SEQ75_PENDING_REQUIRED_QA050_GUARD",
+  "ownerRequest": "Link bottom size button to the actual 'حجم نص صفحة المصحف' percentage controls in page Tools; preserve every other feature and minimize tests.",
+  "rootCause": "P188 altered readerZoom and optionally V181 digital font scale, not the visible native page-text percentage controls. Reported percentage changed without actual text resize.",
+  "fix": "Replace only the P188 JS member of the active Tilawa asset list with P189 JS that dispatches exactly one native click to the 100/110/120 percent buttons in the existing Tools card; retain current 9 prior assets including CSS and native print handlers. No new UI.",
+  "signedCandidate": {
+    "sequence": 75,
+    "tilawaVersion": 194,
+    "channel": "owner-qa",
+    "mode": "automatic",
+    "gitBlob": "249a7915a1503dda20a75a38c7d27a75a39b23f0",
+    "sha256": "d7e8da0eacfe8a5b890f7fca47512c723a1aad68f374f1cb204221daa126c952",
+    "approvalExpires": "2026-11-20T15:31:11Z",
+    "rsaOriginalVerified": true,
+    "ownerEd25519OriginalVerified": true
+  },
+  "assets": {
+    "totalTafsir": 26,
+    "totalTilawa": 10,
+    "priorOriginalTilawaAssetsRetained": 9,
+    "removed": "modules/tilawa/p188-stable-size-direct-print.js",
+    "added": {
+      "path": "modules/tilawa/p189-size-shortcut-native-tools.js",
+      "bytes": 10938,
+      "sha256": "8b962f6354425acfdf2f28e292b258f313181f0129d1371ed2c7364ef74f6432",
+      "gitBlob": "a10a7a93044b73c579a03a6b5d8a41d2d2364bc1"
+    }
+  },
+  "tests": {
+    "syntax": "PASS",
+    "nativePercentageShortcutSingleSmoke": "PASS (100 to 110 to 120 to 100), with observable simulated font-size changes",
+    "previousPrintHandlerUnchanged": "PASS exact source comparison",
+    "androidV695Real": "NOT TESTED. Owner field acceptance required",
+    "extraNonessentialTestSuites": "NOT RUN per owner request"
+  },
+  "rollback": {
+    "sequence": 76,
+    "tilawaVersion": 195,
+    "sha256": "dbaad5d4defd92c6e76e1b8a8dfd9c54bf561e2b893ee18c658931cc7e3e7b26",
+    "locallySignedAndVerified": true,
+    "notPublished": true,
+    "restores": "exact P188 Seq73 assets"
+  },
+  "safety": {
+    "qa050Mandatory": true,
+    "disabledBluePrintRemainsDisabled": true,
+    "noAPK": true,
+    "originalQuranTextAssetsUnchanged": true,
+    "noModificationToPrintSwitch": true,
+    "allPrivateKeysRemainOffline": true
+  },
+  "caveat": "P189 locates the existing Tools percentage group by its heading 'حجم نص صفحة المصحف'. If missing/not initialized, it tries native RC20 install/normalize, then reports unavailability rather than showing a false success. Android V695 must be tested on the owner's device."
+}
