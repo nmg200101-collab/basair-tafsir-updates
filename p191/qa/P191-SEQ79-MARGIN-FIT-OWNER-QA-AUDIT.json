@@ -1,0 +1,51 @@
+{
+  "phase": "P191",
+  "date": "2026-11-16",
+  "status": "SIGNED_SEQ79_QA050_PR_PENDING",
+  "ownerGoal": "Remove excessive upper and lower white margins from actual Tajwid image, fitting printed Quran lines to available reader frame; preserve all verse lines, surah printed heading, outer frame and color guide.",
+  "originalApprovedBaseline": {
+    "release": "P189 / Seq75",
+    "currentBeforePatch": "P190 / Seq77",
+    "appId": "app.basair.qurv2",
+    "activeManifestGitBlob": "f37252d03f9191f0edd7f722d10377808edccc24"
+  },
+  "change": {
+    "path": "modules/tilawa/p191-balanced-page-fit.css",
+    "size": 1124,
+    "sha256": "8c4574eb560127013b9f619026d1643606bde089005afc2c9d48256fb2138c4a",
+    "gitBlob": "89718b3852318798282dfc81f8251ff2a3778c2e",
+    "mechanism": "Apply CSS vertical translate -2.5% and scaleY(1.13) on the Tajwid raster image only; remain scoped to loaded printed Tajwid stage, preserve P190 header mask and guide",
+    "warning": "The scaled raster changes visual aspect of text slightly; requires V695 device confirmation that no verse/decoration is clipped."
+  },
+  "checks": {
+    "twoPages": "PASS — page 003 normal and page 050 surah beginning rendered in Chromium",
+    "guard": "PENDING",
+    "originalAssets": "unchanged",
+    "extraTests": "None, per owner request"
+  },
+  "signed": {
+    "seq": 79,
+    "tilawaVersion": 198,
+    "tafsirAssets": 26,
+    "tilawaPriorAssets": 11,
+    "tilawaNewAssets": 1,
+    "gitBlob": "8885de94c9f2cb0ee3f05c6506078536f4fb4c8f",
+    "sha256": "6be64ec4c753746ec3af292109f380db3ae941fd9c7a5eb8f685f63ac13d5b8a",
+    "rsa3072": "verified with reference APK public key",
+    "ed25519": "verified with reference APK owner key"
+  },
+  "rollback": {
+    "sequence": 80,
+    "sha256": "df296fb1b8f987c8d75ed958b0027c554c71c4ec275f6c5cc1ccd5b4f5d7ff19",
+    "signed": true,
+    "published": false,
+    "restores": "P189/Seq75 owner-approved baseline"
+  },
+  "scope": {
+    "tilawaOnly": true,
+    "noNewApk": true,
+    "qa050Preserved": true,
+    "noModificationToQuranText": true
+  },
+  "fieldQA": "Pending owner's Android V695 test of normal and surah-start pages; if unnatural stretched glyphs or clipped lines, revert using signed Seq80."
+}
