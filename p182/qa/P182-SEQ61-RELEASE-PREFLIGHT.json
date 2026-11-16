@@ -1,0 +1,72 @@
+{
+  "phase": "P182",
+  "date": "2026-11-16",
+  "status": "OWNER_SIGNED_RELEASE_BRANCH_AWAITING_QA050_PR",
+  "ownerInstruction": "Make each tap on change-font button advance through all available printed and digital fonts automatically, without freezing at original/colored edition.",
+  "sourceRoot": "p182/staging/p182-font-cycle-continuity.js",
+  "sourceGitBlob": "671b3784e65ef9d8a3faf45e4e325f8af40d423b",
+  "fixedIssue": "RC18 Tajwid image failure returns false/reverts original; previous P181 current-mode recalculation keeps selecting same unavailable mode. P182 waits for actual result then skips unavailable mode within same user tap.",
+  "release": {
+    "sequence": 61,
+    "gitBlob": "091f90790d837e87aa89c3e7a8c9c6966efa9a51",
+    "sha256": "1cc6ebc1ee9a909dc84db4feeb95c589f522f2ad63d939a30c4df067dc171e1f",
+    "path": "p182/P182-SEQ61-OWNER-SIGNED-AUTOMATIC.json",
+    "activePath": "p121/owner-qa/release.json",
+    "channel": "owner-qa",
+    "deliveryMode": "automatic",
+    "applicationId": "app.basair.qurv2",
+    "minAppVersion": 694,
+    "edApprovalExpires": "2026-11-20T04:15:35Z"
+  },
+  "preservedModules": {
+    "tafsirVersion": 51,
+    "tafsirAssets": 26,
+    "tilawaPreviousVersion": 181,
+    "tilawaPreviousAssets": 8,
+    "tilawaNewVersion": 182,
+    "tilawaNewAssets": 9
+  },
+  "asset": {
+    "path": "modules/tilawa/p182-font-cycle-continuity.js",
+    "bytes": 6335,
+    "sha256": "189d7bf2c88fc09249c20ee5adf75a2caf42b69d6ca4669ec4203b5ed03b529c",
+    "gitBlob": "671b3784e65ef9d8a3faf45e4e325f8af40d423b"
+  },
+  "qa050": {
+    "originalAndColoredPrintUsingNativeRC18": true,
+    "digitalFontsUsingNativeRC19": true,
+    "printedBluePreviouslyDisabledStillExcluded": true,
+    "originalNightButtonUnmodified": true,
+    "tafsirUntouched": true,
+    "protectedOwnerApproval": "Ed25519 matches actual V695 raw public sha256 47fec7dbe6fc3949c01b000658b2f2d376adcbd98c42c02cdc280c313ec7dbcf",
+    "RSA": "RSA-3072/PKCS1v1.5/SHA256 validated against APK OTA public key",
+    "privateKeysInGitHub": false,
+    "legacyGithubGuardKeyDiffers": true
+  },
+  "tests": {
+    "nodeSyntax": "PASS",
+    "chromium": "8/8 PASS 320/390/430/768 light/dark using mocked RC18 and RC19",
+    "failureTajwidSkippedSameClick": true,
+    "failTajwidAndAutoSkippedSameClick": true,
+    "coloredRestoredWhenAvailable": true,
+    "fullCycleWrap": true,
+    "p181OldClickListenerBlocked": true,
+    "nightAndIndexUnchangedInFixture": true,
+    "realAndroidFieldAcceptance": "PENDING",
+    "liveTajwidRasterNetworking": "NOT TESTED"
+  },
+  "previousSignedSnapshot": {
+    "path": "p181/P181-SEQ59-OWNER-SIGNED-BEFORE-P182.json",
+    "gitBlob": "392b4059c0c6a7bd6e751ac95ab15f7847dfd798"
+  },
+  "recovery": {
+    "sequence": 62,
+    "gitBlob": "37d1ef381b97080a88c1dc7cf50abc14f540ace5",
+    "sha256": "114a15a9f9750fce1706117555666850028647665c7b88a1f8b3a774afbf212b",
+    "signedOffline": true,
+    "published": false,
+    "restoresTilawaP181Assets8": true,
+    "preservesTafsirAssets26": true
+  },
+  "notes": "Do not claim Android device acceptance before owner tests. No new APK."
+}
