@@ -1,0 +1,76 @@
+{
+  "phase": "P192",
+  "date": "2026-11-16",
+  "status": "OWNER_SIGNED_SEQ81_AWAITING_QA050",
+  "ownerRequest": "Give every Mushaf page a professional head, without duplicating printed surah ornaments or creating blank margins; P193 3D turning follows after owner acceptance.",
+  "baseline": {
+    "app": "app.basair.qurv2",
+    "version": "V695",
+    "seq": 79,
+    "tilawaVersion": 198,
+    "tafsirAssets": 26,
+    "tilawaAssets": 12,
+    "manifestGitBlob": "8885de94c9f2cb0ee3f05c6506078536f4fb4c8f"
+  },
+  "implementation": {
+    "scope": "Tajwid printed edition only; native digital/original pages unchanged",
+    "layout": "Ultra-slim centered metadata at top within existing image frame clearance, no added height or resize",
+    "pageContinuation": "Show primary surah derived from BASAIR_PAGE_RANGES first global ayah, short Juz number and actual page number",
+    "nativeSurahOpening": "Suppress overlay when first ayah of page is first ayah of its surah; authentic ornamental raster remains the sole surah head",
+    "mixedSurahPage": "Page 525 begins with Surah At-Tur and includes an original Surah An-Najm ornamental heading near the bottom; top metadata correctly says Surah At-Tur",
+    "bluePrint": "Disabled per QA-050, unaffected"
+  },
+  "newAssets": [
+    {
+      "path": "modules/tilawa/p192-slim-authentic-page-head.css",
+      "size": 3316,
+      "sha256": "0284bbe85a696262e79330b1b4394c7f98cdce45c784aa22039277afc1beb77a",
+      "gitBlob": "09a356489e13c147050e23b6715a87ff1654dbaf"
+    },
+    {
+      "path": "modules/tilawa/p192-slim-authentic-page-head.js",
+      "size": 3173,
+      "sha256": "0cd3d045fa6f07435cb9331de8e839da12cf3a19f60bfb35bc6508296855203d",
+      "gitBlob": "834efe53cdb8ee266cc2f81c3fdb86b9e5f2c256"
+    }
+  ],
+  "tests": {
+    "syntax": "PASS: node --check",
+    "representativeOnly": [
+      "PASS page 525: Surah At-Tur, Juz 27, page 525; slim header rendered within frame and above first verse",
+      "PASS page 50: native Surah Al-Imran title kept, no second overlay"
+    ],
+    "browser": "Chromium simulation with authentic page images/data and P190 overlay mask + P191 vertical image fit",
+    "extraTests": "None per owner request",
+    "AndroidV695": "NOT YET VERIFIED ON OWNER DEVICE"
+  },
+  "signed": {
+    "sequence": 81,
+    "tilawaVersion": 200,
+    "ownerApprovalExpires": "2026-11-20T18:38:16Z",
+    "modulesSha256": "d6368630961f81a071d9253a27d394e86a9f5ec2ec8e3bc4d14a763dbcb6e698",
+    "sha256": "7eb778849c858e45e981bb186d0192c507c2f2b7aa3c6feec524bdff99b61b77",
+    "gitBlob": "e0967a9e6d7298d03b640440fd790495ec828a5a",
+    "rsa3072Verified": true,
+    "ed25519OwnerVerified": true,
+    "baseAssetsUnchanged": true
+  },
+  "rollback": {
+    "sequence": 82,
+    "tilawaVersion": 201,
+    "sha256": "d81da353c1f17f1445fa1749fd6d67787ffc6ca77b1ffe3a9436788b4d1d80ea",
+    "gitBlob": "a9c185fa2158cd2ae900c5e21c284b1db484e294",
+    "signed": true,
+    "locallyStored": true,
+    "published": false,
+    "restoresOriginal12TilawaAssets": true
+  },
+  "guard": {
+    "qa050Required": true,
+    "noAPK": true,
+    "noOriginalQuranRasterModification": true,
+    "noPrintEngineModification": true,
+    "noReadingHeightChange": true
+  },
+  "nextStage": "P193 optional 3D paper turn in separate release only after field approval of P192"
+}
