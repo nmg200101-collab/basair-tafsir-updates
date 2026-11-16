@@ -1,0 +1,11 @@
+/* BASAIR P183 — readably show each selected font in the original dock control. */
+#mushafDock #p181DockFont small{
+ display:block!important;max-width:100%!important;overflow:hidden!important;
+ text-overflow:ellipsis!important;white-space:nowrap!important;
+ font-size:clamp(.45rem,.8vw + .28rem,.61rem)!important;line-height:1.35!important;
+}
+#mushafDock #p181DockFont[aria-busy="true"]{opacity:.68!important;pointer-events:none!important;}
+#v140FontPane [data-v129-print="blue"],#v144OriginalPrintsPinned [data-v129-print="blue"]{
+ opacity:.55!important;
+}
+@media(max-width:390px){#mushafDock #p181DockFont small{font-size:.47rem!important;}}
