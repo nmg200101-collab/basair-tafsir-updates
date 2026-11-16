@@ -1,4 +1,4 @@
-/* BASAIR P193 | Owner-directed green Mushaf header repair | QA-050.
+/* BASAIR P193 | Owner-directed green Mushaf header repair | QA-050.\n * Coordinates checked against V694 APK's 720×1280 approved-frame-v682.webp:\n * pale center (x≈205–515) with dark green text; green side badges\n * (x≈95–195 and x≈525–625) with ivory labels; y≈39–85.
  * Restore the ORIGINAL approved-frame-v682.webp top ornament on printed
  * Tajwid continuation pages. P190 masked this band, and P192 added capsules.
  * A surah-opening page retains its QPC V4 printed surah head and the P190 mask.
@@ -30,8 +30,8 @@ html body.reader-active[data-v144-print="tajwid"] #mushafReader
   > .rc18TajwidLabels > .p192PageNumber {
   display: flex !important;
   position: absolute !important;
-  top: 1.75% !important;
-  height: 2.8% !important;
+  top: 3.05% !important;
+  height: 3.65% !important;
   min-height: 0 !important;
   margin: 0 !important;
   padding: 0 2px !important;
@@ -55,24 +55,26 @@ html body.reader-active[data-v144-print="tajwid"] #mushafReader
 html body.reader-active[data-v144-print="tajwid"] #mushafReader
   .rc18-tajwid-ready.p192-meta-ready:not(.p192-native-top-head):not(.p918-original-special)
   > .rc18TajwidLabels > .rc18TajwidSurah {
-  left: 25.3% !important;
-  width: 49.4% !important;
+  left: 28.5% !important;
+  width: 43% !important;
   font-size: clamp(10px,3.15vw,15px) !important;
   font-weight: 800 !important;
+  color: #164b36 !important;
+  text-shadow: none !important;
 }
 html body.reader-active[data-v144-print="tajwid"] #mushafReader
   .rc18-tajwid-ready.p192-meta-ready:not(.p192-native-top-head):not(.p918-original-special)
   > .rc18TajwidLabels > .rc18TajwidJuz {
-  left: 77.5% !important;
-  width: 15.5% !important;
+  left: 72.8% !important;
+  width: 14.2% !important;
   font-size: clamp(9px,2.45vw,12px) !important;
   font-weight: 700 !important;
 }
 html body.reader-active[data-v144-print="tajwid"] #mushafReader
   .rc18-tajwid-ready.p192-meta-ready:not(.p192-native-top-head):not(.p918-original-special)
   > .rc18TajwidLabels > .p192PageNumber {
-  left: 7% !important;
-  width: 15.5% !important;
+  left: 13.3% !important;
+  width: 14.2% !important;
   font-size: clamp(9px,2.45vw,12px) !important;
   font-weight: 700 !important;
 }
