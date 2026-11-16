@@ -1,0 +1,101 @@
+/* BASAIR P193 — QA-050: authentic green heading without Quran-line overlap.
+ * Important V695/P191 geometry: the first scanned line is advanced upward
+ * to around y=76 in the 720x1280 page viewport. Unmasking the full native
+ * 128px-tall heading would COVER that line. Keep P190's original mask.
+ * Use the EXISTING original approved-frame-v682.webp as a compressed, clipped
+ * ornamental strip above the text, cloned by P193 JS from the live frame.
+ * Do not rescale Quran raster, add margins or alter other prints.
+ */
+/* Inactive or non-Tajwid modes: no cloned ornament. */
+#mushafReader img.p193AuthenticTop {display:none !important;}
+html body.reader-active[data-v144-print="tajwid"] #mushafReader
+ .rc18-tajwid-ready.p192-meta-ready:not(.p192-native-top-head):not(.p918-original-special)
+ > img.p193AuthenticTop {
+ display:block !important;
+ position:absolute !important;
+ inset:0 !important;
+ width:100% !important;
+ height:100% !important;
+ padding:0 !important;
+ margin:0 !important;
+ max-width:none !important;
+ object-fit:fill !important;
+ background:transparent !important;
+ opacity:1 !important;
+ border:0 !important;
+ box-shadow:none !important;
+ z-index:8 !important;
+ pointer-events:none !important;
+ transform:scaleY(.65) !important;
+ transform-origin:top center !important;
+ -webkit-clip-path:inset(1.5% 0 91.25% 0) !important;
+ clip-path:inset(1.5% 0 91.25% 0) !important;
+}
+/* Labels are aligned to the 720x1280 original artwork after .65 compression:
+ * center ivory, x205..515; green side bays x95..200 and x520..625.
+ */
+html body.reader-active[data-v144-print="tajwid"] #mushafReader
+ .rc18-tajwid-ready.p192-meta-ready:not(.p192-native-top-head):not(.p918-original-special)
+ > .rc18TajwidLabels {z-index:10 !important;}
+html body.reader-active[data-v144-print="tajwid"] #mushafReader
+ .rc18-tajwid-ready.p192-meta-ready:not(.p192-native-top-head):not(.p918-original-special)
+ > .rc18TajwidLabels > .rc18TajwidSurah,
+html body.reader-active[data-v144-print="tajwid"] #mushafReader
+ .rc18-tajwid-ready.p192-meta-ready:not(.p192-native-top-head):not(.p918-original-special)
+ > .rc18TajwidLabels > .rc18TajwidJuz,
+html body.reader-active[data-v144-print="tajwid"] #mushafReader
+ .rc18-tajwid-ready.p192-meta-ready:not(.p192-native-top-head):not(.p918-original-special)
+ > .rc18TajwidLabels > .p192PageNumber {
+ display:flex !important;
+ position:absolute !important;
+ top:1.9% !important;
+ height:3.3% !important;
+ min-height:0 !important;
+ margin:0 !important;
+ padding:0 2px !important;
+ box-sizing:border-box !important;
+ justify-content:center !important;
+ align-items:center !important;
+ overflow:hidden !important;
+ white-space:nowrap !important;
+ direction:rtl !important;
+ border:0 !important;
+ border-radius:0 !important;
+ background:transparent !important;
+ box-shadow:none !important;
+ color:#f9f2d5 !important;
+ text-shadow:0 1px 1px rgba(7,45,32,.9) !important;
+ pointer-events:none !important;
+ transform:none !important;
+ transition:none !important;
+ animation:none !important;
+}
+html body.reader-active[data-v144-print="tajwid"] #mushafReader
+ .rc18-tajwid-ready.p192-meta-ready:not(.p192-native-top-head):not(.p918-original-special)
+ > .rc18TajwidLabels > .rc18TajwidSurah {
+ left:28.5% !important;
+ width:43% !important;
+ font-size:clamp(10px,3.15vw,15px) !important;
+ font-weight:800 !important;
+ color:#164b36 !important;
+ text-shadow:none !important;
+}
+html body.reader-active[data-v144-print="tajwid"] #mushafReader
+ .rc18-tajwid-ready.p192-meta-ready:not(.p192-native-top-head):not(.p918-original-special)
+ > .rc18TajwidLabels > .rc18TajwidJuz {
+ left:72.8% !important;
+ width:14.2% !important;
+ font-size:clamp(9px,2.45vw,12px) !important;
+ font-weight:700 !important;
+}
+html body.reader-active[data-v144-print="tajwid"] #mushafReader
+ .rc18-tajwid-ready.p192-meta-ready:not(.p192-native-top-head):not(.p918-original-special)
+ > .rc18TajwidLabels > .p192PageNumber {
+ left:13.3% !important;
+ width:14.2% !important;
+ font-size:clamp(9px,2.45vw,12px) !important;
+ font-weight:700 !important;
+}
+/* P190 remains unchanged on the genuine printed surah-opening page.
+ * The bottom-page number, Tajwid guide, 15 lines and P191 fit stay intact.
+ */

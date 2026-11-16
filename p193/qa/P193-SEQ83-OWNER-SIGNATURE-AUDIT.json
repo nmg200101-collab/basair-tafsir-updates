@@ -1,0 +1,21 @@
+{
+  "phase": "P193",
+  "branch": "fix/p193-authentic-green-mushaf-header-20261116",
+  "sourceHead": "bdccd9484ef13d214c1361ebf8028d029d3ea5b1",
+  "app": "V695",
+  "baseSequence": 81,
+  "releaseSequence": 83,
+  "rollbackSequence": 84,
+  "releaseSha256": "b7ab72cef8d70948e3ea627056a881e875f1d44a1ca6c468b044754220e1d821",
+  "rollbackSha256": "ab95dffe0469a4dadb549559349e5df45d006ae4d076ef40d2526b6e17485564",
+  "ownerApprovalEd25519": "signed-and-verified-against-app-pinned-public-key",
+  "envelopeRSA3072": "signed-and-verified-against-app-pinned-public-key",
+  "payloadSha256": "579fa4b77e16202b67d8478107199a7709719a83bb2dd2d410e839516e98a0ab",
+  "rollbackPayloadSha256": "d03498969c1b5b2562ce1947f8cb1fcc970181a5b1520d889f934da2ddba4bc4",
+  "releaseAssetCount": 42,
+  "releaseTilawaAssets": 16,
+  "baselineTafsirAssets": 26,
+  "rollbackTilawaAssets": 12,
+  "publication": "PENDING_QA050_FINAL_HEAD_AND_OWNER_MERGE",
+  "rollbackPublished": false
+}
