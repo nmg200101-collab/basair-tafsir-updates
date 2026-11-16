@@ -1,0 +1,71 @@
+{
+  "phase": "P183",
+  "date": "2026-11-16",
+  "status": "OWNER_SIGNED_RELEASE_BRANCH_AWAITING_QA050_PR",
+  "field_report": "P182 Seq61 field image: selecting the bottom font button from digital to printed caused 'previous style failed' and advanced to auto, while Tools print selection also failed.",
+  "root_cause": "RC18 tajwid requires a live .localPageStage and loaded local page image. Returning from digital must invoke RC19.setFont(original) and wait for the native stage before RC18.setPrint; P182 only skipped failure.",
+  "correction": "P183 unifies bottom dock & Tools clicks through one handler, waits up to 45 animation frames for native printed page, checks rc18-tajwid-ready & naturalWidth, retains native renderers and excludes QA050-disabled blue print.",
+  "release": {
+    "sequence": 63,
+    "channel": "owner-qa",
+    "mode": "automatic",
+    "applicationId": "app.basair.qurv2",
+    "minAppVersion": 694,
+    "ownerSignedManifest": "p183/P183-SEQ63-OWNER-SIGNED-AUTOMATIC.json",
+    "sha256": "c9140579ad13dcdc010f8521795db5fe6a7d7b3e5020930b95171878b151d05c",
+    "gitBlob": "dcf6c3c641cf3442e1804e169f1e968c3409e4ef",
+    "approvalExpires": "2026-11-20T08:42:23Z"
+  },
+  "checks": {
+    "sha256ModuleApproval": "PASS",
+    "ed25519SignedAgainstV695RuntimePublicKey": "PASS",
+    "rsa3072Pkcs1Sha256OriginalOwnerVerifiedAgainstApkPinnedKey": "PASS",
+    "exactSignedGitBlob": "PASS",
+    "javascriptSyntax": "PASS",
+    "ownerGuard": "PENDING PR",
+    "nativeV695WebViewField": "PENDING OWNER FIELD ACCEPTANCE",
+    "originalTafsirAssetsUntouched": 26,
+    "originalTilawaAssetsUntouched": 9,
+    "newAssets": 2
+  },
+  "currentBeforePublication": {
+    "signedSnapshot": "p182/P182-SEQ61-OWNER-SIGNED-BEFORE-P183.json",
+    "gitBlob": "091f90790d837e87aa89c3e7a8c9c6966efa9a51"
+  },
+  "newAssets": [
+    {
+      "path": "modules/tilawa/p183-tilawa-unified-font-print.css",
+      "kind": "css",
+      "size": 646,
+      "sha256": "0357ec4bb2f3bc21e85a2ff44023bf312f46b8d854f443103f23c1d6110efbc6",
+      "gitBlob": "b2cdbccc80b5d87193b2c0500656760cf14ac375"
+    },
+    {
+      "path": "modules/tilawa/p183-tilawa-unified-font-print.js",
+      "kind": "js",
+      "size": 7879,
+      "sha256": "abf04c3041657bd15391f3ccdd45511bc5baa8e8c6ce0efa3ed995e45bb5b5ba",
+      "gitBlob": "b4dd6b825efdd248731d856c954db14753359059"
+    }
+  ],
+  "qa050": {
+    "protectedScope": "tilawa only",
+    "noAPK": true,
+    "noP92SourceModification": true,
+    "printedBlueDisabled": true,
+    "originalEnginesUsed": true,
+    "originalNightAndFollowUntouched": true,
+    "edKeyDerivedFromV695PublicPin": true,
+    "legacyGithubGuardPublicKeyMayDiffer": true
+  },
+  "recovery": {
+    "seq": 64,
+    "version": 184,
+    "sha256": "1cefa8512b844b03863030cbed245382d4d121011c3be9542ee07bb271b7cc13",
+    "savedOffline": true,
+    "published": false,
+    "tilawaAssetsRestored": 9,
+    "tafsirAssetsPreserved": 26
+  },
+  "testLimits": "Visual/browser fixtures emulate RC18/RC19, while APK V694 contains 604 local Tajwid pages and the final RC18 uses their local path. Android V695 actual runtime and real page transitions still require owner's on-device test."
+}
