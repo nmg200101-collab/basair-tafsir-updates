@@ -1,0 +1,81 @@
+/* BASAIR P193 | Owner-directed green Mushaf header repair | QA-050.
+ * Restore the ORIGINAL approved-frame-v682.webp top ornament on printed
+ * Tajwid continuation pages. P190 masked this band, and P192 added capsules.
+ * A surah-opening page retains its QPC V4 printed surah head and the P190 mask.
+ * No Quran image, P191 fit, RC18/RC19, zoom, page height or other mode changes.
+ */
+html body.reader-active[data-v144-print="tajwid"] #mushafReader
+  .rc18-tajwid-ready.p192-meta-ready:not(.p192-native-top-head):not(.p918-original-special)
+  > .rc18TajwidOrnament {
+  -webkit-mask-image: none !important;
+  mask-image: none !important;
+}
+
+/* Keep existing labels on top of the restored original green-and-gold art. */
+html body.reader-active[data-v144-print="tajwid"] #mushafReader
+  .rc18-tajwid-ready.p192-meta-ready:not(.p192-native-top-head):not(.p918-original-special)
+  > .rc18TajwidLabels {
+  z-index: 10 !important;
+}
+
+/* Integrate the 3 fields into ONE original ornament: no separate capsules. */
+html body.reader-active[data-v144-print="tajwid"] #mushafReader
+  .rc18-tajwid-ready.p192-meta-ready:not(.p192-native-top-head):not(.p918-original-special)
+  > .rc18TajwidLabels > .rc18TajwidSurah,
+html body.reader-active[data-v144-print="tajwid"] #mushafReader
+  .rc18-tajwid-ready.p192-meta-ready:not(.p192-native-top-head):not(.p918-original-special)
+  > .rc18TajwidLabels > .rc18TajwidJuz,
+html body.reader-active[data-v144-print="tajwid"] #mushafReader
+  .rc18-tajwid-ready.p192-meta-ready:not(.p192-native-top-head):not(.p918-original-special)
+  > .rc18TajwidLabels > .p192PageNumber {
+  display: flex !important;
+  position: absolute !important;
+  top: 1.75% !important;
+  height: 2.8% !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  padding: 0 2px !important;
+  box-sizing: border-box !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  pointer-events: none !important;
+  direction: rtl !important;
+  color: #f9f2d5 !important;
+  text-shadow: 0 1px 1px rgba(7,45,32,.92), 0 0 2px rgba(7,45,32,.58) !important;
+  transform: none !important;
+  transition: none !important;
+  animation: none !important;
+}
+html body.reader-active[data-v144-print="tajwid"] #mushafReader
+  .rc18-tajwid-ready.p192-meta-ready:not(.p192-native-top-head):not(.p918-original-special)
+  > .rc18TajwidLabels > .rc18TajwidSurah {
+  left: 25.3% !important;
+  width: 49.4% !important;
+  font-size: clamp(10px,3.15vw,15px) !important;
+  font-weight: 800 !important;
+}
+html body.reader-active[data-v144-print="tajwid"] #mushafReader
+  .rc18-tajwid-ready.p192-meta-ready:not(.p192-native-top-head):not(.p918-original-special)
+  > .rc18TajwidLabels > .rc18TajwidJuz {
+  left: 77.5% !important;
+  width: 15.5% !important;
+  font-size: clamp(9px,2.45vw,12px) !important;
+  font-weight: 700 !important;
+}
+html body.reader-active[data-v144-print="tajwid"] #mushafReader
+  .rc18-tajwid-ready.p192-meta-ready:not(.p192-native-top-head):not(.p918-original-special)
+  > .rc18TajwidLabels > .p192PageNumber {
+  left: 7% !important;
+  width: 15.5% !important;
+  font-size: clamp(9px,2.45vw,12px) !important;
+  font-weight: 700 !important;
+}
+/* Surah-opening pages are purposely excluded by :not(.p192-native-top-head).
+ * Keep the bottom page number, Tajwid legend, all 15 ayahs/lines and P191 fit.
+ */
