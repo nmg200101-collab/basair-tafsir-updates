@@ -41,7 +41,7 @@
  async function prepare(){
   var f=F();if(!f||typeof f.setFont!=='function')return false;
   if(await Promise.resolve(f.setFont('original',false))===false)return false;
-  for(var n=0;n<8;n++){var i=pageImage();if(i&&i.closest('.localPageStage,.continuousImagePage')?.isConnected)return true;await frame()}
+  for(var n=0;n<45;n++){var i=pageImage();if(i&&i.closest('.localPageStage,.continuousImagePage')?.isConnected)return true;await frame()}
   return false;
  }
  function readyColor(){var st=pageImage()?.closest('.localPageStage,.continuousImagePage');if(!st)return false;var im=st.querySelector('.rc18TajwidRaster');return !!(st.classList.contains('rc18-tajwid-ready')&&im&&im.complete&&im.naturalWidth>0)}
