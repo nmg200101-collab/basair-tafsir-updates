@@ -6,7 +6,6 @@
  * ornamental strip above the text, cloned by P193 JS from the live frame.
  * Do not rescale Quran raster, add margins or alter other prints.
  */
-# ص٦ {display:none}
 /* Inactive or non-Tajwid modes: no cloned ornament. */
 #mushafReader img.p193AuthenticTop {display:none !important;}
 html body.reader-active[data-v144-print="tajwid"] #mushafReader

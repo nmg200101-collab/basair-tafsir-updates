@@ -1,7 +1,7 @@
 {
   "stage": "P193",
   "candidate": "P193-SEQ83-GREEN-MUSHAF-HEADER",
-  "status": "SOURCE_QA_PASS_UNSIGNED_NOT_PUBLISHED",
+  "status": "SOURCE_QA_FOCUSED_PASS_UNSIGNED_NOT_PUBLISHED",
   "applicationId": "app.basair.qurv2",
   "appVersion": "V695",
   "baseline": {
@@ -17,26 +17,35 @@
     "tilawaVersion": 201,
     "deliveryMode": "automatic",
     "channel": "owner-qa",
-    "newAsset": {
-      "path": "modules/tilawa/p193-authentic-green-mushaf-header.css",
-      "kind": "css",
-      "size": 3799,
-      "sha256": "006b93e1526678a251ce0930ba6771621bc87d91dc4bf7aae1185c7d2672d13d",
-      "blobSha": "dcd3112262f4fe37f4452be47e945ed62a2d303f"
-    }
+    "newAssets": [
+      {
+        "path": "modules/tilawa/p193-authentic-green-mushaf-header.css",
+        "kind": "css",
+        "size": 4192,
+        "sha256": "38eb98f15546c9d84d2828ae0381fb1538b862b711f657d19f2f1d3acbd7a45c"
+      },
+      {
+        "path": "modules/tilawa/p193-authentic-green-mushaf-header.js",
+        "kind": "js",
+        "size": 2065,
+        "sha256": "13212c633c0d03a488d2bc4499122ff136c0adb390d5136f19bf4c2251e3dd48"
+      }
+    ]
   },
   "proof": {
     "originalOverlay": "assets/www/assets/tajweed-pages/approved-frame-v682.webp",
     "dimensions": "720x1280",
     "topMiddle": "opaque ivory center — deep green text",
     "sideBadges": "opaque dark green — ivory text",
-    "firstVerseArea": "transparent",
+    "firstVerseArea": "source-raster composite shows no overlap",
     "pixelAssertions": "4/4 PASS",
     "ownerRSA3072PublicMatchesV694Pin": true,
     "protectedOwnerEd25519Signature": "NOT_SIGNED",
     "otaRSA3072Envelope": "NOT_SIGNED",
     "androidOwnerDevice": "NOT_YET_FIELD_TESTED",
-    "qa050": "PASS earlier on source branch before latest cosmetic correction; must re-run on final head"
+    "qa050": "RUN ON FINAL HEAD BEFORE ANY MERGE OR SIGNED PUBLICATION",
+    "fullSizeHeaderOverlapsFirstAyah": true,
+    "correction": "clipped top ornament clone (scaleY .65) in original 720x1280 page, preserves P191"
   },
   "safety": {
     "activeManifestUnchanged": true,
