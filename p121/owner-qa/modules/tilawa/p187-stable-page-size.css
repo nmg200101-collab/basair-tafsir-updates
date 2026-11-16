@@ -1,0 +1,14 @@
+/* P187 — replace the old bottom night slot with the original page-size tool.
+ * Night theme remains available in the application's native top header.
+ */
+body.reader-active.p187-size-ready #mushafDock #dockNight {display:none!important;}
+body.reader-active.p187-size-ready #mushafDock #p187DockSize {
+ display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;
+ gap:1px!important;min-width:0!important;max-width:100%!important;
+ padding:1px!important;margin:0!important;border:0!important;border-radius:8px!important;
+ background:transparent!important;box-shadow:none!important;color:inherit!important;
+ font:inherit!important;font-weight:700!important;
+}
+body.reader-active #p187DockSize span {font-size:1.08rem!important;line-height:1!important;}
+body.reader-active #p187DockSize small {font-size:.56rem!important;line-height:1.1!important;white-space:nowrap!important;}
+body.reader-active #p187DockSize:focus-visible {outline:2px solid #b99d65!important;outline-offset:1px!important;}
