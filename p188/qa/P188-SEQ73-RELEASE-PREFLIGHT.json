@@ -1,0 +1,70 @@
+{
+  "phase": "P188",
+  "date": "2026-11-16",
+  "ownerRequest": "Keep P187 button and Tools layout, short tap 100/110/120/100, long press existing native Tools showing fonts and percentages, direct original/colored print selection without separate font button.",
+  "status": "SIGNED_SEQ73_BRANCH_AWAITING_QA050",
+  "release": {
+    "sequence": 73,
+    "channel": "owner-qa",
+    "mode": "automatic",
+    "applicationId": "app.basair.qurv2",
+    "tilawaVersion": 192,
+    "manifest": "p188/P188-SEQ73-OWNER-SIGNED-AUTO.json",
+    "sha256": "9a1a65a5d92709e52e590b96e9eb4843dbb10ebc0856c1771873d65f0a631a0f",
+    "gitBlob": "321935a347181717cb02ff90867b148d15da7080",
+    "approvalExpires": "2026-11-20T14:20:37Z"
+  },
+  "baseline": {
+    "seq": 71,
+    "gitBlob": "ed5fd186414f44d666495c0322a4ca542abed43f",
+    "archived": "p187/P187-SEQ71-OWNER-SIGNED-BEFORE-P188.json",
+    "tafsirAssets": 26,
+    "tilawaAssets": 8
+  },
+  "preservation": {
+    "tafsirUnchanged": true,
+    "previousTilawaAssetsUnchanged": true,
+    "excludedPriorRegressionP181ToP186": true,
+    "newTilawaAssets": 2,
+    "totalTilawaAssets": 10,
+    "noAPK": true,
+    "noPageEngineModification": true,
+    "disabledBluePrintStillBlocked": true
+  },
+  "additions": [
+    {
+      "path": "modules/tilawa/p188-stable-size-direct-print.css",
+      "size": 591,
+      "sha256": "717802d142380837224029fce1b763cd462cd9e9de571ce5ce2fa8230e1eedf1",
+      "gitBlob": "74f2416a1481511b47cb8d36814b44351bb38873"
+    },
+    {
+      "path": "modules/tilawa/p188-stable-size-direct-print.js",
+      "size": 8654,
+      "sha256": "78174d46fd84ad6963b8fe4e9b38de4368f67b9c75e5d55b4bda36f236d7b798",
+      "gitBlob": "ac23b6e46e820562941a81163e78a72904546ced"
+    }
+  ],
+  "signatures": {
+    "rsa3072Owner": "PASS - original key pinned in reference APK",
+    "ed25519Owner": "PASS - original owner key matching V695 pin",
+    "protectedModuleSHA": "f7c44fd374397fe9ef2c971c2268d3ea160249e87abb72655415cb5bceb77773",
+    "signedEnvelopeExact": "PASS - Git blob matched local signed artifact",
+    "privateKeysCommitted": false
+  },
+  "tests": {
+    "nodeCheck": "PASS",
+    "chromiumMock": "4/4 320/390/430/768 PASS (size cycle, long-press, direct printed original and colored, excluded blue, failure restore)",
+    "androidV695": "NOT RUN - requires owner device acceptance"
+  },
+  "rollback": {
+    "sequence": 74,
+    "version": 193,
+    "sha256": "4f248ed67a479d562567e0766840ce736748fb2f0ea02d56ac5df150069549f3",
+    "gitBlob": "3235d341fbd4b7600ba34c480a814cfa60ed31b9",
+    "signedOffline": true,
+    "published": false,
+    "restoreExactP187": true
+  },
+  "notes": "Only the server manifest is proposed here. Do not claim printed editions visibly work on actual V695 before the owner's test."
+}
