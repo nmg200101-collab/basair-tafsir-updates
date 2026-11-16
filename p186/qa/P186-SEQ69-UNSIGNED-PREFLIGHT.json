@@ -1,0 +1,76 @@
+{
+  "phase": "P186",
+  "date": "2026-11-16",
+  "status": "SIGNED_SEQ69_AWAITING_QA050_MERGE",
+  "sourcePR": 128,
+  "activeBeforeSigning": {
+    "sequence": 67,
+    "channel": "owner-qa",
+    "manifestGitBlob": "541b52e228b72c5e8e940811232f0dfe13f6312c",
+    "envelopeSHA256": "b733b74ebdb6309ebcbebf30be9bc14cb390764be74c2a2d0a3a2f3e14e9beb4",
+    "tilawaAssets": 13,
+    "tafsirAssets": 26
+  },
+  "candidate": {
+    "sequence": 69,
+    "tilawaVersion": 188,
+    "assetCount": 15,
+    "tafsirVersion": 51,
+    "tafsirAssetCount": 26,
+    "modulesSha256": "60f877fcd962f638b5de67036b095fcc145b754f952a6de20d977174096ba69b",
+    "signed": true,
+    "activate": true,
+    "manifestPath": "p186/P186-SEQ69-OWNER-SIGNED-AUTOMATIC.json",
+    "gitBlob": "f34da9c4f9b84338242beb138b5a7d09637f48e2",
+    "sha256": "bc13e0025879f3c6cd125cb8968619db8a313df43fe92bdfb2e91d346906d2e7"
+  },
+  "recovery": {
+    "sequence": 70,
+    "tilawaVersion": 189,
+    "restoresActiveSeq67Assets": true,
+    "signed": true,
+    "published": false,
+    "sha256": "6aede0cc28201c7c423d8c280677526edbcc1884059cbee39a611ea22a991c49"
+  },
+  "newAssets": [
+    {
+      "path": "modules/tilawa/p186-picker-touch.css",
+      "size": 628,
+      "sha256": "840d5d26b8a50721508d34ace6997a9c751fccb4936454e45d4721075c2528ad",
+      "gitBlob": "41275cc60cf770d1e3de450a916aaa5859394f10"
+    },
+    {
+      "path": "modules/tilawa/p186-native-print-selection.js",
+      "size": 7386,
+      "sha256": "6dfa9a623974fec99b2b9b30cea186fd83fc5f708cfe9f1dda4b75ff1a5824f2",
+      "gitBlob": "c2cc6f97e251083a42573506c2df9a284279f8aa"
+    }
+  ],
+  "tests": {
+    "nodeSyntax": "PASS",
+    "chromiumMock": "4/4 viewports (320,390,430,768) PASS; complete + fail-safe paths",
+    "referenceApkVerifier": "RSA/Ed P185 baseline PASS",
+    "actualAndroidV695": "NOT TESTED",
+    "newSignedCandidateVerified": "PASS",
+    "rollbackSignedCandidateVerified": "PASS"
+  },
+  "signing": {
+    "status": "PASS_NEW_ED25519_AND_RSA3072_VERIFIED",
+    "edKeyEncrypted": true,
+    "edOwnerSecretInGitHub": false,
+    "doNotReuseOldSignature": true,
+    "ownerAction": "No reupload or manual password entry needed; existing separate passphrase file successfully unlocked encrypted Ed25519 key without disclosing secret",
+    "signerSHA256": "e6ab19810403e39a29806a7f0838ea7d9b27a5c14ed8da626494e09b282d4f63",
+    "originalEncryptedOwnerMaterialsReused": true,
+    "edOwnerMatchesV695Runtime": true,
+    "rsaOwnerMatchesPinnedApk": true,
+    "privateKeysInRepository": false
+  },
+  "lock": {
+    "qa050": true,
+    "printedBlueModeDisabled": true,
+    "noApk": true,
+    "noOriginalPageMutation": true
+  },
+  "warning": "Signed Seq69 is staged ONLY in PR branch. Live owner-qa stays Seq67 until QA050 passes and PR is merged. Seq70 is offline only; on-device QA still required."
+}
