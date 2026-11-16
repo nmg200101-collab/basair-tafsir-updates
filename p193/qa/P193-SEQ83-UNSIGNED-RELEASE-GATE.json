@@ -1,0 +1,49 @@
+{
+  "stage": "P193",
+  "candidate": "P193-SEQ83-GREEN-MUSHAF-HEADER",
+  "status": "SOURCE_QA_PASS_UNSIGNED_NOT_PUBLISHED",
+  "applicationId": "app.basair.qurv2",
+  "appVersion": "V695",
+  "baseline": {
+    "sequence": 81,
+    "tilawaVersion": 200,
+    "tafsirVersion": 51,
+    "tilawaAssets": 14,
+    "tafsirAssets": 26,
+    "baselineCommit": "d8c0c110e5117b2721568233597c30bce8086fa7"
+  },
+  "proposed": {
+    "sequence": 83,
+    "tilawaVersion": 201,
+    "deliveryMode": "automatic",
+    "channel": "owner-qa",
+    "newAsset": {
+      "path": "modules/tilawa/p193-authentic-green-mushaf-header.css",
+      "kind": "css",
+      "size": 3799,
+      "sha256": "006b93e1526678a251ce0930ba6771621bc87d91dc4bf7aae1185c7d2672d13d",
+      "blobSha": "dcd3112262f4fe37f4452be47e945ed62a2d303f"
+    }
+  },
+  "proof": {
+    "originalOverlay": "assets/www/assets/tajweed-pages/approved-frame-v682.webp",
+    "dimensions": "720x1280",
+    "topMiddle": "opaque ivory center — deep green text",
+    "sideBadges": "opaque dark green — ivory text",
+    "firstVerseArea": "transparent",
+    "pixelAssertions": "4/4 PASS",
+    "ownerRSA3072PublicMatchesV694Pin": true,
+    "protectedOwnerEd25519Signature": "NOT_SIGNED",
+    "otaRSA3072Envelope": "NOT_SIGNED",
+    "androidOwnerDevice": "NOT_YET_FIELD_TESTED",
+    "qa050": "PASS earlier on source branch before latest cosmetic correction; must re-run on final head"
+  },
+  "safety": {
+    "activeManifestUnchanged": true,
+    "noAPK": true,
+    "noUnapprovedTilawaChange": true,
+    "signedRollbackSeq82": "locally saved, not published",
+    "prohibitPublishUntilSigned": true
+  },
+  "nextAction": "Sign actual canonical modules JSON using owner Ed25519 and sign envelope bytes with original RSA-3072, verify in APK V695 and merge only when QA050 PASS on final head"
+}
