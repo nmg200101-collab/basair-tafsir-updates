@@ -1,0 +1,34 @@
+/* BASAIR P190 | QA-050 | One authentic surah heading for the printed Tajwid edition.
+ * The approved QPC V4 colored page already contains the original surah ornament.
+ * Preserve the existing page border, bottom page number and tajwid color legend;
+ * mask only the redundant added green title band of the transparent overlay.
+ * The original/standard and digital editions are not modified.
+ */
+html body.reader-active[data-v144-print="tajwid"] #mushafReader
+  .rc18-tajwid-ready:not(.p918-original-special) > .rc18TajwidOrnament {
+  -webkit-mask-image:
+    linear-gradient(#000 0 0),
+    linear-gradient(#000 0 0),
+    linear-gradient(#000 0 0),
+    linear-gradient(#000 0 0) !important;
+  -webkit-mask-size: 100% 1.5%, 4% 10.5%, 4% 10.5%, 100% 89.5% !important;
+  -webkit-mask-position: left top, left top, right top, left bottom !important;
+  -webkit-mask-repeat: no-repeat !important;
+  mask-image:
+    linear-gradient(#000 0 0),
+    linear-gradient(#000 0 0),
+    linear-gradient(#000 0 0),
+    linear-gradient(#000 0 0) !important;
+  mask-size: 100% 1.5%, 4% 10.5%, 4% 10.5%, 100% 89.5% !important;
+  mask-position: left top, left top, right top, left bottom !important;
+  mask-repeat: no-repeat !important;
+}
+/* Hide the added surah/juz/ayah-range labels only. Keep the bottom page number. */
+html body.reader-active[data-v144-print="tajwid"] #mushafReader
+  .rc18-tajwid-ready .rc18TajwidLabels > .rc18TajwidSurah,
+html body.reader-active[data-v144-print="tajwid"] #mushafReader
+  .rc18-tajwid-ready .rc18TajwidLabels > .rc18TajwidJuz,
+html body.reader-active[data-v144-print="tajwid"] #mushafReader
+  .rc18-tajwid-ready .rc18TajwidLabels > .rc18TajwidRange {
+  display: none !important;
+}
