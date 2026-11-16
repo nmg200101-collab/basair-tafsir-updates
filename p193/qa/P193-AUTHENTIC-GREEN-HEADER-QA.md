@@ -33,3 +33,12 @@ until a NEW valid owner-signed sequence is issued. Do not merge/publish an
 unsigned manifest, do not generate a new APK, and retain signed Seq82 rollback
 restoring P191/Seq79.
 Next independent phase: P194 optional 3D page-turn effect.
+
+## Direct source-raster inspection (V694 original owner-signed APK; read-only)
+- Extracted the original 720×1280 approved-frame-v682.webp, tajweed-050.webp and tajweed-051.webp for focused visual geometry checks; no APK was rebuilt.
+- At x=360,y≈62, center background is opaque ivory; surah text must be deep green #164b36, not ivory.
+- At x≈147 and x≈575,y≈62, background is opaque green; both side labels remain ivory.
+- At x=360,y≈173 the frame is transparent; first ayah area is not blocked.
+- CSS label group now spans top 3.05% / height 3.65%, center x28.5–71.5%, right x72.8–87%, left x13.3–27.5%; coordinates are based on actual frame geometry, not guessed pill positions.
+- Focused pixel assertions: center background PASS, left label backdrop PASS, right label backdrop PASS, first-ayah transparency PASS.
+- Device QA and release signing are STILL PENDING; no claim of Android acceptance or OTA activation.
