@@ -1,0 +1,56 @@
+{
+  "stage": "P194",
+  "date": "2026-11-17",
+  "branch": "feature/p194-3d-paper-turn-owner-qa-20261117",
+  "appVersion": "V695",
+  "protectedBaseline": {
+    "sequence": 83,
+    "ownerAccepted": true,
+    "gitBlob": "21da8bd46a01898f6a0eade6f196871c5b3715d7"
+  },
+  "publishedCandidate": {
+    "sequence": 85,
+    "tilawaVersion": 203,
+    "tilawaAssetCount": 18,
+    "tafsirAssetCount": 26,
+    "assetAdded": [
+      {
+        "path": "modules/tilawa/p194-paper-turn.css",
+        "kind": "css",
+        "size": 3908,
+        "sha256": "caa5fa68804bcbfe7d81d065d71edc0d43519b5a5d4005046f9ba95250b37dca"
+      },
+      {
+        "path": "modules/tilawa/p194-paper-turn.js",
+        "kind": "js",
+        "size": 5833,
+        "sha256": "b50e8fcbfc9022a7f83f0b7e17f3ddc89cd5541dd67f512fe0664864cfba7734"
+      }
+    ],
+    "ownerEd25519": "SIGNED_VERIFIED",
+    "envelopeRSA3072": "SIGNED_VERIFIED",
+    "payloadSHA256": "bdef37e558380847386a7b495f3af0a5872e3670d34d19d69e7795f35a2db4ec",
+    "envelopeSHA256": "e13c578220c0e854497de838f354cc070e5497f98bd3b23db887b7c5f8721966"
+  },
+  "rollbackCandidate": {
+    "sequence": 86,
+    "tilawaVersion": 204,
+    "tilawaAssetCount": 16,
+    "ownerEd25519": "SIGNED_VERIFIED",
+    "envelopeRSA3072": "SIGNED_VERIFIED",
+    "payloadSHA256": "589556a519a0e81bae48a82470522f741f13aacc124f186c8d4643313b9d3760",
+    "envelopeSHA256": "3ec1e30a4d418cfd918bc65ef1adef695066873a85c03a8e43e00965bbc03710",
+    "published": false
+  },
+  "tests": {
+    "chromium": "10/10",
+    "qa050": "REQUIRES_FINAL_HEAD_CHECK",
+    "androidOwnerAcceptance": "PENDING"
+  },
+  "deployment": {
+    "channel": "owner-qa",
+    "deliveryMode": "automatic",
+    "apkIssued": false,
+    "mergeRequired": true
+  }
+}

@@ -1,0 +1,108 @@
+/* BASAIR P194 | QA-050 | CSS-only paper curl on a disposable snapshot.
+   Never animate/transform the live Quran stage or the P193 authentic header. */
+body.reader-active #mushafReader > .p194TurnOverlay {
+  position: fixed !important;
+  z-index: 34 !important;
+  overflow: hidden !important;
+  pointer-events: none !important;
+  user-select: none !important;
+  -webkit-user-select: none !important;
+  contain: layout paint style !important;
+  perspective: 1150px !important;
+  transform: translateZ(0) !important;
+  background: transparent !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  box-shadow: none !important;
+}
+body.reader-active #mushafReader > .p194TurnOverlay > .p194TurnLeaf.localPageStage {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  margin: 0 !important;
+  pointer-events: none !important;
+  transform-style: preserve-3d !important;
+  backface-visibility: hidden !important;
+  -webkit-backface-visibility: hidden !important;
+  transition: none !important;
+  animation: none !important;
+  will-change: transform, opacity;
+}
+body.reader-active #mushafReader > .p194TurnOverlay.p194Forward > .p194TurnLeaf {
+  transform-origin: right center !important;
+}
+body.reader-active #mushafReader > .p194TurnOverlay.p194Backward > .p194TurnLeaf {
+  transform-origin: left center !important;
+}
+body.reader-active #mushafReader > .p194TurnOverlay.p194Animate.p194Forward > .p194TurnLeaf {
+  animation: p194PageForward 440ms cubic-bezier(.33,.08,.23,.95) both !important;
+}
+body.reader-active #mushafReader > .p194TurnOverlay.p194Animate.p194Backward > .p194TurnLeaf {
+  animation: p194PageBackward 440ms cubic-bezier(.33,.08,.23,.95) both !important;
+}
+body.reader-active #mushafReader > .p194TurnOverlay > .p194TurnLeaf::after {
+  content: '' !important;
+  display: block !important;
+  position: absolute !important;
+  z-index: 80 !important;
+  inset: 0 !important;
+  pointer-events: none !important;
+  background: linear-gradient(90deg, rgba(4,31,22,.19), transparent 30%, transparent 68%, rgba(4,31,22,.22)) !important;
+  opacity: 0 !important;
+}
+body.reader-active #mushafReader > .p194TurnOverlay.p194Animate > .p194TurnLeaf::after {
+  animation: p194PaperShade 440ms ease-out both !important;
+}
+@keyframes p194PageForward {
+  0%   {transform: rotateY(0deg);opacity: 1;}
+  38%  {transform: rotateY(29deg);opacity: 1;}
+  78%  {transform: rotateY(78deg);opacity: .95;}
+  100% {transform: rotateY(104deg);opacity: 0;}
+}
+@keyframes p194PageBackward {
+  0%   {transform: rotateY(0deg);opacity: 1;}
+  38%  {transform: rotateY(-29deg);opacity: 1;}
+  78%  {transform: rotateY(-78deg);opacity: .95;}
+  100% {transform: rotateY(-104deg);opacity: 0;}
+}
+@keyframes p194PaperShade {
+  0% {opacity: 0;}
+  45% {opacity: .28;}
+  85% {opacity: .45;}
+  100% {opacity: 0;}
+}
+/* A small opt-out in the existing page tools, not in the stable bottom dock. */
+#v140FontPane > .p194SettingsRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
+  box-sizing: border-box;
+  margin-top: 10px;
+  padding: 8px 10px;
+  border: 1px solid rgba(155,137,91,.52);
+  border-radius: 11px;
+  background: rgba(38,99,77,.10);
+  color: inherit;
+}
+#v140FontPane > .p194SettingsRow > span {font-size: .80rem;font-weight: 700;}
+#v140FontPane #p194PaperSwitch {
+  border: 1px solid #a7b6aa;
+  background: #215c49;
+  color: #fff;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: .75rem;
+  font-weight: 800;
+  min-height: 33px;
+  min-width: 65px;
+}
+#v140FontPane #p194PaperSwitch[aria-pressed="false"] {background: #5c625f;}
+#v140FontPane #p194PaperSwitch:focus-visible {outline: 2px solid #d1ae71;outline-offset: 2px;}
+@media (prefers-reduced-motion: reduce) {
+  body.reader-active #mushafReader > .p194TurnOverlay {display: none !important;}
+}
