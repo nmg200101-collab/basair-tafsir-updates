@@ -1,0 +1,18 @@
+/* QA-050: prevent Android text-selection menu on long-press picker.
+   Do not change the actual Quran page's text selection behavior. */
+#p185FontButton, #p185FontButton *,
+#p185FontPicker, #p185FontPicker *,
+#p185ToolsPicker, #p185ToolsPicker * {
+  -webkit-user-select: none !important;
+  user-select: none !important;
+  -webkit-touch-callout: none !important;
+}
+#p185FontPicker button, #p185ToolsPicker button {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+#p185FontPicker [data-p185-mode].p185On,
+#p185ToolsPicker [data-p185-mode].p185On {
+  outline: 2px solid #218466;
+  outline-offset: 0;
+}
