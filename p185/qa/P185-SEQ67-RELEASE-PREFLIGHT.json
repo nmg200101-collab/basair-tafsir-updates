@@ -1,0 +1,80 @@
+{
+  "phase": "P185",
+  "date": "2026-11-16",
+  "status": "SIGNED_SEQ67_BRANCH_AWAITING_QA050_CHECK",
+  "userRequirement": "Single tap switches one font/print style; long press shows all choices; compact font control remains at original dock location.",
+  "origin": "P184 rejected by owner; active Seq66 restores P183 assets and must be preserved",
+  "release": {
+    "path": "p185/P185-SEQ67-OWNER-SIGNED-AUTOMATIC.json",
+    "channel": "owner-qa",
+    "sequence": 67,
+    "deliveryMode": "automatic",
+    "appId": "app.basair.qurv2",
+    "minAppVersion": 694,
+    "sha256": "b733b74ebdb6309ebcbebf30be9bc14cb390764be74c2a2d0a3a2f3e14e9beb4",
+    "gitBlob": "541b52e228b72c5e8e940811232f0dfe13f6312c",
+    "approvalExpires": "2026-11-20T10:42:23Z"
+  },
+  "previous": {
+    "sequence": 66,
+    "source": "p184/P184-SEQ66-OWNER-SIGNED-BEFORE-P185.json",
+    "gitBlob": "cda81c33f05f0b240d961b85a6dacaf506432077",
+    "tilawaAssets": 11,
+    "tafsirAssets": 26
+  },
+  "changes": {
+    "tilawaVersion": 186,
+    "tilawaAssets": 13,
+    "tafsirVersion": 51,
+    "tafsirAssets": 26,
+    "oldAssetBytesUnchanged": true,
+    "assets": [
+      {
+        "path": "modules/tilawa/p185-font-cycle.css",
+        "size": 3714,
+        "sha256": "a5ff6e8e287171d0137216990932e2b9f8c20182d4ecd705fe6fd9f2b642ddc4",
+        "gitBlob": "6c0ab5ab3d4876f4a0fd0a8c0e7429dbbac16a53"
+      },
+      {
+        "path": "modules/tilawa/p185-font-cycle.js",
+        "size": 13810,
+        "sha256": "38b2136087ed60d1b33c32cf569b1a0b01f7d8127eb20dd2487e79291b5f6e87",
+        "gitBlob": "80e1f807a672e3dc2936bf41155996a93e6ec209"
+      }
+    ]
+  },
+  "qa050": {
+    "nativeRC18AndRC19Untouched": true,
+    "disabledPrintedBlueStillExcluded": true,
+    "nightIndexAudioTafsirUntouched": true,
+    "p181ButtonHiddenButKeptForOldListeners": true,
+    "oneNewButton": true,
+    "originalRsa3072": "PASS against APK pinned verifier",
+    "v695OwnerEd25519": "PASS against APK owner key",
+    "moduleCanonicalHash": "PASS",
+    "noPrivateCredentialsInRepo": true
+  },
+  "tests": {
+    "nodeCheck": "PASS",
+    "chromiumSizes": [
+      320,
+      390,
+      430,
+      768
+    ],
+    "shortPress": "PASS in mock DOM",
+    "longPress460ms": "PASS in mock DOM",
+    "options9": "PASS in mock DOM",
+    "directToolsPicker": "PASS in mock DOM",
+    "unavailableColorRestoresAndAdvances": "PASS in mock DOM",
+    "actualAndroidWebViewV695": "NOT RUN; requires owner field test"
+  },
+  "rollback": {
+    "sequence": 68,
+    "restoreSeq66Assets": true,
+    "signedOffline": true,
+    "notPublished": true,
+    "sha256": "f9f6b6d3480978dec79f0132ad10a61bbaac4c13ef43e5302cd265485d122b7c"
+  },
+  "notes": "Do not claim printed original/colored images work on installed V695 until real device confirms. Owner previously rejected P184; native print visibility is deliberately not manipulated by CSS here. If field fails, rollback Seq68 to previous approved asset set."
+}
