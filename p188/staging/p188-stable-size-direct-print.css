@@ -1,0 +1,13 @@
+/* BASAIR P188: minimal enhancements only; preserve P187 bottom size button and native Tools layout. */
+body.reader-active #p187DockSize,
+body.reader-active #p187DockSize *{
+  -webkit-user-select:none!important;
+  user-select:none!important;
+  -webkit-touch-callout:none!important;
+}
+body.reader-active #p187DockSize{touch-action:pan-y!important;-webkit-tap-highlight-color:transparent!important;}
+body.reader-active #ayahSideRail .p188PrintSelected,
+body.reader-active #v140FontPane .p188PrintSelected{
+  outline:2px solid var(--green,#267359)!important;
+  outline-offset:-2px!important;
+}
