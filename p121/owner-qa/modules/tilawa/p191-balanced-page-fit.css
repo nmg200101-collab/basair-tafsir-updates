@@ -1,0 +1,17 @@
+/* BASAIR P191 | QA-050 | balanced Tajwid text fit, no Quran asset edits.
+ * The 720x1280 colored page artwork carries 15 printed lines within
+ * stable 165..1088 intrinsic Y bounds; the legacy top banner was removed
+ * in P190, exposing the original unused margins. Move and expand only
+ * its *vertical* viewport to keep all ink within the frame/guide limits.
+ * The source, line order, width, original surah ornament, side frame,
+ * footer/page-number, and guide are untouched. No effect on other modes.
+ */
+html body[data-v144-print="tajwid"].reader-active:not(.stableDigital):not(.h25-hifz):not(.h90-review):not(.h100-teacher)
+#mushafReader .localPageStage.rc18-tajwid-ready:not(.p918-original-special) > img.rc18TajwidRaster,
+html body[data-v144-print="tajwid"].reader-active:not(.stableDigital):not(.h25-hifz):not(.h90-review):not(.h100-teacher)
+#mushafReader .continuousImagePage.rc18-tajwid-ready:not(.p918-original-special) > img.rc18TajwidRaster {
+  transform: translateY(-2.5%) scaleY(1.13) !important;
+  transform-origin: center center !important;
+  transition: none !important;
+  animation: none !important;
+}
