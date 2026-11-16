@@ -1,0 +1,79 @@
+/* BASAIR P192 — owner QA-050: one heading per printed Tajwid page.
+ * Continuation pages: a slim page-information ornament within the existing
+ * upper frame clearance. New-surah pages: keep the SURAH HEADING PRINTED IN
+ * THE RASTER as the sole heading. Do not change the 15 printed Quran lines,
+ * P191 vertical fit, side frame, bottom page number or Tajwid legend.
+ */
+html body.reader-active[data-v144-print="tajwid"] #mushafReader
+  .rc18-tajwid-ready.p192-meta-ready:not(.p192-native-top-head):not(.p918-original-special)
+  > .rc18TajwidLabels > .rc18TajwidSurah,
+html body.reader-active[data-v144-print="tajwid"] #mushafReader
+  .rc18-tajwid-ready.p192-meta-ready:not(.p192-native-top-head):not(.p918-original-special)
+  > .rc18TajwidLabels > .rc18TajwidJuz {
+  display: flex !important;
+  position: absolute !important;
+  top: 1.75% !important;
+  height: 2.8% !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  padding: 0 3px !important;
+  box-sizing: border-box !important;
+  align-items: center !important;
+  justify-content: center !important;
+  overflow: hidden !important;
+  white-space: nowrap !important;
+  background: rgba(250,247,235,.97) !important;
+  border: 1px solid #c7ab6c !important;
+  border-radius: 999px !important;
+  color: #1d5946 !important;
+  text-shadow: none !important;
+  pointer-events: none !important;
+  box-shadow: 0 0 0 1px rgba(255,255,255,.65) inset !important;
+}
+html body.reader-active[data-v144-print="tajwid"] #mushafReader
+  .rc18-tajwid-ready.p192-meta-ready:not(.p192-native-top-head):not(.p918-original-special)
+  > .rc18TajwidLabels > .rc18TajwidSurah {
+  left: 25.3% !important;
+  width: 49.4% !important;
+  font-size: clamp(10px,3.15vw,15px) !important;
+  font-weight: 800 !important;
+}
+html body.reader-active[data-v144-print="tajwid"] #mushafReader
+  .rc18-tajwid-ready.p192-meta-ready:not(.p192-native-top-head):not(.p918-original-special)
+  > .rc18TajwidLabels > .rc18TajwidJuz {
+  left: 77.5% !important;
+  width: 15.5% !important;
+  font-size: clamp(9px,2.45vw,12px) !important;
+  font-weight: 700 !important;
+}
+html body.reader-active[data-v144-print="tajwid"] #mushafReader
+  .rc18-tajwid-ready.p192-meta-ready:not(.p192-native-top-head):not(.p918-original-special)
+  > .rc18TajwidLabels > .p192PageNumber {
+  position: absolute !important;
+  top: 1.75% !important;
+  left: 7.0% !important;
+  width: 15.5% !important;
+  height: 2.8% !important;
+  margin: 0 !important;
+  padding: 0 3px !important;
+  box-sizing: border-box !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-family: 'Noto Naskh Arabic','Amiri','Traditional Arabic',serif !important;
+  font-size: clamp(9px,2.45vw,12px) !important;
+  font-weight: 700 !important;
+  white-space: nowrap !important;
+  direction: rtl !important;
+  background: rgba(250,247,235,.97) !important;
+  border: 1px solid #c7ab6c !important;
+  border-radius: 999px !important;
+  color: #1d5946 !important;
+  text-shadow: none !important;
+  pointer-events: none !important;
+}
+/* Native printed surah titles at the beginning of a surah are already a head. */
+html body.reader-active[data-v144-print="tajwid"] #mushafReader
+  .rc18-tajwid-ready.p192-native-top-head > .rc18TajwidLabels > .p192PageNumber {
+  display: none !important;
+}
