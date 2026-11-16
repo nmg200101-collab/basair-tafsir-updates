@@ -1,0 +1,78 @@
+/* BASAIR P184 — make original print truly visible; keep digital within page frame.
+   All rules scoped to the Tilawa reader and the two new controls. */
+body.reader-active.p184-print-view:not(.h25-hifz):not(.h90-review):not(.h100-teacher) #stableDigitalHost,
+body.reader-active.p184-print-view:not(.h25-hifz):not(.h90-review):not(.h100-teacher) #stableDigitalHost.v160LocalFallback{
+  display:none!important;visibility:hidden!important;pointer-events:none!important;
+}
+body.reader-active.p184-print-view:not(.h25-hifz):not(.h90-review):not(.h100-teacher) #mushafText.localRasterPage{
+  display:block!important;visibility:visible!important;opacity:1!important;
+}
+body.reader-active.p184-print-view #mushafReader .localPageStage > img[data-mushaf-page],
+body.reader-active.p184-print-view #mushafReader .continuousImagePage > img[data-mushaf-page]{
+  display:block!important;visibility:visible!important;opacity:1!important;
+}
+body.reader-active.p184-print-view[data-v144-print="tajwid"] #mushafReader .rc18-tajwid-ready > img[data-mushaf-page]{
+  visibility:hidden!important;opacity:0!important;
+}
+body.reader-active.p184-print-view[data-v144-print="tajwid"] #mushafReader .rc18-tajwid-ready > .rc18TajwidRaster{
+  display:block!important;visibility:visible!important;opacity:1!important;
+}
+body.reader-active.p184-digital-view #stableDigitalHost{
+  box-sizing:border-box!important;max-width:100%!important;overflow:hidden!important;
+}
+body.reader-active.p184-digital-view #stableDigitalHost .exactLine,
+body.reader-active.p184-digital-view #stableDigitalHost .b327TextLine{
+  min-width:0!important;max-width:100%!important;overflow:hidden!important;
+}
+/* P181/P183 legacy button stays in the DOM so neither updater recreates it. */
+#mushafDock #p181DockFont.p184LegacyFont{display:none!important;}
+body.reader-active #mushafDock #p184DockFont{
+  display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;
+  gap:2px!important;min-width:0!important;max-width:100%!important;min-height:0!important;
+  height:100%!important;padding:2px 1px!important;margin:0!important;
+  background:transparent!important;border:0!important;box-shadow:none!important;border-radius:9px!important;
+  color:var(--green,#2d6757)!important;font:inherit!important;line-height:1.05!important;
+}
+body.reader-active #mushafDock #p184DockFont .p184DockGlyph{
+  display:block!important;font-family:inherit!important;font-size:1.08rem!important;
+  font-weight:850!important;line-height:1.15!important;max-height:21px!important;
+}
+body.reader-active #mushafDock #p184DockFont small{
+  display:block!important;font-family:inherit!important;font-weight:750!important;
+  font-size:.55rem!important;line-height:1.15!important;
+  white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;max-width:100%!important;
+}
+body.dark.reader-active #mushafDock #p184DockFont{color:#b9dfcd!important;}
+body.reader-active #mushafDock #p184DockFont:focus-visible{
+  outline:2px solid #c4a35f!important;outline-offset:-2px!important;
+}
+body.reader-active #mushafDock #p184DockFont.p184-busy{opacity:.6!important;}
+/* A single compact selector in Tools; the original other tools remain unchanged. */
+body.reader-active #v140FontPane .v144PrintGrid,
+body.reader-active #v140FontPane .v140OriginalGrid,
+body.reader-active #v140FontPane .v140DigitalGrid,
+body.reader-active #v140FontPane .v181FontChoices{
+  display:none!important;
+}
+body.reader-active #fontSheet .v119PrintChoices{display:none!important;}
+.p184Picker{box-sizing:border-box;width:100%;margin:3px 0 9px;padding:8px;
+  border-radius:12px;border:1px solid var(--line,#c7d1c8);background:var(--paper,#f7f9f6);direction:rtl;
+}
+.p184PickerTitle{display:flex;align-items:center;justify-content:space-between;gap:6px;
+  font-family:inherit;font-size:.72rem;padding:0 2px 7px;color:var(--green,#235742);
+}
+.p184PickerTitle small{font-size:.60rem;color:var(--muted,#536e61);white-space:nowrap;max-width:54%;
+  text-overflow:ellipsis;overflow:hidden;}
+.p184ModeGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;}
+.p184ModeGrid button{box-sizing:border-box;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:2px;width:100%;min-width:0;min-height:45px;padding:5px 3px;border-radius:9px;
+  border:1px solid var(--line,#cbd9ce);background:var(--paper,#fffdf7);color:var(--ink,#273b31);font:inherit;}
+.p184ModeGrid button strong{font-size:.61rem;line-height:1.3;font-weight:800;text-align:center;max-width:100%;}
+.p184ModeGrid button small{font-size:.52rem;line-height:1.2;opacity:.75;text-align:center;}
+.p184ModeGrid button.p184-selected{border-color:#2b876d;background:#dbefe7;color:#175c46;box-shadow:inset 0 0 0 1px #2b876d;}
+.p184ModeGrid button[disabled]{opacity:.65;}
+body.dark .p184Picker{background:#192a24;border-color:#476a5b;}
+body.dark .p184ModeGrid button{background:#233c31;color:#ecf3ee;border-color:#597c6c;}
+body.dark .p184ModeGrid button.p184-selected{background:#1c5c48;color:#f7e4b5;border-color:#bba66a;}
+@media(max-width:350px){.p184ModeGrid{grid-template-columns:repeat(2,minmax(0,1fr));}
+ body.reader-active #mushafDock #p184DockFont small{font-size:.49rem!important;}}
