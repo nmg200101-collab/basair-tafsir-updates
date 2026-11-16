@@ -1,0 +1,90 @@
+{
+  "phase": "P187",
+  "date": "2026-11-16",
+  "state": "SIGNED_SEQ71_BRANCH_READY_FOR_OWNER_LOCK",
+  "ownerGoal": "Return to an older stable printed-Mushaf version, preserve adopted page index, replace bottom font changer with compact page-size control. No new font/print switching experiments.",
+  "stableReference": {
+    "sequence": 57,
+    "moduleVersion": 180,
+    "path": "p180/P180-SEQ57-OWNER-SIGNED-AUTOMATIC.json",
+    "blob": "10255223fe1d341363d123811a8b4445501c21b5",
+    "acceptedFeature": "604-page page index with current-page highlight"
+  },
+  "currentBeforeRelease": {
+    "sequence": 70,
+    "blob": "4062180213b25d34e24252faa2a0690c754dbe16",
+    "archive": "p186/P186-SEQ70-OWNER-SIGNED-BEFORE-P187.json"
+  },
+  "proposal": {
+    "sequence": 71,
+    "appId": "app.basair.qurv2",
+    "channel": "owner-qa",
+    "mode": "automatic",
+    "tilawaVersion": 190,
+    "tafsirVersion": 51,
+    "signatureBlob": "ed5fd186414f44d666495c0322a4ca542abed43f",
+    "sha256": "a10c8046b8d8a63b21ee63f60df1b57c93ea22ce64e8fc2c4aa33ecbf915127b",
+    "approvalExpires": "2026-11-20T13:56:11Z"
+  },
+  "modules": {
+    "tafsirAssets": 26,
+    "tafsirExactP180": true,
+    "tilawaAssets": 8,
+    "tilawaExactP180FirstSix": true,
+    "addOnly": [
+      {
+        "path": "modules/tilawa/p187-stable-page-size.css",
+        "bytes": 1050,
+        "sha256": "29a3fbd48f3254aaf611f6ef21b6d623a54718ebf639d1595819a4f8614dfd27",
+        "blob": "b3feaee0780f9fb1d3a03c02e50eff3d769889b9"
+      },
+      {
+        "path": "modules/tilawa/p187-stable-page-size.js",
+        "bytes": 1886,
+        "sha256": "8565a6a53d5d18956d7e771f3c846029bec7b052e75d2f36c83b64c2f9afc7e5",
+        "blob": "0662155b26a3b3e1555b93a6ee008283a2173c15"
+      }
+    ]
+  },
+  "excludedTilawaPhases": [
+    "P181",
+    "P182",
+    "P183",
+    "P184",
+    "P185",
+    "P186"
+  ],
+  "sizeControl": {
+    "bottom": "Single compact size button replaces the old dock Night slot, no font/print button in that slot",
+    "topNight": "Uses existing bqP26Theme toggle in original APK header; bottom dockNight hidden only while reader active",
+    "nativeHandler": "#menuFont.click() — original V694/V695 readerZoom handler 100%/110%/120%",
+    "noRendererChanges": true,
+    "doesNotCall": [
+      "RC18",
+      "RC19",
+      "setPrint",
+      "setFont"
+    ],
+    "fontSizeNote": "Changes page size, not Quran glyphs, text or printed-page edition"
+  },
+  "tests": {
+    "nodeSyntax": "PASS",
+    "chromiumDOM": "4/4 PASS 320/390/430/768 with 3 native size steps, unchanged print/font store, top Night preserved, no duplicates",
+    "realV695Android": "PENDING owner confirmation",
+    "olderP180Print": "Was before later font-cycle regressions; no new functional changes to native print engines"
+  },
+  "signatures": {
+    "rsa3072Original": "PASS against pinned public key in reference APK",
+    "ed25519Original": "PASS against pinned owner key, approval bound to Seq71 and exact protected asset digests",
+    "sourcePrivateCredentialsDisclosed": false
+  },
+  "recovery": {
+    "sequence": 72,
+    "tilawaVersion": 191,
+    "status": "OFFLINE SIGNED NOT PUBLISHED",
+    "restores": "exact 6 Tilawa P180/Seq57 assets and 26 Tafsir assets, excludes size control",
+    "sha256": "abf6aeb5512abd9d0c6cfe7fd620cf4fac2b96bb344f683267a4153806ab00bb",
+    "gitblob": "bf82f9ca72f9926d3bee18035aa4cdf29975e588"
+  },
+  "safety": "QA-050 owner lock required on final PR head. Do not merge before passed. No APK. No claims of V695 on-device acceptance before owner testing. If user requests, signed Seq72 fallback can restore pure P180 while preserving index."
+}
