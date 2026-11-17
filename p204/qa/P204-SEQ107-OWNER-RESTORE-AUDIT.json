@@ -1,0 +1,54 @@
+{
+  "stage": "P204",
+  "date": "2026-11-17",
+  "reason": "Owner requests return to last good size shortcut and full colored Mushaf page, before all header changes. Follow attempts P198-P203 were rejected.",
+  "app": "app.basair.qurv2",
+  "baseline": {
+    "sequence": 105,
+    "tilawaVersion": 223,
+    "tilawaAssets": 14
+  },
+  "target": {
+    "source": "P189/Seq75 exact tilawa assets",
+    "tilawaAssets": 10,
+    "sizeTool": "p189-size-shortcut-native-tools.js",
+    "tafsirAssets": 26,
+    "updatesAssets": 1
+  },
+  "issuedAt": "2026-11-17T09:56:21Z",
+  "ownerApprovalExpires": "2026-11-21T09:58:21Z",
+  "signedReleases": [
+    {
+      "sequence": 107,
+      "tilawaVersion": 225,
+      "filename": "P204-SEQ107-OWNER-SIGNED-AUTOMATIC.json",
+      "bytes": 9457,
+      "sha256": "3fd1c554729e03c1c6d2a685025954607ab8a42511ad8a0aa8fecb0814d3622f",
+      "gitBlobSha1": "fc0deed72e604f46bb5eddd839504f9cbfe5d40d",
+      "ownerVerified": true,
+      "transportVerified": true,
+      "published": false
+    },
+    {
+      "sequence": 108,
+      "tilawaVersion": 226,
+      "filename": "P204-SEQ108-SIGNED-ROLLBACK-NOT-PUBLISHED.json",
+      "bytes": 9429,
+      "sha256": "f27588433a946134663d049e64a9e031c31e3a1004c42cf21e72aecf74491770",
+      "gitBlobSha1": "4e3c015d3876228a3442386c16b52d200d9f01e7",
+      "ownerVerified": true,
+      "transportVerified": true,
+      "published": false
+    }
+  ],
+  "safety": {
+    "tilawaP189AssetsExact": true,
+    "tafsirUntouched": true,
+    "updatesUntouched": true,
+    "noAPK": true,
+    "signingKeysOriginalVerified": true,
+    "qa050": "PENDING_FINAL_SHA",
+    "ownerDeviceAcceptance": "PENDING"
+  },
+  "NOTE": "This restores prior content; it does NOT claim the follow bug fixed. Emergency Seq108 repeats stable P189 content at a higher sequence, not the owner-rejected P203."
+}
