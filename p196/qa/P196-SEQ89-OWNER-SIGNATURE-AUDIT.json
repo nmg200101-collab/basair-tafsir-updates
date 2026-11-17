@@ -1,0 +1,49 @@
+{
+  "stage": "P196",
+  "date": "2026-11-17",
+  "app": "V695",
+  "channel": "owner-qa",
+  "status": "OWNER_SIGNED_PENDING_QA050",
+  "sourceHead": "1b38d1f0f69c28e0d9d4de5f650e3cb01c8f9bd1",
+  "sourceBaseSequence": 88,
+  "release": {
+    "sequence": 89,
+    "tilawaVersion": 207,
+    "tilawaAssets": 19,
+    "tafsirAssets": 26,
+    "asset": {
+      "path": "modules/tilawa/p196-tajwid-follow-raster-owner.js",
+      "kind": "js",
+      "size": 3184,
+      "sha256": "5b6868719f28480ca6bd545307aaa5d4b22ace3388509c91846885b1d33b3b4e"
+    },
+    "payloadSha256": "4f9bf8dd58105f436c5e2995bb068c75b5eac3393a3915307b3219bd5e7cc839",
+    "envelopeSha256": "8a4fa337aea458f74fb1cd7e16d21805b258d2af2cf560ba905c3d792c9af970",
+    "ownerEd25519": "VERIFIED_ORIGINAL_OWNER_PUBLIC",
+    "rsa3072": "VERIFIED_PINNED_CERTIFICATE"
+  },
+  "rollback": {
+    "sequence": 90,
+    "tilawaVersion": 208,
+    "tilawaAssets": 18,
+    "tafsirAssets": 26,
+    "payloadSha256": "28d14d0af77d4240af9bb215b443d977f05f5e71b0af48d4f90136e4298f8476",
+    "envelopeSha256": "bf26973aaa362c2176d87482ebb637ee67f786c4cb8163e3deb9f98d2ae8b895",
+    "published": false
+  },
+  "checks": {
+    "nodeSyntax": "PASS",
+    "unitVM": "13/13 PASS",
+    "qa050": "PENDING_FINAL_HEAD",
+    "androidV695": "FIELD_ACCEPTANCE_PENDING"
+  },
+  "safety": {
+    "unchangedTafsir": 26,
+    "unchangedPriorTilawa": 18,
+    "apkNew": false,
+    "unmodifiedP193": true,
+    "unmodifiedP194": true,
+    "unmodifiedZoom": true
+  },
+  "issuedAt": "2026-11-17T05:15:00Z"
+}
