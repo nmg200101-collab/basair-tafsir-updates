@@ -1,0 +1,54 @@
+{
+  "stage": "P199",
+  "date": "2026-11-17",
+  "app": "app.basair.qurv2",
+  "sourceHead": "94ae60fbe98ae3f0e796ea79c6a22cd1f1f6872c",
+  "baselineSeq": 95,
+  "release": {
+    "sequence": 97,
+    "tilawaVersion": 215,
+    "tilawaAssets": 22,
+    "tafsirAssets": 26,
+    "updatesAssets": 1,
+    "addedFiles": [
+      {
+        "path": "modules/tilawa/p199-fixed-tajwid-follow.css",
+        "kind": "css",
+        "size": 1904,
+        "sha256": "9a2246cff5b946999f57e86fd8caaf16f2d2e46f37102f52273b43395ba1be2b"
+      },
+      {
+        "path": "modules/tilawa/p199-fixed-tajwid-follow.js",
+        "kind": "js",
+        "size": 9058,
+        "sha256": "ca24c4e28e00054702b8a3cb4ddb71918cd3ebd8975e379107509c6502f6a49a"
+      }
+    ],
+    "sha256": "93323e89912dca5dd0198052449520294afa7bc86a70d401587d13c61a0a7082",
+    "payloadSha256": "603d093b2c9e7345a702aa4d74cb287bea50f86cd815192ab8b59887656cd0d8",
+    "ownerEd25519": "VERIFIED_WITH_APP_PINNED_KEY",
+    "rsa3072": "VERIFIED_WITH_APP_PINNED_KEY"
+  },
+  "rollback": {
+    "sequence": 98,
+    "tilawaVersion": 216,
+    "tilawaAssets": 20,
+    "sha256": "d2e3a88c1009a86458527a5af25cbdcf8fe5f8524b4bc8ee58500744c000f36d",
+    "payloadSha256": "978a44f39b5b0ab24199c7c58de70050912d6ffd26d0a95e9739a0733895f153",
+    "published": false
+  },
+  "qa": {
+    "nodeSyntax": "PASS",
+    "chromiumInlineDOM": "PASS",
+    "fullAndroid": "PENDING",
+    "ownerQA050": "PENDING_FINAL_HEAD"
+  },
+  "unchanged": {
+    "oldTilawa20": true,
+    "tafsir26": true,
+    "updatesOne": true,
+    "P193Header": true,
+    "P194Turn": true,
+    "noAPK": true
+  }
+}
