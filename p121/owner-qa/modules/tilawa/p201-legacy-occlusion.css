@@ -1,0 +1,19 @@
+/* BASAIR P201 / QA-050 | One painted Tajwid page during Follow.
+ * B345/R33 explicitly set visibility:visible!important on nested print images
+ * and ayah overlays. CSS visibility:hidden on their #pageReading ancestor (P200)
+ * is therefore NOT sufficient: children can paint as a visible override.
+ * Opacity is composited for the WHOLE subtree, regardless of child visibility.
+ * This fixes the legacy movement showing through the P199 authentic page.
+ *
+ * Keep B345's physical boxes, scrollTop and layout intact for audio timing;
+ * do not use display:none, height:0 or overflow:hidden on the scroller.
+ * Only activate behind P200's readiness gate (real colored 100% Follow,
+ * complete loaded static P199 page); P200 removes its class on Stop or
+ * source switch. Mini Follow controls and toolbar are siblings, not children
+ * of pageReading, and retain their normal opacity/behavior.
+ */
+body.reader-active[data-v144-print="tajwid"].p200-one-renderer-active[data-b345-sequence-surface="normal"]
+#mushafReader.active > #pageReading {
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
