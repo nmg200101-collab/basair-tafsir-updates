@@ -19,6 +19,7 @@
   try{if(p&&typeof p.scale==='function'&&Number(p.scale())!==100)return false}catch(_){return false}
   return true}
  function prepareNativePrint(){
+  if(track.adapterReady)return;
   // Install the already-approved P205 R33 adapter before the native start click bubbles.
   // This is not a second Follow request; B345 keeps sole ownership of play/audio timing.
   var p=w.__BASAIR_P205_ORIGINAL_PRINT_PARITY__;
