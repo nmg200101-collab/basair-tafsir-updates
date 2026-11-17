@@ -1,0 +1,50 @@
+/* BASAIR P199 | static P193 frame during B345/R33 colored-print Follow.
+ * Portal is read-only and visual; B345 runs below at its native geometry,
+ * preserving timing, audio, progress, prefetch and QA-050 restrictions.
+ */
+body.reader-active[data-v144-print="tajwid"] #mushafReader > #p199FixedFollowMirror {
+  position:fixed !important;
+  z-index:38 !important;
+  display:block !important;
+  padding:0 !important;
+  margin:0 !important;
+  overflow:hidden !important;
+  pointer-events:none !important;
+  user-select:none !important;
+  -webkit-user-select:none !important;
+  touch-action:none !important;
+  background:var(--mushaf-paper,#fffdf8) !important;
+  border:0 !important;
+  box-shadow:none !important;
+  contain:layout paint style !important;
+}
+body.reader-active[data-v144-print="tajwid"] #mushafReader > #p199FixedFollowMirror > .localPageStage.p199FollowStaticStage {
+  display:block !important;
+  position:relative !important;
+  width:100% !important;
+  min-width:0 !important;
+  max-width:none !important;
+  height:100% !important;
+  min-height:0 !important;
+  max-height:none !important;
+  aspect-ratio:720/1280 !important;
+  margin:0 !important;
+  padding:0 !important;
+  border:0 !important;
+  border-radius:0 !important;
+  overflow:hidden !important;
+  box-shadow:none !important;
+  background:var(--mushaf-paper,#fffdf8) !important;
+  pointer-events:none !important;
+  transform:none !important;
+  transition:none !important;
+  animation:none !important;
+}
+body.reader-active[data-v144-print="tajwid"] #mushafReader > #p199FixedFollowMirror * {
+  pointer-events:none !important;
+  -webkit-user-select:none !important;
+  user-select:none !important;
+}
+/* P193 ornament, P191 raster line fit and P192 metadata retain their exact
+   existing selectors because the cloned native .localPageStage stays inside
+   #mushafReader. Mini Follow controls (z-index:88) remain above z-index:38. */
