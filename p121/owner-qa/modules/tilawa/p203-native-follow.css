@@ -1,0 +1,31 @@
+/* BASAIR P203: render the ORIGINAL single P189/RC18 localPageStage, no clone.
+   B345's vertical R33 cards stay mounted for duration/audio but are NOT visible.
+   Parent opacity hides even R33 descendants with visibility:visible!important. */
+body.reader-active[data-v144-print="tajwid"].p203-native-follow-active #mushafReader #b345NormalStack {
+  opacity:0 !important;
+  visibility:hidden !important;
+  pointer-events:none !important;
+}
+body.reader-active[data-v144-print="tajwid"].p203-native-follow-active #mushafReader #mushafText.localRasterPage {
+  display:block !important;
+  opacity:1 !important;
+  visibility:visible !important;
+  background:transparent !important;
+}
+body.reader-active[data-v144-print="tajwid"].p203-native-follow-active #mushafReader #mushafText.localRasterPage > .localPageStage {
+  display:block !important;
+  width:100% !important;
+  height:100% !important;
+  max-width:none !important;
+  max-height:none !important;
+  margin:0 !important;
+  padding:0 !important;
+  overflow:hidden !important;
+}
+body.reader-active[data-v144-print="tajwid"].p203-native-follow-active #mushafReader #mushafText.localRasterPage > .localPageStage > img[data-mushaf-page],
+body.reader-active[data-v144-print="tajwid"].p203-native-follow-active #mushafReader #mushafText.localRasterPage > .localPageStage > .rc18TajwidRaster {
+  height:100% !important;
+  width:100% !important;
+  object-fit:fill !important;
+}
+/* The existing follow pause/stop controls are not descendants of the hidden stack. */

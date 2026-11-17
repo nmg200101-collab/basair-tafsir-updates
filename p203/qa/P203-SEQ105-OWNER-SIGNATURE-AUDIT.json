@@ -1,0 +1,86 @@
+{
+  "stage": "P203",
+  "date": "2026-11-17",
+  "type": "OWNER_QA_FIXED_NATIVE_TAJWID_FOLLOW",
+  "baseline": {
+    "sequence": 103,
+    "tilawaVersion": 221,
+    "assets": 10
+  },
+  "source": "V694/V695 B345 + R33 + RC18 genuine .localPageStage; original P189 visual",
+  "solution": "Re-enable P198 offline local preloading for B345 only. Render the EXISTING native #mushafText at a fixed viewport rectangle while B345 pages scroll invisibly. Update native renderLocalPage only after B345 state.page changes and next local Tajwid image has loaded. No clone, no duplicate border, no changed audio/timing.",
+  "newAssets": [
+    {
+      "path": "modules/tilawa/p203-native-follow.css",
+      "kind": "css",
+      "size": 1508,
+      "sha256": "b9daca8686c061a4ce10e58747a2dd2908b8bc310cff78370222139d65d54974"
+    },
+    {
+      "path": "modules/tilawa/p203-native-follow.js",
+      "kind": "js",
+      "size": 8883,
+      "sha256": "19093c1f5e31890a7bf5c314edc16ebe6c4f23c2531c4e9e449ce6fcb5f4e7e9"
+    }
+  ],
+  "reusedOriginalSignedAssets": [
+    {
+      "path": "modules/tilawa/p198-tajwid-local-follow.css",
+      "kind": "css",
+      "size": 2314,
+      "sha256": "3d8e1529795bed0580c719eeaa6d7975dde21061a1053b6b601360a849fc9db6"
+    },
+    {
+      "path": "modules/tilawa/p198-tajwid-local-follow.js",
+      "kind": "js",
+      "size": 7495,
+      "sha256": "fdb430bd51dafd8732ecf2a6ec5a2bebffbb6dcbdcaa56d397f678844ee4202b"
+    }
+  ],
+  "releases": [
+    {
+      "sequence": 105,
+      "filename": "P203-SEQ105-OWNER-SIGNED-AUTOMATIC.json",
+      "tilawaVersion": 223,
+      "tilawaAssets": 14,
+      "tafsirAssets": 26,
+      "updatesAssets": 1,
+      "payloadSha256": "6d2e13cf1bfd4488b56e14cd82c90e1b4e45701bef3fa82cdaf9aca87a4635bf",
+      "envelopeSha256": "2ea3f4e528b571ed78103b84db68d12db854a4371cb5b19e34e6f583896abd3c",
+      "gitBlobSha1": "c41d94ec03eb878bb2ccf2a3dd3e582973ccfcca",
+      "ownerApprovalEd25519Verified": true,
+      "transportRSA3072Verified": true,
+      "published": false
+    },
+    {
+      "sequence": 106,
+      "filename": "P203-SEQ106-SIGNED-ROLLBACK-NOT-PUBLISHED.json",
+      "tilawaVersion": 224,
+      "tilawaAssets": 10,
+      "tafsirAssets": 26,
+      "updatesAssets": 1,
+      "payloadSha256": "2505f09a9749d68735b7c2a63895a5489d75819a49d5bd8f34fc6bd79e593e55",
+      "envelopeSha256": "5b404951d7a7bc3270c9f17ddd7331cb974b216ca40c79c0ad0dc76bea944fe7",
+      "gitBlobSha1": "fd9a7b20e49eb0407af544085e8b3dadb3a45f1e",
+      "ownerApprovalEd25519Verified": true,
+      "transportRSA3072Verified": true,
+      "published": false
+    }
+  ],
+  "issuedAt": "2026-11-17T09:40:48Z",
+  "ownerApprovalExpires": "2026-11-21T09:43:48Z",
+  "tests": {
+    "nodeSyntax": "PASS",
+    "ChromiumDom": "PASS: original one stage, hidden legacy with visible!important descendants, scroll geometry, page4-to5, stop and restore, digital excluded",
+    "AndroidWebView": "PENDING_OWNER_FIELD_TEST",
+    "QA050": "PENDING_FINAL_BRANCH_HEAD"
+  },
+  "safety": {
+    "appV695": true,
+    "tafsirUnchanged": true,
+    "updatesUnchanged": true,
+    "P189VisualAssetDescriptorsUntouched": true,
+    "noAPK": true,
+    "rollbackPublished": false
+  }
+}
