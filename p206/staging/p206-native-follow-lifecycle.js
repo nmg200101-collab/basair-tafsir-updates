@@ -6,7 +6,7 @@
 (function(w,d){
  'use strict';
  if(w.__BASAIR_P206_FOLLOW_GUARD__)return;
- var track={running:false,paused:false,lastPage:0,lastEdition:'',action:'',actionAt:0,restores:0,prewarmed:0,errors:0};
+ var track={running:false,paused:false,lastPage:0,lastEdition:'',action:'',actionAt:0,restores:0,prewarmed:0,errors:0,adapterChecks:0,adapterReady:false};
  var timer=0,warmed=Object.create(null),restoreToken=0;
  function E(id){return d.getElementById(id)}
  function ctl(){return w.__BASAIR_B345_SEQUENCE__}
@@ -18,6 +18,15 @@
   if(['tajwid','original','blue'].indexOf(mode())<0)return false;
   try{if(p&&typeof p.scale==='function'&&Number(p.scale())!==100)return false}catch(_){return false}
   return true}
+ function prepareNativePrint(){
+  // Install the already-approved P205 R33 adapter before the native start click bubbles.
+  // This is not a second Follow request; B345 keeps sole ownership of play/audio timing.
+  var p=w.__BASAIR_P205_ORIGINAL_PRINT_PARITY__;
+  if(p&&typeof p.install==='function'){
+   track.adapterChecks++;
+   try{track.adapterReady=!!p.install()}catch(_){track.adapterReady=false;track.errors++}
+  }
+ }
  function warm(page,edition){
   if(!page||warmed[edition+':'+page]||!printed())return;
   warmed[edition+':'+page]=1;
@@ -55,7 +64,7 @@
   var c=ctl(),s=c&&c.state;
   if(!s||!printed()){track.running=false;track.paused=false;return}
   var nowRunning=!!s.running,nowPaused=isPaused(c),page=pg(s.page)||findPage(),edition=mode();
-  if(!nowRunning&&!nowPaused){warm(page,edition);warm(pg(page+1),edition)}
+  if(!nowRunning&&!nowPaused){prepareNativePrint();warm(page,edition);warm(pg(page+1),edition)}
   if(nowRunning)frames();
   if(track.running&&!nowRunning&&!nowPaused){
    var action=track.action;
@@ -77,7 +86,7 @@
   else if(/^(?:متابعة|تشغيل المتابعة|استئناف)(?:\s*[▶►])?$/i.test(name))track.action='start';
   else return;
   track.actionAt=Date.now();
-  if(track.action==='start'){var page=findPage(),edition=mode();warm(page,edition);warm(pg(page+1),edition)}
+  if(track.action==='start'){restoreToken++;prepareNativePrint();var page=findPage(),edition=mode();warm(page,edition);warm(pg(page+1),edition)}
   if(track.action==='stop'){
    var p=track.lastPage||findPage(),serial=++restoreToken;
    w.setTimeout(function(){restore(p,serial)},170);
