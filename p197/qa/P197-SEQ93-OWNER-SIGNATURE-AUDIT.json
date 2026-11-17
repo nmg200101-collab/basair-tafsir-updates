@@ -1,0 +1,45 @@
+{
+  "stage": "P197",
+  "date": "2026-11-17",
+  "status": "SIGNED_PENDING_QA050",
+  "sourceHead": "d2fe56579f4e3c2f9bb405abf2c33b1130802c00",
+  "application": "app.basair.qurv2",
+  "base": {
+    "sequence": 91,
+    "tilawaVersion": 209
+  },
+  "candidate": {
+    "sequence": 93,
+    "tilawaVersion": 211,
+    "tilawaAssets": 18,
+    "tafsirAssets": 26,
+    "updatesVersion": 197,
+    "updatesAssets": 1,
+    "payloadSha256": "099b7248ed62581b4b318c6ee692a0690e30127642f095c67c5508a46e5a9c52",
+    "envelopeSha256": "0b1e22537ed86e0d2be8aa1afa604ad146b437caa306d4b36d28c047a3c0b76d",
+    "ownerEd25519": "SIGNED_VERIFIED_PINNED",
+    "rsa3072": "SIGNED_VERIFIED_PINNED"
+  },
+  "backup": {
+    "sequence": 94,
+    "tilawaVersion": 212,
+    "updatesVersion": 198,
+    "updatesAssets": 0,
+    "tilawaAssets": 18,
+    "payloadSha256": "9239d5e6302dfd4da5bb4b205b68f1d436ff18cf7e1452d49ecc805099342fc4",
+    "envelopeSha256": "6e3b2baeee9c83151e06048e09ea449f37260fe3352c98e9f353d075e209598f",
+    "published": false
+  },
+  "tests": {
+    "nodeCheck": "PASS",
+    "nodeVM": "15/15 PASS",
+    "chromium": "BLOCKED_BY_ADMINISTRATOR",
+    "ownerAndroid": "PENDING"
+  },
+  "safety": {
+    "sameP194Tilawa": true,
+    "same26Tafsir": true,
+    "noAPK": true,
+    "QA050": "PENDING_FINAL_HEAD"
+  }
+}
