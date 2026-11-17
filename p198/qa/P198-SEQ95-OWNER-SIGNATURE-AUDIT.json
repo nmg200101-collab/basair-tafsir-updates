@@ -1,0 +1,62 @@
+{
+  "stage": "P198",
+  "date": "2026-11-17",
+  "app": "app.basair.qurv2",
+  "sourceHead": "9ef9b9e260371a28b8d55035e96fd6b73199c633",
+  "baselineSeq": 93,
+  "activeModuleVersion": 211,
+  "release": {
+    "sequence": 95,
+    "tilawaVersion": 213,
+    "tilawaAssets": 20,
+    "tafsirAssets": 26,
+    "updatesAssets": 1,
+    "newAssets": [
+      {
+        "path": "modules/tilawa/p198-tajwid-local-follow.css",
+        "kind": "css",
+        "size": 2314,
+        "sha256": "3d8e1529795bed0580c719eeaa6d7975dde21061a1053b6b601360a849fc9db6"
+      },
+      {
+        "path": "modules/tilawa/p198-tajwid-local-follow.js",
+        "kind": "js",
+        "size": 7495,
+        "sha256": "fdb430bd51dafd8732ecf2a6ec5a2bebffbb6dcbdcaa56d397f678844ee4202b"
+      }
+    ],
+    "payloadSHA256": "d0aa9dccbab2ac4cf23478dc6b2fa9f6c3d6ae3b5790a8c060f2d94b35aa5300",
+    "envelopeSHA256": "551faa783f7df95a33dc65552992a468266054940a47c8d75c9033db63ae563f",
+    "ownerEd25519": "SIGNED_VERIFIED",
+    "rsa3072": "SIGNED_VERIFIED"
+  },
+  "rollback": {
+    "sequence": 96,
+    "tilawaVersion": 214,
+    "tilawaAssets": 18,
+    "tafsirAssets": 26,
+    "updatesAssets": 1,
+    "payloadSHA256": "26be2a3efde565d288d3a43cd135923299881f49033b4eba9501ceae3ad45c55",
+    "envelopeSHA256": "7084e5153af321303cf55842dbec07c28967e4deb0f199b4b899094d236e1c78",
+    "published": false
+  },
+  "sourceEvidence": {
+    "originalSignedAPKLocalTajwidPages": 604,
+    "B345DigitalFontGate": true,
+    "R33RemotePreloads": true
+  },
+  "tests": {
+    "nodeSyntax": "PASS",
+    "nodeVM": "24/24 PASS",
+    "chromiumE2E": "BLOCKED_BY_ADMINISTRATOR",
+    "QA050": "PENDING_FINAL_HEAD",
+    "ownerAndroid": "PENDING"
+  },
+  "safety": {
+    "unchangedTafsir": true,
+    "unchangedUpdates": true,
+    "unchanged18Tilawa": true,
+    "appV695": true,
+    "noAPK": true
+  }
+}
