@@ -1,0 +1,32 @@
+/* BASAIR P200: visual ownership only; never change the B345 scroll geometry.
+ * PageReading owns the legacy printed vertical stack, while the P199 portal
+ * (a clone of the authentic original page stage) is the sole visible reader.
+ * Conceal the entire native legacy page, including its frame/background.
+ * The mini pause/stop controls and dock are siblings and are not concealed.
+ */
+body.reader-active[data-v144-print="tajwid"].p200-one-renderer-active[data-b345-sequence-surface="normal"]
+#mushafReader.active > #pageReading {
+  visibility:hidden !important;
+}
+body.reader-active[data-v144-print="tajwid"].p200-one-renderer-active[data-b345-sequence-surface="normal"]
+#mushafReader.active > #p199FixedFollowMirror {
+  display:block !important;
+  visibility:visible !important;
+  background:var(--mushaf-paper,#fffdf8) !important;
+  pointer-events:none !important;
+  border:0 !important;
+  box-shadow:none !important;
+}
+/* The visible frame belongs to the original .localPageStage alone. */
+body.reader-active[data-v144-print="tajwid"].p200-one-renderer-active[data-b345-sequence-surface="normal"]
+#mushafReader.active > #p199FixedFollowMirror > .p199FollowStaticStage {
+  border:0 !important;
+  box-shadow:none !important;
+}
+/* Do not conceal overlays that are siblings of pageReading. */
+body.reader-active[data-v144-print="tajwid"].p200-one-renderer-active
+#mushafReader.active > #sequenceMiniControl,
+body.reader-active[data-v144-print="tajwid"].p200-one-renderer-active
+#mushafReader.active > #mushafDock {
+  visibility:visible !important;
+}
