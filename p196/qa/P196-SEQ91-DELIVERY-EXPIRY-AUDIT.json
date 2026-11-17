@@ -1,0 +1,36 @@
+{
+  "stage": "P196-DELIVERY-REPAIR",
+  "date": "2026-11-17",
+  "rootCause": "ownerApproval.expiresAt 2026-11-24T21:42Z exceeded app P122's now+7d bound, causing verifyProtected() to reject Seq89 on Nov 17",
+  "baseline": {
+    "sequence": 89,
+    "tilawaVersion": 207,
+    "manifestGitBlob": "d86bcced1581c632bd3c00afc277cd041d6d7508"
+  },
+  "release": {
+    "sequence": 91,
+    "tilawaVersion": 209,
+    "ownerExpiry": "2026-11-20T00:00:00Z",
+    "payloadSha256": "70425d226a3b4cac6fb3ec38e16ad396178e1bb64afa6d0814bf064b98ae82f2",
+    "envelopeSha256": "54e9cc5b1d071e94d913d0e6801f17142878a09386799e3d3022ffde4a83736d",
+    "signedOwnerEd25519": true,
+    "signedRSA3072": true
+  },
+  "rollback": {
+    "sequence": 92,
+    "tilawaVersion": 210,
+    "payloadSha256": "077de90ea495c26291becf60faac78d0e341648313d06dc79e47cc1a35db847d",
+    "envelopeSha256": "a3eb566996219fc671ed81526bab9b36be8b7337c1d9b15c4d62f46366a56447",
+    "published": false
+  },
+  "checked": {
+    "assetDescriptorsUnchanged": true,
+    "tafsirAssets": 26,
+    "tilawaAssets": 19,
+    "rollbackTilawaAssets": 18,
+    "appVersion": "V695",
+    "noAPK": true
+  },
+  "verification": "APP_SOURCE_GATE_DATE_MATCHES; OWNER_DEVICE_ACCEPTANCE_PENDING",
+  "safety": "QA-050 final head before merge"
+}
