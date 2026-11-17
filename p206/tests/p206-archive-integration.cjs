@@ -56,7 +56,7 @@ function state(s){stores.get('basair:p121:universal:db').get('meta').set('state'
 function readState(){return stores.get('basair:p121:universal:db').get('meta').get('state')}
 function verify(label,cond){assert.ok(cond,label);console.log('PASS '+label)}
 (async()=>{
- await new Promise(r=>queueMicrotask(r));
+ await new Promise(r=>{var q=fakeDb.open('basair:p121:universal:db',1);q.onsuccess=r});
  const a=await make(107,'p204/P204-SEQ107-OWNER-SIGNED-AUTOMATIC.json');
  state({active:a.active,previous:null,trial:null,highestSequence:107});latest=a.envelope;
  verify('save signed stable P204',await archive.capture()===107);
