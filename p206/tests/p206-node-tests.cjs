@@ -36,7 +36,7 @@ function check(name,fn){return Promise.resolve().then(fn).then(()=>{results.push
   bytes[0]^=1;try{assert.equal(await signer.matches(active,signed),false)}finally{bytes[0]=old}
  });
  const ctl={state:{running:false,paused:false,page:4,scaleMode:'normal',printStaticHeld:true},releaseStaticPrint(){this.state.printStaticHeld=false;released++}};
- let released=0,restored=[],buttons=[],timerFns=[],scheduled=[],frameCount=0,mode='tajwid',blocked=false;
+ let released=0,restored=[],buttons=[],timerFns=[],scheduled=[],frameCount=0,mode='tajwid',blocked=false,adapterInstalls=0;
  const classes={contains(name){return name==='reader-active'||(name==='stableDigital'&&blocked)}};
  const img={getAttribute(){return '4'}};
  const card={querySelector(s){return frameCount>0?{}:null},appendChild(e){if(e.className==='stableFrame')frameCount++}};
@@ -52,6 +52,7 @@ function check(name,fn){return Promise.resolve().then(fn).then(()=>{results.push
  const printer={edition:()=>mode,scale:()=>100,frozenActive:()=>ctl.state.printStaticHeld};
  const fw={
   __BASAIR_B345_SEQUENCE__:ctl,__BASAIR_PRINT_FOLLOW_100__:printer,
+  __BASAIR_P205_ORIGINAL_PRINT_PARITY__:{install(){adapterInstalls++;return true}},
   Image:MockImage,setTimeout(fn){scheduled.push(fn)},setInterval(fn){timerFns.push(fn)},
   renderLocalPage(page){restored.push(page)}
  };
@@ -60,6 +61,9 @@ function check(name,fn){return Promise.resolve().then(fn).then(()=>{results.push
  const guard=fw.__BASAIR_P206_FOLLOW_GUARD__;
  const click=name=>buttons.forEach(fn=>fn({target:{closest(){return {getAttribute(){return name},textContent:name}}}}));
  const flush=()=>{let x=scheduled.splice(0);x.forEach(fn=>fn())};
+ await check('existing signed P205 adapter primed before a first Follow tap',()=>{
+  click('متابعة');assert.ok(adapterInstalls>=1);assert.equal(guard.status().adapterReady,true);
+ });
  await check('prewarm printed pages before first start',()=>{
   assert.ok(guard.status().prewarmed>=2);
  });
