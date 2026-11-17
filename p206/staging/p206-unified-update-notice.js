@@ -13,8 +13,11 @@
   if(!c||!c.manifest||!c.envelope)return null;
   var m=c.manifest,seq=m.sequence;
   if(!Number.isSafeInteger(seq)||seq<1||typeof m.title!=='string'||!Array.isArray(m.modules))return null;
+  var affected=Array.isArray(c.changes)&&c.changes.length?c.changes:m.modules;
   return{sequence:seq,id:safe(m.id),title:safe(m.title),date:safe(m.issuedAt),
-   modules:m.modules.map(function(x){return moduleNames[x.id]||safe(x.id)}),newer:!!c.newer,
+   modules:affected.map(function(x){return moduleNames[x.id]||safe(x.id)}),newer:!!c.newer,
+   changeType:safe(m.changeType),summary:Array.isArray(m.changeSummary)?m.changeSummary.slice(0,8).map(safe):[],
+   restartRequired:m.restartRequired===true,
    count:Array.isArray(c.changes)?c.changes.length:0};
  }
  function panel(){
@@ -34,7 +37,10 @@
    text(el,'p',latest.title);
    if(latest.id)text(el,'p','رمز الحزمة: '+latest.id);
    if(latest.date)text(el,'p','تاريخ النشر: '+latest.date.slice(0,10));
+   if(latest.changeType)text(el,'p','نوع التحديث: '+latest.changeType);
    if(latest.modules.length)text(el,'p','الأقسام: '+latest.modules.join('، '));
+   latest.summary.forEach(function(v){if(v)text(el,'p','• '+v)});
+   if(latest.restartRequired)text(el,'p','التفعيل بعد إعادة فتح واجهة التطبيق.');
    text(el,'small','مصدر البيانات: بيان P121 الموقّع والمتحقّق منه. لا يعني ظهوره اكتمال التثبيت.');}
   var b=text(el,'button',inFlight?'جارٍ التحقق…':'عرض تفاصيل الإصدار الموقّع');
   b.type='button';b.disabled=!!inFlight;b.style.cssText='border:0;border-radius:8px;padding:10px;background:#286f52;color:#fff;font:inherit';
