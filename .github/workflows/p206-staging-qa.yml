@@ -1,0 +1,35 @@
+name: P206 staging safety checks
+on:
+  push:
+    branches:
+      - fix/p206-follow-lifecycle-six-release-rollback-20261117
+  pull_request:
+    paths:
+      - 'p206/**'
+      - '.github/workflows/p206-staging-qa.yml'
+permissions:
+  contents: read
+jobs:
+  staging:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Syntax
+        run: |
+          node --check p206/staging/p206-native-follow-lifecycle.js
+          node --check p206/staging/p206-signed-six-rollback.js
+          node --check p206/staging/p206-unified-update-notice.js
+          node --check p206/staging/p206-six-release-history.js
+          node --check p206/tests/p206-node-tests.cjs
+      - name: Real signed envelope and mocked lifecycle
+        run: node p206/tests/p206-node-tests.cjs
+      - name: Prevent accidental signed release publication
+        run: |
+          if git diff --name-only origin/main...HEAD | grep -Eq '^p121/owner-qa/release.json$'; then
+            echo 'P206 staging may not modify the signed active manifest' >&2
+            exit 1
+          fi
