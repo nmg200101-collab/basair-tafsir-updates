@@ -67,16 +67,12 @@ function verify(label,cond){assert.ok(cond,label);console.log('PASS '+label)}
  verify('save signed P205',await archive.capture()===109);
  verify('approve active verified P205',await archive.approve(109)===true);
  const archiveRows=await archive.list();verify('two signed versions available',archiveRows.length===2&&archiveRows.every(x=>x.approved));
- const restored=await archive.restore(107);
- verify('restore previous signed P204 transaction',restored===true);
- const s=readState();
- verify('P121 trial recovery populated',s.highestSequence===109&&s.trial.status==='pending'&&s.trial.seq===107&&s.previous.tilawa.version===b.active.tilawa.version);
- verify('P204 active bytes restored safely',s.active.tilawa.version===a.active.tilawa.version);
- await assert.rejects(archive.restore(109),/جارية/);verify('cannot rollback during pending trial',true);
- s.trial=null;state(s);
+ await assert.rejects(archive.restore(107),/محرك تحديثات P206 موقّع/);
+ verify('unsafe multi-rollback rejected without a signed persistent P206 updater',true);
  const saved=stores.get('basair:p206:signed-six-archive').get('releases').get(107);
- const mod=saved.envelope&&saved.active.tilawa,asset=mod.assets[0],bytes=new Uint8Array(mod.files[asset.path]);bytes[0]^=1;
- await assert.rejects(archive.restore(107),/سلامة|فشل/);verify('reject damaged archived asset',true);
+ const mod=saved.active.tilawa,asset=mod.assets[0],bytes=new Uint8Array(mod.files[asset.path]);bytes[0]^=1;
+ verify('archived asset corruption is rejected by SHA-256 check',!(await archive.matches(saved.active,a.manifest)));
+ bytes[0]^=1;
  // Retention simulation only: earlier owner-signed builds are NOT declared field-stable here.
  stores.get('basair:p206:signed-six-archive').get('releases').clear();
  const releases=[
@@ -96,5 +92,5 @@ function verify(label,cond){assert.ok(cond,label);console.log('PASS '+label)}
  const retained=await archive.list();
  verify('six most recent approved snapshots retained',retained.length===6&&retained.every(x=>x.approved)&&retained[0].sequence===109&&retained[5].sequence===85);
  verify('oldest seventh release evicted',!retained.some(x=>x.sequence===75));
- console.log('RESULT PASS 13 integration assertions');
+ console.log('RESULT PASS archive integration assertions');
 })().catch(e=>{console.error(e.stack);process.exitCode=1});
