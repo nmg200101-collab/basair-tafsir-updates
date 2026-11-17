@@ -77,5 +77,24 @@ function verify(label,cond){assert.ok(cond,label);console.log('PASS '+label)}
  const saved=stores.get('basair:p206:signed-six-archive').get('releases').get(107);
  const mod=saved.envelope&&saved.active.tilawa,asset=mod.assets[0],bytes=new Uint8Array(mod.files[asset.path]);bytes[0]^=1;
  await assert.rejects(archive.restore(107),/سلامة|فشل/);verify('reject damaged archived asset',true);
- console.log('RESULT PASS 9 integration assertions');
+ // Retention simulation only: earlier owner-signed builds are NOT declared field-stable here.
+ stores.get('basair:p206:signed-six-archive').get('releases').clear();
+ const releases=[
+  [75,'p189/P189-SEQ75-OWNER-SIGNED-AUTOMATIC.json'],
+  [85,'p194/P194-SEQ85-OWNER-SIGNED-AUTOMATIC.json'],
+  [93,'p197/P197-SEQ93-OWNER-SIGNED-AUTOMATIC.json'],
+  [103,'p202/P202-SEQ103-OWNER-SIGNED-AUTOMATIC.json'],
+  [105,'p203/P203-SEQ105-OWNER-SIGNED-AUTOMATIC.json'],
+  [107,'p204/P204-SEQ107-OWNER-SIGNED-AUTOMATIC.json'],
+  [109,'p205/P205-SEQ109-OWNER-SIGNED-AUTOMATIC.json']
+ ];
+ for(const [seq,path] of releases){
+  const x=await make(seq,path);state({active:x.active,previous:null,trial:null,highestSequence:seq});latest=x.envelope;
+  assert.equal(await archive.capture(),seq,'capture signed '+seq);
+  assert.equal(await archive.approve(seq),true,'mock owner approval '+seq);
+ }
+ const retained=await archive.list();
+ verify('six most recent approved snapshots retained',retained.length===6&&retained.every(x=>x.approved)&&retained[0].sequence===109&&retained[5].sequence===85);
+ verify('oldest seventh release evicted',!retained.some(x=>x.sequence===75));
+ console.log('RESULT PASS 13 integration assertions');
 })().catch(e=>{console.error(e.stack);process.exitCode=1});
