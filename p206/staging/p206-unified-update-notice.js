@@ -1,30 +1,58 @@
-/* P206: unified signed-update notice presenter; read-only, no forged update events.
- * Reads only the active OTA status and displays information when it exposes a release.
- * Does not replace or bypass the signed OTA engine. */
+/* P206 — unified release details, sourced ONLY from RSA/Ed25519-verified OTA.check().
+ * Core P121 status() returns event messages, NOT the signed release. No invented status.
+ * Never installs automatically, never changes signed data or existing notification inbox.
+ */
 (function(w,d){
-'use strict';
-if(w.__BASAIR_P206_NOTICES__)return;
-var ID='p206UnifiedNotice',last='',seen=new Set();
-function api(){return w.BasairUniversalOTA}
-function safe(x){return typeof x==='string'?x.trim().slice(0,300):''}
-function snapshot(){var a=api();if(!a||typeof a.status!=='function')return null;try{return a.status()}catch(_){return null}}
-function extract(s){if(!s||typeof s!=='object')return null;
- var release=s.release||s.currentRelease||s.manifest||null;
- if(!release||typeof release!=='object')return null;
- var seq=Number(release.sequence),title=safe(release.title),type=safe(release.type||release.category),date=safe(release.issuedAt||release.date);
- if(!Number.isSafeInteger(seq)||seq<1||!title)return null;
- return{sequence:seq,title:title,type:type,date:date,restart:!!release.restartRequired};
-}
-function render(){var s=snapshot(),r=extract(s),old=d.getElementById(ID);if(!r){if(old)old.remove();return}
- var key=String(r.sequence);if(last===key&&old)return;last=key;
- var host=d.getElementById('basairUniversalP121Dialog');if(!host)return;
- var parent=host.querySelector('.bu-p121-panel');if(!parent)return;
- if(!old){old=d.createElement('section');old.id=ID;old.dir='rtl';old.setAttribute('role','status');old.style.cssText='margin:10px 0;padding:12px;border:1px solid #9ebcae;border-radius:12px;font:14px system-ui;line-height:1.6';parent.prepend(old)}
- old.replaceChildren();
- var h=d.createElement('strong');h.textContent='التحديث الشامل رقم '+r.sequence;old.appendChild(h);
- [r.title,r.type&&'نوع الإصلاح: '+r.type,r.date&&'التاريخ: '+r.date,r.restart&&'يتطلب إعادة فتح التطبيق'].filter(Boolean).forEach(function(x){var p=d.createElement('p');p.textContent=x;p.style.margin='4px 0';old.appendChild(p)});
-}
-function boot(){render();if(w.MutationObserver){var observer=new MutationObserver(function(){render()});observer.observe(d.body,{childList:true,subtree:true})}}
-if(d.readyState==='loading')d.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
-w.__BASAIR_P206_NOTICES__={version:206,extract:extract,refresh:render};
+ 'use strict';
+ if(w.__BASAIR_P206_NOTICES__)return;
+ var ID='p206UnifiedNotice',inFlight=null,latest=null;
+ var moduleNames={tilawa:'التلاوة',tafsir:'التفسير',updates:'التحديثات',home:'الرئيسية',hifz:'الحفظ',library:'المكتبة',reciters:'القراء',settings:'الإعدادات',navigation:'التنقل',shared:'المكونات المشتركة',search:'البحث',downloads:'التنزيلات'};
+ function api(){return w.BasairUniversalOTA}
+ function safe(v){return typeof v==='string'?v.slice(0,300):''}
+ function extract(c){
+  if(!c||!c.manifest||!c.envelope)return null;
+  var m=c.manifest,seq=m.sequence;
+  if(!Number.isSafeInteger(seq)||seq<1||typeof m.title!=='string'||!Array.isArray(m.modules))return null;
+  return{sequence:seq,id:safe(m.id),title:safe(m.title),date:safe(m.issuedAt),
+   modules:m.modules.map(function(x){return moduleNames[x.id]||safe(x.id)}),newer:!!c.newer,
+   count:Array.isArray(c.changes)?c.changes.length:0};
+ }
+ function panel(){
+  var dlg=d.getElementById('basairUniversalP121Dialog');
+  return dlg&&dlg.querySelector('.bu-p121-panel');
+ }
+ function text(parent,tag,value){var e=d.createElement(tag);e.textContent=value;parent.appendChild(e);return e}
+ function draw(){
+  var root=panel();if(!root)return;
+  var el=d.getElementById(ID);
+  if(!el){el=d.createElement('section');el.id=ID;el.dir='rtl';el.setAttribute('aria-label','تفاصيل التحديثات المعتمدة');
+   el.style.cssText='margin:12px 0;padding:12px;border:1px solid #a8c5b5;border-radius:12px;font:14px system-ui;line-height:1.65';root.insertBefore(el,root.querySelector('.bu-p121-actions'))}
+  el.replaceChildren();text(el,'strong','معلومات آخر تحديث شامل');
+  if(!latest){text(el,'p','اضغط «عرض تفاصيل الإصدار الموقّع» لاستعلام الخادم.');}
+  else{var status=latest.newer?'تحديث جديد متاح':'آخر بيان معتمد على الخادم';
+   text(el,'p',status+' — رقم '+latest.sequence);
+   text(el,'p',latest.title);
+   if(latest.id)text(el,'p','رمز الحزمة: '+latest.id);
+   if(latest.date)text(el,'p','تاريخ النشر: '+latest.date.slice(0,10));
+   if(latest.modules.length)text(el,'p','الأقسام: '+latest.modules.join('، '));
+   text(el,'small','مصدر البيانات: بيان P121 الموقّع والمتحقّق منه. لا يعني ظهوره اكتمال التثبيت.');}
+  var b=text(el,'button',inFlight?'جارٍ التحقق…':'عرض تفاصيل الإصدار الموقّع');
+  b.type='button';b.disabled=!!inFlight;b.style.cssText='border:0;border-radius:8px;padding:10px;background:#286f52;color:#fff;font:inherit';
+  b.addEventListener('click',function(){refresh()});
+ }
+ async function refresh(){
+  if(inFlight)return inFlight;
+  var a=api();if(!a||typeof a.check!=='function'){latest=null;draw();return null}
+  inFlight=Promise.resolve().then(function(){return a.check()}).then(function(v){latest=extract(v);return latest}).catch(function(e){
+   latest=null;var root=panel();if(root){draw();var n=d.getElementById(ID);if(n)text(n,'p','تعذر الوصول إلى البيان الموقّع؛ لا تغيير في التحديثات: '+safe(e&&e.message));}return null
+  }).finally(function(){inFlight=null;draw()});
+  draw();return inFlight;
+ }
+ function boot(){if(!d.body)return;draw();
+  var root=d.getElementById('basairUniversalP121Dialog');if(root&&w.MutationObserver){var ob=new MutationObserver(function(){draw()});ob.observe(root,{childList:true,subtree:false})}
+  // The host dialog can be created after initialization; check for it on user request only.
+  d.addEventListener('click',function(e){var t=e.target&&e.target.closest&&e.target.closest('[data-basair-p121-button],#p197NavUpdates,#p197MoreUpdates,#p197LibraryUpdates');if(t)w.setTimeout(draw,60)},true);
+ }
+ if(d.readyState==='loading')d.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
+ w.__BASAIR_P206_NOTICES__={version:206,extract:extract,refresh:refresh,render:draw};
 })(window,document);
