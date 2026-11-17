@@ -1,0 +1,29 @@
+{
+  "stage": "P205",
+  "date": "2026-11-17T11:48:17.058691+00:00",
+  "baselineSequence": 107,
+  "releaseSequence": 109,
+  "rollbackSequence": 110,
+  "signedWithPinnedOriginalRSA3072": true,
+  "signedWithPinnedOriginalOwnerEd25519": true,
+  "originalTenTilawaUnmodified": true,
+  "releaseTilawaAssets": 11,
+  "rollbackTilawaAssets": 10,
+  "tafsirAssetsUnmodified": 26,
+  "updatesAssetsUnmodified": 1,
+  "newAsset": {
+    "path": "modules/tilawa/p205-original-print-parity.js",
+    "kind": "js",
+    "size": 12980,
+    "sha256": "7a6c86a518436bb4f8611898ad530a768e051158734ea719f4a7e13b82199fdd"
+  },
+  "expiresAt": "2026-11-20T11:48:17Z",
+  "issuedAt": "2026-11-17T11:46:17Z",
+  "userPhoneQA": "PENDING",
+  "nodeCheck": "PASS",
+  "chromiumSourceParity": "PASS",
+  "sameOriginalR33Shell": true,
+  "published": false,
+  "rollbackPublished": false,
+  "noAPK": true
+}
