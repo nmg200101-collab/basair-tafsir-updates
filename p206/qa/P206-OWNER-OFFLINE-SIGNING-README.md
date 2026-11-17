@@ -50,3 +50,19 @@ Use `--rsa-backup-zip /path/to/secure-owner-backup.zip` in place of `--rsa-p12` 
 - Original RSA3072 private key and password are not part of the uploaded Ed25519 backup.
 - Full V695 Android WebView/phone first-tap, Stop/Pause, frame, zoom/audio, and six-step rollback tests have not been completed.
 - Signed envelopes must be verified and separately approved before an owner-qa release PR and actual installation.
+
+## New original Android signing ZIP received — local-only verification
+
+Date: 2026-11-17. Archive: `BASAIR-QURAN-OWNER-ORIGINAL-SIGNING-PRIVATE-NEW-CHAT-2.zip` (handled locally; **not committed**).
+
+- ZIP CRC: PASS (4 entries).
+- Original `OWNER-SIGNING-KEY.p12`: RSA3072 private key and certificate successfully unlocked using the matching credentials included **inside the private archive**. Their values were not printed or committed.
+- Public Android certificate SHA-256: `35066b87e4b854187b5c8fa8321676bacc2de8bef14624072afb33ebd506dc07` — PASS against project baseline and archive metadata.
+- Public RSA SPKI SHA-256: `ca29e72d263432c7347dcb0e5b376c142401ad24b543b7ab6d2fc1c2f92e5e88` — PASS against pinned P121 verifier.
+- Archive P12 SHA-256 field matches actual bytes: PASS.
+- RSA3072 SHA256withRSA sign/verify on an **independent, nonrelease test challenge**: PASS. **No OTA manifest was signed.**
+- The archive is an ordinary ZIP and includes plaintext private credential metadata: treat it as highly sensitive, keep it in encrypted owner storage and never upload it to GitHub, CI, email, or a public service.
+- The offline signer now supports this **root-level** ZIP directly with `--rsa-backup-zip /private/path/BASAIR-QURAN-OWNER-ORIGINAL-SIGNING-PRIVATE-NEW-CHAT-2.zip`. The original RSA password is read locally from the archive without a command-line argument or log output. It also supports the older nested key backup.
+- The *Ed25519* private key remains encrypted in the separate owner backup. A user-local, nonshared passphrase remains necessary. The supplied RSA credential entries are not the Ed25519 passphrase.
+
+**No new owner Ed25519 signature or RSA OTA envelope has been generated.** Android V695 device acceptance, signature preparation and final QA-050 are still blocking release.
