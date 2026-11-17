@@ -100,15 +100,52 @@ def ed_from_backup(backup):
     return key
 
 
-def rsa_from_p12(p12_bytes):
-    password = getpass.getpass("Original Android RSA P12 password (offline, hidden): ").encode("utf-8")
+def rsa_from_p12(p12_bytes, password=None):
+    if password is None:
+        password = getpass.getpass("Original Android RSA P12 password (offline, hidden): ").encode("utf-8")
     key, cert, _ = pkcs12.load_key_and_certificates(p12_bytes, password)
     if not isinstance(key, rsa.RSAPrivateKey) or key.key_size != 3072 or cert is None:
         raise ValueError("Missing original RSA3072 certificate or signing key")
     der = cert.public_key().public_bytes(serialization.Encoding.DER, serialization.PublicFormat.SubjectPublicKeyInfo)
     if hashhex(der) != RSA_SPKI_SHA256_PIN:
         raise ValueError("RSA certificate is NOT the original pinned P121 signer")
+    if hashhex(cert.public_bytes(serialization.Encoding.DER)) != "35066b87e4b854187b5c8fa8321676bacc2de8bef14624072afb33ebd506dc07":
+        raise ValueError("Original Android signer certificate SHA-256 mismatch")
     return key, cert.public_key()
+
+
+def original_rsa_from_owner_zip(archive):
+    # Accept either the new root-level archive or the older nested owner backup.
+    # Do not log, return, upload or persist credentials.
+    with ZipFile(archive) as z:
+        names = set(z.namelist())
+        root_key, root_creds = "OWNER-SIGNING-KEY.p12", "SIGNING-CREDENTIALS-PRIVATE.txt"
+        nested_key = "01-ANDROID-ORIGINAL-SIGNING/OWNER-SIGNING-KEY.p12"
+        nested_creds = "01-ANDROID-ORIGINAL-SIGNING/SIGNING-CREDENTIALS-PRIVATE.txt"
+        if {root_key, root_creds} <= names:
+            key_path, credentials_path = root_key, root_creds
+        elif {nested_key, nested_creds} <= names:
+            key_path, credentials_path = nested_key, nested_creds
+        else:
+            raise ValueError("Owner archive is missing original P12 or credentials")
+        key_bytes = z.read(key_path)
+        private_text = z.read(credentials_path).decode("utf-8-sig")
+    fields = {}
+    for line in private_text.splitlines():
+        if ":" not in line:
+            continue
+        key, value = line.split(":", 1)
+        fields[key.strip().lower()] = value.strip()
+    password = fields.get("keystore password")
+    if not password:
+        raise ValueError("Owner credentials are missing the keystore password")
+    stated_cert = fields.get("certificate sha-256", "").lower().replace(":", "")
+    stated_p12 = fields.get("keystore file sha-256", "").lower().replace(":", "")
+    if stated_cert and stated_cert != "35066b87e4b854187b5c8fa8321676bacc2de8bef14624072afb33ebd506dc07":
+        raise ValueError("Owner archive declares an unexpected Android signer certificate")
+    if stated_p12 and hashhex(key_bytes) != stated_p12:
+        raise ValueError("Owner archive original P12 SHA-256 mismatch")
+    return rsa_from_p12(key_bytes, password.encode("utf-8"))
 
 
 def sign(manifest, ed_key, rsa_key, rsa_public):
@@ -146,7 +183,7 @@ def main():
     p.add_argument("--ed-backup", type=Path, required=True, help="Encrypted owner Ed25519 backup ZIP")
     group = p.add_mutually_exclusive_group(required=True)
     group.add_argument("--rsa-p12", type=Path, help="Original RSA3072 Android P12, LOCAL ONLY")
-    group.add_argument("--rsa-backup-zip", type=Path, help="Original RSA owner backup ZIP, LOCAL ONLY")
+    group.add_argument("--rsa-backup-zip", type=Path, help="Original RSA owner backup ZIP (root or nested P12 + credentials), LOCAL ONLY")
     p.add_argument("--output", type=Path, required=True, help="New signed envelope outside release.json")
     args = p.parse_args()
     if args.output.resolve() == (ROOT / "p121/owner-qa/release.json").resolve():
@@ -155,11 +192,9 @@ def main():
     verify_manifest(manifest)  # Before any passphrase prompts
     ed = ed_from_backup(args.ed_backup)
     if args.rsa_p12:
-        rsa_bytes = args.rsa_p12.read_bytes()
+        rsa_key, rsa_pub = rsa_from_p12(args.rsa_p12.read_bytes())
     else:
-        with ZipFile(args.rsa_backup_zip) as z:
-            rsa_bytes = z.read(ZIP_RSA)
-    rsa_key, rsa_pub = rsa_from_p12(rsa_bytes)
+        rsa_key, rsa_pub = original_rsa_from_owner_zip(args.rsa_backup_zip)
     envelope = sign(manifest, ed, rsa_key, rsa_pub)
     output = (json.dumps(envelope, ensure_ascii=False, indent=2) + "\n").encode("utf-8")
     args.output.parent.mkdir(parents=True, exist_ok=True)
