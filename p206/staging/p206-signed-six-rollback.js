@@ -14,7 +14,19 @@ function decode64(s){if(typeof s!=='string'||s.length>64000)throw Error('Invalid
 async function hash(b){var dig=await crypto.subtle.digest('SHA-256',b);return Array.from(new Uint8Array(dig)).map(function(v){return v.toString(16).padStart(2,'0')}).join('')}
 function db(name,version,upgrade){return new Promise(function(resolve,reject){var req=indexedDB.open(name,version);req.onupgradeneeded=function(){if(upgrade)upgrade(req.result)};req.onsuccess=function(){resolve(req.result)};req.onerror=function(){reject(req.error||Error('DB failed'))}})}
 async function stateRead(){var database=await db(OTA_DB,1),value=await new Promise(function(resolve,reject){var tx=database.transaction('meta','readonly'),r=tx.objectStore('meta').get('state');r.onsuccess=function(){resolve(r.result||null)};r.onerror=function(){reject(r.error)}});database.close();return value}
-async function stateWrite(s){var database=await db(OTA_DB,1);try{return await new Promise(function(resolve,reject){var tx=database.transaction('meta','readwrite');tx.objectStore('meta').put(s,'state');tx.oncomplete=function(){resolve(true)};tx.onerror=function(){reject(tx.error)};tx.onabort=function(){reject(tx.error)}})}finally{database.close()}}
+function sameVersions(a,b){var ax=Object.keys(a||{}).sort(),bx=Object.keys(b||{}).sort();return ax.length===bx.length&&ax.every(function(k,i){return bx[i]===k&&a[k]&&b[k]&&a[k].version===b[k].version})}
+async function stateSwap(expected,next){var database=await db(OTA_DB,1);try{return await new Promise(function(resolve,reject){
+ var error=null,tx=database.transaction('meta','readwrite'),os=tx.objectStore('meta'),req=os.get('state');
+ req.onsuccess=function(){var live=req.result;
+  if(!live||live.trial||live.highestSequence!==expected.highestSequence||!sameVersions(live.active,expected.active)){
+   error=Error('تغيّرت حالة التحديثات أثناء التحقق؛ لم يتم الرجوع');tx.abort();return;
+  }
+  os.put(next,'state');
+ };
+ req.onerror=function(){error=req.error||Error('تعذر قراءة حالة التحديثات');tx.abort()};
+ tx.oncomplete=function(){resolve(true)};tx.onerror=function(){reject(error||tx.error||Error('فشل حفظ النسخة'))};
+ tx.onabort=function(){reject(error||tx.error||Error('أُلغي الرجوع الآمن'))};
+ })}finally{database.close()}}
 async function store(){return db(ARCH_DB,1,function(database){if(!database.objectStoreNames.contains('releases'))database.createObjectStore('releases',{keyPath:'sequence'})})}
 async function list(){var database=await store();try{return await new Promise(function(resolve,reject){var tx=database.transaction('releases','readonly'),r=tx.objectStore('releases').getAll();r.onsuccess=function(){resolve((r.result||[]).sort(function(a,b){return b.sequence-a.sequence}))};r.onerror=function(){reject(r.error)}})}finally{database.close()}}
 async function save(rec){
@@ -87,6 +99,23 @@ async function approve(sequence){
  var m=await manifestVerified(rec.envelope);if(m.sequence!==sequence||!(await matches(s.active,m)))throw Error('فشل التحقق من سلامة الإصدار');
  rec.approved=true;await save(rec);render();return true;
 }
+function hasArchiveRuntime(bundle){return !!(bundle&&Array.isArray(bundle.assets)&&bundle.assets.some(function(a){
+ return a.path==='modules/updates/p206-signed-six-rollback.js'&&a.kind==='js';
+}))}
+/* A full rollback of "updates" would erase P206's own UI: later rollback steps and
+ * forward restore would become impossible. Keep ONLY a verified, owner-approved,
+ * P206-capable updates module pinned across older application-module snapshots. */
+async function trustedUpdateRuntime(){
+ var rows=await list();
+ for(var i=0;i<rows.length;i++){
+  var r=rows[i];if(!r.approved||!hasArchiveRuntime(r.active&&r.active.updates))continue;
+  try{
+   var m=await manifestVerified(r.envelope);
+   if(m.sequence===r.sequence&&await matches(r.active,m))return r.active.updates;
+  }catch(_){}
+ }
+ return null;
+}
 async function restore(sequence){
  if(busy)throw Error('عملية أخرى قيد التنفيذ');
  busy=true;try{
@@ -95,10 +124,14 @@ async function restore(sequence){
   var m=await manifestVerified(rec.envelope);
   if(m.sequence!==rec.sequence||!(await matches(rec.active,m)))throw Error('فشل فحص توقيع الإصدار أو ملفاته');
   if(m.minAppVersion>695||m.sequence>s.highestSequence)throw Error('إصدار غير متوافق');
-  if(m.sequence===s.highestSequence&&(await matches(s.active,m)))return false;
-  // P121 will roll back to previous if the restored JS fails to initialize.
-  var next=Object.assign({},s,{active:rec.active,previous:s.active,trial:{status:'pending',seq:m.sequence},highestSequence:s.highestSequence});
-  await stateWrite(next);return true;
+  var runtime=await trustedUpdateRuntime();
+  if(!runtime)throw Error('الرجوع المتعدد غير آمن: يلزم اعتماد محرك تحديثات P206 موقّع ليظل متاحًا بعد الاستعادة');
+  var nextActive=Object.assign({},rec.active,{updates:runtime});
+  if(sameVersions(nextActive,s.active))return false;
+  // P121's pending trial ensures a failed older version restores the current signed set.
+  var next=Object.assign({},s,{active:nextActive,previous:s.active,
+   trial:{status:'pending',seq:m.sequence},highestSequence:s.highestSequence});
+  await stateSwap(s,next);return true;
  }finally{busy=false;render()}
 }
 function panel(){var e=d.getElementById('basairUniversalP121Dialog');return e&&e.querySelector('.bu-p121-panel')}
@@ -141,5 +174,5 @@ function boot(){
  d.addEventListener('click',function(e){if(e.target&&e.target.closest&&e.target.closest('[data-basair-p121-button],#p197NavUpdates,#p197MoreUpdates'))w.setTimeout(render,60)},true);
 }
 if(d.readyState==='loading')d.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
-w.__BASAIR_P206_SIGNED_ARCHIVE__={version:206,limit:LIMIT,capture:capture,list:list,approve:approve,restore:restore,verify:manifestVerified,matches:matches,refresh:render};
+w.__BASAIR_P206_SIGNED_ARCHIVE__={version:206,limit:LIMIT,capture:capture,list:list,approve:approve,restore:restore,verify:manifestVerified,matches:matches,hasArchiveRuntime:hasArchiveRuntime,refresh:render};
 })(window,document);
