@@ -1,0 +1,30 @@
+/* P198 — Local printed Tajwid follow shell, matched to original R33 exact geometry.
+   Only while the B345 follow surface owns the page; no changes to static P193. */
+body.reader-active[data-v144-print="tajwid"] #b345NormalStack > .r33PrintShell {
+  display:block !important;position:relative !important;width:100% !important;
+  aspect-ratio:720/1280 !important;min-height:1px !important;
+  margin:0 auto 2px !important;padding:0 !important;overflow:hidden !important;
+  background:#fffdf8 !important;color:transparent !important;
+  border:0 !important;border-radius:0 !important;box-sizing:border-box !important;
+  direction:rtl !important;touch-action:pan-y !important;
+}
+body.reader-active[data-v144-print="tajwid"] #b345NormalStack > .r33PrintShell:last-child {margin-bottom:0 !important;}
+body.reader-active[data-v144-print="tajwid"] #b345NormalStack > .r33PrintShell > .r33PrintImage {
+  display:block !important;position:absolute !important;inset:0 !important;
+  width:100% !important;height:100% !important;object-fit:fill !important;
+  object-position:center !important;opacity:1 !important;visibility:visible !important;
+  transform:none !important;transition:none !important;animation:none !important;
+  background:#fffdf8 !important;z-index:1 !important;pointer-events:none !important;
+}
+body.reader-active[data-v144-print="tajwid"] #b345NormalStack > .r33PrintShell > .r33PrintLoading {
+  position:absolute !important;inset:0 !important;display:flex !important;
+  align-items:center !important;justify-content:center !important;
+  color:#6b5b46 !important;background:#fffdf8 !important;font:800 12px Tahoma,Arial,sans-serif !important;
+  z-index:0 !important;pointer-events:none !important;
+}
+body.reader-active[data-v144-print="tajwid"] #b345NormalStack > .r33PrintShell[data-image-ready="1"] > .r33PrintLoading {display:none !important;}
+body.reader-active[data-v144-print="tajwid"] #b345NormalStack > .r33PrintShell > .ayahHitLayer {
+  display:block !important;position:absolute !important;inset:0 !important;
+  z-index:6 !important;pointer-events:none !important;touch-action:pan-y !important;
+}
+body.reader-active[data-v144-print="tajwid"] #b345NormalStack > .r33PrintShell > .ayahHitLayer > .ayahHit {pointer-events:none !important;touch-action:pan-y !important;user-select:none !important;}
