@@ -1,0 +1,38 @@
+{
+  "stage": "P200",
+  "date": "2026-11-17",
+  "sourceHead": "42162684eb1a498859f22f98f46bdc68f9ac8fb9",
+  "appVersion": "V695",
+  "baselineSequence": 97,
+  "release": {
+    "sequence": 99,
+    "payloadSha256": "a5d765b92929f2bd42e3f631c15afd501089d0618064af07dd72cbd94a2a342b",
+    "envelopeSha256": "7f7c7f14ce7b5a097c532b05680cb290284c969c38ba2c37df4d0b09cc5e0706",
+    "path": "/mnt/data/p200_fixed_follow/P200-SEQ99-OWNER-SIGNED-AUTOMATIC.json",
+    "manifestAssets": 24,
+    "appId": "app.basair.qurv2",
+    "ownerSignatureVerified": true,
+    "transportSignatureVerified": true,
+    "size": 12325
+  },
+  "rollback": {
+    "sequence": 100,
+    "payloadSha256": "2b424847f3987fc065e55fd6c8a15be55ecfa74e7b0746dc5757e6367e2617c1",
+    "envelopeSha256": "4d4d90f9d3bece1f402b0407972cac2e7c7f902c82a84cd6c1c59b95ae719082",
+    "path": "/mnt/data/p200_fixed_follow/P200-SEQ100-OWNER-SIGNED-ROLLBACK-NOT-PUBLISHED.json",
+    "manifestAssets": 22,
+    "appId": "app.basair.qurv2",
+    "ownerSignatureVerified": true,
+    "transportSignatureVerified": true,
+    "size": 11881,
+    "published": false
+  },
+  "tilawaOriginalAssets": 22,
+  "tilawaCandidateAssets": 24,
+  "tafsirAssets": 26,
+  "updatesAssets": 1,
+  "QA050": "PENDING_FINAL_COMMIT",
+  "ChromiumDOM": "PASS",
+  "AndroidField": "PENDING",
+  "newAPK": false
+}
