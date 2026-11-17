@@ -22,6 +22,19 @@ function check(name,fn){return Promise.resolve().then(fn).then(()=>{results.push
   await assert.rejects(signer.verify(changed),/signature|Untrusted|Invalid/);
  });
  await check('six stable release policy exposed',()=>{assert.equal(signer.limit,6)});
+ const signed=await signer.verify(env),active={};let verifiedAssets=0;
+ for(const mod of signed.modules){let files={};for(const a of mod.assets){
+  const buff=fs.readFileSync(root+'/p121/owner-qa/'+a.path);
+  assert.equal(buff.byteLength,a.size,'signed size '+a.path);
+  files[a.path]=buff.buffer.slice(buff.byteOffset,buff.byteOffset+buff.byteLength);verifiedAssets++;
+ }active[mod.id]={version:mod.version,assets:mod.assets,files};}
+ await check('all '+verifiedAssets+' P205 signed assets match their SHA-256',async()=>{
+  assert.equal(await signer.matches(active,signed),true);
+ });
+ await check('tampered cached asset is rejected',async()=>{
+  const m=signed.modules.find(x=>x.assets.length>0),a=m.assets[0],bytes=new Uint8Array(active[m.id].files[a.path]),old=bytes[0];
+  bytes[0]^=1;try{assert.equal(await signer.matches(active,signed),false)}finally{bytes[0]=old}
+ });
  const ctl={state:{running:false,paused:false,page:4,scaleMode:'normal',printStaticHeld:true},releaseStaticPrint(){this.state.printStaticHeld=false;released++}};
  let released=0,restored=[],buttons=[],timerFns=[],scheduled=[],frameCount=0,mode='tajwid',blocked=false;
  const classes={contains(name){return name==='reader-active'||(name==='stableDigital'&&blocked)}};
