@@ -18,7 +18,11 @@ async function stateWrite(s){var database=await db(OTA_DB,1);try{return await ne
 async function store(){return db(ARCH_DB,1,function(database){if(!database.objectStoreNames.contains('releases'))database.createObjectStore('releases',{keyPath:'sequence'})})}
 async function list(){var database=await store();try{return await new Promise(function(resolve,reject){var tx=database.transaction('releases','readonly'),r=tx.objectStore('releases').getAll();r.onsuccess=function(){resolve((r.result||[]).sort(function(a,b){return b.sequence-a.sequence}))};r.onerror=function(){reject(r.error)}})}finally{database.close()}}
 async function save(rec){
- var rows=await list(),del=rows.filter(function(r){return r.sequence!==rec.sequence}).concat(rec).sort(function(a,b){return b.sequence-a.sequence}).slice(LIMIT);
+ var rows=await list(),all=rows.filter(function(r){return r.sequence!==rec.sequence}).concat(rec);
+ var approved=all.filter(function(r){return r.approved}).sort(function(a,b){return b.sequence-a.sequence}).slice(0,LIMIT);
+ var pending=all.filter(function(r){return !r.approved}).sort(function(a,b){return b.sequence-a.sequence}).slice(0,1);
+ var keep=new Set(approved.concat(pending).map(function(r){return r.sequence}));
+ var del=all.filter(function(r){return !keep.has(r.sequence)});
  var database=await store();try{return await new Promise(function(resolve,reject){
   var tx=database.transaction('releases','readwrite'),os=tx.objectStore('releases');os.put(rec);del.forEach(function(r){os.delete(r.sequence)});
   tx.oncomplete=function(){resolve(true)};tx.onerror=function(){reject(tx.error)};tx.onabort=function(){reject(tx.error)};
@@ -93,7 +97,7 @@ async function restore(sequence){
   if(m.minAppVersion>695||m.sequence>s.highestSequence)throw Error('إصدار غير متوافق');
   if(m.sequence===s.highestSequence&&(await matches(s.active,m)))return false;
   // P121 will roll back to previous if the restored JS fails to initialize.
-  var next={active:rec.active,previous:s.active,trial:{status:'pending',seq:m.sequence},highestSequence:s.highestSequence};
+  var next=Object.assign({},s,{active:rec.active,previous:s.active,trial:{status:'pending',seq:m.sequence},highestSequence:s.highestSequence});
   await stateWrite(next);return true;
  }finally{busy=false;render()}
 }
@@ -106,7 +110,9 @@ async function render(){
   el=elem('section');el.id='p206SignedArchivePanel';el.dir='rtl';el.style.cssText='margin:12px 0;padding:12px;border:1px solid #aec7bb;border-radius:12px;font:14px system-ui;line-height:1.7';
   root.appendChild(el);
  }
- el.replaceChildren();el.appendChild(elem('strong','الإصدارات المستقرة المحفوظة — حتى 6'));
+ el.replaceChildren();el.appendChild(elem('strong','الإصدارات المستقرة المحفوظة — آخر 6'));
+ var refreshBtn=elem('button','فحص وحفظ الإصدار الموقّع الحالي');refreshBtn.type='button';refreshBtn.disabled=busy;
+ refreshBtn.onclick=function(){capture().then(function(){render()})};el.appendChild(refreshBtn);
  try{
   var rows=await list();if(!rows.length){displayStatus(el,'لا توجد نسخ موقعة ومكتملة محفوظة بعد.');return}
   var s=await stateRead();rows.forEach(function(r){
