@@ -1,0 +1,52 @@
+{
+  "stage": "P202",
+  "date": "2026-11-17",
+  "reason": "Owner explicitly requested return to screenshot captured 2026-11-16 18:48 local, after P189 release at 18:31 local and before P190 release at 19:29 local",
+  "target": "EXACT_P189_SEQ75_TILAWA_CONTENT",
+  "activeBefore": "P201 Seq101 / tilawa v219",
+  "assetVerification": {
+    "p189OriginalOwnerProtectedModulesSha256": "31e61c47f2e4b2ca9ee6d4c28842882869136f7f7cddbbfef24a59dc0020fe26",
+    "downloadSourcesSha256": "10/10 verified against original signed P189 manifest",
+    "touchedModules": [
+      "tilawa"
+    ],
+    "unmodifiedModules": {
+      "tafsir": 26,
+      "updates": 1
+    }
+  },
+  "signed": [
+    {
+      "sequence": 103,
+      "filename": "P202-SEQ103-OWNER-SIGNED-AUTOMATIC.json",
+      "version": 221,
+      "tilawaAssets": 10,
+      "payloadSha256": "d318307b90bc3164cabbc93d34f0375c889112cbc5d2435669b4061b5edde10f",
+      "envelopeSha256": "6e7ff92f00573f54500689a999610a560f6461201826f17e7600dc52c08e8616",
+      "gitBlobSha1": "32da601cc1e42731396d344e6a0ed2de920e9c5d",
+      "rsaVerified": true,
+      "edVerified": true,
+      "published": false
+    },
+    {
+      "sequence": 104,
+      "filename": "P202-SEQ104-OWNER-SIGNED-ROLLBACK-NOT-PUBLISHED.json",
+      "version": 222,
+      "tilawaAssets": 25,
+      "payloadSha256": "8c789dcfefd287d32e543cf4c5933e46cbc1f1b005d5efd1c08a055c11c38b35",
+      "envelopeSha256": "124a372deaf9715b39e41ade5f3de4889d122f67a0b9efd37125a24276b5d8bd",
+      "gitBlobSha1": "333a497b64c6fe7e72aea2d4b51b18413c6601bd",
+      "rsaVerified": true,
+      "edVerified": true,
+      "published": false
+    }
+  ],
+  "issuedAt": "2026-11-17T09:08:50Z",
+  "ownerApprovalExpires": "2026-11-22T09:12:50Z",
+  "gates": {
+    "QA050": "PENDING_FINAL_HEAD",
+    "ownerV695FieldAcceptance": "PENDING",
+    "newAPK": false,
+    "keepAppData": true
+  }
+}
