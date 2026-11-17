@@ -8,7 +8,7 @@
 if(w.__BASAIR_P206_SIGNED_ARCHIVE__)return;
 var OTA_DB='basair:p121:universal:db', ARCH_DB='basair:p206:signed-six-archive', LIMIT=6, APP='app.basair.qurv2';
 var RSA_PUBLIC='MIIBojANBgkqhkiG9w0BAQEFAAOCAY8AMIIBigKCAYEAyXkxNwLNb5VBj2+tMN6/LEj7JyAQ+jyuaxPajj6iAoItN2JLqyu9JBVsesMkQLxwv78MtDJFH1dX+ZAAFNw0Q2d5CBxlhz06kugb7aTQaXcKIPXHAZ7jyo+uH95vWT1uhQqRTH8nAXjq6Z/rxJQJLZ72MYR8NapMTmZys4qlhwCXo6AyB0yBhzpAiMERAy3OIUH4lUXz+EDKnMhpBDPLzwkGAT8pfJ/TFA/wX1ld0Pn16zzUMEXOR3kAbKa3N0bJqs6B+Hlvrd2QwYt2PNDEFdvLKx5R1unkNGWVb8ky/Hs6DW137ONjY5w3luJPpV/sdtRZSOPQwKit6fLbSSCCEICY9BxELcAB4NrA1QTjS6qsA6KPrmhB6+70wnaFgsYdr3mev3bafWFS4mFpKu4WmklQFTZSGCDwfBoQnw3ruAa3sdyURV++0N1wxlT9qVO+VSFNLLrPOnjbYSsjBmCwDNfEVXWB1vnxkEGtDeeW3X29AYOCPQ8/QoXELBdAOa5lAgMBAAE=', OWNER_PUBLIC='E5w/6ZiOP+TAolg6STpmeDl0Yo2A/NPHhcqhCo5pitk=';
-var PROTECTED=['tilawa','shared','navigation','reciters'],busy=false,chosen=null;
+var PROTECTED=['tilawa','shared','navigation','reciters'],busy=false,chosen=null,legacyClick=null;
 var encoder=new TextEncoder(),decoder=new TextDecoder('utf-8',{fatal:true});
 function decode64(s){if(typeof s!=='string'||s.length>64000)throw Error('Invalid base64');var raw=atob(s),a=new Uint8Array(raw.length);for(var i=0;i<raw.length;i++)a[i]=raw.charCodeAt(i);return a}
 async function hash(b){var dig=await crypto.subtle.digest('SHA-256',b);return Array.from(new Uint8Array(dig)).map(function(v){return v.toString(16).padStart(2,'0')}).join('')}
@@ -149,7 +149,18 @@ async function render(){
  try{
   var rows=await list();if(!rows.length){displayStatus(el,'لا توجد نسخ موقعة ومكتملة محفوظة بعد.');return}
   var s=await stateRead(),runtime=await trustedUpdateRuntime();
-  if(!runtime)displayStatus(el,'الرجوع المتعدد غير مفعّل حتى يتوفر محرك P206 موقّع ومحفوظ؛ يمكنك متابعة قراءة سجل الإصدارات فقط.');
+  var legacy=d.getElementById('p197RollbackPanel'),nativeBtn=d.getElementById('buP121Rollback');
+  if(runtime){
+   if(legacy)legacy.hidden=true;
+   if(nativeBtn){if(!nativeBtn.dataset.p206HistoryAttached){legacyClick=nativeBtn.onclick;nativeBtn.dataset.p206HistoryAttached='1'}
+    nativeBtn.textContent='الإصدارات السابقة';
+    nativeBtn.onclick=function(e){if(e){e.preventDefault();e.stopPropagation()}if(el.scrollIntoView)el.scrollIntoView({block:'nearest'})};
+   }
+  }else{
+   if(legacy)legacy.hidden=false;
+   if(nativeBtn&&nativeBtn.dataset.p206HistoryAttached){nativeBtn.onclick=legacyClick;nativeBtn.textContent='الرجوع للإصدار السابق';delete nativeBtn.dataset.p206HistoryAttached}
+   displayStatus(el,'الرجوع المتعدد غير مفعّل حتى يتوفر محرك P206 موقّع ومحفوظ؛ يمكنك متابعة قراءة سجل الإصدارات فقط.');
+  }
   rows.forEach(function(r){
    var row=elem('div');row.style.cssText='padding:5px 0;border-bottom:1px solid #d8e4dd';
    var label=elem('span','تحديث '+r.sequence+' — '+String(r.title||r.id||'').slice(0,80)+(r.approved?' (مستقر معتمد)':' (بانتظار اعتماد المالك)'));
