@@ -1,0 +1,42 @@
+{
+  "stage": "P201",
+  "date": "2026-11-17",
+  "application": "app.basair.qurv2",
+  "appVersion": "V695",
+  "baseline": {
+    "seq": 99,
+    "tilawa": 217,
+    "tilawaAssets": 24,
+    "tafsirAssets": 26,
+    "updatesAssets": 1
+  },
+  "candidate": {
+    "sequence": 101,
+    "payloadSHA256": "1363294e58d022d63e3fd78fc580d2cfb30a8499918edc4f91a9c5cc595eada2",
+    "envelopeSHA256": "dccac02823928e25d6e35b754d1b1db2057697dbed50093c574366662387cbf6",
+    "filename": "P201-SEQ101-OWNER-SIGNED-AUTOMATIC.json",
+    "files": 25,
+    "ownerEd25519": "VERIFIED_PINNED",
+    "transportRSA3072": "VERIFIED_PINNED"
+  },
+  "rollback": {
+    "sequence": 102,
+    "payloadSHA256": "ab0e051a7245463eda299853223b770bb81210c83c5b2a72a8879bae28bda4db",
+    "envelopeSHA256": "44352d819b58c8957ad757aa8ec58455bd44f26a7d84caf16a1a85ea25ea16c1",
+    "filename": "P201-SEQ102-OWNER-SIGNED-ROLLBACK-NOT-PUBLISHED.json",
+    "files": 24,
+    "ownerEd25519": "VERIFIED_PINNED",
+    "transportRSA3072": "VERIFIED_PINNED",
+    "published": false
+  },
+  "newAsset": {
+    "path": "modules/tilawa/p201-legacy-occlusion.css",
+    "kind": "css",
+    "size": 1103,
+    "sha256": "7b3760334e1f2a03563c80abe47cd73b9bc9955831a9689396398bc0282c2800"
+  },
+  "chromiumTests": "8/8 PASS with P199+P200 real scripts and R33 !important descendants",
+  "qa050": "PENDING_FINAL_HEAD",
+  "androidOwnerAcceptance": "PENDING",
+  "noAPK": true
+}
