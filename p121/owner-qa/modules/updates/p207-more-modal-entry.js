@@ -67,6 +67,8 @@
  }
  function install(){
   hideStaleControls();
+  // Never expose an inert update button when the signed P121 engine is absent.
+  if(!w.BasairUniversalOTA||typeof w.BasairUniversalOTA.open!=='function')return false;
   var data=findActualMore();
   if(!data||!data.card||!data.card.parentElement)return false;
   var old=d.getElementById(ENTRY);
@@ -102,15 +104,20 @@
      var items=records[i].addedNodes||[];
      for(var j=0;j<items.length;j++){
       var node=items[j];
-      if(node.nodeType===1&&node.id!==ENTRY&&node.id!==STYLE){schedule();return}
+      if(node.nodeType!==1||node.id===ENTRY||node.id===STYLE)continue;
+      // Tafsir and the reader render many unrelated nodes. Check only More UI.
+      var value=norm(node.textContent).slice(0,1800);
+      if(value.indexOf('المزيد')!==-1||value.indexOf('تحديثات التطبيق')!==-1||
+         value.indexOf('إعدادات التطبيق')!==-1){schedule();return}
      }
     }
    });
    observer.observe(d.body,{childList:true,subtree:true});
   }
   d.addEventListener('click',function(e){
-   var n=e.target&&e.target.closest&&e.target.closest('#bqP26More,#bqMoreCenter,[data-basair-more],#bqMoreCenter');
-   if(n)schedule();
+   var n=e.target&&e.target.closest&&e.target.closest('#bqP26More,#bqMoreCenter,[data-basair-more],button,[role="button"]');
+   if(n&&(n.id==='bqP26More'||n.id==='bqMoreCenter'||
+       (n.hasAttribute&&n.hasAttribute('data-basair-more'))||norm(n.textContent)==='المزيد'))schedule();
   },true);
   schedule();
  }
