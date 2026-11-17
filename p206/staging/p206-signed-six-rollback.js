@@ -148,7 +148,9 @@ async function render(){
  refreshBtn.onclick=function(){capture().then(function(){render()})};el.appendChild(refreshBtn);
  try{
   var rows=await list();if(!rows.length){displayStatus(el,'لا توجد نسخ موقعة ومكتملة محفوظة بعد.');return}
-  var s=await stateRead();rows.forEach(function(r){
+  var s=await stateRead(),runtime=await trustedUpdateRuntime();
+  if(!runtime)displayStatus(el,'الرجوع المتعدد غير مفعّل حتى يتوفر محرك P206 موقّع ومحفوظ؛ يمكنك متابعة قراءة سجل الإصدارات فقط.');
+  rows.forEach(function(r){
    var row=elem('div');row.style.cssText='padding:5px 0;border-bottom:1px solid #d8e4dd';
    var label=elem('span','تحديث '+r.sequence+' — '+String(r.title||r.id||'').slice(0,80)+(r.approved?' (مستقر معتمد)':' (بانتظار اعتماد المالك)'));
    row.appendChild(label);
@@ -157,7 +159,7 @@ async function render(){
    }
    if(r.approved){
     var b=elem('button',chosen===r.sequence?'تأكيد الرجوع وإعادة فتح التطبيق':'الرجوع إلى هذا الإصدار');
-    b.type='button';b.disabled=busy;b.onclick=function(){
+    b.type='button';b.disabled=busy||!runtime;b.onclick=function(){
      if(chosen!==r.sequence){chosen=r.sequence;render();return}
      restore(r.sequence).then(function(changed){chosen=null;if(changed)w.location.reload();else render()}).catch(function(e){chosen=null;displayStatus(el,e.message)});
     };row.appendChild(b);
