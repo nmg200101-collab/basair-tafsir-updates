@@ -17,8 +17,8 @@
       "size": 3184,
       "sha256": "5b6868719f28480ca6bd545307aaa5d4b22ace3388509c91846885b1d33b3b4e"
     },
-    "payloadSha256": "a22d6ccb9cba71d3a0e67a5cc5ad646764d9c3a576b256411103d740b2601cd2",
-    "envelopeSha256": "52b7a39b00a5e09032cd33b06cbe3d72e321e616e1c93d509b91e06f76a607e4",
+    "payloadSha256": "4f9bf8dd58105f436c5e2995bb068c75b5eac3393a3915307b3219bd5e7cc839",
+    "envelopeSha256": "8a4fa337aea458f74fb1cd7e16d21805b258d2af2cf560ba905c3d792c9af970",
     "ownerEd25519": "VERIFIED_ORIGINAL_OWNER_PUBLIC",
     "rsa3072": "VERIFIED_PINNED_CERTIFICATE"
   },
@@ -27,8 +27,8 @@
     "tilawaVersion": 208,
     "tilawaAssets": 18,
     "tafsirAssets": 26,
-    "payloadSha256": "349e705bcca0e39d922053b4f12def4146269efe1cf6f69eff8bfbeda89e4b76",
-    "envelopeSha256": "6676ca68c7c963be2bf5a8a58cb84dd2c43bb9939846d34a82c04d13ad3a129f",
+    "payloadSha256": "28d14d0af77d4240af9bb215b443d977f05f5e71b0af48d4f90136e4298f8476",
+    "envelopeSha256": "bf26973aaa362c2176d87482ebb637ee67f786c4cb8163e3deb9f98d2ae8b895",
     "published": false
   },
   "checks": {
@@ -44,5 +44,6 @@
     "unmodifiedP193": true,
     "unmodifiedP194": true,
     "unmodifiedZoom": true
-  }
+  },
+  "issuedAt": "2026-11-17T05:15:00Z"
 }
