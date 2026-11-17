@@ -28,6 +28,10 @@ jobs:
         run: node p206/tests/p206-archive-integration.cjs
       - name: Synthetic signed P206 runtime and transactional race
         run: node p206/tests/p206-pinned-runtime.cjs
+      - name: Signed notice metadata acceptance
+        run: |
+          node --check p206/tests/p206-notice-metadata.cjs
+          node p206/tests/p206-notice-metadata.cjs
       - name: Release descriptor audit — original signatures and 41 assets
         run: |
           node --check p206/scripts/prepare-unsigned-p206.cjs
