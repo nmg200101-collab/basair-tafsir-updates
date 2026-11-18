@@ -29,6 +29,6 @@
       log.indexOf('digital:stop') < log.indexOf('printed:start:audio'));
     assert('printed position', core.syncPosition().page === 4);
     assert('printed stops', core.stop() && core.status() === null);
-    return {passed:9-errors.length, failed:errors.length, errors:errors, log:log};
+    return {passed:8-errors.length, failed:errors.length, errors:errors, log:log};
   };
 })(typeof window !== 'undefined' ? window : globalThis);
