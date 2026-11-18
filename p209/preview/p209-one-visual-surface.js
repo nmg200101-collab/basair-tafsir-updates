@@ -15,7 +15,7 @@
  var S='p209VisualSurface',ST='p209VisualStyle',TOOLS='p209FollowControls';
  var editionKey='',images=Object.create(null),order=[],active=false,finishAt=0;
  var host=null,slots=[],toolbar=null,interval=0,raf=0,session=0,lastPaint='',lastPage=0,pageHeight=0;
- var stats={activations:0,restores:0,updates:0,fallbacks:0,fetchErrors:0,skipped:0,controlActions:0,tapsMapped:0,tapsSuppressed:0,tapMisses:0,restoreWaits:0,mode:'off',page:0,progress:0,edition:''};
+ var stats={activations:0,restores:0,updates:0,fallbacks:0,fetchErrors:0,skipped:0,controlActions:0,tapsMapped:0,tapsSuppressed:0,tapMisses:0,nativeGestureEnds:0,nativeGestureEndErrors:0,restoreWaits:0,mode:'off',page:0,progress:0,edition:''};
  function id(k){return d.getElementById(k)}
  function native(){return w.__BASAIR_B345_SEQUENCE__}
  function print(){return w.__BASAIR_PRINT_FOLLOW_100__}
@@ -227,6 +227,22 @@
   var rect=host&&host.getBoundingClientRect();
   if(!rect||!within(rect,xy.x,xy.y))return;
   // Prevent R33 from retargeting a different ayah in its hidden scroll stack.
+  // CRITICAL: B345 also registers a window-capture pointerup/touchend handler
+  // to release userScrolling. If P209 happens to load earlier, cancelling this
+  // event before B345 sees it leaves userScrolling=true/manualHoldUntil=Infinity
+  // and makes native Follow appear frozen. Deliver ONLY B345's exposed native
+  // userEnd when it has not already run; then suppress hidden R33 retargeting.
+  var owner=native(),state=owner&&owner.state;
+  if(state&&state.userScrolling===true){
+   var end=owner&&owner._test&&owner._test.userEnd;
+   if(typeof end==='function'){
+    try{end();stats.nativeGestureEnds++}catch(_){stats.nativeGestureEndErrors++}
+   }else{
+    // Fail closed: never block B345's release handler without a safe native
+    // delegation. R33 might also see the tap, so disable visual projection.
+    stats.fallbacks++;cleanup();return;
+   }
+  }
   if(ev.stopImmediatePropagation)ev.stopImmediatePropagation();
   stats.tapsSuppressed++;
   var c=native(),s=c&&c.state;
@@ -257,7 +273,12 @@
   var current=request(pg),next=pg<604?request(pg+1):null,third=pg<603?request(pg+2):null;
   // B345 audio may change page while the source for the next image is still
   // missing. On a failed page we expose native R33 rather than freeze sound.
-  if((current&&current.failed)||(next&&next.failed)||(third&&third.failed)||
+  // A fast native page jump (or late audio retarget) can reach a page not
+  // yet in our three-image buffer. Never leave the PREVIOUS Quran page visible
+  // while B345 is already following the new page. Return instantly to R33.
+  if((current&&!current.ready&&stats.page>0&&pg!==stats.page)||
+     (current&&!current.ready&&Date.now()-current.startedAt>5000)||
+     (current&&current.failed)||(next&&next.failed)||(third&&third.failed)||
      (next&&!next.ready&&Date.now()-next.startedAt>5000)||
      (third&&!third.ready&&Date.now()-third.startedAt>5000)){
     stats.fallbacks++;cleanup();return;
