@@ -30,7 +30,18 @@
      b.classList.contains('h90-review')||b.classList.contains('h100-teacher'))return false;
   if(!p||typeof p.active!=='function'||!p.active()||
      typeof p.scale!=='function'||Number(p.scale())!==100)return false;
-  if(!edition()||!id('mushafReader')||!id('mushafDock')||!id('mushafPage'))return false;
+  // Owner baseline Seq116 includes P205 + P207. The native B345 STOP uses
+  // R39 freeze until P207 releases it. If that guard is missing, never
+  // acquire a new visual owner and later reveal a frozen old stack.
+  var stopGuard=w.__BASAIR_P207_FOLLOW_GUARD__;
+  if(!stopGuard||typeof stopGuard.status!=='function')return false;
+  var kind=edition();
+  if(kind==='tajwid'){
+   var parity=w.__BASAIR_P205_ORIGINAL_PRINT_PARITY__,proof;
+   try{proof=parity&&typeof parity.status==='function'&&parity.status()}catch(_){}
+   if(!proof||proof.installed!==true)return false;
+  }
+  if(!kind||!id('mushafReader')||!id('mushafDock')||!id('mushafPage'))return false;
   // Do not steal the visual stage until native B345 has its correct print page.
   var card=d.querySelector('#b345NormalStack>[data-b345-page="'+s.page+'"]');
   return !!(card&&card.getAttribute('data-b345-ready')==='1');
@@ -61,12 +72,18 @@
    'body['+BODY_FLAG+'="1"] #sequenceMiniControl{display:none!important}'+
    'body['+BODY_FLAG+'="1"] #mushafReader::-webkit-scrollbar{display:none!important}'+
    'body['+BODY_FLAG+'="1"] #mushafReader{scrollbar-width:none!important}'+
-   'body['+BODY_FLAG+'="1"] #mushafDock{height:calc(102px + '+
-   'env(safe-area-inset-bottom))!important;'+
-   'grid-template-columns:repeat(5,minmax(0,1fr))!important;'+
-   'grid-template-rows:46px 54px!important;align-items:stretch!important}'+
-   'body['+BODY_FLAG+'="1"] #mushafDock>:not(#'+TOOLS+'){'+
-   'grid-row:2!important;min-width:0!important}'+
+   // Original V695 body.v132TilawaSession.reader-active... #mushafDock
+   // uses higher-specificity !important height/grid declarations. Match the
+   // real session selector or the original tools end up below the viewport.
+   'body.v132TilawaSession.reader-active['+BODY_FLAG+'="1"]'+
+   ':not(.h25-hifz):not(.h90-review):not(.h100-teacher) #mushafDock{'+
+   'height:calc(94px + env(safe-area-inset-bottom))!important;'+
+   'min-height:94px!important;max-height:none!important;'+
+   'overflow:visible!important;'+
+   'grid-template-columns:repeat(6,minmax(0,1fr))!important;'+
+   'grid-template-rows:45px 43px!important;align-items:stretch!important}'+
+   'body.v132TilawaSession.reader-active['+BODY_FLAG+'="1"]'+
+   ' #mushafDock>button{grid-row:2!important;min-width:0!important}'+
    '#'+TOOLS+'{grid-column:1/-1!important;grid-row:1!important;'+
    'display:flex;align-items:center;justify-content:center;gap:12px;'+
    'padding:2px 8px;direction:rtl;min-height:40px}'+
