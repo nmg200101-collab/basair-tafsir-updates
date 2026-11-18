@@ -1,1 +1,73 @@
-The requested file reference is not currently visible. Use files.search or files.list to rediscover the file, then retry with a returned ref_id or file_id.
+"""P209 experimental single-surface browser gate. Chromium headless; real APK Tajwid assets.
+Local-only simulated B345 state. NOT real Android WebView/audio acceptance."""
+from pathlib import Path
+from playwright.sync_api import sync_playwright
+root=Path(__file__).parents[1]
+html=(root/'preview/index.html').read_text().replace('<head>','<head><base href="https://basair-p209.local/">',1)
+html=html.replace('<script src="p209-one-visual-surface.js"></script>', '')
+js=(root/'src/p209-one-visual-surface.js').read_text()
+checks=[]
+def ck(ok,title):
+ assert ok,title
+ checks.append(title)
+with sync_playwright() as p:
+ browser=p.chromium.launch(headless=True,executable_path='/usr/bin/chromium',args=['--no-sandbox','--disable-dev-shm-usage'])
+ pg=browser.new_page(viewport={'width':390,'height':844},device_scale_factor=1)
+ errors=[];pg.on('pageerror',lambda err:errors.append(str(err)))
+ def route(r):
+  file=root/'preview/assets/tajweed-pages'/r.request.url.rsplit('/',1)[-1]
+  if file.is_file():r.fulfill(status=200,body=file.read_bytes(),content_type='image/webp')
+  else:r.fulfill(status=404,body=b'Not Found')
+ pg.route('**/assets/tajweed-pages/*.webp',route)
+ pg.set_content(html,wait_until='load');pg.add_script_tag(content=js)
+ status=lambda:pg.evaluate('window.__BASAIR_P209_ONE_SURFACE__.status()')
+ ck(not status()['active'],'Standby: native static page untouched before Follow')
+ ck(pg.locator('#p209VisualSurface').count()==0,'No visual host constructed before Follow')
+ pg.evaluate('startMock()');pg.wait_for_function('window.__BASAIR_P209_ONE_SURFACE__.status().active',timeout=5000)
+ ck(status()['active'],'Native B345 Follow starts experimental one-surface')
+ ck(pg.locator('body[data-p209-visual-owner="1"]').count()==1,'Only one visible visual owner')
+ ck(pg.locator('#p209VisualSurface .p209Page').count()==2,'Exactly two buffered page positions inside ONE viewport')
+ ck(pg.locator('#p209VisualSurface .p209Page>.stableFrame').count()==2,'Exactly one authentic-style frame per buffered page')
+ ck(pg.locator('#p209VisualSurface .stableMarginTint').count()==2,'Existing static margin decoration reused for both buffered pages')
+ ck(pg.locator('#original-frame').count()==1 and pg.locator('#original-tint').count()==1,'No duplicate global IDs from static-decoration clones')
+ ck(pg.evaluate('getComputedStyle(document.querySelector("#b345NormalStack")).opacity')=='0','Legacy B345 raster stack fully invisible while geometry retained')
+ ck(pg.locator('#p209FollowControls button').count()==2,'New tools confined to native bottom dock')
+ ck(pg.evaluate('document.querySelector("#p209VisualSurface .p209Page img").getAttribute("data-mushaf-page")')=='4','First visible page 004')
+ pg.screenshot(path=str(root/'preview/start.png'))
+ pg.evaluate('progressMock(0.5)');pg.wait_for_timeout(220)
+ ck(abs(status()['progress']-.5)<.01,'Half-page scroll follows B345 progress 0.5')
+ ck(pg.evaluate('document.querySelector("#p209VisualSurface .p209Page").style.transform').find('-50%')>=0,'Outgoing page translates -50%')
+ ck(pg.evaluate('document.querySelectorAll("#p209VisualSurface .p209Page")[1].style.transform').find('50%')>=0,'Next page translates +50%')
+ pg.screenshot(path=str(root/'preview/mid.png'))
+ pg.evaluate('document.querySelector("#p209FollowControls button.p209Pause").click()')
+ pg.wait_for_timeout(150)
+ ck(pg.evaluate('window.nativeCalls.pause')==1,'Pause delegates to original native sequenceMiniPause')
+ ck(status()['mode']=='paused','Visual projection pauses with B345 state')
+ pg.evaluate('document.querySelector("#p209FollowControls button.p209Pause").click()')
+ pg.wait_for_timeout(150)
+ ck(pg.evaluate('window.nativeCalls.pause')==2 and status()['mode']=='running','Native pause/resume toggles exactly twice')
+ pg.evaluate('nextMock()');pg.wait_for_timeout(300)
+ ck(status()['page']==5,'Sequential page advance from 004 to 005')
+ ck(pg.locator('#p209VisualSurface [data-mushaf-page="6"]').count()==1,'Next authentic page 006 preloaded')
+ ck(pg.locator('#b345NormalStack').count()==1,'B345 remains the one audio/scroll state owner, no replacement')
+ pg.evaluate('document.querySelector("#p209FollowControls button.p209Stop").click()')
+ pg.wait_for_timeout(320)
+ ck(pg.evaluate('window.nativeCalls.stop')==1,'STOP delegates exactly once to B345 controller')
+ # In actual V695, P207 restores the original static page asynchronously, 80–200ms later.
+ pg.evaluate('document.querySelector("#mushafText .localPageStage img").setAttribute("data-mushaf-page","5")')
+ pg.wait_for_function('!window.__BASAIR_P209_ONE_SURFACE__.status().active',timeout=3200)
+ ck(pg.locator('body[data-p209-visual-owner="1"]').count()==0,'Stops and restores ownership to original static renderer')
+ ck(pg.locator('#mushafText .localPageStage').count()==1,'Original static page DOM was never destroyed')
+ ck(pg.locator('#p209FollowControls').count()==0,'No orphaned Follow toolbar after STOP')
+ ck(pg.locator('#p209VisualSurface').count()==1,'Dormant reusable host only; no duplicate on subsequent start')
+ # Reopen must reparent no extra listeners or visible nodes.
+ pg.evaluate('window.__state.page=5;startMock()');pg.wait_for_function('window.__BASAIR_P209_ONE_SURFACE__.status().active',timeout=3000)
+ ck(status()['activations']==2,'Second Follow reuses same visual host')
+ ck(pg.locator('#p209VisualSurface').count()==1,'No doubled viewport in second cycle')
+ pg.evaluate('window.__BASAIR_P209_ONE_SURFACE__.disable()')
+ ck(not status()['active'] and not status()['enabled'],'Feature flag OFF restores fallback immediately')
+ ck(pg.locator('body[data-p209-visual-owner="1"]').count()==0,'No active surface after opt-out')
+ ck(not errors,'No JavaScript page errors: '+str(errors))
+ browser.close()
+print('P209 chromium local acceptance: PASS',len(checks))
+for i,v in enumerate(checks,1):print(f'{i:02d}. {v}')
