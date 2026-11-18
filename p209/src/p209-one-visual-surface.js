@@ -222,6 +222,16 @@
   if(!active)return;
   var c=native(),s=c&&c.state;
   if(w[FLAG]!==true||!d.body.classList.contains('reader-active')){cleanup();return}
+  // Hot font/zoom/edition switches must immediately return visual ownership to
+  // the native B345 renderer; do not hold the wrong printed surface for 1.5s.
+  if(s&&s.running){
+   var p=print(),valid=false;
+   try{valid=!!(s.scaleMode==='normal'&&p&&p.active()&&Number(p.scale())===100&&
+     edition()===editionKey&&!d.body.classList.contains('stableDigital')&&
+     !d.body.classList.contains('h25-hifz')&&!d.body.classList.contains('h90-review')&&
+     !d.body.classList.contains('h100-teacher'))}catch(_){}
+   if(!valid){cleanup();stats.fallbacks++;return}
+  }
   if(!s||!s.running||s.scaleMode!=='normal'){
    if(!finishAt)beginExit();
    if(staticReady()||Date.now()>finishAt){cleanup();return}
