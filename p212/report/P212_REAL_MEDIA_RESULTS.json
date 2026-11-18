@@ -45,19 +45,16 @@
   "played_generated_wav": true,
   "android_webview": false,
   "cloud_ci_used": false,
-  "module": "P212",
-  "base": "V695",
-  "baseline_live": "Seq118",
-  "source": "P211-independent-static-Tajwid",
-  "tested": "Chromium 390x844 with actual V695 shell and real HTMLMediaElement playback",
-  "synthetic_audio_only": true,
-  "real_reciter_remote_verified": false,
-  "cloud_builds": 0,
-  "signed": false,
-  "published": false,
-  "special_reciters": [
-    "arkani",
-    "minshawy_teacher"
-  ],
-  "special_reciters_status": "explicit fail-closed; multi-segment not implemented"
+  "real_v695_p121_verifier": {
+    "signed_seq120": "PASS",
+    "signed_emergency_seq121": "PASS",
+    "tampered_signature_rejected": "PASS"
+  },
+  "owner_signature": "RSA-3072 + Ed25519 VERIFIED",
+  "held_only": true,
+  "owner_approval_expires": "2026-11-21T14:42:36Z",
+  "known_apk_shell_errors": [
+    "IndexedDB denied by local Chromium test context",
+    "augmentHome insertBefore browser-shell error"
+  ]
 }
