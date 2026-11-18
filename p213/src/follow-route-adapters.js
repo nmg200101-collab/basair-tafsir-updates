@@ -50,33 +50,56 @@
     var state = engine && engine.state;
     return state ? {page:state.page || null, verse:state.verse || null} : null;
   }
+  var zoomFollow = null;
+  var printedOwner = null;
+  function registerZoomFollow(adapter) {
+    if (!adapter || ['start','stop','pause','resume','position'].some(function (k) { return typeof adapter[k] !== 'function'; }))
+      throw Error('Incomplete original-print zoom adapter');
+    if (printedOwner) throw Error('Cannot replace active printed follow');
+    zoomFollow = adapter;
+    return true;
+  }
   function printedStart(mode) {
     // P212 currently rejects printed pages at zoom != 100. Preserve the
     // existing original-print zoom follow rather than silently replacing it.
     var printState = root.__BASAIR_PRINT_FOLLOW_100__;
     var zoom = printState && typeof printState.scale === 'function' ? Number(printState.scale()) : NaN;
-    if (!Number.isFinite(zoom) || zoom !== 100) return false;
+    // A verified zoom-capable adapter must be explicitly registered. Never
+    // fall back to P212 when zoomed or silently reset zoom to 100%.
+    if (!Number.isFinite(zoom) || zoom !== 100) {
+      if (!zoomFollow) return false;
+      var accepted = zoomFollow.start(mode, {preserveZoom:true});
+      if (accepted === false) return false;
+      printedOwner = zoomFollow;
+      return true;
+    }
     var engine = printed();
-    return !!(engine && typeof engine.start === 'function' && engine.start(mode));
+    if (!engine || typeof engine.start !== 'function' || engine.start(mode) === false) return false;
+    printedOwner = engine;
+    return true;
   }
   function printedStop() {
-    var engine = printed();
-    return !!(engine && typeof engine.stop === 'function' && engine.stop('p213-route-stop'));
+    var engine = printedOwner;
+    printedOwner = null;
+    return !!(engine && typeof engine.stop === 'function' && engine.stop('p213-route-stop') !== false);
   }
   function printedPause() {
-    var engine = printed();
-    if (!engine || !engine.status || !engine.pause) return false;
-    if (engine.status().paused) return false;
+    var engine = printedOwner;
+    if (!engine) return false;
+    if (engine === zoomFollow) return engine.pause() !== false;
+    if (!engine.status || !engine.pause || engine.status().paused) return false;
     return engine.pause();
   }
   function printedResume() {
-    var engine = printed();
-    if (!engine || !engine.status || !engine.pause) return false;
-    if (!engine.status().paused) return false;
+    var engine = printedOwner;
+    if (!engine) return false;
+    if (engine === zoomFollow) return engine.resume() !== false;
+    if (!engine.status || !engine.pause || !engine.status().paused) return false;
     return engine.pause();
   }
   function printedPosition() {
-    var engine = printed();
+    var engine = printedOwner;
+    if (engine === zoomFollow) return engine.position();
     var state = engine && engine.status && engine.status();
     return state ? {page:state.page || null} : null;
   }
@@ -91,5 +114,5 @@
     core.register('printed', adapters.printed);
     return true;
   }
-  root.__BASAIR_P213_ADAPTERS__ = Object.freeze({install:install,adapters:adapters,digitalEligible:digitalEligible});
+  root.__BASAIR_P213_ADAPTERS__ = Object.freeze({install:install,adapters:adapters,digitalEligible:digitalEligible,registerZoomFollow:registerZoomFollow});
 })(typeof window !== 'undefined' ? window : globalThis);
