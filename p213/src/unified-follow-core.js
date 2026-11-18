@@ -33,11 +33,17 @@
     var previous = session;
     session = null;
     generation++;
-    var stopError = null;
-    try { previous.adapter.stop(reason || 'user-stop'); }
+    var stopError = null, stopped = false;
+    try { stopped = previous.adapter.stop(reason || 'user-stop') !== false; }
     catch (error) { stopError = error; }
-    emit('stop', {reason:reason || 'user-stop', route:previous.route, error:stopError ? String(stopError) : null});
-    if (stopError) throw stopError;
+    if (!stopped) {
+      session = previous;
+      emit('stop-failed', {reason:reason || 'user-stop', route:previous.route,
+        error:stopError ? String(stopError) : 'adapter rejected stop'});
+      if (stopError) throw stopError;
+      return false;
+    }
+    emit('stop', {reason:reason || 'user-stop', route:previous.route});
     return true;
   }
   function start(route, mode, options) {
@@ -45,7 +51,7 @@
     if (mode !== 'audio' && mode !== 'silent') throw Error('Invalid follow mode');
     var adapter = adapters[route];
     if (!adapter) throw Error('Follow route not registered: ' + route);
-    stop('route-switch');
+    if (session && stop('route-switch') === false) return false;
     var token = ++generation;
     var candidate = {route:route, mode:mode, paused:false, position:null,
       generation:token, adapter:adapter};
