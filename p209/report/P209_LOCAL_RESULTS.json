@@ -1,0 +1,19 @@
+{
+  "project": "Basair Quran",
+  "feature": "P209 single visual projection for authentic printed follow",
+  "base_apk": "V695 supplied by owner",
+  "protected_live_sequence": 116,
+  "status": "EXPERIMENT_LOCAL_QA_ONLY_UNSIGNED_UNPUBLISHED",
+  "browser": "Chromium 144 headless",
+  "assets": "pages 004 005 006 extracted from owner-supplied V695 APK",
+  "local_browser_checks": 30,
+  "local_fail_closed_checks": 9,
+  "total_passed": 39,
+  "github_actions_runs_requested": 0,
+  "codemagic_builds_requested": 0,
+  "real_android_webview_tested": false,
+  "real_audio_tested": false,
+  "ota_published": false,
+  "apk_created": false,
+  "owner_acceptance": "PENDING"
+}
