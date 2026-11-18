@@ -14,7 +14,7 @@
  var FLAG='__BASAIR_P209_FIELD_QA_ENABLED__',BODY_FLAG='data-p209-visual-owner';
  var S='p209VisualSurface',ST='p209VisualStyle',TOOLS='p209FollowControls';
  var editionKey='',images=Object.create(null),order=[],active=false,finishAt=0;
- var host=null,slots=[],toolbar=null,interval=0,raf=0,session=0,lastPaint='',lastPage=0;
+ var host=null,slots=[],toolbar=null,interval=0,raf=0,session=0,lastPaint='',lastPage=0,pageHeight=0;
  var stats={activations:0,restores:0,updates:0,fallbacks:0,fetchErrors:0,skipped:0,controlActions:0,tapsMapped:0,tapsSuppressed:0,tapMisses:0,restoreWaits:0,mode:'off',page:0,progress:0,edition:''};
  function id(k){return d.getElementById(k)}
  function native(){return w.__BASAIR_B345_SEQUENCE__}
@@ -42,7 +42,7 @@
    'box-sizing:border-box;isolation:isolate;pointer-events:none;'+
    'background:var(--mushaf-paper,#fbf8e8);direction:rtl}'+
    '#'+S+'>.p209Page{position:absolute;inset:0;overflow:hidden;'+
-   'width:100%;height:100%;will-change:transform;pointer-events:none}'+
+   'width:100%;height:auto;will-change:transform;pointer-events:none}'+
    '#'+S+' .p209Page>img{display:block;position:absolute;inset:0;'+
    'width:100%;height:100%;object-fit:fill;pointer-events:none;'+
    'user-select:none;-webkit-user-drag:none;'+
@@ -102,7 +102,9 @@
   if(host)return;
   style();host=d.createElement('section');host.id=S;host.setAttribute('aria-hidden','true');
   slots=[];
-  for(var i=0;i<2;i++){
+  // Three page buffers are needed when the phone viewport is taller than a
+  // printed page. All three share ONE clipped viewport, not three renderers.
+  for(var i=0;i<3;i++){
    var tile=d.createElement('div');tile.className='p209Page';
    var im=d.createElement('img');im.alt='';im.decoding='async';im.draggable=false;
    tile.appendChild(im);
@@ -172,6 +174,14 @@
   host.style.top=top+'px';host.style.left=Math.max(0,Math.round(rect.left))+'px';
   host.style.width=Math.max(1,Math.round(rect.width))+'px';
   host.style.height=Math.max(180,bottom-top)+'px';
+  // Never stretch a 720x1280 authentic Quran image to an arbitrary phone
+  // viewport height (an earlier preview elongated text by ~7%). Width owns
+  // the image scale; each page keeps its original 9:16 aspect ratio.
+  var natural=Math.max(1,Number(rect.width))*1280/720;
+  if(Math.abs(pageHeight-natural)>.2){
+   pageHeight=natural;lastPaint='';
+   for(var i=0;i<slots.length;i++)slots[i].tile.style.height=pageHeight+'px';
+  }
  }
  function setSlot(slot,page,src){
   if(slot.page===page&&slot.src===src)return;
@@ -243,31 +253,37 @@
  }
  function paint(s){
   if(!host)return;
-  var pg=pageNumber(s.page),nowImg=request(pg),nextImg=pg<604?request(pg+1):null;
-  // An asset can fail AFTER successful activation (e.g. a missing page 006).
-  // Never keep the visual projection stuck at page 005 while B345 audio moves.
-  // Expose the untouched native R33 renderer instead of showing a blank card.
-  if((nowImg&&nowImg.failed)||(nextImg&&nextImg.failed)||
-     (nextImg&&!nextImg.ready&&Date.now()-nextImg.startedAt>5000)){
+  var pg=pageNumber(s.page);
+  var current=request(pg),next=pg<604?request(pg+1):null,third=pg<603?request(pg+2):null;
+  // B345 audio may change page while the source for the next image is still
+  // missing. On a failed page we expose native R33 rather than freeze sound.
+  if((current&&current.failed)||(next&&next.failed)||(third&&third.failed)||
+     (next&&!next.ready&&Date.now()-next.startedAt>5000)||
+     (third&&!third.ready&&Date.now()-third.startedAt>5000)){
     stats.fallbacks++;cleanup();return;
   }
-  if(!nowImg||!nowImg.ready){stats.skipped++;return}
-  // Never reveal an empty next page: hold the authentic visible page until ready.
-  var readyNext=nextImg&&nextImg.ready;
+  if(!current||!current.ready){stats.skipped++;return}
   var progress=Math.max(0,Math.min(1,Number(s.progress)||0));
   if(s.userScrolling){try{var c=native(),getter=c&&c._test&&c._test.normalProgressFromView;
    if(typeof getter==='function')progress=Math.max(0,Math.min(1,Number(getter())||0));}catch(_){}}
-  if(pg===604||!readyNext)progress=0;
-  var signature=pg+':'+(readyNext?'1':'0');
-  if(signature!==lastPaint){setSlot(slots[0],pg,nowImg.src);
-   if(readyNext)setSlot(slots[1],pg+1,nextImg.src);
-   slots[1].tile.style.display=readyNext?'block':'none';lastPaint=signature}
-  slots[0].tile.style.transform='translate3d(0,-'+(progress*100).toFixed(3)+'%,0)';
-  if(readyNext)slots[1].tile.style.transform='translate3d(0,'+((1-progress)*100).toFixed(3)+'%,0)';
-  if(toolbar){var p=toolbar.querySelector('.p209Pause');
-   if(p)p.textContent=s.paused?'▶ استئناف':'⏸ إيقاف مؤقت'}
+  if(pg===604||!next||!next.ready)progress=0;
+  var visible=[current,next,third],signature=pg+':'+visible.map(function(x){return x&&x.ready?'1':'0'}).join('');
+  if(signature!==lastPaint){
+   for(var i=0;i<slots.length;i++){
+    var item=visible[i],ready=!!(item&&item.ready);
+    if(ready)setSlot(slots[i],pg+i,item.src);
+    slots[i].tile.style.display=ready?'block':'none';
+   }
+   lastPaint=signature;
+  }
+  // Each tile is the exact authentic page height, never host viewport height.
+  for(var j=0;j<slots.length;j++)if(slots[j].tile.style.display!=='none'){
+   slots[j].tile.style.transform='translate3d(0,'+((j-progress)*pageHeight).toFixed(3)+'px,0)';
+  }
+  if(toolbar){var pause=toolbar.querySelector('.p209Pause');
+   if(pause)pause.textContent=s.paused?'▶ استئناف':'⏸ إيقاف مؤقت'}
   stats.updates++;stats.page=pg;stats.progress=progress;stats.mode=s.paused?'paused':'running';
-  request(pg+2);
+  request(pg+3);
  }
  function activate(){
   if(active||!controls())return false;
@@ -330,7 +346,10 @@
   var kind=edition();
   if(editionKey!==kind){editionKey=kind;images=Object.create(null);order=[];session++}
   var pg=pageNumber(s.page),cur=request(pg),next=pg<604?request(pg+1):null;
-  if(!cur||!cur.ready||(next&&!next.ready))return;
+  var sc=id('mushafReader'),dock=id('mushafDock'),sr=sc&&sc.getBoundingClientRect(),dr=dock&&dock.getBoundingClientRect();
+  var needsThird=!!(pg<603&&sr&&dr&&(dr.top-sr.top)>Number(sr.width)*1280/720+1);
+  var third=needsThird?request(pg+2):null;
+  if(!cur||!cur.ready||(next&&!next.ready)||(third&&!third.ready))return;
   if(activate()){lastPage=pg;paint(s);raf=w.requestAnimationFrame(loop)}
  }
  function init(){if(interval||!d.body)return;
