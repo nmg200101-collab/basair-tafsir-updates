@@ -6,7 +6,7 @@
 (function(w,d){
  'use strict';
  if(w.__BASAIR_P207_FOLLOW_GUARD__)return;
- var track={running:false,paused:false,lastPage:0,lastEdition:'',action:'',actionAt:0,restores:0,prewarmed:0,errors:0,adapterChecks:0,adapterReady:false,buttonMatches:0,lastButton:''};
+ var track={running:false,paused:false,lastPage:0,lastEdition:'',action:'',actionAt:0,restores:0,prewarmed:0,errors:0,adapterChecks:0,adapterReady:false,buttonMatches:0,lastButton:'',visiblePrintPages:0,visibleNativeFrames:0};
  var timer=0,warmed=Object.create(null),restoreToken=0;
  function E(id){return d.getElementById(id)}
  function ctl(){return w.__BASAIR_B345_SEQUENCE__}
@@ -55,13 +55,17 @@
  function findPage(){var c=ctl();if(c&&c.state&&pg(c.state.page))return pg(c.state.page);
   var im=d.querySelector('#mushafReader img[data-mushaf-page]');return pg(im&&im.getAttribute('data-mushaf-page'))}
  function frames(){
-  // Only reuse decorative frame node on R33 shells where there is none.
-  // Never clone the image or the live local page; never create an additional visible page.
-  // In V695 the native static print stage is under #mushafReader, not #mushafText.
-  // Do not gate following frames on an unrelated missing container.
+  // P205 creates the real Tajwid .stableFrame itself and the original
+  // printed Mushaf already has its authentic border. Never append a
+  // second decorative frame; doing so caused the extra frame reported
+  // on the physical V695 phone in earlier QA rounds.
   var cards=d.querySelectorAll('#b345NormalStack>.r33PrintShell');
-  for(var i=0;i<cards.length;i++){var card=cards[i];if(card.querySelector(':scope>.stableFrame'))continue;
-   var f=d.createElement('div');f.className='stableFrame';f.setAttribute('aria-hidden','true');card.appendChild(f)}
+  track.visiblePrintPages=cards.length;
+  var count=0;
+  for(var i=0;i<cards.length;i++){
+   if(cards[i].querySelector(':scope>.stableFrame'))count++;
+  }
+  track.visibleNativeFrames=count;
  }
  function isPaused(c){return !!(c&&c.state&&(c.state.paused===true||c.state.pause===true||c.state.status==='paused'||c.state.phase==='paused'))}
  function restore(page,serial){
