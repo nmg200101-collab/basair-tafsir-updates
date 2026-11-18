@@ -7,7 +7,7 @@
  'use strict';
  if(w.__BASAIR_P208_PRINT_SURFACE__)return;
  var ROOT='p208-print-follow',STYLE='p208PrintFollowSurfaceStyle';
- var originalParent=null,originalNext=null,active=false,timer=0;
+ var originalParent=null,originalNext=null,trackedMini=null,active=false,timer=0;
  var count={enters:0,exits:0,moves:0,restores:0,pages:0,framed:0,errors:0,resizeRequests:0};
  function el(id){return d.getElementById(id)}
  function ctl(){return w.__BASAIR_B345_SEQUENCE__}
@@ -48,7 +48,9 @@
  function move(){
   var dock=el('mushafDock'),mini=el('sequenceMiniControl');
   if(!dock||!mini||!d.body||!d.body.classList)return false;
-  if(!originalParent){originalParent=mini.parentNode;originalNext=mini.nextSibling;}
+  if(trackedMini!==mini || !originalParent || !originalParent.isConnected){
+   trackedMini=mini;originalParent=mini.parentNode;originalNext=mini.nextSibling;
+  }
   if(mini.parentNode!==dock){dock.insertBefore(mini,dock.firstChild);count.moves++;}
   return mini.parentNode===dock;
  }
