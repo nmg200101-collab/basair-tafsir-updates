@@ -29,6 +29,12 @@
       log.indexOf('digital:stop') < log.indexOf('printed:start:audio'));
     assert('printed position', core.syncPosition().page === 4);
     assert('printed stops', core.stop() && core.status() === null);
-    return {passed:8-errors.length, failed:errors.length, errors:errors, log:log};
+    var refusesStop = adapter('digital');
+    refusesStop.stop = function () { log.push('digital:refused-stop'); return false; };
+    core.register('digital', refusesStop);
+    assert('digital restart for refusal test', core.start('digital','silent') === true);
+    assert('route switch blocked on stop refusal', core.start('printed','silent') === false);
+    assert('previous owner retained after refusal', core.status() && core.status().route === 'digital');
+    return {passed:11-errors.length, failed:errors.length, errors:errors, log:log};
   };
 })(typeof window !== 'undefined' ? window : globalThis);
