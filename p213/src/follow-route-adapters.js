@@ -12,8 +12,10 @@
     if (!b || !b.classList.contains('reader-active')) return false;
     // Only digital fonts may enter this adapter. Never hijack printed zoom follow.
     if (!b.classList.contains('stableDigital')) {
-      try { if (root.localStorage.getItem('stableFont') === 'original') return false; }
-      catch (_) { return false; }
+      try {
+        var font = root.localStorage && root.localStorage.getItem('stableFont');
+        if (!font || font === 'original') return false;
+      } catch (_) { return false; }
     }
     if (b.classList.contains('h25-hifz') || b.classList.contains('h90-review') || b.classList.contains('h100-teacher')) return false;
     try {
