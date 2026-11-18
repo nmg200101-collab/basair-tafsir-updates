@@ -6,14 +6,15 @@
   "status": "EXPERIMENT_LOCAL_QA_ONLY_UNSIGNED_UNPUBLISHED",
   "browser": "Chromium 144 headless",
   "assets": "pages 004 005 006 extracted from owner-supplied V695 APK",
-  "local_browser_checks": 30,
+  "local_browser_checks": 33,
   "local_fail_closed_checks": 9,
-  "total_passed": 39,
+  "total_passed": 42,
   "github_actions_runs_requested": 0,
   "codemagic_builds_requested": 0,
   "real_android_webview_tested": false,
   "real_audio_tested": false,
   "ota_published": false,
   "apk_created": false,
-  "owner_acceptance": "PENDING"
+  "owner_acceptance": "PENDING",
+  "hot_zoom_fallback_tested": true
 }
