@@ -1,0 +1,57 @@
+{
+  "project": "Basair Quran",
+  "workstream": "P209 R4 — isolated single-surface visual follow",
+  "date": "2026-11-18",
+  "baseline": "V695 APK; live owner-qa Seq116 untouched",
+  "tests": {
+    "test_browser.py": {
+      "passed": 36,
+      "status": "PASS",
+      "summary": "P209 chromium local acceptance: PASS 36"
+    },
+    "test_fail_closed.py": {
+      "passed": 9,
+      "status": "PASS",
+      "summary": "P209 local fail-closed PASS 9"
+    },
+    "test_real_r39_and_ayah.py": {
+      "passed": 18,
+      "status": "PASS",
+      "summary": "P209 native R39/ayah Chromium gate: PASS 18"
+    },
+    "test_runtime_resilience.py": {
+      "passed": 21,
+      "status": "PASS",
+      "summary": "P209 native resilience / audio-state isolation: PASS 21"
+    },
+    "test_native_gesture_order.py": {
+      "passed": 25,
+      "status": "PASS",
+      "summary": "P209 native B345 gesture order PASS 25"
+    },
+    "test_rapid_unbuffered_page.py": {
+      "passed": 8,
+      "status": "PASS",
+      "summary": "P209 unbuffered jump PASS 8"
+    },
+    "test_v695_apk_contract.py": {
+      "passed": 22,
+      "status": "PASS",
+      "summary": "Official V695 APK/P209 contract: PASS 22"
+    }
+  },
+  "total_passed": 139,
+  "total_failed": 0,
+  "native_android_webview": "NOT RUN",
+  "real_audio_on_phone": "NOT RUN",
+  "production_ota": "NOT PUBLISHED",
+  "cloud_ci_runs": 0,
+  "signed": false,
+  "warnings": [
+    "Original APK full-UI navigation blocked by sandbox Chromium administrator policy",
+    "Real Android WebView and audio acceptance remain mandatory"
+  ],
+  "source_sha256": "192f8e1f2456ff50ba4d7f9ae1c601ed45bee5f280fe57fb14886c5e544aa33d",
+  "source_bytes": 21643,
+  "apk_local_sha256": "925f6116899ad8acf1cba2a9ec75d04db7951af66ad5b3de98b7cbc7cba9d384"
+}
