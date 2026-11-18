@@ -48,6 +48,7 @@ with zipfile.ZipFile(APK) as z:
         page.locator('#p212Silent').click()
         page.wait_for_timeout(350)
         ck(page.evaluate('window.__BASAIR_P212_TAJWID_STATIC_FOLLOW__.status().running'),'Independent silent follow starts')
+        page.screenshot(path=str(ROOT/'reports/P212_RUNNING_CHROMIUM.png'))
         ck(not page.evaluate('window.__BASAIR_B345_SEQUENCE__.state.running'),'B345 has not started')
         ck(page.locator('#b345NormalStack > *').count()==0,'No old stacked follow pages')
         page.evaluate('window.__BASAIR_P212_TAJWID_STATIC_FOLLOW__.stop("silent-test")')
@@ -99,6 +100,7 @@ with zipfile.ZipFile(APK) as z:
         ck(page.locator('#p212DedicatedPageAudio').get_attribute('src') is None,'STOP clears audio src')
         ck(not page.evaluate('window.__BASAIR_B345_SEQUENCE__.state.running'),'STOP did not reenable B345')
         ck(page.locator('#mushafReader .localPageStage img[data-mushaf-page]').get_attribute('data-mushaf-page')=='5','STOP retained single true page')
+        page.screenshot(path=str(ROOT/'reports/P212_AFTER_STOP_CHROMIUM.png'))
         # Malformed key must never silently play fallback Alafasy from v180PackUrl
         page.evaluate('''() => {const s=document.getElementById("sequenceReciterV17");const o=new Option("اختبار غير مدعوم","invalid-reciter");s.add(o);s.value="invalid-reciter"}''')
         ck(not page.evaluate('window.__BASAIR_P212_TAJWID_STATIC_FOLLOW__.start("audio")'),'Unsupported reciter fails closed')
