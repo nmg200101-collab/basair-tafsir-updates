@@ -1,30 +1,28 @@
 {
   "project": "Basair Quran",
-  "feature": "P209 one visual surface experiment",
+  "feature": "P209 foundational single-surface printed Follow",
+  "revision": "R3 geometry + native-hit + R39-STOP",
   "date": "2026-11-18",
   "baseline_apk": "V695 owner supplied",
   "protected_live_sequence": 116,
-  "source_isolated_branch": "experiment/p209-one-visual-surface-no-ota-20261118",
-  "test_framework": "Chromium headless via Playwright (B345 mocked, authentic V695 WebP pages)",
-  "tests": {
-    "existing_browser": 33,
-    "existing_fail_closed": 9,
-    "r39_stop_and_ayah_retarget": 18,
-    "runtime_resilience_audio_state_isolation": 21
+  "isolated_branch": "experiment/p209-one-visual-surface-no-ota-20261118",
+  "local_checks": {
+    "browser": 36,
+    "fail_closed": 9,
+    "r39_stop_and_ayah": 18,
+    "runtime_audio_state_resilience": 21
   },
-  "total_passed": 81,
-  "local_source_syntax": "PASS",
-  "device_webview_tested": false,
+  "total_passed": 84,
+  "native_print_geometry": "720x1280 true aspect ratio, three buffered pages in one viewport",
+  "real_apk_shell_loaded_in_chromium": true,
+  "real_apk_local_storage_idb_denied": true,
+  "chrome_synthetic_app_boot_is_not_real_webview_pass": true,
+  "real_android_webview_tested": false,
   "real_audio_tested": false,
   "ota_signed": false,
   "ota_published": false,
-  "android_apk_built": false,
+  "apk_created": false,
   "owner_field_qa": "PENDING",
-  "rollback_baseline_intact": true,
-  "changed_logic": [
-    "R39 freeze state waits for actual P207 static release",
-    "projected hit-zone tap retargets actual B345 ayah",
-    "swipes retain original B345 handling",
-    "missing in-session raster falls back to native R33"
-  ]
+  "github_actions_runs_requested": 0,
+  "codemagic_builds_requested": 0
 }
