@@ -10,6 +10,11 @@
   function digitalEligible() {
     var b = root.document && root.document.body;
     if (!b || !b.classList.contains('reader-active')) return false;
+    // Only digital fonts may enter this adapter. Never hijack printed zoom follow.
+    if (!b.classList.contains('stableDigital')) {
+      try { if (root.localStorage.getItem('stableFont') === 'original') return false; }
+      catch (_) { return false; }
+    }
     if (b.classList.contains('h25-hifz') || b.classList.contains('h90-review') || b.classList.contains('h100-teacher')) return false;
     try {
       var storage = root.localStorage;
@@ -44,6 +49,11 @@
     return state ? {page:state.page || null, verse:state.verse || null} : null;
   }
   function printedStart(mode) {
+    // P212 currently rejects printed pages at zoom != 100. Preserve the
+    // existing original-print zoom follow rather than silently replacing it.
+    var printState = root.__BASAIR_PRINT_FOLLOW_100__;
+    var zoom = printState && typeof printState.scale === 'function' ? Number(printState.scale()) : NaN;
+    if (!Number.isFinite(zoom) || zoom !== 100) return false;
     var engine = printed();
     return !!(engine && typeof engine.start === 'function' && engine.start(mode));
   }
