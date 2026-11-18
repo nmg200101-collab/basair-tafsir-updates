@@ -13,14 +13,14 @@
 ## Corrections in staging
 - `p121/owner-qa/modules/tilawa/p207-native-follow-lifecycle.js`: selects edition by P205 status or `v129PrintMode`, aligns 100%-only font/zoom checks, handles icons before buttons, and checks B345 follow page frames without depending on `#mushafText`. No separate playback clock and no new APK.
 - `p121/owner-qa/modules/updates/p207-local-activation-status.js`: read-only updates-dialog panel showing IndexedDB highestSequence / trial / tilawa version / updates version plus P205/P207 runtime presence, selected print edition, recognized button count and static restores. No Mushaf overlay or data changes.
-- Future **provisional** Seq113 would use a replacement tilawa bundle with P207 instead of P206, plus the P207 read-only update diagnostics. Independent emergency Seq112 remains an unused signed fallback. **No Seq113 manifest or owner signature exists yet.** Do not update `main/p121/owner-qa/release.json` until approval on device.
+- Unsigned **provisional** Seq113 now replaces P206's follow module with P207's corrected source, adds the P207 read-only local-activation diagnostic and the actual More-modal entry. It requires a **new, higher-sequence Seq114 emergency rollback**, because the old signed emergency Seq112 cannot supersede Seq113 under P121 monotonic sequence protection. The local-only unsigned Seq113/Seq114 inputs are prepared; no Seq113/114 owner signatures exist yet. Do not update `main/p121/owner-qa/release.json` until real V695 activation compatibility and field QA are verified.
 
 ## Local tests (no GitHub Actions, no Codemagic)
 Executed with V8/Node-compatible local JavaScript mocks against the actual staged source, including a before/after P206 reproduction. **10/10 PASS**:
 1. Tajwid selected correctly; old P206 falsely reports original in the same fixture.
 2. Local Tajwid image prewarm initiated.
 3. `▶ متابعة` captured on first tap.
-4. Exactly one decorative frame appended.
+4. Passive inspection confirms the actual P205 printed frame without appending a synthetic second frame (corrected after owner duplicate-border reports).
 5. `⏸ إيقاف مؤقت` never restores static page.
 6. `■ إيقاف` restores the same native page.
 7. 130% zoom bypasses P206's 100%-only logic.
@@ -46,3 +46,14 @@ No second automatic OTA rollout merely because local mocks pass. P121 is pinned 
 - Handles modal re-creation idempotently, watches only More-related DOM mutations rather than the entire reader's changing contents, and does not create an inert button when P121 is unavailable.
 - **Seven local mock DOM acceptance checks PASS**: actual modal matching; correct card insertion and order; ghost button CSS; correct P121/P197/P206/P207 hooks on tap; no duplicate tile; restoration after modal re-render; no cloud CI used.
 - Still **UNSIGNED / NOT DEPLOYED**; current live P206 Seq111 cannot retrospectively carry this new script. Must be included in a separately owner-signed, tested future OTA release. Displaying the ghost controls does **not** prove P206 is the active module on device.
+
+## Additional local test and release audit — 18 November 2026
+
+- PASS **17/17 local V8 functional/source checks**, including P207 source syntax, Tajwid/Original mode, first tap, native image prewarm, icon-prefixed start/Stop, pause/stop race, avoiding a second frame, zoom, digital-font guard, actual IndexedDB module/baseVersion reporting, and unsigned safety contracts.
+- PASS local RSA3072 and Ed25519 verification of the previously signed Seq111 and Seq112 owner envelopes; confirmed true SHA256 of published original envelopes. No private credentials exported.
+- Prepared **unsigned only** Seq113 (43 assets, Tilawa v231, Updates v200) and **unsigned only** emergency Seq114 (38 assets, Tilawa v232, Updates v201) from authentic signed Seq111/Seq112; file paths unique, original asset inventory retained, three changed asset SHA256 and sizes independently calculated from exact GitHub source.
+- Local preparation package: `BASAIR-P207-UNSIGNED-LOCAL-HOLD.zip` delivered to owner (not an APK, not installable, not signed).
+- Local manifest generator (no network or CI): `p207/scripts/prepare-unsigned-p207.cjs`.
+- **Critical compatibility gate:** the original P121 source from `basair-quran-p88-build/feature/p121-universal-owner-signed-ota-20261111/p121-universal-staging/universal-updates.js` sets `APP_VERSION=693`, checks `m.minAppVersion>APP_VERSION`, and exposes `BasairUniversalOTA.baseVersion`. Current signed P206 and proposed P207 specify `minAppVersion=694`. If this original P121 runtime is still inside V695, the engine **rejects P206 before installing**, a plausible explanation for no visible effect. **Installed APK's actual P121 baseVersion has not yet been independently inspected**, so do not weaken the signed minimum or declare a definitive APK mismatch.
+- The P207 diagnostics panel displays `BasairUniversalOTA.baseVersion` alongside active local Tilawa/Updates versions, when loaded; it cannot fix a pre-existing P121 compatibility rejection by itself.
+- Do not repeat automatic OTA publication until the real installed engine compatibility and WebView acceptance are proven. Protect the actual baseline, favorites/notes and QA-050.
