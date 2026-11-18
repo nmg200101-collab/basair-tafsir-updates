@@ -33,8 +33,11 @@
     var previous = session;
     session = null;
     generation++;
+    var stopError = null;
     try { previous.adapter.stop(reason || 'user-stop'); }
-    finally { emit('stop', {reason:reason || 'user-stop', route:previous.route}); }
+    catch (error) { stopError = error; }
+    emit('stop', {reason:reason || 'user-stop', route:previous.route, error:stopError ? String(stopError) : null});
+    if (stopError) throw stopError;
     return true;
   }
   function start(route, mode, options) {
@@ -55,7 +58,9 @@
       emit('start');
       return true;
     } catch (error) {
-      if (session === candidate) stop('start-failed');
+      if (session === candidate) {
+        try { stop('start-failed'); } catch (_) { /* Preserve original start failure. */ }
+      }
       throw error;
     }
   }
