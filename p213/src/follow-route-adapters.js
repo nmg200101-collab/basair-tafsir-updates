@@ -41,10 +41,16 @@
   }
   function digitalPause() {
     var engine = legacy();
-    if (!engine || typeof engine.pause !== 'function') return false;
+    // B345's pause contract has not been verified. Fail closed instead of
+    // assuming a toggle and potentially resuming audio accidentally.
+    if (!engine || typeof engine.pause !== 'function' || !engine.state || typeof engine.state.paused !== 'boolean' || engine.state.paused) return false;
     return engine.pause() !== false;
   }
-  function digitalResume() { return digitalPause(); } // Legacy toggle; only called after coordinator pause.
+  function digitalResume() {
+    var engine = legacy();
+    if (!engine || typeof engine.pause !== 'function' || !engine.state || engine.state.paused !== true) return false;
+    return engine.pause() !== false;
+  }
   function digitalPosition() {
     var engine = legacy();
     var state = engine && engine.state;
@@ -64,9 +70,12 @@
     // existing original-print zoom follow rather than silently replacing it.
     var printState = root.__BASAIR_PRINT_FOLLOW_100__;
     var zoom = printState && typeof printState.scale === 'function' ? Number(printState.scale()) : NaN;
-    // A verified zoom-capable adapter must be explicitly registered. Never
-    // fall back to P212 when zoomed or silently reset zoom to 100%.
-    if (!Number.isFinite(zoom) || zoom !== 100) {
+    // Original printed pages ALWAYS use the verified print adapter, including
+    // 100% and every zoom level. P212 is reserved for colored tajwid at 100%.
+    var edition = null;
+    try { edition = root.localStorage && root.localStorage.getItem('v129PrintMode'); }
+    catch (_) { return false; }
+    if (edition !== 'tajwid' || !Number.isFinite(zoom) || zoom !== 100) {
       if (!zoomFollow) return false;
       var accepted = zoomFollow.start(mode, {preserveZoom:true});
       if (accepted === false) return false;
