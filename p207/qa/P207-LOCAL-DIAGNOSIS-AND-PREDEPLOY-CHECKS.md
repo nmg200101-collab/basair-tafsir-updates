@@ -1,6 +1,6 @@
 # P207 — Field-reported P206 no-visible-effect diagnosis (2026-11-17)
 
-**STATUS: STAGING ONLY / NOT SIGNED / NOT PUBLISHED.** Owner reported that P206 Seq111 arrived, but the printed Follow behaviour and promised UI improvements were not visible. Do not conflate a server manifest with local WebView activation.
+**STATUS: OWNER-SIGNED / HELD LOCALLY / NOT PUBLISHED.** Owner reported that P206 Seq111 arrived, but the printed Follow behaviour and promised UI improvements were not visible. Do not conflate a server manifest with local WebView activation.
 
 ## Verified upstream facts
 - LIVE `main/p121/owner-qa/release.json` is **Seq111** (P206): `tafsir v51`, `tilawa v229`, `updates v198`; it lists 41 signed assets.
@@ -13,7 +13,7 @@
 ## Corrections in staging
 - `p121/owner-qa/modules/tilawa/p207-native-follow-lifecycle.js`: selects edition by P205 status or `v129PrintMode`, aligns 100%-only font/zoom checks, handles icons before buttons, and checks B345 follow page frames without depending on `#mushafText`. No separate playback clock and no new APK.
 - `p121/owner-qa/modules/updates/p207-local-activation-status.js`: read-only updates-dialog panel showing IndexedDB highestSequence / trial / tilawa version / updates version plus P205/P207 runtime presence, selected print edition, recognized button count and static restores. No Mushaf overlay or data changes.
-- Unsigned **provisional** Seq113 now replaces P206's follow module with P207's corrected source, adds the P207 read-only local-activation diagnostic and the actual More-modal entry. It requires a **new, higher-sequence Seq114 emergency rollback**, because the old signed emergency Seq112 cannot supersede Seq113 under P121 monotonic sequence protection. The local-only unsigned Seq113/Seq114 inputs are prepared; no Seq113/114 owner signatures exist yet. Do not update `main/p121/owner-qa/release.json` until real V695 activation compatibility and field QA are verified.
+- Unsigned **provisional** Seq113 now replaces P206's follow module with P207's corrected source, adds the P207 read-only local-activation diagnostic and the actual More-modal entry. It requires a **new, higher-sequence Seq114 emergency rollback**, because the old signed emergency Seq112 cannot supersede Seq113 under P121 monotonic sequence protection. The local-only unsigned Seq113/Seq114 inputs were prepared, and **both have since been signed and verified locally** using the original owner RSA3072 and Ed25519 keys. Signed files are retained outside git; NOT published. Do not update `main/p121/owner-qa/release.json` until real V695 activation compatibility and field QA are verified.
 
 ## Local tests (no GitHub Actions, no Codemagic)
 Executed with V8/Node-compatible local JavaScript mocks against the actual staged source, including a before/after P206 reproduction. **10/10 PASS**:
@@ -45,15 +45,25 @@ No second automatic OTA rollout merely because local mocks pass. P121 is pinned 
 - **Staged UI fix:** `p121/owner-qa/modules/updates/p207-more-modal-entry.js`. It identifies the V695 More dialog by its visible `المزيد` heading and distinctive card titles, inserts a seventh actual clickable tile beside `تحديثات التطبيق` inside its card layout, hides only the two obsolete background-root update buttons using scoped CSS, and delegates open to the real `BasairUniversalOTA.open()` (including P197 previous-history, P206 release notes, and P207 on-device activation diagnostic). It does not change the original P92 `تحديثات التطبيق` card or app data.
 - Handles modal re-creation idempotently, watches only More-related DOM mutations rather than the entire reader's changing contents, and does not create an inert button when P121 is unavailable.
 - **Seven local mock DOM acceptance checks PASS**: actual modal matching; correct card insertion and order; ghost button CSS; correct P121/P197/P206/P207 hooks on tap; no duplicate tile; restoration after modal re-render; no cloud CI used.
-- Still **UNSIGNED / NOT DEPLOYED**; current live P206 Seq111 cannot retrospectively carry this new script. Must be included in a separately owner-signed, tested future OTA release. Displaying the ghost controls does **not** prove P206 is the active module on device.
+- Now **SIGNED-HELD / NOT DEPLOYED**; current live P206 Seq111 cannot retrospectively carry this new script. Must be included in a separately owner-signed, tested future OTA release. Displaying the ghost controls does **not** prove P206 is the active module on device.
 
 ## Additional local test and release audit — 18 November 2026
 
 - PASS **17/17 local V8 functional/source checks**, including P207 source syntax, Tajwid/Original mode, first tap, native image prewarm, icon-prefixed start/Stop, pause/stop race, avoiding a second frame, zoom, digital-font guard, actual IndexedDB module/baseVersion reporting, and unsigned safety contracts.
 - PASS local RSA3072 and Ed25519 verification of the previously signed Seq111 and Seq112 owner envelopes; confirmed true SHA256 of published original envelopes. No private credentials exported.
-- Prepared **unsigned only** Seq113 (43 assets, Tilawa v231, Updates v200) and **unsigned only** emergency Seq114 (38 assets, Tilawa v232, Updates v201) from authentic signed Seq111/Seq112; file paths unique, original asset inventory retained, three changed asset SHA256 and sizes independently calculated from exact GitHub source.
+- Prepared original unsigned inputs and then **signed-held** Seq113 (43 assets, Tilawa v231, Updates v200) and emergency Seq114 (38 assets, Tilawa v232, Updates v201) from authentic signed Seq111/Seq112; file paths unique, original asset inventory retained, three changed asset SHA256 and sizes independently calculated from exact GitHub source.
 - Local preparation package: `BASAIR-P207-UNSIGNED-LOCAL-HOLD.zip` delivered to owner (not an APK, not installable, not signed).
 - Local manifest generator (no network or CI): `p207/scripts/prepare-unsigned-p207.cjs`.
 - **Critical compatibility gate:** the original P121 source from `basair-quran-p88-build/feature/p121-universal-owner-signed-ota-20261111/p121-universal-staging/universal-updates.js` sets `APP_VERSION=693`, checks `m.minAppVersion>APP_VERSION`, and exposes `BasairUniversalOTA.baseVersion`. Current signed P206 and proposed P207 specify `minAppVersion=694`. If this original P121 runtime is still inside V695, the engine **rejects P206 before installing**, a plausible explanation for no visible effect. **Installed APK's actual P121 baseVersion has not yet been independently inspected**, so do not weaken the signed minimum or declare a definitive APK mismatch.
 - The P207 diagnostics panel displays `BasairUniversalOTA.baseVersion` alongside active local Tilawa/Updates versions, when loaded; it cannot fix a pre-existing P121 compatibility rejection by itself.
 - Do not repeat automatic OTA publication until the real installed engine compatibility and WebView acceptance are proven. Protect the actual baseline, favorites/notes and QA-050.
+
+## Owner digital signatures completed locally — 18 Nov 2026
+
+- P207 **Seq113**: 43 assets, Tilawa v231, Updates v200, signed envelope SHA-256 `bd5644770458a9a82f7d7644fa64b67aa0c0dbc917cdebe94787f3938cf94781`.
+- Independently signed emergency **Seq114**: 38 assets, Tilawa v232, Updates v201, signed envelope SHA-256 `897c70bb6d2cd0fb11d9fd8b114d501a0a4e58ac49a6641e556e95733596060d`.
+- Both RSA3072 signatures and both Ed25519 owner-approval signatures were independently verified by Python `cryptography` **and** Node.js `crypto.verify` using original pinned PUBLIC keys.
+- Owner approvals expire **2026-11-21T05:41:54Z**; re-sign if expiry passes, any source asset changes, or compatibility policy requires a changed manifest. SHA256 for each of the three new source assets is recorded in the local unsigned/signed preparation receipt.
+- Signed output file `BASAIR-P207-OWNER-SIGNED-HELD-SEQ113-SEQ114.zip` exists in private conversation artifacts **only**. It contains no private keys/passwords and was NOT uploaded to GitHub or the live manifest.
+- The separately mounted owner passphrase was used only for local signing, never printed, then deleted from the temporary work folder. No GitHub Actions/Codemagic build was run.
+- **Absolute deployment HOLD:** actual installed V695 P121 `baseVersion` (693 vs at least 694) cannot yet be proven from the user's screenshots; if 693 it will reject both signed P206/Seq111 and P207/Seq113 before installing. Do not publish simply because cryptographic verification passed.
