@@ -1,0 +1,26 @@
+<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"><title>P209 V695 offline test</title>
+<style>
+html,body{margin:0;padding:0;background:#e5e2dc;font-family:system-ui;}
+body{--stable-frame:#448b79;--mushaf-paper:#fbf8e8;--readerBrightness:1;--readerContrast:1}
+#controlsLab{height:1px;overflow:hidden}#mushafReader{height:100vh;width:100%;background:#eee;overflow-y:auto}#pageReading{display:block}#mushafPage{position:relative;width:100%;margin:0 auto}.mushafText{width:100%}.localPageStage{position:relative;width:100%;aspect-ratio:720/1280;background:#fbf8e8}.localPageStage img{display:block;width:100%;height:100%;object-fit:fill}.stableMarginTint{position:absolute;inset:0;z-index:13;pointer-events:none;border:9px ridge #448b79;box-sizing:border-box} .stableFrame{position:absolute;inset:2px;z-index:14;pointer-events:none;border:4px double var(--stable-frame);border-radius:3px;box-shadow:inset 0 0 0 2px #448b7966}body.frameGold .stableFrame{border:7px double #ae7e24;box-shadow:inset 0 0 0 3px #ead39a}
+body[data-b345-sequence-surface="normal"] #mushafText{display:none!important}
+#b345NormalStack{min-height:2000px;}#b345NormalStack .r33PrintShell{width:100%;height:650px;display:block;position:relative;border:3px dotted red;}#b345NormalStack .r33PrintShell img{display:block;width:100%;height:100%;object-fit:fill}
+.mushafDock{position:fixed;bottom:0;left:0;width:100%;height:54px;background:#f8f6ee;z-index:95;display:grid;grid-template-columns:repeat(5,1fr);direction:rtl}
+.mushafDock button{background:transparent;border:0;font:700 13px system-ui;color:#285d4c}.mushafDock button.dockPlay{background:#39785e;color:white;border-radius:12px}
+.sequenceMiniControl{position:fixed;bottom:60px;left:50%;transform:translateX(-50%);z-index:88;background:#073129;color:white;padding:8px}.sequenceMiniControl.show{display:flex}.sequenceMiniControl:not(.show){display:none}
+#lab{position:fixed;z-index:200;top:2px;left:2px;padding:4px;background:#f0f0f0bd;color:#103c30;font:10px monospace;pointer-events:none}
+</style></head><body class="reader-active frameGold" data-v144-print="tajwid"><div id="lab">Local P209 test — no production release</div>
+<section id="mushafReader"><div id="pageReading"><div class="mushafWrap"><div id="mushafPage"><div id="mushafText"><div class="localPageStage"><img data-mushaf-page="4" src="assets/tajweed-pages/tajweed-004.webp"><div id="original-tint" class="stableMarginTint"></div><div id="original-frame" class="stableFrame"></div></div></div><div id="b345NormalStack" hidden><section class="r33PrintShell" data-b345-page="4" data-b345-ready="1"><img src="assets/tajweed-pages/tajweed-004.webp"></section><section class="r33PrintShell" data-b345-page="5" data-b345-ready="1"><img src="assets/tajweed-pages/tajweed-005.webp"></section></div></div></div></section>
+<div id="sequenceMiniControl" class="sequenceMiniControl"><span>تلاوة</span><button id="sequenceMiniPause">⏸ إيقاف مؤقت</button><button id="sequenceMiniStop">■ إيقاف</button></div>
+<nav class="mushafDock" id="mushafDock"><button>الأدوات</button><button>الفهرس</button><button>بحث</button><button>الحجم</button><button class="dockPlay">متابعة</button></nav>
+<script>
+window.__BASAIR_P209_FIELD_QA_ENABLED__=true;
+window.nativeCalls={pause:0,stop:0};
+window.__state={running:false,paused:false,scaleMode:'normal',surfaceBusy:false,page:4,progress:0,userScrolling:false};
+window.__BASAIR_B345_SEQUENCE__={state:window.__state,stop:function(){window.nativeCalls.stop++;window.__state.running=false;document.body.removeAttribute('data-b345-sequence-surface');document.getElementById('b345NormalStack').hidden=true;document.getElementById('mushafText').style.display='block';}};
+window.__BASAIR_PRINT_FOLLOW_100__={active:()=>true,scale:()=>100,edition:()=> 'tajwid'};
+document.querySelector('#sequenceMiniPause').addEventListener('click',()=>{window.nativeCalls.pause++;window.__state.paused=!window.__state.paused;});
+window.startMock=()=>{document.getElementById('b345NormalStack').hidden=false;document.body.setAttribute('data-b345-sequence-surface','normal');window.__state.running=true;window.__state.paused=false;};
+window.progressMock=v=>{window.__state.progress=v};
+window.nextMock=()=>{window.__state.page=5;window.__state.progress=0;const stack=document.getElementById('b345NormalStack');stack.innerHTML='<section class="r33PrintShell" data-b345-page="5" data-b345-ready="1"><img src="assets/tajweed-pages/tajweed-005.webp"></section><section class="r33PrintShell" data-b345-page="6" data-b345-ready="1"><img src="assets/tajweed-pages/tajweed-006.webp"></section>'};
+</script><script src="p209-one-visual-surface.js"></script></body></html>
