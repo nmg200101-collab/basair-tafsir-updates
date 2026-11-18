@@ -15,7 +15,7 @@
  var S='p209VisualSurface',ST='p209VisualStyle',TOOLS='p209FollowControls';
  var editionKey='',images=Object.create(null),order=[],active=false,finishAt=0;
  var host=null,slots=[],toolbar=null,interval=0,raf=0,session=0,lastPaint='',lastPage=0;
- var stats={activations:0,restores:0,updates:0,fallbacks:0,fetchErrors:0,skipped:0,controlActions:0,mode:'off',page:0,progress:0,edition:''};
+ var stats={activations:0,restores:0,updates:0,fallbacks:0,fetchErrors:0,skipped:0,controlActions:0,tapsMapped:0,tapsSuppressed:0,tapMisses:0,restoreWaits:0,mode:'off',page:0,progress:0,edition:''};
  function id(k){return d.getElementById(k)}
  function native(){return w.__BASAIR_B345_SEQUENCE__}
  function print(){return w.__BASAIR_PRINT_FOLLOW_100__}
@@ -53,6 +53,9 @@
    'hue-rotate(145deg) saturate(.88) brightness(var(--readerBrightness,1)) '+
    'contrast(var(--readerContrast,1))}'+
    '#'+S+' .p209Page>.stableFrame{pointer-events:none}'+
+   '#'+S+' .p209HitLayer{position:absolute!important;inset:0!important;'+
+   'width:100%!important;height:100%!important;pointer-events:none!important;z-index:16!important}'+
+   '#'+S+' .p209HitLayer .ayahHit{pointer-events:none!important}'+
    'body['+BODY_FLAG+'="1"] #b345NormalStack{opacity:0!important;'+
    'pointer-events:none!important}'+
    'body['+BODY_FLAG+'="1"] #sequenceMiniControl{display:none!important}'+
@@ -144,7 +147,7 @@
  function request(page){
   if(!page||page>604)return null;
   var k=key(page),cached=images[k];if(cached)return cached;
-  cached={page:page,ready:false,failed:false,src:'',token:session};images[k]=cached;
+  cached={page:page,ready:false,failed:false,src:'',token:session,startedAt:Date.now()};images[k]=cached;
   order.push(k);prune();
   source(page).then(function(src){
    if(!src||cached.token!==session)return;
@@ -174,10 +177,80 @@
   if(slot.page===page&&slot.src===src)return;
   slot.page=page;slot.src=src;slot.img.src=src;
   slot.img.setAttribute('data-mushaf-page',String(page));
+  // The R33 hit geometry is derived from the real B345 page. Project only
+  // its passive spatial metadata into the matching visual page. No duplicate
+  // live Quran controls, text renderer or extra frame is created.
+  var prior=slot.tile.querySelector(':scope>.p209HitLayer');
+  if(prior&&prior.parentNode)prior.parentNode.removeChild(prior);
+  var shell=d.querySelector('#b345NormalStack>[data-r33-print-page="'+page+'"]');
+  var hit=shell&&shell.querySelector(':scope>.ayahHitLayer');
+  if(!hit)return;
+  var layer=hit.cloneNode(true);layer.classList.add('p209HitLayer');
+  layer.removeAttribute('id');
+  var named=layer.querySelectorAll('[id]');
+  for(var i=0;i<named.length;i++)named[i].removeAttribute('id');
+  layer.setAttribute('aria-hidden','true');
+  layer.style.pointerEvents='none';
+  slot.tile.appendChild(layer);
+ }
+ // R33 listens for the end gesture on window in the bubbling phase and
+ // otherwise hit-tests the invisible B345 page at its OLD coordinates.
+ // Intercept an actual tap during projection and retarget based on the
+ // projected, transformed hit geometry. Vertical swipes still belong to B345.
+ var touch={on:false,x:0,y:0,kind:''};
+ function eventPoint(ev){
+  var t=ev.changedTouches&&ev.changedTouches.length?ev.changedTouches[0]:ev;
+  return{x:Number(t.clientX)||0,y:Number(t.clientY)||0};
+ }
+ function within(rect,x,y){return x>=rect.left&&x<=rect.right&&y>=rect.top&&y<=rect.bottom}
+ function gestureDown(ev){
+  if(!active)return;
+  var xy=eventPoint(ev),box=host&&host.getBoundingClientRect();
+  touch.on=!!(box&&within(box,xy.x,xy.y));
+  touch.x=xy.x;touch.y=xy.y;touch.kind=ev.type;
+ }
+ function gestureEnd(ev){
+  if(!touch.on||!active)return;
+  touch.on=false;
+  var xy=eventPoint(ev),dx=xy.x-touch.x,dy=xy.y-touch.y;
+  if(dx*dx+dy*dy>144)return; // a swipe, not a word/ayah selection
+  var rect=host&&host.getBoundingClientRect();
+  if(!rect||!within(rect,xy.x,xy.y))return;
+  // Prevent R33 from retargeting a different ayah in its hidden scroll stack.
+  if(ev.stopImmediatePropagation)ev.stopImmediatePropagation();
+  stats.tapsSuppressed++;
+  var c=native(),s=c&&c.state;
+  if(!s||!s.running||typeof c.retargetPrintAyah!=='function')return;
+  for(var i=0;i<slots.length;i++){
+   var slot=slots[i];
+   if(slot.tile.style.display==='none')continue;
+   var box=slot.tile.getBoundingClientRect();
+   if(!within(box,xy.x,xy.y))continue;
+   var hits=slot.tile.querySelectorAll('.p209HitLayer .ayahHit');
+   for(var j=0;j<hits.length;j++){
+    var h=hits[j],hr=h.getBoundingClientRect();
+    if(!within(hr,xy.x,xy.y))continue;
+    var progress=box.height>0?Math.max(0,Math.min(1,((hr.top+hr.bottom)*.5-box.top)/box.height)):.5;
+    try{if(c.retargetPrintAyah({page:slot.page,s:Number(h.getAttribute('data-s'))||0,
+       a:Number(h.getAttribute('data-selectayah'))||0,g:Number(h.getAttribute('data-g'))||0,
+       progress:progress}))stats.tapsMapped++;else stats.tapMisses++}
+    catch(_){stats.tapMisses++}
+    return;
+   }
+   break;
+  }
+  stats.tapMisses++;
  }
  function paint(s){
   if(!host)return;
   var pg=pageNumber(s.page),nowImg=request(pg),nextImg=pg<604?request(pg+1):null;
+  // An asset can fail AFTER successful activation (e.g. a missing page 006).
+  // Never keep the visual projection stuck at page 005 while B345 audio moves.
+  // Expose the untouched native R33 renderer instead of showing a blank card.
+  if((nowImg&&nowImg.failed)||(nextImg&&nextImg.failed)||
+     (nextImg&&!nextImg.ready&&Date.now()-nextImg.startedAt>5000)){
+    stats.fallbacks++;cleanup();return;
+  }
   if(!nowImg||!nowImg.ready){stats.skipped++;return}
   // Never reveal an empty next page: hold the authentic visible page until ready.
   var readyNext=nextImg&&nextImg.ready;
@@ -204,6 +277,7 @@
   return true;
  }
  function cleanup(){
+  touch.on=false;
   if(!active)return;
   active=false;finishAt=0;d.body.removeAttribute(BODY_FLAG);
   if(host)host.style.display='none';
@@ -211,11 +285,18 @@
   lastPaint='';stats.restores++;stats.mode='off';
  }
  function staticReady(){
-  // P207's existing STOP restores the original localPageStage; never render it here.
-  var stage=d.querySelector('#mushafText .localPageStage'),img=stage&&stage.querySelector(':scope>img[data-mushaf-page]');
-  return !!(stage&&img&&img.complete&&img.naturalWidth>0&&
-    pageNumber(img.getAttribute('data-mushaf-page'))===lastPage&&
-    !d.body.hasAttribute('data-b345-sequence-surface'));
+  // Real V695 B345/R39 STOP initially freezes a live print stack and leaves
+  // data-b345-sequence-surface=normal. P207 releases that frozen stack and
+  // calls renderLocalPage asynchronously. Do not expose R39 as static early.
+  var stage=d.querySelector('#mushafReader .localPageStage')||d.querySelector('#mushafText .localPageStage');
+  var img=stage&&stage.querySelector(':scope>img[data-mushaf-page]');
+  var c=native(),s=c&&c.state,p=print();
+  var frozen=false;
+  try{frozen=!!(s&&s.printStaticHeld)||(p&&typeof p.frozenActive==='function'&&p.frozenActive())}catch(_){}
+  if(frozen||d.body.hasAttribute('data-b345-sequence-surface')){stats.restoreWaits++;return false}
+  var rect=stage&&stage.getBoundingClientRect();
+  return !!(stage&&rect&&rect.width>0&&rect.height>0&&img&&img.complete&&img.naturalWidth>0&&
+    pageNumber(img.getAttribute('data-mushaf-page'))===lastPage);
  }
  function beginExit(){if(!active)return;finishAt=Date.now()+1500;stats.mode='restoring'}
  function loop(){raf=0;
@@ -253,6 +334,15 @@
   if(activate()){lastPage=pg;paint(s);raf=w.requestAnimationFrame(loop)}
  }
  function init(){if(interval||!d.body)return;
+  if(w.PointerEvent){
+   w.addEventListener('pointerdown',gestureDown,{capture:true,passive:true});
+   w.addEventListener('pointerup',gestureEnd,{capture:true,passive:false});
+   w.addEventListener('pointercancel',function(){touch.on=false},{capture:true,passive:true});
+  }else{
+   w.addEventListener('touchstart',gestureDown,{capture:true,passive:true});
+   w.addEventListener('touchend',gestureEnd,{capture:true,passive:false});
+   w.addEventListener('touchcancel',function(){touch.on=false},{capture:true,passive:true});
+  }
   interval=w.setInterval(poll,180);
   d.addEventListener('visibilitychange',function(){if(d.hidden&&active)beginExit()},false);
   w.addEventListener('resize',function(){if(active)resize()},false);
