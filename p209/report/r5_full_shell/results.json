@@ -1,0 +1,16 @@
+{
+  "kind": "FULL-V695-CODE-IN-CHROMIUM-NOT-ANDROID-WEBVIEW",
+  "passed": 38,
+  "failed": 0,
+  "apk_sha256": "925f6116899ad8acf1cba2a9ec75d04db7951af66ad5b3de98b7cbc7cba9d384",
+  "real_b345": true,
+  "real_r33": true,
+  "real_p205_signed": true,
+  "real_p207_signed": true,
+  "native_silent_start_pause_resume_stop": true,
+  "real_android_webview": false,
+  "real_audio": false,
+  "live_ota_changed": false,
+  "offline_external_requests_blocked": 12,
+  "baseline_expected_opaque_origin_errors": "IndexedDB API disabled in this test origin"
+}
