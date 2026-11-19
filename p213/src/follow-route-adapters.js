@@ -21,15 +21,31 @@
   }
   function digitalEligible() {
     var d=root.document,b=d&&d.body;
-    if (excluded(b) || !b.classList.contains('stableDigital')) return false;
-    var f=null,host=d&&typeof d.getElementById==='function'&&d.getElementById('stableDigitalHost');
+    if (excluded(b) || !b.classList.contains('stableDigital') ||
+        typeof d.getElementById!=='function') return false;
+    var f=null;
     try { f=root.localStorage&&root.localStorage.getItem('stableFont'); }
     catch (_) { return false; }
-    // V695 RC19 may persist stableFont='digital' before the actual digital
-    // page is present. Never drive a digital follow over a printed image.
-    if (!f || f==='original' || !host || host.childElementCount<1 ||
+    // V695 stores selected digital font BEFORE a real digital page is loaded.
+    if (!f || f==='original') return false;
+    var scale=printedScale();
+    if (!Number.isFinite(scale)) return false;
+    var large=scale>100;
+    // The actual B330 >100% digital surface is b274LargeTextHost; the
+    // 100% base surface is stableDigitalHost. Do not require a hidden,
+    // possibly unmounted base host while the large flow owns the screen.
+    var host=d.getElementById(large?'b274LargeTextHost':'stableDigitalHost');
+    if (!host || host.childElementCount<1 ||
         host.getAttribute('aria-busy')==='true') return false;
-    return true;
+    if (large) {
+      if (!b.classList.contains('b274LargeMushaf') ||
+          host.getAttribute('data-b329-zoom-source')==='diagnostic' ||
+          host.getAttribute('data-b330-scroll-owner')!=='b274LargeTextHost') return false;
+    }
+    // A nonempty host shell alone is insufficient; require Quran flow text.
+    var flow=typeof host.querySelector==='function' &&
+      host.querySelector('.v160DigitalFlow');
+    return !!(flow && String(flow.textContent||'').replace(/\\s+/g,'').length);
   }
   function edition() {
     var v;
