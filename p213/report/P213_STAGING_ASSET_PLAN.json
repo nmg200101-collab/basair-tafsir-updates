@@ -84,10 +84,11 @@
   ],
   "replaceAssets": [
     {
-      "target": "modules/tilawa/p212-tajwid-static-follow.js",
+      "originalPath": "modules/tilawa/p212-tajwid-static-follow.js",
+      "target": "modules/tilawa/p213-tajwid-static-follow-v2.js",
       "source": "p213/src/p213-tajwid-static-follow-v2.js",
       "kind": "js",
-      "note": "replace existing P212 module byte-for-byte; never append another P212 script"
+      "note": "Replace old P212 reference at same ARRAY INDEX using NEW IMMUTABLE URL; never overwrite P212 bytes on server. Keep original URL for existing signed Seq120 and recovery."
     }
   ],
   "appendAssets": [
@@ -114,9 +115,10 @@
   ],
   "expectedTotalAssets": 17,
   "expectedCssAssets": 5,
-  "assetOrderRule": "Keep 12 preserved original assets in published order; replace original P212 JS at same path; append P213 core, route adapters, UI bridge and signed-OTA bootstrap LAST. Loader executes CSS first and JS in array order.",
+  "assetOrderRule": "Preserve first 12 prior signed assets in exact order; at index 12 use NEW p213-tajwid-static-follow-v2.js path instead of old P212 URL; then append coordinator, adapters, bridge and bootstrap LAST. Never include both P212 and P213 v2 in the same active module.",
   "activation": "AUTO-ENABLE ONLY when the last P213 bootstrap is injected by signed P121 Tilawa loader, the original B345 and P212 session are idle, all 4 components are ready, and corrected P212 v2 is active. A failed preflight leaves V695 original control installed; reversible disable() is provided.",
   "releaseRequirements": [
+    "keep old signed P212 JS at its immutable URL; publish new v2 under new P213 filename",
     "Android V695 confirmed on phone; P121 highestSequence remains unverified, obtain read-only evidence before assigning release sequence",
     "evidence for Android WebView, real audio, original page and digital font",
     "freeze exact assets and SHA-256, size, module version",
@@ -144,5 +146,13 @@
     "strictManifestMinAppVersion": "must be <= 694 and >= 693",
     "minSequence": "must exceed the highest installed device P121 sequence; server currently Seq120",
     "noApkRebuild": true
+  },
+  "publishingInvariant": {
+    "immutableAssets": true,
+    "oldP212Url": "modules/tilawa/p212-tajwid-static-follow.js",
+    "oldAssetAction": "DO NOT DELETE OR OVERWRITE",
+    "newP213V2Url": "modules/tilawa/p213-tajwid-static-follow-v2.js",
+    "rollback": "Use original 13 signed P212 asset paths with original bytes in a higher-version, higher-sequence recovery envelope; all referenced original URLs remain valid",
+    "forward": "Add four P213 JS components after v2; the last bootstrap activates only via signed P121 module loader"
   }
 }
