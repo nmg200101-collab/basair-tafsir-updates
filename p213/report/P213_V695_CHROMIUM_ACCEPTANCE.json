@@ -109,7 +109,8 @@
     "activationStatus": "NOT_ENABLED — no owner-qa manifest update",
     "gitHubQa050ScopedEd25519Approval": "NOT_AVAILABLE_FOR_P213_DIFF",
     "v695OtaModuleEd25519Approval": "NOT_AVAILABLE_FOR_P213_SEQUENCE",
-    "signedRecoveryEnvelope": "NOT_AVAILABLE — higher Tilawa version 240 + independently signed sequence required"
+    "signedRecoveryEnvelope": "NOT_AVAILABLE — higher Tilawa version 240 + independently signed sequence required",
+    "realP213ChromiumIntegration": "NOT_EXECUTED — p213/tests/test_v695_integrated_follow.py exists but this test exercises native V695 ONLY"
   },
   "r51VerticalScrollChromium": {
     "method": "While B345 is paused, set progress=0.9 and call R51.follow(0.9,state,true); wait 750ms",
@@ -245,5 +246,46 @@
     "status": "WRITTEN_NOT_EXECUTED",
     "purpose": "Test real V695 B345/R33/R51 with unmocked P213 coordinator, real P212 v2, reversible UI capture in isolated Chromium",
     "androidRealAudioAcceptance": false
+  },
+  "nativeV695LifecycleReproduction": {
+    "test": "p213/tests/test_v695_native_lifecycle.py",
+    "result": "PASS_4_OF_4",
+    "executedEnvironment": "Chromium 390x844, isolated local files from original signed V695 APK",
+    "actualB345": [
+      {
+        "operation": "startSilent",
+        "returned": false,
+        "running": true,
+        "paused": false,
+        "mode": "silent",
+        "page": 4
+      },
+      {
+        "operation": "togglePause pause",
+        "returned": false,
+        "running": true,
+        "paused": true,
+        "mode": "silent",
+        "page": 4
+      },
+      {
+        "operation": "togglePause resume",
+        "returned": false,
+        "running": true,
+        "paused": false,
+        "mode": "silent",
+        "page": 4
+      },
+      {
+        "operation": "stop",
+        "returned": false,
+        "running": false,
+        "paused": false,
+        "mode": "",
+        "page": 4
+      }
+    ],
+    "selectorMatch": "B345 native selectors #sequenceSilentB345, #sequenceAudioB345, #sequenceMiniPause, #sequenceMiniStop verified in original bundled JS",
+    "scope": "Native B345 behavior only; P213 is NOT injected by this test; no Android WebView, real audio, digital font or printed image scrolling proof"
   }
 }
