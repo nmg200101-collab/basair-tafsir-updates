@@ -83,10 +83,59 @@
   "gates": {
     "ownerQA050ScopedEd25519Approval": "NOT_AVAILABLE",
     "androidWebviewE2E": "NOT_RUN",
-    "originalDownloadedPrintedImageScrolling": "NOT_VERIFIED",
+    "originalDownloadedPrintedImageScrolling": "MISSING_OFFLINE_ORIGINAL_RESOURCE",
     "realReciterAudioContinuity": "NOT_RUN",
     "signedP213Envelope": "NOT_CREATED",
     "rollbackSignedEnvelope": "NOT_CREATED",
     "deployment": "NOT_STARTED"
+  },
+  "r51VerticalScrollChromium": {
+    "method": "While B345 is paused, set progress=0.9 and call R51.follow(0.9,state,true); wait 750ms",
+    "viewportClientHeight": 757,
+    "results": [
+      {
+        "edition": "original",
+        "scale": 130,
+        "maxScrollTop": 130,
+        "observedScrollTop": 130,
+        "manualScrollAfterPause": "PASS"
+      },
+      {
+        "edition": "original",
+        "scale": 150,
+        "maxScrollTop": 266,
+        "observedScrollTop": 266,
+        "manualScrollAfterPause": "PASS"
+      },
+      {
+        "edition": "original",
+        "scale": 200,
+        "maxScrollTop": 607,
+        "observedScrollTop": 607,
+        "manualScrollAfterPause": "PASS"
+      },
+      {
+        "edition": "tajwid",
+        "scale": 130,
+        "maxScrollTop": 130,
+        "observedScrollTop": 130,
+        "manualScrollAfterPause": "PASS"
+      },
+      {
+        "edition": "tajwid",
+        "scale": 150,
+        "maxScrollTop": 266,
+        "observedScrollTop": 266,
+        "manualScrollAfterPause": "PASS"
+      },
+      {
+        "edition": "tajwid",
+        "scale": 200,
+        "maxScrollTop": 607,
+        "observedScrollTop": 607,
+        "manualScrollAfterPause": "PASS"
+      }
+    ],
+    "scope": "Confirms physical vertical scrolling and manual scrolling in isolated Chromium; original images absent offline, actual audio progression not tested."
   }
 }
