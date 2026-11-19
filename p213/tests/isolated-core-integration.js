@@ -50,6 +50,21 @@
     assert('nested start blocked', nestedStartResult === false);
     assert('outer printed owns session', core.status() && core.status().route === 'printed' && core.status().mode === 'silent');
     assert('final cleanup', core.stop() === true && core.status() === null);
-    return {passed:17-errors.length, failed:errors.length, errors:errors, log:log};
+    var asyncStart = adapter('digital');
+    asyncStart.start = function(){return {then:function(){}};};
+    core.register('digital', asyncStart);
+    var rejectedAsyncStart=false;
+    try { core.start('digital','silent'); } catch(e) { rejectedAsyncStart=/synchronously/.test(String(e)); }
+    assert('asynchronous start rejected',rejectedAsyncStart);
+    assert('async start cleaned up',core.status()===null);
+    asyncStart.start=function(){return true;};
+    asyncStart.stop=function(){return {then:function(){}};};
+    assert('async stop setup',core.start('digital','silent')===true);
+    var rejectedAsyncStop=false;
+    try { core.stop(); } catch(e) { rejectedAsyncStop=/synchronously/.test(String(e)); }
+    assert('asynchronous stop rejected',rejectedAsyncStop && core.status().route==='digital');
+    asyncStart.stop=function(){return true;};
+    assert('cleanup after async rejection',core.stop()===true && core.status()===null);
+    return {passed:22-errors.length, failed:errors.length, errors:errors, log:log};
   };
 })(typeof window !== 'undefined' ? window : globalThis);
