@@ -11,10 +11,13 @@
   var data={stableFont:'original',v129PrintMode:'original'};
   var scale=100,r51Available=true,digitalStarts=0,p212Starts=0,externalStarts=0;
   function check(name,valid){count++;if(!valid)errors.push(name);}
-  var digitalHost={childElementCount:15,getAttribute:function(){return null;}};
+  var digitalText={textContent:'بسم الله الرحمن الرحيم'};
+  var digitalHost={childElementCount:15,getAttribute:function(){return null;},querySelector:function(){return digitalText;}};
+  var zoomHost={childElementCount:1,getAttribute:function(k){return k==='data-b329-zoom-source'?'v160-local':k==='data-b330-scroll-owner'?'b274LargeTextHost':null;},querySelector:function(){return digitalText;}};
   root.document={body:{classList:{contains:function(k){return !!flags[k];}},
     getAttribute:function(){return null;}},getElementById:function(k){
-      return k==='stableDigitalHost'&&flags.stableDigital?digitalHost:null;
+      if(!flags.stableDigital)return null;
+      return k==='stableDigitalHost'?digitalHost:k==='b274LargeTextHost'?zoomHost:null;
     }};
   root.localStorage={getItem:function(k){return Object.prototype.hasOwnProperty.call(data,k)?data[k]:null;}};
   root.__BASAIR_B330_ZOOM__={scale:function(){return scale;}};
@@ -97,10 +100,19 @@
   flags.stableDigital=false;data.stableFont='original';scale=90;
   check('unavailable printed route preserves digital follow',core.start('printed','silent')===false &&
     core.status()&&core.status().route==='digital'&&b345.state.running);
-  flags.stableDigital=true;data.stableFont='digital';scale=130;
+  flags.stableDigital=true;data.stableFont='digital';scale=100;
   check('digital pause',core.pause()===true&&b345.state.paused);
   check('digital resume',core.resume()===true&&!b345.state.paused);
   check('digital stop',core.stop()===true);
+  scale=130;flags.b274LargeMushaf=true;
+  check('digital 130 zoom uses large rendered host',core.start('digital','silent')===true && b345.state.running);
+  check('digital 130 zoom stops',core.stop()===true);
+  zoomHost.getAttribute=function(k){return k==='data-b329-zoom-source'?'diagnostic':k==='data-b330-scroll-owner'?'b274LargeTextHost':null;};
+  check('digital refuses zoom diagnostic',core.start('digital','silent')===false && core.status()===null);
+  zoomHost.getAttribute=function(k){return k==='data-b329-zoom-source'?'v160-local':k==='data-b330-scroll-owner'?'b274LargeTextHost':null;};
+  digitalText.textContent='   ';
+  check('digital refuses empty digital flow',core.start('digital','silent')===false && core.status()===null);
+  digitalText.textContent='بسم الله الرحمن الرحيم';scale=100;flags.b274LargeMushaf=false;
   var savedDigitalStart=b345.startAudio;
   b345.startAudio=function(){this.state.running=true;this.state.mode='audio';throw Error('simulated digital post-start failure');};
   var digitalStartThrew=false;
