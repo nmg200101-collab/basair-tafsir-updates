@@ -60,13 +60,22 @@
     var adapter = adapters[route];
     if (!adapter) throw Error('Follow route not registered: ' + route);
     if (session && session.stopping) return false;
+    // Validate destination readiness BEFORE stopping an existing recitation.
+    // Without preflight, requesting an unavailable digital/print view would
+    // stop the currently working route and leave the reader without follow.
+    var config = options || {};
+    if (typeof adapter.canStart === 'function' &&
+        synchronous(adapter.canStart(mode, config), 'canStart') === false) {
+      emit('start-unavailable', {route:route, mode:mode});
+      return false;
+    }
     if (session && stop('route-switch') === false) return false;
     var token = ++generation;
     var candidate = {route:route, mode:mode, paused:false, position:null,
       generation:token, adapter:adapter};
     session = candidate;
     try {
-      var accepted = synchronous(adapter.start(mode, options || {}), 'start');
+      var accepted = synchronous(adapter.start(mode, config), 'start');
       if (accepted === false) {
         // Adapter contract: returning false means no engine was started.
         // Do NOT call stop() here: an idle legacy engine legitimately returns
