@@ -11,8 +11,11 @@
   var data={stableFont:'original',v129PrintMode:'original'};
   var scale=100,r51Available=true,digitalStarts=0,p212Starts=0,externalStarts=0;
   function check(name,valid){count++;if(!valid)errors.push(name);}
+  var digitalHost={childElementCount:15,getAttribute:function(){return null;}};
   root.document={body:{classList:{contains:function(k){return !!flags[k];}},
-    getAttribute:function(){return null;}}};
+    getAttribute:function(){return null;}},getElementById:function(k){
+      return k==='stableDigitalHost'&&flags.stableDigital?digitalHost:null;
+    }};
   root.localStorage={getItem:function(k){return Object.prototype.hasOwnProperty.call(data,k)?data[k]:null;}};
   root.__BASAIR_B330_ZOOM__={scale:function(){return scale;}};
   root.__BASAIR_PRINT_FOLLOW_100__={scale:function(){return scale;},
@@ -69,6 +72,11 @@
   independent.st.running=true;flags.stableDigital=true;data.stableFont='digital';
   check('external P212 session blocks digital',core.start('digital','audio')===false&&core.status()===null);
   independent.st.running=false;
+  digitalHost.childElementCount=0;
+  check('digital refuses incomplete render',core.start('digital','audio')===false&&core.status()===null);
+  digitalHost.childElementCount=15;digitalHost.getAttribute=function(k){return k==='aria-busy'?'true':null;};
+  check('digital refuses loading render',core.start('digital','audio')===false&&core.status()===null);
+  digitalHost.getAttribute=function(){return null;};
   check('digital runs B345 despite false begin',core.start('digital','audio')===true&&b345.state.mode==='audio');
   check('digital pause',core.pause()===true&&b345.state.paused);
   check('digital resume',core.resume()===true&&!b345.state.paused);
