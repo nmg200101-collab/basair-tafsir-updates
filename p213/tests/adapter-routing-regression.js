@@ -1,93 +1,84 @@
-/* P213 isolated routing regression. Load core and bridge first.
- * Run only in a fresh mock window: NEVER inject into V695 or a live WebView.
+/* P213 V695 verified-interface mock: B345 start/stop/pause return FALSE on success.
+ * Run in an isolated window after the coordinator and bridge.
+ * This is a contract regression, not Android acceptance.
  */
-(function(root) {
-  'use strict';
-  root.__BASAIR_P213_ROUTING_TESTS__ = function() {
-    var core=root.__BASAIR_P213_FOLLOW__,bridge=root.__BASAIR_P213_ADAPTERS__;
-    if (!core || !bridge || core.status()) throw Error('Fresh isolated P213 required');
-    var errors=[],checks=0,flags={ 'reader-active':true };
-    var data={stableFont:'original',v129PrintMode:'original'};
-    var zoom=100,digitalStarts=0,printedStarts=0,zoomStarts=0,zoomOpts=null;
-    var zoomRunning=false,zoomCanStop=true,printedRunning=false,printedPaused=false;
-    function check(label,value){checks++;if(!value)errors.push(label);}
-    root.localStorage={getItem:function(k){return Object.prototype.hasOwnProperty.call(data,k)?data[k]:null;}};
-    root.document={body:{classList:{contains:function(k){return !!flags[k];}},
-      getAttribute:function(){return null;}}};
-    root.__BASAIR_B330_ZOOM__={scale:function(){return zoom;}};
-    root.__BASAIR_PRINT_FOLLOW_100__={scale:function(){return zoom;}};
-    var b345={state:{running:false,paused:false,page:3},
-      startSilent:function(){digitalStarts++;this.state.running=true;return true;},
-      startAudio:function(){digitalStarts++;this.state.running=true;return true;},
-      stop:function(){this.state.running=false;this.state.paused=false;return true;},
-      pause:function(){this.state.paused=!this.state.paused;return true;}};
-    root.__BASAIR_B345_SEQUENCE__=b345;
-    root.__BASAIR_P212_TAJWID_STATIC_FOLLOW__={
-      start:function(){printedStarts++;printedRunning=true;return true;},
-      stop:function(){if(!printedRunning)return false;printedRunning=false;return true;},
-      pause:function(){if(!printedRunning)return false;printedPaused=!printedPaused;return true;},
-      status:function(){return {running:printedRunning,paused:printedPaused,page:5};}
-    };
-    check('install both routes',bridge.install());
-    check('original 100 requires verified adapter',core.start('printed','silent')===false);
-    check('rejected start clears phantom session',core.status()===null);
-    check('original must never reach P212',printedStarts===0);
-    flags.stableDigital=true;data.stableFont='digital';
-    check('digital eligibility',bridge.digitalEligible());
-    var oldStop=b345.stop;b345.stop=null;
-    check('digital cannot start without stop contract',core.start('digital','silent')===false);
-    check('digital did not start without stop contract',digitalStarts===0 && core.status()===null);
-    b345.stop=oldStop;
-    check('digital starts',core.start('digital','silent')===true && b345.state.running);
-    check('digital pause',core.pause()===true && b345.state.paused);
-    check('digital resume',core.resume()===true && !b345.state.paused);
-    check('digital stops',core.stop()===true && !b345.state.running);
-    printedRunning=true;
-    check('digital blocked by external P212 session',core.start('digital','silent')===false && core.status()===null);
-    printedRunning=false;
-    flags.stableDigital=false;data.stableFont='original';
-    var adapter={
-      start:function(mode,opts){zoomStarts++;zoomRunning=true;zoomOpts=opts;return true;},
-      stop:function(){if(!zoomCanStop)return false;zoomRunning=false;return true;},
-      pause:function(){return zoomRunning;},
-      resume:function(){return zoomRunning;},
-      position:function(){return {page:8};}
-    };
-    check('register verified print adapter',bridge.registerZoomFollow(adapter));
-    b345.state.running=true;
-    check('printed blocked by external B345 session',core.start('printed','silent')===false && core.status()===null);
-    b345.state.running=false;
-    check('original 100 stays with original adapter',core.start('printed','silent')===true &&
-      zoomStarts===1 && printedStarts===0 && zoomOpts.preserveZoom===true);
-    check('original 100 stop',core.stop()===true);
-    zoom=150;
-    check('original zoomed starts without reset',core.start('printed','audio')===true &&
-      zoom===150 && zoomStarts===2);
-    zoomCanStop=false;
-    check('refused zoom stop preserves owner',core.stop()===false &&
-      core.status() && core.status().route==='printed');
-    check('refused stop blocks switching',core.start('digital','silent')===false);
-    zoomCanStop=true;
-    check('zoom stop after refusal',core.stop()===true && core.status()===null);
-    data.v129PrintMode='tajwid';zoom=100;
-    check('tajwid 100 uses P212',core.start('printed','silent')===true &&
-      printedStarts===1 && zoomStarts===2);
-    printedRunning=false; // Engine auto-stopped after its own completion.
-    check('auto-stopped P212 clears coordinator',core.stop()===true && core.status()===null);
-    zoom=130;
-    printedRunning=true;
-    check('zoom blocked by external P212',core.start('printed','silent')===false && core.status()===null);
-    printedRunning=false;
-    check('tajwid zoom uses print adapter',core.start('printed','silent')===true &&
-      zoomStarts===3 && printedStarts===1 && zoom===130);
-    check('zoomed tajwid cleanup',core.stop()===true);
-    flags.stableDigital=true;
-    check('digital mode excludes printed adapter',!bridge.printedEligible() &&
-      core.start('printed','silent')===false && core.status()===null);
-    flags.stableDigital=false;flags['h25-hifz']=true;
-    check('hifz mode excludes printed adapter',!bridge.printedEligible() &&
-      core.start('printed','audio')===false && core.status()===null);
-    return {passed:checks-errors.length,failed:errors.length,errors:errors,
-      digitalStarts:digitalStarts,printedStarts:printedStarts,zoomStarts:zoomStarts};
-  };
-})(typeof window !== 'undefined' ? window : globalThis);
+(function(root){
+ 'use strict';
+ root.__BASAIR_P213_ROUTING_TESTS__=function(){
+  var core=root.__BASAIR_P213_FOLLOW__,bridge=root.__BASAIR_P213_ADAPTERS__;
+  if(!core||!bridge||core.status())throw Error('Requires fresh P213 window');
+  var count=0,errors=[],flags={'reader-active':true};
+  var data={stableFont:'original',v129PrintMode:'original'};
+  var scale=100,r51Available=true,digitalStarts=0,p212Starts=0,externalStarts=0;
+  function check(name,valid){count++;if(!valid)errors.push(name);}
+  root.document={body:{classList:{contains:function(k){return !!flags[k];}},
+    getAttribute:function(){return null;}}};
+  root.localStorage={getItem:function(k){return Object.prototype.hasOwnProperty.call(data,k)?data[k]:null;}};
+  root.__BASAIR_B330_ZOOM__={scale:function(){return scale;}};
+  root.__BASAIR_PRINT_FOLLOW_100__={scale:function(){return scale;},
+    active:function(){return scale===100&&!flags.stableDigital;},edition:function(){return data.v129PrintMode;}};
+  root.__BASAIR_PRINT_ZOOM_FOLLOW_R51__={active:function(){return r51Available&&scale>100&&!flags.stableDigital;},
+    edition:function(){return data.v129PrintMode;}};
+  var b345={state:{running:false,paused:false,page:4,mode:''},
+    startSilent:function(){digitalStarts++;this.state.running=true;this.state.mode='silent';return false;},
+    startAudio:function(){digitalStarts++;this.state.running=true;this.state.mode='audio';return false;},
+    stop:function(){this.state.running=false;this.state.paused=false;this.state.mode='';return false;},
+    _test:{togglePause:function(){b345.state.paused=!b345.state.paused;return false;}}};
+  root.__BASAIR_B345_SEQUENCE__=b345;
+  var independent={version:213,st:{running:false,paused:false,page:4},
+    start:function(){p212Starts++;this.st.running=true;return true;},
+    stop:function(){if(!this.st.running)return false;this.st.running=false;return true;},
+    pause:function(){if(!this.st.running)return false;this.st.paused=!this.st.paused;return true;},
+    status:function(){return this.st;}};
+  root.__BASAIR_P212_TAJWID_STATIC_FOLLOW__=independent;
+  check('install',bridge.install());
+  check('native V695 control surface detected',bridge.nativeReady());
+  check('original 100 starts B345 despite false return',core.start('printed','silent')===true&&b345.state.running&&digitalStarts===1);
+  check('original pause despite false return',core.pause()===true&&b345.state.paused);
+  check('original resume despite false return',core.resume()===true&&!b345.state.paused);
+  check('original stop despite false return',core.stop()===true&&!b345.state.running);
+  for(var i=0,scales=[130,150,200];i<scales.length;i++){
+   scale=scales[i];
+   check('original zoom '+scale+' via R51',core.start('printed','silent')===true&&b345.state.running);
+   check('original zoom '+scale+' unchanged',bridge.printedScale()===scale);
+   check('original zoom '+scale+' stop',core.stop()===true&&!b345.state.running);
+  }
+  scale=100;data.v129PrintMode='tajwid';
+  check('tajwid 100 uses P212',core.start('printed','audio')===true&&p212Starts===1&&!b345.state.running);
+  check('tajwid 100 pause',core.pause()===true&&independent.st.paused);
+  check('tajwid 100 resume',core.resume()===true&&!independent.st.paused);
+  check('tajwid 100 stop',core.stop()===true&&!independent.st.running);
+  for(var j=0;j<scales.length;j++){
+   scale=scales[j];
+   check('tajwid zoom '+scale+' uses native R51',core.start('printed','silent')===true&&b345.state.running&&p212Starts===1);
+   check('tajwid zoom '+scale+' stop',core.stop()===true&&!b345.state.running);
+  }
+  independent.version=212;scale=130;
+  check('old P212 cannot steal colored zoom',core.start('printed','silent')===false&&core.status()===null);
+  independent.version=213;r51Available=false;
+  check('no unverified zoom renderer',core.start('printed','silent')===false&&core.status()===null);
+  var x={start:function(){externalStarts++;return true;},stop:function(){return true;},
+    pause:function(){return true;},resume:function(){return true;},position:function(){return {page:4};}};
+  check('explicit external zoom register',bridge.registerZoomFollow(x));
+  check('external zoom fallback',core.start('printed','silent')===true&&externalStarts===1);
+  check('external zoom stop',core.stop()===true);
+  r51Available=true;
+  b345.state.running=true;
+  check('external B345 session blocks P213 print',core.start('printed','silent')===false&&core.status()===null);
+  b345.state.running=false;
+  independent.st.running=true;flags.stableDigital=true;data.stableFont='digital';
+  check('external P212 session blocks digital',core.start('digital','audio')===false&&core.status()===null);
+  independent.st.running=false;
+  check('digital runs B345 despite false begin',core.start('digital','audio')===true&&b345.state.mode==='audio');
+  check('digital pause',core.pause()===true&&b345.state.paused);
+  check('digital resume',core.resume()===true&&!b345.state.paused);
+  check('digital stop',core.stop()===true);
+  var toggle=b345._test.togglePause;b345._test.togglePause=null;
+  check('missing lifecycle method blocks start',core.start('digital','silent')===false&&core.status()===null);
+  b345._test.togglePause=toggle;
+  flags.stableDigital=false;data.stableFont='original';flags['h25-hifz']=true;
+  check('hifz excluded',!bridge.printedEligible()&&core.start('printed','silent')===false);
+  return {passed:count-errors.length,failed:errors.length,errors:errors,
+    nativeStarts:digitalStarts,p212Starts:p212Starts,externalStarts:externalStarts};
+ };
+})(typeof window!=='undefined'?window:globalThis);
