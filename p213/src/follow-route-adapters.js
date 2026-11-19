@@ -45,7 +45,7 @@
     // A nonempty host shell alone is insufficient; require Quran flow text.
     var flow=typeof host.querySelector==='function' &&
       host.querySelector('.v160DigitalFlow');
-    return !!(flow && String(flow.textContent||'').replace(/\\s+/g,'').length);
+    return !!(flow && String(flow.textContent||'').replace(/\s+/g,'').length);
   }
   function edition() {
     var v;
