@@ -101,8 +101,8 @@
       {
         "path": "modules/tilawa/p213-follow-route-adapters.js",
         "kind": "js",
-        "sha256": "510749de231ca0fd5f47cb8ac635f83a09de6aa9607cfc9cdfc1e9d4f0c2d37d",
-        "size": 10057,
+        "sha256": "b362070c20a875e84b3f8ffa696355d20c1155e10a5eddb04fee23fed5fe09f6",
+        "size": 10845,
         "source": "p213/src/follow-route-adapters.js"
       },
       {
@@ -213,5 +213,7 @@
     "original RSA envelope for forward and recovery",
     "GitHub QA050 scoped diff approval if protected files changed"
   ],
-  "note": "Hashes and byte sizes computed over exact UTF-8 contents fetched from GitHub; old 13 were compared to signed Seq120 manifest. Catalog is NOT a valid signed release and has no sequence, owner signature or RSA envelope."
+  "note": "Hashes and byte sizes computed over exact UTF-8 contents fetched from GitHub; old 13 were compared to signed Seq120 manifest. Catalog is NOT a valid signed release and has no sequence, owner signature or RSA envelope.",
+  "forwardTotalBytes": 113792,
+  "updatedForDigitalZoom": "Recomputed after true 100%/zoomed digital surface readiness correction; no production changes"
 }
