@@ -88,7 +88,7 @@
   b345.state.running=true;
   check('external B345 session blocks P213 print',core.start('printed','silent')===false&&core.status()===null);
   b345.state.running=false;
-  independent.st.running=true;flags.stableDigital=true;data.stableFont='digital';
+  scale=100;independent.st.running=true;flags.stableDigital=true;data.stableFont='digital';
   check('external P212 session blocks digital',core.start('digital','audio')===false&&core.status()===null);
   independent.st.running=false;
   digitalHost.childElementCount=0;
