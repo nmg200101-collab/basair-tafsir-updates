@@ -44,6 +44,12 @@
   check('original pause despite false return',core.pause()===true&&b345.state.paused);
   check('original resume despite false return',core.resume()===true&&!b345.state.paused);
   check('original stop despite false return',core.stop()===true&&!b345.state.running);
+  var savedNativeStart=b345.startSilent;
+  b345.startSilent=function(){this.state.running=true;this.state.mode='silent';throw Error('simulated post-start failure');};
+  var printStartThrew=false;
+  try{core.start('printed','silent');}catch(e){printStartThrew=/post-start failure/.test(String(e));}
+  check('printed native exception stops orphan clock',printStartThrew&&!b345.state.running&&core.status()===null);
+  b345.startSilent=savedNativeStart;
   for(var i=0,scales=[130,150,200];i<scales.length;i++){
    scale=scales[i];
    check('original zoom '+scale+' via R51',core.start('printed','silent')===true&&b345.state.running);
@@ -55,6 +61,12 @@
   check('tajwid 100 pause',core.pause()===true&&independent.st.paused);
   check('tajwid 100 resume',core.resume()===true&&!independent.st.paused);
   check('tajwid 100 stop',core.stop()===true&&!independent.st.running);
+  var savedP212Start=independent.start;
+  independent.start=function(){this.st.running=true;throw Error('simulated independent post-start failure');};
+  var coloredStartThrew=false;
+  try{core.start('printed','audio');}catch(e){coloredStartThrew=/independent post-start/.test(String(e));}
+  check('colored P212 exception stops orphan clock',coloredStartThrew&&!independent.st.running&&core.status()===null);
+  independent.start=savedP212Start;
   for(var j=0;j<scales.length;j++){
    scale=scales[j];
    check('tajwid zoom '+scale+' uses native R51',core.start('printed','silent')===true&&b345.state.running&&p212Starts===1);
@@ -89,7 +101,16 @@
   check('digital pause',core.pause()===true&&b345.state.paused);
   check('digital resume',core.resume()===true&&!b345.state.paused);
   check('digital stop',core.stop()===true);
+  var savedDigitalStart=b345.startAudio;
+  b345.startAudio=function(){this.state.running=true;this.state.mode='audio';throw Error('simulated digital post-start failure');};
+  var digitalStartThrew=false;
+  try{core.start('digital','audio');}catch(e){digitalStartThrew=/digital post-start/.test(String(e));}
+  check('digital exception stops orphan clock',digitalStartThrew&&!b345.state.running&&core.status()===null);
+  b345.startAudio=savedDigitalStart;
+  check('emergency stop starts',core.start('digital','silent')===true&&b345.state.running);
   var toggle=b345._test.togglePause;b345._test.togglePause=null;
+  check('emergency stop without pause interface',core.stop()===true&&!b345.state.running);
+
   check('missing lifecycle method blocks start',core.start('digital','silent')===false&&core.status()===null);
   b345._test.togglePause=toggle;
   flags.stableDigital=false;data.stableFont='original';flags['h25-hifz']=true;
