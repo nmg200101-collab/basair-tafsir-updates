@@ -3,8 +3,8 @@
 
 Usage:
   python3 p213/tools/verify_v695_ota.py --apk basair-v695-owner-signed.apk \
-      --release p121/owner-qa/release.json --min-sequence 121 \
-      --expected-id P213-SEQ121-OWNER-VERIFIED \
+      --release p121/owner-qa/release.json --min-sequence 122 \
+      --expected-id P213-SEQ122-OWNER-VERIFIED \
       --asset-root p121/owner-qa
 
 The script NEVER signs, writes a manifest, accesses private keys or publishes.
@@ -177,8 +177,12 @@ def main():
     parser.add_argument("--apk",type=Path,required=True,help="Original signed V695 APK, read-only")
     parser.add_argument("--release",type=Path,required=True,help="Signed envelope JSON file")
     parser.add_argument("--asset-root",type=Path,help="Directory containing modules/<name>/... assets")
-    parser.add_argument("--min-sequence",type=int,default=121)
+    parser.add_argument("--min-sequence",type=int,default=122)
     parser.add_argument("--expected-id",help="Require exact P213 release id to avoid accepting P212")
+    parser.add_argument("--rollback",type=Path,help="Separately owner-signed recovery envelope with a higher sequence")
+    parser.add_argument("--rollback-id",help="Exact rollback envelope id")
+    parser.add_argument("--strict-publish-gate",action="store_true",
+                        help="Require target id, asset hashes and a signed forward-sequence rollback")
     args = parser.parse_args()
     rsa, owner, receiver_version = pubkeys(args.apk)
     env = json.loads(args.release.read_text(encoding="utf-8"))
@@ -189,9 +193,27 @@ def main():
     manifest=json.loads(payload.decode("utf-8"))
     result=validate_payload(manifest,receiver_version,owner,datetime.now(timezone.utc),
                             args.min_sequence,args.expected_id,args.asset_root)
-    print(json.dumps({"status":"PASS_CRYPTO_AND_MANIFEST_ONLY","receiver_version":receiver_version,
-                      **result},ensure_ascii=False,indent=2))
-    print("WARNING: cryptographic check does not replace Android WebView acceptance",file=sys.stderr)
+    rollback_result=None
+    if args.strict_publish_gate and (not args.expected_id or not args.asset_root or
+                                    not args.rollback or not args.rollback_id):
+        fail("Strict publish gate requires --expected-id, --asset-root, --rollback and --rollback-id")
+    if args.rollback:
+        backward=json.loads(args.rollback.read_text(encoding="utf-8"))
+        backwards_payload=b64(backward["payload"])
+        verify_rsa(backwards_payload,b64(backward["signature"]),rsa)
+        rollback_manifest=json.loads(backwards_payload.decode("utf-8"))
+        rollback_result=validate_payload(rollback_manifest,receiver_version,owner,
+                                         datetime.now(timezone.utc),result["sequence"]+1,
+                                         args.rollback_id,args.asset_root)
+        if "tilawa" not in rollback_result["modules"]:
+            fail("Recovery envelope must explicitly restore Tilawa")
+    verdict="PASS_SIGNED_FORWARD_AND_RECOVERY" if rollback_result else "PASS_SIGNED_FORWARD_ONLY"
+    print(json.dumps({"status":verdict,"receiver_version":receiver_version,
+                      **result,"rollback":rollback_result,
+                      "android_webview_acceptance":"NOT_VERIFIED_BY_THIS_TOOL"},
+                     ensure_ascii=False,indent=2))
+    print("WARNING: signatures and assets do not prove Android WebView acceptance or deployment",
+          file=sys.stderr)
 
 if __name__=="__main__":
     try: main()
