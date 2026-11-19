@@ -85,7 +85,20 @@
     var s=legacy() && legacy().state;
     return s?{page:s.page||null,verse:s.rasterFollowAyah||null}:null;
   }
-  function digitalStart(mode){return digitalEligible() && nativeStart(mode);}
+  function digitalCanStart(){ return digitalEligible() && nativeReady(); }
+  function printedCanStart(){
+    if (!printedEligible() || !edition()) return false;
+    var z=printedScale(),ed=edition();
+    if (!Number.isFinite(z) || z<100) return false;
+    if (z===100 && ed==='tajwid')
+      return nativePrintReady(z) && !!(p212() &&
+        typeof p212().start==='function' && typeof p212().status==='function');
+    if (nativePrintReady(z))
+      return nativeReady() && !(ed==='tajwid' && z>100 &&
+        p212() && Number(p212().version)<213);
+    return z>100 && !!externalZoom;
+  }
+  function digitalStart(mode){return digitalCanStart() && nativeStart(mode);}
   function digitalStop(){return nativeStop();}
   function digitalPause(){return nativePauseTo(true);}
   function digitalResume(){return nativePauseTo(false);}
@@ -175,8 +188,8 @@
     var st=e.status&&e.status();return st?{page:st.page||null}:null;
   }
   var adapters={
-    digital:{start:digitalStart,stop:digitalStop,pause:digitalPause,resume:digitalResume,position:digitalPosition},
-    printed:{start:printedStart,stop:printedStop,pause:printedPause,resume:printedResume,position:printedPosition}
+    digital:{canStart:digitalCanStart,start:digitalStart,stop:digitalStop,pause:digitalPause,resume:digitalResume,position:digitalPosition},
+    printed:{canStart:printedCanStart,start:printedStart,stop:printedStop,pause:printedPause,resume:printedResume,position:printedPosition}
   };
   function install(){
     var core=root.__BASAIR_P213_FOLLOW__;
