@@ -1,0 +1,125 @@
+{
+  "schema": "basair-p213-nondeployable-asset-preparation-v1",
+  "stage": "DRAFT_ONLY_NOT_SIGNED_NOT_PUBLISHED",
+  "baseline": {
+    "release": "P212-SEQ120-INDEPENDENT-TAJWID-AUDIO-20261118",
+    "sequence": 120,
+    "tilawaVersion": 238,
+    "originalAssets": 13,
+    "releaseBlobSha": "36aae2fe55fe021b96adb18750ed2c2e8aae4fb5"
+  },
+  "preserveAssets": [
+    {
+      "path": "modules/tilawa/p178-salman-selected-follow.css",
+      "kind": "css",
+      "sha256": "010cc08506cb4b67bc5279a01771df0ff3977344e579ad69650f3578bf4ce477",
+      "size": 894
+    },
+    {
+      "path": "modules/tilawa/p178-salman-selected-follow.js",
+      "kind": "js",
+      "sha256": "999970c6cd36ca722e36c12bfad038540d0665c9c53a97105f3fb051941a45eb",
+      "size": 10846
+    },
+    {
+      "path": "modules/tilawa/p179-salman-native-card.css",
+      "kind": "css",
+      "sha256": "6e7d5039b1dfca356954d55a01e9208ad58eeda179a2ac7a427277bbccc7e51d",
+      "size": 1293
+    },
+    {
+      "path": "modules/tilawa/p179-salman-native-card.js",
+      "kind": "js",
+      "sha256": "a98837d669607e0f67215efc82a165b02948dd1ae6cdb928824b6618d6c0ad62",
+      "size": 5598
+    },
+    {
+      "path": "modules/tilawa/p180-page-index.css",
+      "kind": "css",
+      "sha256": "5de53be58df22abdf0215f3067ea003237ad2114380a2e612efe1a6e8ef63ae4",
+      "size": 3813
+    },
+    {
+      "path": "modules/tilawa/p180-page-index.js",
+      "kind": "js",
+      "sha256": "7f0fff579544b3a9c3d8d994de27e33464352272917e88b45bf210ef508ff51c",
+      "size": 8042
+    },
+    {
+      "path": "modules/tilawa/p187-stable-page-size.css",
+      "kind": "css",
+      "sha256": "29a3fbd48f3254aaf611f6ef21b6d623a54718ebf639d1595819a4f8614dfd27",
+      "size": 1050
+    },
+    {
+      "path": "modules/tilawa/p187-stable-page-size.js",
+      "kind": "js",
+      "sha256": "8565a6a53d5d18956d7e771f3c846029bec7b052e75d2f36c83b64c2f9afc7e5",
+      "size": 1886
+    },
+    {
+      "path": "modules/tilawa/p188-stable-size-direct-print.css",
+      "kind": "css",
+      "sha256": "717802d142380837224029fce1b763cd462cd9e9de571ce5ce2fa8230e1eedf1",
+      "size": 591
+    },
+    {
+      "path": "modules/tilawa/p189-size-shortcut-native-tools.js",
+      "kind": "js",
+      "sha256": "8b962f6354425acfdf2f28e292b258f313181f0129d1371ed2c7364ef74f6432",
+      "size": 10938
+    },
+    {
+      "path": "modules/tilawa/p205-original-print-parity.js",
+      "kind": "js",
+      "sha256": "7a6c86a518436bb4f8611898ad530a768e051158734ea719f4a7e13b82199fdd",
+      "size": 12980
+    },
+    {
+      "path": "modules/tilawa/p207-native-follow-lifecycle.js",
+      "kind": "js",
+      "sha256": "09ea36835e233aa9e2093e15aa8ae3d608707c4bad82fd6b306efe140509c04c",
+      "size": 7479
+    }
+  ],
+  "replaceAssets": [
+    {
+      "target": "modules/tilawa/p212-tajwid-static-follow.js",
+      "source": "p213/src/p213-tajwid-static-follow-v2.js",
+      "kind": "js",
+      "note": "replace existing P212 module byte-for-byte; never append another P212 script"
+    }
+  ],
+  "appendAssets": [
+    {
+      "target": "modules/tilawa/p213-unified-follow-core.js",
+      "source": "p213/src/unified-follow-core.js",
+      "kind": "js"
+    },
+    {
+      "target": "modules/tilawa/p213-follow-route-adapters.js",
+      "source": "p213/src/follow-route-adapters.js",
+      "kind": "js"
+    },
+    {
+      "target": "modules/tilawa/p213-owner-control-bridge.js",
+      "source": "p213/src/owner-control-bridge.js",
+      "kind": "js"
+    }
+  ],
+  "expectedTotalAssets": 16,
+  "expectedCssAssets": 5,
+  "assetOrderRule": "Keep all preserved assets in signed baseline order; replace old P212 JS in same position; append core, adapters, bridge in this order. V695 loader applies CSS first and JS by array order.",
+  "activation": "NO AUTOMATIC ACTIVATION: bridge is opt-in, P213 does not take over V695 UI until Android acceptance. Explicit owner-controlled bootstrap is absent by design.",
+  "releaseRequirements": [
+    "verify exact original V695 activation state / highestSequence from phone",
+    "evidence for Android WebView, real audio, original page and digital font",
+    "freeze exact assets and SHA-256, size, module version",
+    "two distinct Ed25519 signed approvals (GitHub QA050 diff and V695 OTA modules) as required",
+    "RSA owner-signed OTA release envelope",
+    "maintain verified previous/rollback and no APK resigning",
+    "publish only after all gates"
+  ],
+  "newAssetHashes": "PENDING_SOURCE_FREEZE",
+  "noProductionMutation": true
+}
