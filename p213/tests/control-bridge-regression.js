@@ -37,6 +37,13 @@
    }
    var api=root.__BASAIR_P213_CONTROL_BRIDGE__;
    ck('bridge exists',!!api && typeof api.enable==='function');
+   root.__BASAIR_B345_SEQUENCE__.state.running=true;
+   ck('cannot seize active B345 follow',api.enable()===false&&!api.status().enabled);
+   root.__BASAIR_B345_SEQUENCE__.state.running=false;
+   var prior={running:true};
+   root.__BASAIR_P212_TAJWID_STATIC_FOLLOW__={status:function(){return prior;}};
+   ck('cannot seize active P212 follow',api.enable()===false&&!api.status().enabled);
+   prior.running=false;
    ck('enable binds safely',api.enable()===true && api.status().enabled);
    ck('native handlers replaced',listeners.click.indexOf(old)<0);
    ck('single follow start',!!fire('click','sequenceSilentB345').prevented&&
