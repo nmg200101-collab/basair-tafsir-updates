@@ -31,18 +31,21 @@
   function stop(reason) {
     if (!session) return false;
     var previous = session;
-    session = null;
-    generation++;
+    // Keep ownership until the engine confirms it stopped. A synchronous
+    // callback must not start a second route during an in-flight stop.
+    previous.stopping = true;
     var stopError = null, stopped = false;
     try { stopped = previous.adapter.stop(reason || 'user-stop') !== false; }
     catch (error) { stopError = error; }
     if (!stopped) {
-      session = previous;
+      previous.stopping = false;
       emit('stop-failed', {reason:reason || 'user-stop', route:previous.route,
         error:stopError ? String(stopError) : 'adapter rejected stop'});
       if (stopError) throw stopError;
       return false;
     }
+    if (session === previous) session = null;
+    generation++;
     emit('stop', {reason:reason || 'user-stop', route:previous.route});
     return true;
   }
@@ -51,6 +54,7 @@
     if (mode !== 'audio' && mode !== 'silent') throw Error('Invalid follow mode');
     var adapter = adapters[route];
     if (!adapter) throw Error('Follow route not registered: ' + route);
+    if (session && session.stopping) return false;
     if (session && stop('route-switch') === false) return false;
     var token = ++generation;
     var candidate = {route:route, mode:mode, paused:false, position:null,
@@ -58,7 +62,12 @@
     session = candidate;
     try {
       var accepted = adapter.start(mode, options || {});
-      if (accepted === false) { stop('start-rejected'); return false; }
+      if (accepted === false) {
+        // A rejected start must not be treated as a successfully running engine.
+        // Keep ownership only if its cleanup explicitly fails.
+        if (session === candidate && stop('start-rejected') === false) return false;
+        return false;
+      }
       if (session !== candidate) return false;
       candidate.position = adapter.position();
       emit('start');
