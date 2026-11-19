@@ -102,7 +102,9 @@
     "deployment": "NOT_STARTED — PR 160 remains draft",
     "digitalFontsLiveRender": "NOT_VERIFIED_ON_ANDROID",
     "uiIntegrationEndToEnd": "NOT_RUN — opt-in V695 capture bridge only tested with mock coordinator and real native button handlers",
-    "activationStatus": "NOT_ENABLED — no owner-qa manifest update"
+    "activationStatus": "NOT_ENABLED — no owner-qa manifest update",
+    "gitHubQa050ScopedEd25519Approval": "NOT_AVAILABLE_FOR_P213_DIFF",
+    "v695OtaModuleEd25519Approval": "NOT_AVAILABLE_FOR_P213_SEQUENCE"
   },
   "r51VerticalScrollChromium": {
     "method": "While B345 is paused, set progress=0.9 and call R51.follow(0.9,state,true); wait 750ms",
@@ -193,5 +195,13 @@
     "targetSequenceMinimum": 122,
     "requiredSignedRollbackSequenceMinimum": 123,
     "limitations": "No signed P213 forward or rollback available; verifier cannot confirm absent signatures, and it does not create them."
+  },
+  "ownerKeyCompatibility": {
+    "comparison": "CI Ed25519 public key DER vs V695 embedded OTA owner Ed25519 public key",
+    "sameKey": false,
+    "ciKeyPath": "ci/tilawa-owner-approval-public.pem",
+    "otaKeySource": "signed V695 APK assets/www/p121/universal-updates.js OWNER_ED25519",
+    "consequence": "CI QA050 scoped code-diff authorization and OTA module ownerApproval must be independently signed and verified. RSA envelope signature is an additional separate requirement.",
+    "privateKeysInspected": false
   }
 }
