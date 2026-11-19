@@ -35,6 +35,21 @@
     assert('digital restart for refusal test', core.start('digital','silent') === true);
     assert('route switch blocked on stop refusal', core.start('printed','silent') === false);
     assert('previous owner retained after refusal', core.status() && core.status().route === 'digital');
-    return {passed:11-errors.length, failed:errors.length, errors:errors, log:log};
+    // Recover the deliberately refusing adapter, then exercise reentrant stop.
+    refusesStop.stop = function () { return true; };
+    assert('cleanup after refusal', core.stop() === true);
+    var nestedStartResult = null;
+    var reentrant = adapter('digital');
+    reentrant.stop = function () {
+      nestedStartResult = core.start('printed','audio');
+      return true;
+    };
+    core.register('digital', reentrant);
+    assert('reentrant setup', core.start('digital','silent') === true);
+    assert('outer switch succeeds', core.start('printed','silent') === true);
+    assert('nested start blocked', nestedStartResult === false);
+    assert('outer printed owns session', core.status() && core.status().route === 'printed' && core.status().mode === 'silent');
+    assert('final cleanup', core.stop() === true && core.status() === null);
+    return {passed:17-errors.length, failed:errors.length, errors:errors, log:log};
   };
 })(typeof window !== 'undefined' ? window : globalThis);
