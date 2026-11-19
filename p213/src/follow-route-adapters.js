@@ -29,32 +29,75 @@
   function digitalStart(mode) {
     if (!digitalEligible()) return false;
     var engine = legacy();
-    if (!engine) return false;
+    // B345's complete control surface must be present BEFORE starting.
+    // Refuse to start an engine that P213 could not subsequently stop.
+    if (!engine || !engine.state || typeof engine.state.running !== 'boolean' ||
+        engine.state.running || typeof engine.stop !== 'function' ||
+        typeof engine.pause !== 'function') return false;
     var fn = mode === 'audio' ? engine.startAudio : engine.startSilent;
     if (typeof fn !== 'function') return false;
-    return fn.call(engine) !== false;
+    var accepted = fn.call(engine);
+    return accepted !== false && engine.state.running === true;
   }
   function digitalStop() {
     var engine = legacy();
-    if (!engine || typeof engine.stop !== 'function') return false;
-    return engine.stop() !== false;
+    if (!engine || !engine.state || typeof engine.state.running !== 'boolean') return false;
+    if (!engine.state.running) return true; // The engine stopped itself.
+    if (typeof engine.stop !== 'function' || engine.stop() === false) return false;
+    return engine.state.running === false;
+  }
+  function digitalPaused(state) {
+    return !!(state && (state.paused === true || state.pause === true ||
+      state.status === 'paused' || state.phase === 'paused'));
   }
   function digitalPause() {
     var engine = legacy();
-    // B345's pause contract has not been verified. Fail closed instead of
-    // assuming a toggle and potentially resuming audio accidentally.
-    if (!engine || typeof engine.pause !== 'function' || !engine.state || typeof engine.state.paused !== 'boolean' || engine.state.paused) return false;
-    return engine.pause() !== false;
+    if (!engine || typeof engine.pause !== 'function' || !engine.state ||
+        !engine.state.running || digitalPaused(engine.state)) return false;
+    if (engine.pause() === false) return false;
+    return digitalPaused(engine.state);
   }
   function digitalResume() {
     var engine = legacy();
-    if (!engine || typeof engine.pause !== 'function' || !engine.state || engine.state.paused !== true) return false;
-    return engine.pause() !== false;
+    if (!engine || typeof engine.pause !== 'function' || !engine.state ||
+        !engine.state.running || !digitalPaused(engine.state)) return false;
+    if (engine.pause() === false) return false;
+    return !digitalPaused(engine.state);
   }
   function digitalPosition() {
     var engine = legacy();
     var state = engine && engine.state;
     return state ? {page:state.page || null, verse:state.verse || null} : null;
+  }
+  function printedEligible() {
+    var b = root.document && root.document.body;
+    if (!b || !b.classList.contains('reader-active') ||
+        b.classList.contains('stableDigital') ||
+        b.classList.contains('h25-hifz') || b.classList.contains('h90-review') ||
+        b.classList.contains('h100-teacher')) return false;
+    try {
+      var font = root.localStorage && root.localStorage.getItem('stableFont');
+      return !font || font === 'original';
+    } catch (_) { return false; }
+  }
+  function printedScale() {
+    var value = NaN;
+    try {
+      var z = root.__BASAIR_B330_ZOOM__;
+      if (z && typeof z.scale === 'function') value = Number(z.scale());
+      if (!(value > 0)) value = Number(root.localStorage &&
+        root.localStorage.getItem('basair:tilawa-page-font-scale:v1'));
+      if (!(value > 0)) {
+        var b = root.document && root.document.body;
+        value = Number(b && (b.getAttribute('data-b274-mushaf-scale') ||
+          b.getAttribute('data-b273-mushaf-scale')));
+      }
+      if (!(value > 0)) {
+        var p = root.__BASAIR_PRINT_FOLLOW_100__;
+        value = p && typeof p.scale === 'function' ? Number(p.scale()) : NaN;
+      }
+    } catch (_) { return NaN; }
+    return Number.isFinite(value) && value > 0 ? value : NaN;
   }
   var zoomFollow = null;
   var printedOwner = null;
@@ -66,10 +109,9 @@
     return true;
   }
   function printedStart(mode) {
-    // P212 currently rejects printed pages at zoom != 100. Preserve the
-    // existing original-print zoom follow rather than silently replacing it.
-    var printState = root.__BASAIR_PRINT_FOLLOW_100__;
-    var zoom = printState && typeof printState.scale === 'function' ? Number(printState.scale()) : NaN;
+    if (!printedEligible()) return false;
+    // P212 rejects printed pages at zoom != 100. Do not reset zoom.
+    var zoom = printedScale();
     // Original printed pages ALWAYS use the verified print adapter, including
     // 100% and every zoom level. P212 is reserved for colored tajwid at 100%.
     var edition = null;
@@ -89,8 +131,16 @@
   }
   function printedStop() {
     var engine = printedOwner;
+    if (!engine) return true; // Rejected starts never establish ownership.
+    var state = engine !== zoomFollow && engine.status && engine.status();
+    if (state && state.running === false) { printedOwner = null; return true; }
+    if (engine.stop('p213-route-stop') === false) {
+      // Do not release ownership if the previous engine still runs.
+      state = engine !== zoomFollow && engine.status && engine.status();
+      if (!state || state.running !== false) return false;
+    }
     printedOwner = null;
-    return !!(engine && typeof engine.stop === 'function' && engine.stop('p213-route-stop') !== false);
+    return true;
   }
   function printedPause() {
     var engine = printedOwner;
@@ -123,5 +173,7 @@
     core.register('printed', adapters.printed);
     return true;
   }
-  root.__BASAIR_P213_ADAPTERS__ = Object.freeze({install:install,adapters:adapters,digitalEligible:digitalEligible,registerZoomFollow:registerZoomFollow});
+  root.__BASAIR_P213_ADAPTERS__ = Object.freeze({install:install,adapters:adapters,
+    digitalEligible:digitalEligible,printedEligible:printedEligible,
+    printedScale:printedScale,registerZoomFollow:registerZoomFollow});
 })(typeof window !== 'undefined' ? window : globalThis);
