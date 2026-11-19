@@ -112,7 +112,7 @@
   "assetOrderRule": "Keep all preserved assets in signed baseline order; replace old P212 JS in same position; append core, adapters, bridge in this order. V695 loader applies CSS first and JS by array order.",
   "activation": "NO AUTOMATIC ACTIVATION: bridge is opt-in, P213 does not take over V695 UI until Android acceptance. Explicit owner-controlled bootstrap is absent by design.",
   "releaseRequirements": [
-    "verify exact original V695 activation state / highestSequence from phone",
+    "Android V695 confirmed on phone; P121 highestSequence remains unverified, obtain read-only evidence before assigning release sequence",
     "evidence for Android WebView, real audio, original page and digital font",
     "freeze exact assets and SHA-256, size, module version",
     "two distinct Ed25519 signed approvals (GitHub QA050 diff and V695 OTA modules) as required",
@@ -121,5 +121,15 @@
     "publish only after all gates"
   ],
   "newAssetHashes": "PENDING_SOURCE_FREEZE",
-  "noProductionMutation": true
+  "noProductionMutation": true,
+  "deviceEvidence": {
+    "observedAt": "2026-11-19",
+    "androidVersionName": "1.0.0-v695",
+    "packageId": "app.basair.qurv2",
+    "inAppAboutInfo": "V689/P92.2 is stale bundled app-release-info.js metadata; not installed Android version",
+    "p92ActiveSequence": 50,
+    "p121HighestSequence": "UNKNOWN_ON_DEVICE",
+    "serverPublishedSequenceAtCheck": 120,
+    "requiredUserAction": "None for confirming Android version; optionally show P121 panel without pressing update buttons"
+  }
 }
