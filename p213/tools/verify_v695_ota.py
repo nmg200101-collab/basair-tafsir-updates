@@ -181,6 +181,7 @@ def main():
     parser.add_argument("--expected-id",help="Require exact P213 release id to avoid accepting P212")
     parser.add_argument("--rollback",type=Path,help="Separately owner-signed recovery envelope with a higher sequence")
     parser.add_argument("--rollback-id",help="Exact rollback envelope id")
+    parser.add_argument("--baseline-release",type=Path,help="Previously published original owner-signed release envelope")
     parser.add_argument("--strict-publish-gate",action="store_true",
                         help="Require target id, asset hashes and a signed forward-sequence rollback")
     args = parser.parse_args()
@@ -195,8 +196,9 @@ def main():
                             args.min_sequence,args.expected_id,args.asset_root)
     rollback_result=None
     if args.strict_publish_gate and (not args.expected_id or not args.asset_root or
-                                    not args.rollback or not args.rollback_id):
-        fail("Strict publish gate requires --expected-id, --asset-root, --rollback and --rollback-id")
+                                    not args.rollback or not args.rollback_id or
+                                    not args.baseline_release):
+        fail("Strict publish gate requires --expected-id, --asset-root, --rollback, --rollback-id and --baseline-release")
     if args.rollback:
         backward=json.loads(args.rollback.read_text(encoding="utf-8"))
         backwards_payload=b64(backward["payload"])
@@ -207,6 +209,24 @@ def main():
                                          args.rollback_id,args.asset_root)
         if "tilawa" not in rollback_result["modules"]:
             fail("Recovery envelope must explicitly restore Tilawa")
+        live = next((m for m in manifest["modules"] if m["id"]=="tilawa"),None)
+        restore = next((m for m in rollback_manifest["modules"] if m["id"]=="tilawa"),None)
+        if not live or not restore or restore["version"] <= live["version"]:
+            fail("Rollback Tilawa module version must be GREATER than forward version: P121 checks versions")
+        if args.baseline_release:
+            base_env=json.loads(args.baseline_release.read_text(encoding="utf-8"))
+            base_payload=b64(base_env["payload"])
+            verify_rsa(base_payload,b64(base_env["signature"]),rsa)
+            base_manifest=json.loads(base_payload.decode("utf-8"))
+            base_tilawa=next((m for m in base_manifest.get("modules",[]) if m.get("id")=="tilawa"),None)
+            if not base_tilawa:
+                fail("Baseline signed release missing Tilawa")
+            def files(mod):
+                return [(a["path"],a["kind"],a["size"],a["sha256"]) for a in mod["assets"]]
+            if files(restore)!=files(base_tilawa):
+                fail("Rollback assets differ from last signed stable Tilawa baseline")
+            if restore["version"]<=base_tilawa["version"]:
+                fail("Rollback version must exceed original baseline module version too")
     verdict="PASS_SIGNED_FORWARD_AND_RECOVERY" if rollback_result else "PASS_SIGNED_FORWARD_ONLY"
     print(json.dumps({"status":verdict,"receiver_version":receiver_version,
                       **result,"rollback":rollback_result,
