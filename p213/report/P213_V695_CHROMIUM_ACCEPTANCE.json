@@ -15,7 +15,15 @@
       "failed": 0
     },
     "adapter_routing": {
-      "passed": 40,
+      "passed": 47,
+      "failed": 0
+    },
+    "contract_smoke": {
+      "passed": 4,
+      "failed": 0
+    },
+    "total_isolated": {
+      "passed": 73,
       "failed": 0
     }
   },
@@ -82,12 +90,12 @@
   ],
   "gates": {
     "ownerQA050ScopedEd25519Approval": "NOT_AVAILABLE",
-    "androidWebviewE2E": "NOT_RUN",
+    "androidWebviewE2E": "NOT_RUN — no Android device/emulator available in current execution environment",
     "originalDownloadedPrintedImageScrolling": "MISSING_OFFLINE_ORIGINAL_RESOURCE",
     "realReciterAudioContinuity": "NOT_RUN",
-    "signedP213Envelope": "NOT_CREATED",
+    "signedP213Envelope": "NOT_CREATED — original owner RSA and scoped QA050 approval must be verified",
     "rollbackSignedEnvelope": "NOT_CREATED",
-    "deployment": "NOT_STARTED",
+    "deployment": "NOT_STARTED — PR 160 remains draft",
     "digitalFontsLiveRender": "NOT_VERIFIED_ON_ANDROID"
   },
   "r51VerticalScrollChromium": {
@@ -151,5 +159,12 @@
     "interpretation": "Font selection persists but real digital page did not mount in isolated offline Chromium. May depend on cached/downloaded exact-layout data, and must not be treated as loaded digital renderer.",
     "p213Guard": "Require stableDigital class, nonempty stableDigitalHost, and not aria-busy",
     "extraGuardsPassed": 2
+  },
+  "followSafetyImprovements": {
+    "preflightRouteReadiness": "PASS — unavailable new route leaves existing follow running",
+    "postStartFailureCleanup": "PASS — late exception in B345/P212 start cleans up owned engine",
+    "emergencyStopWithoutPauseInterface": "PASS — stop requires stop contract only",
+    "sessionSwitchNoOverlap": "PASS — refusal to stop blocks new route",
+    "scope": "Isolated V695 API-compatible test doubles, not Android hardware"
   }
 }
