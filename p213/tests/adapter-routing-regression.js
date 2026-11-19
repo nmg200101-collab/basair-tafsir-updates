@@ -37,6 +37,10 @@
   check('install',bridge.install());
   check('native V695 control surface detected',bridge.nativeReady());
   check('original 100 starts B345 despite false return',core.start('printed','silent')===true&&b345.state.running&&digitalStarts===1);
+  flags.stableDigital=true;data.stableFont='digital';digitalHost.childElementCount=0;
+  check('unavailable digital route preserves original follow',core.start('digital','audio')===false &&
+    core.status()&&core.status().route==='printed'&&b345.state.running);
+  flags.stableDigital=false;data.stableFont='original';digitalHost.childElementCount=15;
   check('original pause despite false return',core.pause()===true&&b345.state.paused);
   check('original resume despite false return',core.resume()===true&&!b345.state.paused);
   check('original stop despite false return',core.stop()===true&&!b345.state.running);
@@ -78,6 +82,10 @@
   check('digital refuses loading render',core.start('digital','audio')===false&&core.status()===null);
   digitalHost.getAttribute=function(){return null;};
   check('digital runs B345 despite false begin',core.start('digital','audio')===true&&b345.state.mode==='audio');
+  flags.stableDigital=false;data.stableFont='original';scale=90;
+  check('unavailable printed route preserves digital follow',core.start('printed','silent')===false &&
+    core.status()&&core.status().route==='digital'&&b345.state.running);
+  flags.stableDigital=true;data.stableFont='digital';scale=130;
   check('digital pause',core.pause()===true&&b345.state.paused);
   check('digital resume',core.resume()===true&&!b345.state.paused);
   check('digital stop',core.stop()===true);
