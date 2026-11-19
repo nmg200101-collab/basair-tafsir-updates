@@ -42,6 +42,9 @@
     check('digital pause',core.pause()===true && b345.state.paused);
     check('digital resume',core.resume()===true && !b345.state.paused);
     check('digital stops',core.stop()===true && !b345.state.running);
+    printedRunning=true;
+    check('digital blocked by external P212 session',core.start('digital','silent')===false && core.status()===null);
+    printedRunning=false;
     flags.stableDigital=false;data.stableFont='original';
     var adapter={
       start:function(mode,opts){zoomStarts++;zoomRunning=true;zoomOpts=opts;return true;},
@@ -51,6 +54,9 @@
       position:function(){return {page:8};}
     };
     check('register verified print adapter',bridge.registerZoomFollow(adapter));
+    b345.state.running=true;
+    check('printed blocked by external B345 session',core.start('printed','silent')===false && core.status()===null);
+    b345.state.running=false;
     check('original 100 stays with original adapter',core.start('printed','silent')===true &&
       zoomStarts===1 && printedStarts===0 && zoomOpts.preserveZoom===true);
     check('original 100 stop',core.stop()===true);
@@ -69,12 +75,18 @@
     printedRunning=false; // Engine auto-stopped after its own completion.
     check('auto-stopped P212 clears coordinator',core.stop()===true && core.status()===null);
     zoom=130;
+    printedRunning=true;
+    check('zoom blocked by external P212',core.start('printed','silent')===false && core.status()===null);
+    printedRunning=false;
     check('tajwid zoom uses print adapter',core.start('printed','silent')===true &&
       zoomStarts===3 && printedStarts===1 && zoom===130);
     check('zoomed tajwid cleanup',core.stop()===true);
     flags.stableDigital=true;
     check('digital mode excludes printed adapter',!bridge.printedEligible() &&
       core.start('printed','silent')===false && core.status()===null);
+    flags.stableDigital=false;flags['h25-hifz']=true;
+    check('hifz mode excludes printed adapter',!bridge.printedEligible() &&
+      core.start('printed','audio')===false && core.status()===null);
     return {passed:checks-errors.length,failed:errors.length,errors:errors,
       digitalStarts:digitalStarts,printedStarts:printedStarts,zoomStarts:zoomStarts};
   };
