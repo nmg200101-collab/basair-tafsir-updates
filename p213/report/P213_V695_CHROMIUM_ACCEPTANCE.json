@@ -15,7 +15,7 @@
       "failed": 0
     },
     "adapter_routing": {
-      "passed": 38,
+      "passed": 40,
       "failed": 0
     }
   },
@@ -87,7 +87,8 @@
     "realReciterAudioContinuity": "NOT_RUN",
     "signedP213Envelope": "NOT_CREATED",
     "rollbackSignedEnvelope": "NOT_CREATED",
-    "deployment": "NOT_STARTED"
+    "deployment": "NOT_STARTED",
+    "digitalFontsLiveRender": "NOT_VERIFIED_ON_ANDROID"
   },
   "r51VerticalScrollChromium": {
     "method": "While B345 is paused, set progress=0.9 and call R51.follow(0.9,state,true); wait 750ms",
@@ -137,5 +138,18 @@
       }
     ],
     "scope": "Confirms physical vertical scrolling and manual scrolling in isolated Chromium; original images absent offline, actual audio progression not tested."
+  },
+  "digitalFontsOfflineChromium": {
+    "method": "Select data-final-font=digital from original V695; inspect state and actual digital host",
+    "observed": {
+      "stableFont": "digital",
+      "bodyClassStableDigital": false,
+      "digitalHostPresent": false,
+      "originalMushafVisible": true,
+      "b345NativeStartWorks": true
+    },
+    "interpretation": "Font selection persists but real digital page did not mount in isolated offline Chromium. May depend on cached/downloaded exact-layout data, and must not be treated as loaded digital renderer.",
+    "p213Guard": "Require stableDigital class, nonempty stableDigitalHost, and not aria-busy",
+    "extraGuardsPassed": 2
   }
 }
