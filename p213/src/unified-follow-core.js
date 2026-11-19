@@ -16,6 +16,11 @@
     var event = {type:type, state:snapshot(), detail:detail || null};
     listeners.slice().forEach(function (fn) { try { fn(event); } catch (_) {} });
   }
+  function synchronous(result, operation) {
+    if (result && typeof result.then === 'function')
+      throw Error('P213 adapter ' + operation + ' must return synchronously');
+    return result;
+  }
   function validAdapter(adapter) {
     return !!(adapter && typeof adapter.start === 'function' &&
       typeof adapter.stop === 'function' && typeof adapter.pause === 'function' &&
@@ -35,7 +40,7 @@
     // callback must not start a second route during an in-flight stop.
     previous.stopping = true;
     var stopError = null, stopped = false;
-    try { stopped = previous.adapter.stop(reason || 'user-stop') !== false; }
+    try { stopped = synchronous(previous.adapter.stop(reason || 'user-stop'), 'stop') !== false; }
     catch (error) { stopError = error; }
     if (!stopped) {
       previous.stopping = false;
@@ -61,7 +66,7 @@
       generation:token, adapter:adapter};
     session = candidate;
     try {
-      var accepted = adapter.start(mode, options || {});
+      var accepted = synchronous(adapter.start(mode, options || {}), 'start');
       if (accepted === false) {
         // Adapter contract: returning false means no engine was started.
         // Do NOT call stop() here: an idle legacy engine legitimately returns
@@ -74,7 +79,7 @@
         return false;
       }
       if (session !== candidate) return false;
-      candidate.position = adapter.position();
+      candidate.position = synchronous(adapter.position(), 'position');
       emit('start');
       return true;
     } catch (error) {
@@ -87,20 +92,20 @@
   function pause() {
     if (!session || session.paused) return false;
     var current = session;
-    if (current.adapter.pause() === false) return false;
+    if (synchronous(current.adapter.pause(), 'pause') === false) return false;
     if (session !== current) return false;
     current.paused = true; emit('pause'); return true;
   }
   function resume() {
     if (!session || !session.paused) return false;
     var current = session;
-    if (current.adapter.resume() === false) return false;
+    if (synchronous(current.adapter.resume(), 'resume') === false) return false;
     if (session !== current) return false;
     current.paused = false; emit('resume'); return true;
   }
   function syncPosition() {
     if (!session) return null;
-    session.position = session.adapter.position();
+    session.position = synchronous(session.adapter.position(), 'position');
     emit('position');
     return session.position;
   }
