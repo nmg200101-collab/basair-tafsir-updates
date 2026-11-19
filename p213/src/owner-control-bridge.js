@@ -49,7 +49,14 @@
    if(enabled)return true;
    var engine=root.__BASAIR_B345_SEQUENCE__;
    if(!engine||!engine.state||!engine.state.installed||!engine._test||
-     typeof engine._test.captureControls!=='function')return false;
+     typeof engine._test.captureControls!=='function'||engine.state.running)return false;
+   // Never seize UI controls while a P212 session started by the older UI
+   // is active. That audio would otherwise be invisible to P213 ownership.
+   var p212=root.__BASAIR_P212_TAJWID_STATIC_FOLLOW__;
+   if(p212&&typeof p212.status==='function'){
+     var prior=p212.status();
+     if(prior&&prior.running)return false;
+   }
    core=root.__BASAIR_P213_FOLLOW__;adapter=root.__BASAIR_P213_ADAPTERS__;
    if(!core||!adapter||!adapter.nativeReady||!adapter.nativeReady()||core.status())return false;
    if(adapter.install()===false)return false;
