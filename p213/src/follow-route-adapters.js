@@ -74,8 +74,10 @@
     return started;
   }
   function nativeStop() {
-    if(!nativeReady())return false;
     var e=legacy();
+    // Stop requires ONLY the engine stop contract. UI/pause controls may
+    // disappear mid-session and must never make emergency STOP unavailable.
+    if(!e || !e.state || typeof e.stop!=='function')return false;
     if(!e.state.running)return true;
     e.stop(); // V695 returns false after successfully stopping.
     return e.state.running===false && e.state.paused===false;
