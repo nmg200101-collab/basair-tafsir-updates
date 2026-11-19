@@ -28,6 +28,9 @@
   }
   function digitalStart(mode) {
     if (!digitalEligible()) return false;
+    // Do not start the legacy clock over an independently running P212 audio.
+    var other = printed();
+    if (other && typeof other.status === 'function' && other.status().running) return false;
     var engine = legacy();
     // B345's complete control surface must be present BEFORE starting.
     // Refuse to start an engine that P213 could not subsequently stop.
@@ -37,6 +40,8 @@
     var fn = mode === 'audio' ? engine.startAudio : engine.startSilent;
     if (typeof fn !== 'function') return false;
     var accepted = fn.call(engine);
+    if (accepted && typeof accepted.then === 'function')
+      throw Error('B345 start returned asynchronous result: unsupported');
     return accepted !== false && engine.state.running === true;
   }
   function digitalStop() {
@@ -110,6 +115,11 @@
   }
   function printedStart(mode) {
     if (!printedEligible()) return false;
+    var base = legacy(), p212 = printed();
+    // Both legacy B345 and independent P212 can be triggered by existing UI.
+    // Never join an uncontrolled already-running session.
+    if (base && base.state && base.state.running) return false;
+    if (p212 && typeof p212.status === 'function' && p212.status().running) return false;
     // P212 rejects printed pages at zoom != 100. Do not reset zoom.
     var zoom = printedScale();
     // Original printed pages ALWAYS use the verified print adapter, including
@@ -120,12 +130,18 @@
     if (edition !== 'tajwid' || !Number.isFinite(zoom) || zoom !== 100) {
       if (!zoomFollow) return false;
       var accepted = zoomFollow.start(mode, {preserveZoom:true});
+      if (accepted && typeof accepted.then === 'function')
+        throw Error('Zoom adapter start must be synchronous');
       if (accepted === false) return false;
       printedOwner = zoomFollow;
       return true;
     }
     var engine = printed();
-    if (!engine || typeof engine.start !== 'function' || engine.start(mode) === false) return false;
+    if (!engine || typeof engine.start !== 'function') return false;
+    var result = engine.start(mode);
+    if (result && typeof result.then === 'function')
+      throw Error('P212 start must be synchronous');
+    if (result === false) return false;
     printedOwner = engine;
     return true;
   }
@@ -134,7 +150,9 @@
     if (!engine) return true; // Rejected starts never establish ownership.
     var state = engine !== zoomFollow && engine.status && engine.status();
     if (state && state.running === false) { printedOwner = null; return true; }
-    if (engine.stop('p213-route-stop') === false) {
+    var stopped = engine.stop('p213-route-stop');
+    if (stopped && typeof stopped.then === 'function') return false;
+    if (stopped === false) {
       // Do not release ownership if the previous engine still runs.
       state = engine !== zoomFollow && engine.status && engine.status();
       if (!state || state.running !== false) return false;
