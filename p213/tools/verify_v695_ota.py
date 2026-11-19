@@ -26,7 +26,7 @@ from zipfile import ZipFile
 APP = "app.basair.qurv2"
 MODULES = set("home tafsir tilawa hifz library reciters downloads settings navigation shared updates search memorization design".split())
 PROTECTED = set("tilawa shared navigation reciters".split())
-ASSET_RE = re.compile(r"^modules/([a-z]+)/[a-zA-Z0-9][a-zA-Z0-9._/-]{0,160}\\.(js|css|json|html|svg|png|jpg|jpeg|webp|woff2)$")
+ASSET_RE = re.compile(r"^modules/([a-z]+)/[a-zA-Z0-9][a-zA-Z0-9._/-]{0,160}\.(js|css|json|html|svg|png|jpg|jpeg|webp|woff2)$")
 HEXDIGEST_RE = re.compile(r"^[0-9a-f]{64}$")
 
 def fail(message):
@@ -39,20 +39,20 @@ def pubkeys(apk):
     with ZipFile(apk) as archive:
         js = archive.read("assets/www/p121/universal-updates.js").decode("utf-8")
     def extract(name):
-        match = re.search(r"\\bvar\\s+" + name + r"\\s*=\\s*'([^']+)'", js)
+        match = re.search(r"\bvar\s+" + name + r"\s*=\s*'([^']+)'", js)
         if not match:
             fail("V695 public verifier not found: " + name)
         return b64(match.group(1))
-    app_match = re.search(r"\\bAPP_VERSION\\s*=\\s*(\\d+)", js)
+    app_match = re.search(r"\bAPP_VERSION\s*=\s*(\d+)", js)
     if not app_match:
         fail("V695 receiver APP_VERSION not found")
     return extract("PUB"), extract("OWNER_ED25519"), int(app_match.group(1))
 
 def as_pem(der):
     encoded = base64.b64encode(der).decode("ascii")
-    return ("-----BEGIN PUBLIC KEY-----\\n" +
-            "\\n".join(encoded[i:i+64] for i in range(0,len(encoded),64)) +
-            "\\n-----END PUBLIC KEY-----\\n").encode("ascii")
+    return ("-----BEGIN PUBLIC KEY-----\n" +
+            "\n".join(encoded[i:i+64] for i in range(0,len(encoded),64)) +
+            "\n-----END PUBLIC KEY-----\n").encode("ascii")
 
 def verify_rsa(data, signature, spki):
     if len(signature) != 384:
@@ -164,8 +164,8 @@ def validate_payload(manifest, receiver_version, owner_key, now, min_sequence, e
         hash_locked = hashlib.sha256(canonical).hexdigest()
         if hash_locked != approval["modulesSha256"]:
             fail("QA050 signature is not scoped to exact signed modules")
-        proof = ("basair-universal-protected-v1\\n" + APP + "\\n" +
-                 str(sequence) + "\\n" + hash_locked + "\\n" +
+        proof = ("basair-universal-protected-v1\n" + APP + "\n" +
+                 str(sequence) + "\n" + hash_locked + "\n" +
                  approval["expiresAt"]).encode("utf-8")
         verify_ed25519(proof,b64(approval["signature"]),owner_key)
     return {"sequence":sequence,"release":manifest["id"],"modules":[m["id"] for m in modules],
