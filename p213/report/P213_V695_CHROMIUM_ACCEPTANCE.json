@@ -15,7 +15,7 @@
       "failed": 0
     },
     "adapter_routing": {
-      "passed": 47,
+      "passed": 51,
       "failed": 0
     },
     "contract_smoke": {
@@ -23,7 +23,7 @@
       "failed": 0
     },
     "total_isolated": {
-      "passed": 98,
+      "passed": 102,
       "failed": 0
     },
     "control_capture": {
@@ -232,14 +232,16 @@
     "path": "p213/report/P213_UNSIGNED_ASSET_CATALOG.json",
     "baselineP212AssetsVerifiedAgainstSignedManifest": 13,
     "forwardAssets": 17,
-    "forwardTotalBytes": 113004,
+    "forwardTotalBytes": 113792,
     "rollbackAssets": 13,
     "rollbackTotalBytes": 88438,
     "forwardVersion": 239,
     "recoveryVersion": 240,
     "mutableOldAssetOverwriteAllowed": false,
     "correctedP212NewUrl": "modules/tilawa/p213-tajwid-static-follow-v2.js",
-    "status": "UNSIGNED_STAGED_ONLY"
+    "status": "UNSIGNED_STAGED_ONLY",
+    "refreshedAdapterSha256": "b362070c20a875e84b3f8ffa696355d20c1155e10a5eddb04fee23fed5fe09f6",
+    "refreshedAdapterSize": 10845
   },
   "newFullIntegrationTest": {
     "path": "p213/tests/test_v695_integrated_follow.py",
@@ -287,5 +289,18 @@
     ],
     "selectorMatch": "B345 native selectors #sequenceSilentB345, #sequenceAudioB345, #sequenceMiniPause, #sequenceMiniStop verified in original bundled JS",
     "scope": "Native B345 behavior only; P213 is NOT injected by this test; no Android WebView, real audio, digital font or printed image scrolling proof"
+  },
+  "digitalZoomRouteFix": {
+    "source": "p213/src/follow-route-adapters.js",
+    "cause": "V695 B330 renders digital fonts >100% in #b274LargeTextHost, not #stableDigitalHost (100% surface)",
+    "rule": "Require stableDigital + stableFont != original; at 100% require nonempty #stableDigitalHost .v160DigitalFlow; above 100% require b274LargeMushaf and nonempty #b274LargeTextHost .v160DigitalFlow with data-b330-scroll-owner=b274LargeTextHost and no diagnostic markup",
+    "newChecks": [
+      "digital 130% text host starts",
+      "digital 130% stops",
+      "zoom diagnostic cannot start",
+      "empty digital flow cannot start"
+    ],
+    "result": "PASS_51_OF_51_VERIFIED_INTERFACE_MOCK_NOT_ANDROID",
+    "importantLimitation": "Digital page at 130% not tested with real downloaded Quran text on Android; the Chromium integration test remains unexecuted"
   }
 }
