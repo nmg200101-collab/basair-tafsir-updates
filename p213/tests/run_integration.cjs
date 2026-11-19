@@ -11,10 +11,12 @@ const sourceFiles = {
   core: 'p213/src/unified-follow-core.js',
   bridge: 'p213/src/follow-route-adapters.js',
   ui: 'p213/src/owner-control-bridge.js',
+  bootstrap: 'p213/src/signed-ota-bootstrap.js',
   smoke: 'p213/tests/follow-contract-smoke.js',
   session: 'p213/tests/isolated-core-integration.js',
   routing: 'p213/tests/adapter-routing-regression.js',
   controls: 'p213/tests/control-bridge-regression.js',
+  bootchecks: 'p213/tests/signed-boot-regression.js',
 };
 function runSource(context, name) {
   const relative = sourceFiles[name];
@@ -32,7 +34,9 @@ function suite(name, runner, needsBridge, needsUi) {
   runSource(context, name);
   const run = sandbox.window[runner];
   if (typeof run !== 'function') throw Error('Missing suite: ' + runner);
-  const out = run();
+  const out = name === 'bootchecks'
+    ? run(fs.readFileSync(path.join(root, sourceFiles.bootstrap), 'utf8'))
+    : run();
   if (!out || !Number.isInteger(out.passed) || !Number.isInteger(out.failed))
     throw Error('Invalid suite result: ' + name);
   if (out.failed > 0 || (out.errors && out.errors.length))
@@ -45,7 +49,8 @@ try {
     suite('smoke', '__BASAIR_P213_CONTRACT_TESTS__', true) +
     suite('session', '__BASAIR_P213_TEST_RUNNER__', false) +
     suite('routing', '__BASAIR_P213_ROUTING_TESTS__', true) +
-    suite('controls', '__BASAIR_P213_CONTROL_TESTS__', true, true);
+    suite('controls', '__BASAIR_P213_CONTROL_TESTS__', true, true) +
+    suite('bootchecks', '__BASAIR_P213_BOOT_TESTS__', false, false);
   console.log('P213 local contract checks:', total, 'passed; 0 failed');
 } catch (error) {
   console.error('[FAIL] P213 isolated checks:', error && error.stack || String(error));
