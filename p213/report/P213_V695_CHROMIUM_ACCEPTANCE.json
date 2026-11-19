@@ -1,0 +1,92 @@
+{
+  "schema": "basair-p213-v695-acceptance-evidence-v1",
+  "testDate": "2026-11-19",
+  "status": "DEVELOPMENT_ONLY_NOT_PUBLISHED",
+  "apk": {
+    "file": "basair-v695-owner-signed.apk",
+    "bytes": 102941369,
+    "sha256": "925f6116899ad8acf1cba2a9ec75d04db7951af66ad5b3de98b7cbc7cba9d384",
+    "packageId": "app.basair.qurv2"
+  },
+  "environment": "Chromium isolated, mobile viewport 390x844, V695 index.html/assets extracted from signed APK; not Android WebView",
+  "checks": {
+    "isolated_core": {
+      "passed": 22,
+      "failed": 0
+    },
+    "adapter_routing": {
+      "passed": 38,
+      "failed": 0
+    }
+  },
+  "originalV695": {
+    "print100": {
+      "silentStart": "PASS",
+      "pause": "PASS",
+      "resume": "PASS",
+      "stopPreservesPage4": "PASS"
+    },
+    "zoom": [
+      {
+        "scale": 130,
+        "nativeB345Running": true,
+        "r51Active": true,
+        "scalePreserved": true
+      },
+      {
+        "scale": 150,
+        "nativeB345Running": true,
+        "r51Active": true,
+        "scalePreserved": true
+      },
+      {
+        "scale": 200,
+        "nativeB345Running": true,
+        "r51Active": true,
+        "scalePreserved": true
+      }
+    ],
+    "originalImageOffline": "MISSING (page not downloaded to local browser)",
+    "continuousRealImageScrolling": "NOT_VERIFIED"
+  },
+  "coloredV695": {
+    "zoom": [
+      {
+        "scale": 130,
+        "nativeB345Running": true,
+        "r51Active": true,
+        "scalePreserved": true
+      },
+      {
+        "scale": 150,
+        "nativeB345Running": true,
+        "r51Active": true,
+        "scalePreserved": true
+      },
+      {
+        "scale": 200,
+        "nativeB345Running": true,
+        "r51Active": true,
+        "scalePreserved": true
+      }
+    ],
+    "imageOffline": "BUNDLED WEBP AVAILABLE",
+    "continuousVerticalFollow": "NOT_FULLY_VERIFIED"
+  },
+  "findings": [
+    "B345.startSilent/startAudio/stop and _test.togglePause may return false even after success",
+    "No public B345.pause()",
+    "R33 provides printed follow at 100%; R51 provides printed follow at >100%",
+    "P212 original intercepts colored start even when zoomed; staged v2 restricts interception to fixed colored 100%",
+    "Unrelated Chromium-only IndexedDB errors observed"
+  ],
+  "gates": {
+    "ownerQA050ScopedEd25519Approval": "NOT_AVAILABLE",
+    "androidWebviewE2E": "NOT_RUN",
+    "originalDownloadedPrintedImageScrolling": "NOT_VERIFIED",
+    "realReciterAudioContinuity": "NOT_RUN",
+    "signedP213Envelope": "NOT_CREATED",
+    "rollbackSignedEnvelope": "NOT_CREATED",
+    "deployment": "NOT_STARTED"
+  }
+}
