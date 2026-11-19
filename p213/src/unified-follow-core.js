@@ -63,9 +63,14 @@
     try {
       var accepted = adapter.start(mode, options || {});
       if (accepted === false) {
-        // A rejected start must not be treated as a successfully running engine.
-        // Keep ownership only if its cleanup explicitly fails.
-        if (session === candidate && stop('start-rejected') === false) return false;
+        // Adapter contract: returning false means no engine was started.
+        // Do NOT call stop() here: an idle legacy engine legitimately returns
+        // false from stop(), which otherwise strands a phantom active session.
+        if (session === candidate) {
+          session = null;
+          generation++;
+          emit('start-rejected', {route:route, mode:mode});
+        }
         return false;
       }
       if (session !== candidate) return false;
