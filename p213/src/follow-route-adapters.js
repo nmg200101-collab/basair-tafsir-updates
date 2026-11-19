@@ -1,197 +1,186 @@
-/* P213 adapter bridge, opt-in only. Does not attach UI or patch legacy globals.
- * Digital uses B345 only when non-printed. Printed uses P212 only when
- * the authentic colored static edition is active. No speculative API calls.
+/* P213 / V695-verified follow bridge. Opt-in; never rewrites B345/R33/R51 globals.
+ * B345 begin(), stop(), togglePause() return FALSE even on successful
+ * transitions. State postconditions, not return values, are authoritative.
+ * P212-v2 must be loaded INSTEAD of P212 when colored zoom is enabled.
  */
 (function (root) {
   'use strict';
   if (root.__BASAIR_P213_ADAPTERS__) return;
   function legacy() { return root.__BASAIR_B345_SEQUENCE__; }
-  function printed() { return root.__BASAIR_P212_TAJWID_STATIC_FOLLOW__; }
-  function digitalEligible() {
-    var b = root.document && root.document.body;
-    if (!b || !b.classList.contains('reader-active')) return false;
-    // Only digital fonts may enter this adapter. Never hijack printed zoom follow.
-    if (!b.classList.contains('stableDigital')) {
-      try {
-        var font = root.localStorage && root.localStorage.getItem('stableFont');
-        if (!font || font === 'original') return false;
-      } catch (_) { return false; }
-    }
-    if (b.classList.contains('h25-hifz') || b.classList.contains('h90-review') || b.classList.contains('h100-teacher')) return false;
-    try {
-      var storage = root.localStorage;
-      if (storage && storage.getItem('v129PrintMode') === 'tajwid' &&
-          root.__BASAIR_PRINT_FOLLOW_100__ && root.__BASAIR_PRINT_FOLLOW_100__.active &&
-          root.__BASAIR_PRINT_FOLLOW_100__.active()) return false;
-    } catch (_) { return false; }
-    return true;
-  }
-  function digitalStart(mode) {
-    if (!digitalEligible()) return false;
-    // Do not start the legacy clock over an independently running P212 audio.
-    var other = printed();
-    if (other && typeof other.status === 'function' && other.status().running) return false;
-    var engine = legacy();
-    // B345's complete control surface must be present BEFORE starting.
-    // Refuse to start an engine that P213 could not subsequently stop.
-    if (!engine || !engine.state || typeof engine.state.running !== 'boolean' ||
-        engine.state.running || typeof engine.stop !== 'function' ||
-        typeof engine.pause !== 'function') return false;
-    var fn = mode === 'audio' ? engine.startAudio : engine.startSilent;
-    if (typeof fn !== 'function') return false;
-    var accepted = fn.call(engine);
-    if (accepted && typeof accepted.then === 'function')
-      throw Error('B345 start returned asynchronous result: unsupported');
-    return accepted !== false && engine.state.running === true;
-  }
-  function digitalStop() {
-    var engine = legacy();
-    if (!engine || !engine.state || typeof engine.state.running !== 'boolean') return false;
-    if (!engine.state.running) return true; // The engine stopped itself.
-    if (typeof engine.stop !== 'function' || engine.stop() === false) return false;
-    return engine.state.running === false;
-  }
-  function digitalPaused(state) {
-    return !!(state && (state.paused === true || state.pause === true ||
-      state.status === 'paused' || state.phase === 'paused'));
-  }
-  function digitalPause() {
-    var engine = legacy();
-    if (!engine || typeof engine.pause !== 'function' || !engine.state ||
-        !engine.state.running || digitalPaused(engine.state)) return false;
-    if (engine.pause() === false) return false;
-    return digitalPaused(engine.state);
-  }
-  function digitalResume() {
-    var engine = legacy();
-    if (!engine || typeof engine.pause !== 'function' || !engine.state ||
-        !engine.state.running || !digitalPaused(engine.state)) return false;
-    if (engine.pause() === false) return false;
-    return !digitalPaused(engine.state);
-  }
-  function digitalPosition() {
-    var engine = legacy();
-    var state = engine && engine.state;
-    return state ? {page:state.page || null, verse:state.verse || null} : null;
-  }
+  function p212() { return root.__BASAIR_P212_TAJWID_STATIC_FOLLOW__; }
+  function r33() { return root.__BASAIR_PRINT_FOLLOW_100__; }
+  function r51() { return root.__BASAIR_PRINT_ZOOM_FOLLOW_R51__; }
+  function excluded(b) { return !b || !b.classList.contains('reader-active') ||
+    b.classList.contains('h25-hifz') || b.classList.contains('h90-review') ||
+    b.classList.contains('h100-teacher'); }
   function printedEligible() {
     var b = root.document && root.document.body;
-    if (!b || !b.classList.contains('reader-active') ||
-        b.classList.contains('stableDigital') ||
-        b.classList.contains('h25-hifz') || b.classList.contains('h90-review') ||
-        b.classList.contains('h100-teacher')) return false;
-    try {
-      var font = root.localStorage && root.localStorage.getItem('stableFont');
-      return !font || font === 'original';
-    } catch (_) { return false; }
+    if (excluded(b) || b.classList.contains('stableDigital')) return false;
+    try { var f = root.localStorage && root.localStorage.getItem('stableFont');
+      return !f || f === 'original'; } catch (_) { return false; }
+  }
+  function digitalEligible() {
+    var b = root.document && root.document.body;
+    if (excluded(b)) return false;
+    var f = null;
+    try { f = root.localStorage && root.localStorage.getItem('stableFont'); }
+    catch (_) { return false; }
+    if (!b.classList.contains('stableDigital') && (!f || f === 'original')) return false;
+    return true;
+  }
+  function edition() {
+    var v;
+    try { v = root.localStorage && root.localStorage.getItem('v129PrintMode'); }
+    catch (_) { return ''; }
+    return v === 'muallam' ? 'original' : v === 'original' || v === 'tajwid' || v === 'blue' ? v : '';
   }
   function printedScale() {
-    var value = NaN;
+    var n=0, b=root.document && root.document.body;
     try {
-      var z = root.__BASAIR_B330_ZOOM__;
-      if (z && typeof z.scale === 'function') value = Number(z.scale());
-      if (!(value > 0)) value = Number(root.localStorage &&
-        root.localStorage.getItem('basair:tilawa-page-font-scale:v1'));
-      if (!(value > 0)) {
-        var b = root.document && root.document.body;
-        value = Number(b && (b.getAttribute('data-b274-mushaf-scale') ||
-          b.getAttribute('data-b273-mushaf-scale')));
-      }
-      if (!(value > 0)) {
-        var p = root.__BASAIR_PRINT_FOLLOW_100__;
-        value = p && typeof p.scale === 'function' ? Number(p.scale()) : NaN;
-      }
-    } catch (_) { return NaN; }
-    return Number.isFinite(value) && value > 0 ? value : NaN;
+      var z=root.__BASAIR_B330_ZOOM__;
+      if(z && typeof z.scale==='function')n=Number(z.scale())||0;
+      if(!(n>0))n=Number(root.localStorage && root.localStorage.getItem('basair:tilawa-page-font-scale:v1'))||0;
+      if(!(n>0) && b)n=Number(b.getAttribute('data-b274-mushaf-scale')||b.getAttribute('data-b273-mushaf-scale'))||0;
+      if(!(n>0) && r33() && typeof r33().scale==='function')n=Number(r33().scale())||0;
+    } catch(_) { return NaN; }
+    return Number.isFinite(n) && n>0 ? n : NaN;
   }
-  var zoomFollow = null;
-  var printedOwner = null;
+  function p212Running() {
+    var e=p212(), st=e && typeof e.status==='function' && e.status();
+    return !!(st && st.running);
+  }
+  function nativeReady() {
+    var e=legacy();
+    return !!(e && e.state && typeof e.state.running==='boolean' &&
+      typeof e.startSilent==='function' && typeof e.startAudio==='function' &&
+      typeof e.stop==='function' && e._test && typeof e._test.togglePause==='function');
+  }
+  function nativeStart(mode) {
+    if(!nativeReady() || p212Running())return false;
+    var e=legacy();
+    if(e.state.running)return false; // Do not seize a session started by old UI.
+    var fn=mode==='audio'?e.startAudio:e.startSilent;
+    // V695 returns false from begin() after successful start; inspect state.
+    fn.call(e);
+    return e.state.running===true && e.state.mode===mode;
+  }
+  function nativeStop() {
+    if(!nativeReady())return false;
+    var e=legacy();
+    if(!e.state.running)return true;
+    e.stop(); // V695 returns false after successfully stopping.
+    return e.state.running===false && e.state.paused===false;
+  }
+  function nativePauseTo(wanted) {
+    if(!nativeReady())return false;
+    var e=legacy();
+    if(!e.state.running || e.state.paused===wanted)return false;
+    e._test.togglePause(); // Verified V695 API; return false is NOT failure.
+    return e.state.paused===wanted;
+  }
+  function nativePosition() {
+    var s=legacy() && legacy().state;
+    return s?{page:s.page||null,verse:s.rasterFollowAyah||null}:null;
+  }
+  function digitalStart(mode){return digitalEligible() && nativeStart(mode);}
+  function digitalStop(){return nativeStop();}
+  function digitalPause(){return nativePauseTo(true);}
+  function digitalResume(){return nativePauseTo(false);}
+  function digitalPosition(){return nativePosition();}
+  var externalZoom=null, printedOwner=null;
   function registerZoomFollow(adapter) {
-    if (!adapter || ['start','stop','pause','resume','position'].some(function (k) { return typeof adapter[k] !== 'function'; }))
-      throw Error('Incomplete original-print zoom adapter');
-    if (printedOwner) throw Error('Cannot replace active printed follow');
-    zoomFollow = adapter;
+    if(!adapter || ['start','stop','pause','resume','position'].some(function(k){return typeof adapter[k]!=='function';}))
+      throw Error('Incomplete external zoom adapter');
+    if(printedOwner)throw Error('Cannot replace an active printed owner');
+    externalZoom=adapter;
     return true;
+  }
+  function nativePrintReady(zoom) {
+    try {
+      if(zoom===100){var n=r33();return !!(n && typeof n.active==='function' && n.active());}
+      if(zoom>100){var p=r51();return !!(p && typeof p.active==='function' && p.active());}
+    } catch (_) {}
+    return false;
   }
   function printedStart(mode) {
-    if (!printedEligible()) return false;
-    var base = legacy(), p212 = printed();
-    // Both legacy B345 and independent P212 can be triggered by existing UI.
-    // Never join an uncontrolled already-running session.
-    if (base && base.state && base.state.running) return false;
-    if (p212 && typeof p212.status === 'function' && p212.status().running) return false;
-    // P212 rejects printed pages at zoom != 100. Do not reset zoom.
-    var zoom = printedScale();
-    // Original printed pages ALWAYS use the verified print adapter, including
-    // 100% and every zoom level. P212 is reserved for colored tajwid at 100%.
-    var edition = null;
-    try { edition = root.localStorage && root.localStorage.getItem('v129PrintMode'); }
-    catch (_) { return false; }
-    if (edition !== 'tajwid' || !Number.isFinite(zoom) || zoom !== 100) {
-      if (!zoomFollow) return false;
-      var accepted = zoomFollow.start(mode, {preserveZoom:true});
-      if (accepted && typeof accepted.then === 'function')
-        throw Error('Zoom adapter start must be synchronous');
-      if (accepted === false) return false;
-      printedOwner = zoomFollow;
-      return true;
+    if(!printedEligible() || !edition() || printedOwner)return false;
+    var z=printedScale(), ed=edition(), n=legacy(), st=n&&n.state;
+    if(!Number.isFinite(z)||z<100 || st&&st.running || p212Running())return false;
+    if(z===100 && ed==='tajwid'){
+      if(!nativePrintReady(z))return false;
+      var independent=p212();
+      if(!independent || typeof independent.start!=='function')return false;
+      var accepted=independent.start(mode);
+      if(accepted && typeof accepted.then==='function')return false;
+      var state=independent.status && independent.status();
+      if(accepted===false || !state || !state.running)return false;
+      printedOwner=independent;return true;
     }
-    var engine = printed();
-    if (!engine || typeof engine.start !== 'function') return false;
-    var result = engine.start(mode);
-    if (result && typeof result.then === 'function')
-      throw Error('P212 start must be synchronous');
-    if (result === false) return false;
-    printedOwner = engine;
-    return true;
+    if(nativePrintReady(z)) {
+      // Colored zoom requires v2, which delegates P212's wrappers to B345.
+      if(ed==='tajwid' && z>100 && p212() && Number(p212().version)<213)return false;
+      if(!nativeStart(mode))return false;
+      printedOwner=n;return true;
+    }
+    if(z>100 && externalZoom){
+      var ok=externalZoom.start(mode,{preserveZoom:true});
+      if(ok && typeof ok.then==='function')return false;
+      if(ok===false)return false;
+      printedOwner=externalZoom;return true;
+    }
+    return false;
   }
   function printedStop() {
-    var engine = printedOwner;
-    if (!engine) return true; // Rejected starts never establish ownership.
-    var state = engine !== zoomFollow && engine.status && engine.status();
-    if (state && state.running === false) { printedOwner = null; return true; }
-    var stopped = engine.stop('p213-route-stop');
-    if (stopped && typeof stopped.then === 'function') return false;
-    if (stopped === false) {
-      // Do not release ownership if the previous engine still runs.
-      state = engine !== zoomFollow && engine.status && engine.status();
-      if (!state || state.running !== false) return false;
+    var e=printedOwner;
+    if(!e)return true;
+    if(e===legacy()){if(!nativeStop())return false;printedOwner=null;return true;}
+    if(e===p212()){
+      var st=e.status&&e.status();
+      if(st && !st.running){printedOwner=null;return true;}
     }
-    printedOwner = null;
-    return true;
+    var ok=e.stop('p213-route-stop');
+    if(ok && typeof ok.then==='function')return false;
+    if(ok===false){
+      var after=e.status&&e.status();
+      if(!after || after.running!==false)return false;
+    }
+    printedOwner=null;return true;
   }
   function printedPause() {
-    var engine = printedOwner;
-    if (!engine) return false;
-    if (engine === zoomFollow) return engine.pause() !== false;
-    if (!engine.status || !engine.pause || engine.status().paused) return false;
-    return engine.pause();
+    var e=printedOwner;
+    if(!e)return false;
+    if(e===legacy())return nativePauseTo(true);
+    if(e===externalZoom)return e.pause()!==false;
+    var st=e.status && e.status();
+    if(!st||!st.running||st.paused||typeof e.pause!=='function')return false;
+    e.pause();return !!(e.status() && e.status().paused);
   }
   function printedResume() {
-    var engine = printedOwner;
-    if (!engine) return false;
-    if (engine === zoomFollow) return engine.resume() !== false;
-    if (!engine.status || !engine.pause || !engine.status().paused) return false;
-    return engine.pause();
+    var e=printedOwner;
+    if(!e)return false;
+    if(e===legacy())return nativePauseTo(false);
+    if(e===externalZoom)return e.resume()!==false;
+    var st=e.status && e.status();
+    if(!st||!st.running||!st.paused||typeof e.pause!=='function')return false;
+    e.pause();return !!(e.status() && !e.status().paused);
   }
   function printedPosition() {
-    var engine = printedOwner;
-    if (engine === zoomFollow) return engine.position();
-    var state = engine && engine.status && engine.status();
-    return state ? {page:state.page || null} : null;
+    var e=printedOwner;
+    if(!e)return null;
+    if(e===legacy())return nativePosition();
+    if(e===externalZoom)return e.position();
+    var st=e.status&&e.status();return st?{page:st.page||null}:null;
   }
-  var adapters = {
+  var adapters={
     digital:{start:digitalStart,stop:digitalStop,pause:digitalPause,resume:digitalResume,position:digitalPosition},
     printed:{start:printedStart,stop:printedStop,pause:printedPause,resume:printedResume,position:printedPosition}
   };
-  function install() {
-    var core = root.__BASAIR_P213_FOLLOW__;
-    if (!core) return false;
-    core.register('digital', adapters.digital);
-    core.register('printed', adapters.printed);
-    return true;
+  function install(){
+    var core=root.__BASAIR_P213_FOLLOW__;
+    if(!core)return false;
+    core.register('digital',adapters.digital);core.register('printed',adapters.printed);return true;
   }
-  root.__BASAIR_P213_ADAPTERS__ = Object.freeze({install:install,adapters:adapters,
-    digitalEligible:digitalEligible,printedEligible:printedEligible,
-    printedScale:printedScale,registerZoomFollow:registerZoomFollow});
-})(typeof window !== 'undefined' ? window : globalThis);
+  root.__BASAIR_P213_ADAPTERS__=Object.freeze({install:install,adapters:adapters,
+    digitalEligible:digitalEligible,printedEligible:printedEligible,printedScale:printedScale,
+    nativeReady:nativeReady,registerZoomFollow:registerZoomFollow});
+})(typeof window!=='undefined'?window:globalThis);
