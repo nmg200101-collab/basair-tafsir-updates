@@ -20,12 +20,15 @@
       return !f || f === 'original'; } catch (_) { return false; }
   }
   function digitalEligible() {
-    var b = root.document && root.document.body;
-    if (excluded(b)) return false;
-    var f = null;
-    try { f = root.localStorage && root.localStorage.getItem('stableFont'); }
+    var d=root.document,b=d&&d.body;
+    if (excluded(b) || !b.classList.contains('stableDigital')) return false;
+    var f=null,host=d&&typeof d.getElementById==='function'&&d.getElementById('stableDigitalHost');
+    try { f=root.localStorage&&root.localStorage.getItem('stableFont'); }
     catch (_) { return false; }
-    if (!b.classList.contains('stableDigital') && (!f || f === 'original')) return false;
+    // V695 RC19 may persist stableFont='digital' before the actual digital
+    // page is present. Never drive a digital follow over a printed image.
+    if (!f || f==='original' || !host || host.childElementCount<1 ||
+        host.getAttribute('aria-busy')==='true') return false;
     return true;
   }
   function edition() {
