@@ -10,9 +10,11 @@ const root = path.resolve(__dirname, '../..');
 const sourceFiles = {
   core: 'p213/src/unified-follow-core.js',
   bridge: 'p213/src/follow-route-adapters.js',
+  ui: 'p213/src/owner-control-bridge.js',
   smoke: 'p213/tests/follow-contract-smoke.js',
   session: 'p213/tests/isolated-core-integration.js',
   routing: 'p213/tests/adapter-routing-regression.js',
+  controls: 'p213/tests/control-bridge-regression.js',
 };
 function runSource(context, name) {
   const relative = sourceFiles[name];
@@ -21,11 +23,12 @@ function runSource(context, name) {
   const text = fs.readFileSync(absolute, 'utf8');
   vm.runInContext(text, context, {filename:relative, timeout:10000});
 }
-function suite(name, runner, needsBridge) {
+function suite(name, runner, needsBridge, needsUi) {
   const sandbox = {window:{}};
   const context = vm.createContext(sandbox);
   runSource(context, 'core');
   if (needsBridge) runSource(context, 'bridge');
+  if (needsUi) runSource(context, 'ui');
   runSource(context, name);
   const run = sandbox.window[runner];
   if (typeof run !== 'function') throw Error('Missing suite: ' + runner);
@@ -41,7 +44,8 @@ try {
   const total =
     suite('smoke', '__BASAIR_P213_CONTRACT_TESTS__', true) +
     suite('session', '__BASAIR_P213_TEST_RUNNER__', false) +
-    suite('routing', '__BASAIR_P213_ROUTING_TESTS__', true);
+    suite('routing', '__BASAIR_P213_ROUTING_TESTS__', true) +
+    suite('controls', '__BASAIR_P213_CONTROL_TESTS__', true, true);
   console.log('P213 local contract checks:', total, 'passed; 0 failed');
 } catch (error) {
   console.error('[FAIL] P213 isolated checks:', error && error.stack || String(error));
