@@ -65,7 +65,13 @@
     var fn=mode==='audio'?e.startAudio:e.startSilent;
     // V695 returns false from begin() after successful start; inspect state.
     fn.call(e);
-    return e.state.running===true && e.state.mode===mode;
+    var started = e.state.running===true && e.state.mode===mode;
+    if (!started && e.state.running===true) {
+      // The engine began but entered an unexpected mode. Release that clock
+      // before reporting a rejected start: no orphan audio may survive.
+      if (!nativeStop()) throw Error('B345 started in wrong mode and could not stop');
+    }
+    return started;
   }
   function nativeStop() {
     if(!nativeReady())return false;
@@ -126,17 +132,26 @@
       if(!nativePrintReady(z))return false;
       var independent=p212();
       if(!independent || typeof independent.start!=='function')return false;
+      printedOwner=independent; // Claim it before start in case start throws.
       var accepted=independent.start(mode);
-      if(accepted && typeof accepted.then==='function')return false;
       var state=independent.status && independent.status();
-      if(accepted===false || !state || !state.running)return false;
-      printedOwner=independent;return true;
+      if(accepted && typeof accepted.then==='function')
+        throw Error('P212 start must return synchronously');
+      if(accepted===false || !state || !state.running){
+        if(state && state.running && !printedStop())
+          throw Error('Rejected P212 start could not be stopped');
+        printedOwner=null;return false;
+      }
+      return true;
     }
     if(nativePrintReady(z)) {
       // Colored zoom requires v2, which delegates P212's wrappers to B345.
       if(ed==='tajwid' && z>100 && p212() && Number(p212().version)<213)return false;
-      if(!nativeStart(mode))return false;
-      printedOwner=n;return true;
+      printedOwner=n; // Claim before native start in case B345 throws.
+      if(!nativeStart(mode)){
+        printedOwner=null;return false;
+      }
+      return true;
     }
     if(z>100 && externalZoom){
       var ok=externalZoom.start(mode,{preserveZoom:true});
