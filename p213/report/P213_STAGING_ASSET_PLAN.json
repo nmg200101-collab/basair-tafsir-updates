@@ -105,12 +105,17 @@
       "target": "modules/tilawa/p213-owner-control-bridge.js",
       "source": "p213/src/owner-control-bridge.js",
       "kind": "js"
+    },
+    {
+      "target": "modules/tilawa/p213-signed-ota-bootstrap.js",
+      "source": "p213/src/signed-ota-bootstrap.js",
+      "kind": "js"
     }
   ],
-  "expectedTotalAssets": 16,
+  "expectedTotalAssets": 17,
   "expectedCssAssets": 5,
-  "assetOrderRule": "Keep all preserved assets in signed baseline order; replace old P212 JS in same position; append core, adapters, bridge in this order. V695 loader applies CSS first and JS by array order.",
-  "activation": "NO AUTOMATIC ACTIVATION: bridge is opt-in, P213 does not take over V695 UI until Android acceptance. Explicit owner-controlled bootstrap is absent by design.",
+  "assetOrderRule": "Keep 12 preserved original assets in published order; replace original P212 JS at same path; append P213 core, route adapters, UI bridge and signed-OTA bootstrap LAST. Loader executes CSS first and JS in array order.",
+  "activation": "AUTO-ENABLE ONLY when the last P213 bootstrap is injected by signed P121 Tilawa loader, the original B345 and P212 session are idle, all 4 components are ready, and corrected P212 v2 is active. A failed preflight leaves V695 original control installed; reversible disable() is provided.",
   "releaseRequirements": [
     "Android V695 confirmed on phone; P121 highestSequence remains unverified, obtain read-only evidence before assigning release sequence",
     "evidence for Android WebView, real audio, original page and digital font",
@@ -131,5 +136,13 @@
     "p121HighestSequence": "UNKNOWN_ON_DEVICE",
     "serverPublishedSequenceAtCheck": 120,
     "requiredUserAction": "None for confirming Android version; optionally show P121 panel without pressing update buttons"
+  },
+  "receiverCompatibility": {
+    "androidPackage": "app.basair.qurv2",
+    "androidVersion": "1.0.0-v695",
+    "p121InternalAppVersion": 694,
+    "strictManifestMinAppVersion": "must be <= 694 and >= 693",
+    "minSequence": "must exceed the highest installed device P121 sequence; server currently Seq120",
+    "noApkRebuild": true
   }
 }
