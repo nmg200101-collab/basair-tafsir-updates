@@ -23,7 +23,11 @@
       "failed": 0
     },
     "total_isolated": {
-      "passed": 73,
+      "passed": 85,
+      "failed": 0
+    },
+    "control_capture": {
+      "passed": 12,
       "failed": 0
     }
   },
@@ -96,7 +100,9 @@
     "signedP213Envelope": "NOT_CREATED — original owner RSA and scoped QA050 approval must be verified",
     "rollbackSignedEnvelope": "NOT_CREATED",
     "deployment": "NOT_STARTED — PR 160 remains draft",
-    "digitalFontsLiveRender": "NOT_VERIFIED_ON_ANDROID"
+    "digitalFontsLiveRender": "NOT_VERIFIED_ON_ANDROID",
+    "uiIntegrationEndToEnd": "NOT_RUN — opt-in V695 capture bridge only tested with mock coordinator and real native button handlers",
+    "activationStatus": "NOT_ENABLED — no owner-qa manifest update"
   },
   "r51VerticalScrollChromium": {
     "method": "While B345 is paused, set progress=0.9 and call R51.follow(0.9,state,true); wait 750ms",
@@ -166,5 +172,26 @@
     "emergencyStopWithoutPauseInterface": "PASS — stop requires stop contract only",
     "sessionSwitchNoOverlap": "PASS — refusal to stop blocks new route",
     "scope": "Isolated V695 API-compatible test doubles, not Android hardware"
+  },
+  "nativeButtonCaptureChromium": {
+    "status": "PASS",
+    "method": "Original signed V695 index.html/B345 + isolated test controller, inject reversible opt-in P213 capture bridge",
+    "observations": {
+      "b345OriginalCaptureInstalled": true,
+      "enableRebindsNativeHandler": true,
+      "followClickGoesToP213Controller": true,
+      "nativeB345RemainsStoppedDuringInterception": true,
+      "disableRestoresOriginalHandler": true,
+      "clickAfterDisableStartsNativeB345": true
+    },
+    "limits": "Test used a mock P213 coordinator, did not test integrated audio/scroll or Android WebView."
+  },
+  "releaseGateVerifier": {
+    "path": "p213/tools/verify_v695_ota.py",
+    "purpose": "Read-only RSA/Ed25519 approval plus manifest SHA/bytes validation against V695 embedded public keys",
+    "publicKeysSanity": "V695 APK read-only RSA 3072-bit SPKI and ED25519 32-byte public key parsed successfully by OpenSSL",
+    "targetSequenceMinimum": 122,
+    "requiredSignedRollbackSequenceMinimum": 123,
+    "limitations": "No signed P213 forward or rollback available; verifier cannot confirm absent signatures, and it does not create them."
   }
 }
