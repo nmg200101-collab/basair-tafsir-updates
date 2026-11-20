@@ -97,7 +97,7 @@
     "Unrelated Chromium-only IndexedDB errors observed"
   ],
   "gates": {
-    "ownerQA050ScopedEd25519Approval": "NOT_AVAILABLE",
+    "ownerQA050ScopedEd25519Approval": "SEPARATE_DIFFERENT_PUBLIC_KEY — GitHub QA050 verifier public differs; protected-path approval required only on guarded changes",
     "androidWebviewE2E": "NOT_RUN",
     "originalDownloadedPrintedImageScrolling": "MISSING_OFFLINE_ORIGINAL_RESOURCE",
     "realReciterAudioContinuity": "NOT_RUN",
@@ -108,7 +108,7 @@
     "uiIntegrationEndToEnd": "NOT_RUN — opt-in V695 capture bridge only tested with mock coordinator and real native button handlers",
     "activationStatus": "NOT_ENABLED — no owner-qa manifest update",
     "gitHubQa050ScopedEd25519Approval": "NOT_AVAILABLE_FOR_P213_DIFF",
-    "v695OtaModuleEd25519Approval": "NOT_AVAILABLE_FOR_P213_SEQUENCE",
+    "v695OtaModuleEd25519Approval": "KEY_BACKUP_PUBLIC_MATCHES_V695 — encrypted private key supplied; not yet decrypted or used to sign P213",
     "signedRecoveryEnvelope": "NOT_AVAILABLE — higher Tilawa version 240 + independently signed sequence required",
     "realP213ChromiumIntegration": "NOT_EXECUTED — p213/tests/test_v695_integrated_follow.py exists but this test exercises native V695 ONLY"
   },
@@ -312,12 +312,23 @@
     "runtimeRequirement": "Reopen app and verify version 213 is installed before authorizing P213; no claim of Android acceptance"
   },
   "signingInventory": {
-    "originalRsaPkcs12": "AVAILABLE_IN_USER_UPLOADED_PRIVATE_FILES_AND_PREVIOUSLY_VERIFIED",
+    "originalRsaPkcs12": "AVAILABLE_PREVIOUSLY_VERIFIED",
     "v695OtaEd25519PrivateKey": "NOT_FOUND_IN_UPLOADED_P12_OR_ZIP_OR_AVAILABLE_LIBRARY_KEY_FILES",
     "qa050CiEd25519PrivateKey": "NOT_FOUND_IN_AVAILABLE_LIBRARY_KEY_FILES",
     "passphraseOnlyRecord": "BASAIR-P119-ED25519-OWNER-PASSPHRASE-KEEP-SEPARATE.txt exists, but by itself cannot sign",
     "sourceProtectionWorkflow": "tilawa-owner-lock.yml is read-only approval guard; not an OTA signer",
     "signaturesForP213": "NOT_CREATED",
-    "privateMaterialWrittenToGitHub": false
+    "privateMaterialWrittenToGitHub": false,
+    "v695OtaEd25519EncryptedPrivateKey": "FOUND_LOCAL_USER_UPLOADED_BASAIR_P119_OWNER_ED25519_ENCRYPTED_BACKUP_ZIP",
+    "backupPublicRawSha256": "47fec7dbe6fc3949c01b000658b2f2d376adcbd98c42c02cdc280c313ec7dbcf",
+    "embeddedV695OwnerEd25519RawSha256": "47fec7dbe6fc3949c01b000658b2f2d376adcbd98c42c02cdc280c313ec7dbcf",
+    "backupMatchesV695OtaPublic": true,
+    "qa050CiEd25519PublicRawSha256": "468a4b0de5066569eb55f22987e1768569de7ff96d95b716ff8ebbed1a90e1c7",
+    "backupMatchesQa050CiPublic": false,
+    "encryptedPrivateDecryption": "NOT_TESTED — passphrase library text read available but direct authorized raw materialization failed; no key was exported or printed",
+    "signingProof": "NO_P213_OTA_SIGNATURE_CREATED",
+    "uploadedArchive": "BASAIR-P119-OWNER-ED25519-ENCRYPTED-BACKUP.zip",
+    "noSecretsInRepository": true,
+    "caution": "ZIP README describes a 2026-11-10 replacement key; V695 OTA embedded public key is already the replacement. Do not replace APK V695 or infer this key matches separate GitHub QA050 verifier."
   }
 }
