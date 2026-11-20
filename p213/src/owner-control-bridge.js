@@ -53,6 +53,9 @@
    // Never seize UI controls while a P212 session started by the older UI
    // is active. That audio would otherwise be invisible to P213 ownership.
    var p212=root.__BASAIR_P212_TAJWID_STATIC_FOLLOW__;
+   // If P212 v1 was already registered in this WebView, the v2 script's
+   // duplicate-global guard cannot replace it; fail closed until reload.
+   if(p212 && Number(p212.version)<213)return false;
    if(p212&&typeof p212.status==='function'){
      var prior=p212.status();
      if(prior&&prior.running)return false;
