@@ -108,8 +108,8 @@
       {
         "path": "modules/tilawa/p213-owner-control-bridge.js",
         "kind": "js",
-        "sha256": "2d8d1a3388744ebfcd6ad4bf2ee830c3180aeb2db427608da4f4b7675b704d67",
-        "size": 5289,
+        "sha256": "d3e4bfa92044cc97c3662c32146b00316c51e3ba155f776b7ab7416adcd4fd2b",
+        "size": 5293,
         "source": "p213/src/owner-control-bridge.js"
       },
       {
@@ -214,7 +214,7 @@
     "GitHub QA050 scoped diff approval if protected files changed"
   ],
   "note": "Hashes and byte sizes computed over exact UTF-8 contents fetched from GitHub; old 13 were compared to signed Seq120 manifest. Catalog is NOT a valid signed release and has no sequence, owner signature or RSA envelope.",
-  "forwardTotalBytes": 113992,
+  "forwardTotalBytes": 113996,
   "updatedForDigitalZoom": "Recomputed after true 100%/zoomed digital surface readiness correction; no production changes",
-  "updatedForStaleP212": "Added guard against stale P212 v1 global in active WebView; hashes recalculated"
+  "updatedForStaleP212": "Reject existing controller with version <213, missing or unparseable version; test 104/104"
 }
