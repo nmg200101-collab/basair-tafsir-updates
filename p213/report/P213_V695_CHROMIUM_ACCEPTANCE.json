@@ -23,11 +23,11 @@
       "failed": 0
     },
     "total_isolated": {
-      "passed": 102,
+      "passed": 103,
       "failed": 0
     },
     "control_capture": {
-      "passed": 14,
+      "passed": 15,
       "failed": 0
     },
     "signed_bootstrap": {
@@ -232,7 +232,7 @@
     "path": "p213/report/P213_UNSIGNED_ASSET_CATALOG.json",
     "baselineP212AssetsVerifiedAgainstSignedManifest": 13,
     "forwardAssets": 17,
-    "forwardTotalBytes": 113792,
+    "forwardTotalBytes": 113992,
     "rollbackAssets": 13,
     "rollbackTotalBytes": 88438,
     "forwardVersion": 239,
@@ -241,7 +241,9 @@
     "correctedP212NewUrl": "modules/tilawa/p213-tajwid-static-follow-v2.js",
     "status": "UNSIGNED_STAGED_ONLY",
     "refreshedAdapterSha256": "b362070c20a875e84b3f8ffa696355d20c1155e10a5eddb04fee23fed5fe09f6",
-    "refreshedAdapterSize": 10845
+    "refreshedAdapterSize": 10845,
+    "refreshedControlBridgeSize": 5289,
+    "refreshedControlBridgeSha256": "2d8d1a3388744ebfcd6ad4bf2ee830c3180aeb2db427608da4f4b7675b704d67"
   },
   "newFullIntegrationTest": {
     "path": "p213/tests/test_v695_integrated_follow.py",
@@ -302,5 +304,20 @@
     ],
     "result": "PASS_51_OF_51_VERIFIED_INTERFACE_MOCK_NOT_ANDROID",
     "importantLimitation": "Digital page at 130% not tested with real downloaded Quran text on Android; the Chromium integration test remains unexecuted"
+  },
+  "staleP212GlobalGuard": {
+    "reason": "P212 v1 code retains window.__BASAIR_P212_TAJWID_STATIC_FOLLOW__ between OTA changes; newly loaded P212 v2 has duplicate-global guard and cannot replace v1 in same WebView",
+    "change": "P213 native button bridge refuses enable() if an existing P212 controller version <213, even when idle; prevents duplicate capture or unexpected 100% Tajwid behavior",
+    "regression": "15/15 control bridge checks, total 103/103 isolated",
+    "runtimeRequirement": "Reopen app and verify version 213 is installed before authorizing P213; no claim of Android acceptance"
+  },
+  "signingInventory": {
+    "originalRsaPkcs12": "AVAILABLE_IN_USER_UPLOADED_PRIVATE_FILES_AND_PREVIOUSLY_VERIFIED",
+    "v695OtaEd25519PrivateKey": "NOT_FOUND_IN_UPLOADED_P12_OR_ZIP_OR_AVAILABLE_LIBRARY_KEY_FILES",
+    "qa050CiEd25519PrivateKey": "NOT_FOUND_IN_AVAILABLE_LIBRARY_KEY_FILES",
+    "passphraseOnlyRecord": "BASAIR-P119-ED25519-OWNER-PASSPHRASE-KEEP-SEPARATE.txt exists, but by itself cannot sign",
+    "sourceProtectionWorkflow": "tilawa-owner-lock.yml is read-only approval guard; not an OTA signer",
+    "signaturesForP213": "NOT_CREATED",
+    "privateMaterialWrittenToGitHub": false
   }
 }
