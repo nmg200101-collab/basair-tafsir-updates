@@ -23,11 +23,11 @@
       "failed": 0
     },
     "total_isolated": {
-      "passed": 103,
+      "passed": 104,
       "failed": 0
     },
     "control_capture": {
-      "passed": 15,
+      "passed": 16,
       "failed": 0
     },
     "signed_bootstrap": {
@@ -232,7 +232,7 @@
     "path": "p213/report/P213_UNSIGNED_ASSET_CATALOG.json",
     "baselineP212AssetsVerifiedAgainstSignedManifest": 13,
     "forwardAssets": 17,
-    "forwardTotalBytes": 113992,
+    "forwardTotalBytes": 113996,
     "rollbackAssets": 13,
     "rollbackTotalBytes": 88438,
     "forwardVersion": 239,
@@ -242,8 +242,8 @@
     "status": "UNSIGNED_STAGED_ONLY",
     "refreshedAdapterSha256": "b362070c20a875e84b3f8ffa696355d20c1155e10a5eddb04fee23fed5fe09f6",
     "refreshedAdapterSize": 10845,
-    "refreshedControlBridgeSize": 5289,
-    "refreshedControlBridgeSha256": "2d8d1a3388744ebfcd6ad4bf2ee830c3180aeb2db427608da4f4b7675b704d67"
+    "refreshedControlBridgeSize": 5293,
+    "refreshedControlBridgeSha256": "d3e4bfa92044cc97c3662c32146b00316c51e3ba155f776b7ab7416adcd4fd2b"
   },
   "newFullIntegrationTest": {
     "path": "p213/tests/test_v695_integrated_follow.py",
@@ -307,8 +307,8 @@
   },
   "staleP212GlobalGuard": {
     "reason": "P212 v1 code retains window.__BASAIR_P212_TAJWID_STATIC_FOLLOW__ between OTA changes; newly loaded P212 v2 has duplicate-global guard and cannot replace v1 in same WebView",
-    "change": "P213 native button bridge refuses enable() if an existing P212 controller version <213, even when idle; prevents duplicate capture or unexpected 100% Tajwid behavior",
-    "regression": "15/15 control bridge checks, total 103/103 isolated",
+    "change": "P213 capture enable refuses existing legacy P212 where version <213, missing or unparsable, even when idle; prevents stale controllers from taking over B345",
+    "regression": "16/16 control checks, total 104/104 isolated",
     "runtimeRequirement": "Reopen app and verify version 213 is installed before authorizing P213; no claim of Android acceptance"
   },
   "signingInventory": {
