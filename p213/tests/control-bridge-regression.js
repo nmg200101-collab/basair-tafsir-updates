@@ -46,6 +46,8 @@
    prior.running=false;
    root.__BASAIR_P212_TAJWID_STATIC_FOLLOW__.version=212;
    ck('cannot seize stale P212 v1 controller',api.enable()===false&&!api.status().enabled);
+   delete root.__BASAIR_P212_TAJWID_STATIC_FOLLOW__.version;
+   ck('cannot seize unversioned P212 controller',api.enable()===false&&!api.status().enabled);
    root.__BASAIR_P212_TAJWID_STATIC_FOLLOW__.version=213;
    ck('enable binds safely',api.enable()===true && api.status().enabled);
    ck('native handlers replaced',listeners.click.indexOf(old)<0);
