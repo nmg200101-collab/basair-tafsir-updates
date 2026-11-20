@@ -1,0 +1,51 @@
+{
+  "schema": "basair-p213-owner-signed-hold-audit-v1",
+  "status": "SIGNED_AND_VALIDATED_LOCALLY_NOT_DEPLOYED",
+  "sourceBranch": "feature/p213-v695-verified-candidate-20261119",
+  "androidVersion": "1.0.0-v695",
+  "channel": "owner-qa",
+  "embeddedReceiverVersion": 694,
+  "forward": {
+    "id": "P213-SEQ122-UNIFIED-FOLLOW-20261120",
+    "sequence": 122,
+    "tilawaVersion": 239,
+    "assets": 17,
+    "totalAssetBytes": 113996,
+    "envelopeSha256": "47e948a263ecc0174ff3bf005cff8f2b171b0017cae200a0bdb56ec413646216",
+    "modulesSha256": "8fcf5a6b50b01198c8b270d7e66017e4054e568e1fb999a348c5147d4edab6a6"
+  },
+  "rollback": {
+    "id": "P213-SEQ123-ROLLBACK-P212-20261120",
+    "sequence": 123,
+    "tilawaVersion": 240,
+    "assets": 13,
+    "totalAssetBytes": 88438,
+    "envelopeSha256": "a7047a802d8bef27bbdf895cdd588c8732eda30a6c437e36aa8780500cb965d6",
+    "modulesSha256": "8d98d581fb4ca9efce30525425aeb04617ec40e0e4b5929271d2e6527ed10b34"
+  },
+  "crypto": {
+    "originalV695Rsa3072": "VERIFIED",
+    "originalV695OtaOwnerEd25519": "VERIFIED",
+    "nodeIndependentChecks": "15/15 per envelope PASS",
+    "signedOtpOwnerApprovalsExpireAt": "2026-11-23T07:44:10Z"
+  },
+  "assets": {
+    "immutableFiveNewAssets": "STAGED_IN_FEATURE_BRANCH_NOT_MAIN",
+    "sourceBlobParity": "5/5 SHA1 blob and exact source content match",
+    "oldP212UrlUntouched": true
+  },
+  "production": {
+    "manifest": "P212-SEQ120-INDEPENDENT-TAJWID-AUDIO-20261118",
+    "changed": false
+  },
+  "remaining": [
+    "Android WebView real follow and audio test not completed",
+    "full P213 unmocked Chromium integration still not completed",
+    "new signed asset URLs have not been merged into main",
+    "phone P121 highestSequence unknown"
+  ],
+  "privateMaterial": "NOT_STORED_IN_REPOSITORY",
+  "archive": "BASAIR-P213-SEQ122-123-SIGNED-HELD-PUBLIC.zip (user-conversation attachment, not a deployed update)",
+  "noApkBuild": true,
+  "noUserDataMutation": true
+}
