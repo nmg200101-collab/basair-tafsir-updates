@@ -108,7 +108,7 @@
     "uiIntegrationEndToEnd": "NOT_RUN — opt-in V695 capture bridge only tested with mock coordinator and real native button handlers",
     "activationStatus": "NOT_ENABLED — no owner-qa manifest update",
     "gitHubQa050ScopedEd25519Approval": "NOT_AVAILABLE_FOR_P213_DIFF",
-    "v695OtaModuleEd25519Approval": "KEY_BACKUP_PUBLIC_MATCHES_V695 — encrypted private key supplied; not yet decrypted or used to sign P213",
+    "v695OtaModuleEd25519Approval": "SIGNING_KEY_VERIFIED_LOCALLY — ready for scoped approval when frozen forward/recovery manifests and acceptance exist; no release signed",
     "signedRecoveryEnvelope": "NOT_AVAILABLE — higher Tilawa version 240 + independently signed sequence required",
     "realP213ChromiumIntegration": "NOT_EXECUTED — p213/tests/test_v695_integrated_follow.py exists but this test exercises native V695 ONLY"
   },
@@ -325,10 +325,15 @@
     "backupMatchesV695OtaPublic": true,
     "qa050CiEd25519PublicRawSha256": "468a4b0de5066569eb55f22987e1768569de7ff96d95b716ff8ebbed1a90e1c7",
     "backupMatchesQa050CiPublic": false,
-    "encryptedPrivateDecryption": "NOT_TESTED — passphrase library text read available but direct authorized raw materialization failed; no key was exported or printed",
+    "encryptedPrivateDecryption": "PASS — decrypted in local memory using separately stored user passphrase; plaintext private key never written to disk, exported or uploaded",
     "signingProof": "NO_P213_OTA_SIGNATURE_CREATED",
     "uploadedArchive": "BASAIR-P119-OWNER-ED25519-ENCRYPTED-BACKUP.zip",
     "noSecretsInRepository": true,
-    "caution": "ZIP README describes a 2026-11-10 replacement key; V695 OTA embedded public key is already the replacement. Do not replace APK V695 or infer this key matches separate GitHub QA050 verifier."
+    "caution": "ZIP README describes a 2026-11-10 replacement key; V695 OTA embedded public key is already the replacement. Do not replace APK V695 or infer this key matches separate GitHub QA050 verifier.",
+    "encryptedPrivatePairCheck": "PASS — Ed25519 private key public component exactly matches bundled PEM and embedded V695 OTA OWNER_ED25519",
+    "dummySignatureCheck": "PASS — signed and verified an audit-only unrelated message",
+    "p213ForwardApproval": "NOT_SIGNED",
+    "p213RecoveryApproval": "NOT_SIGNED",
+    "actualReleaseSignature": "NOT_SIGNED"
   }
 }
