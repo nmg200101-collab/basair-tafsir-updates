@@ -1,0 +1,42 @@
+{
+  "schema": "basair-p214-digital-only-pre-release-v1",
+  "date": "2026-11-21",
+  "baseline": {
+    "release": "P213-SEQ122-UNIFIED-FOLLOW-20261120",
+    "sequence": 122,
+    "tilawaVersion": 239,
+    "assets": 17
+  },
+  "newAsset": {
+    "path": "modules/tilawa/p214-follow-route-adapters.js",
+    "size": 11881,
+    "sha256": "8310c0caa79a99a666294f4e2f6c8faa05010925355d0ba4d7a06efad45071dc",
+    "replaces": "modules/tilawa/p213-follow-route-adapters.js"
+  },
+  "proof": {
+    "oldTestFailures": 16,
+    "newRoutingTestsPassed": 61,
+    "otherCompatibleTestsPassed": 49,
+    "totalIsolatedPassed": 110,
+    "digitalOnlyFunctionDiff": true,
+    "source": "V695 original renderExactUnicodePage() and B330 b273LargeFlow()"
+  },
+  "publisher": {
+    "deliveryMode": "automatic",
+    "channel": "owner-qa",
+    "minAppVersion": 694,
+    "forwardSequence": 124,
+    "forwardTilawaVersion": 241,
+    "rollbackSequence": 125,
+    "rollbackTilawaVersion": 242,
+    "restartRequired": true
+  },
+  "restrictions": {
+    "noChangesToPrintedOrTajwidLogic": true,
+    "originalP213Unmodified": true,
+    "noAPK": true,
+    "noDataChange": true,
+    "AndroidFieldAcceptancePending": true
+  },
+  "status": "UNSIGNED_STAGED_NOT_PUBLISHED"
+}
