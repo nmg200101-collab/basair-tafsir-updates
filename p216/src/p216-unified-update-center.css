@@ -1,0 +1,48 @@
+/* Basair P216 unified update panel — presentation only. Reversible CSS.
+ * Scoped to P121's dialog; never hides V695 reader/content areas.
+ */
+#basairUniversalP121Dialog.p216CenterActive .bu-p121-actions,
+#basairUniversalP121Dialog.p216CenterActive #p197RollbackPanel,
+#basairUniversalP121Dialog.p216CenterActive #p206SignedArchivePanel,
+#basairUniversalP121Dialog.p216CenterActive #p206UnifiedNotice,
+#basairUniversalP121Dialog.p216CenterActive #p207ActivationStatus,
+#basairUniversalP121Dialog.p216CenterActive #buP121Status,
+#basairUniversalP121Dialog.p216CenterActive #buP121Progress{
+  display:none!important;
+}
+#bqMoreCenter[data-p216-menu="1"] .bq-more-grid button[data-bq-page="updates"],
+#bqMoreCenter[data-p216-menu="1"] #p197MoreUpdates,\n#bqMoreCenter[data-p216-menu="1"] #p207OwnerUpdatesInMore,
+#bqMoreCenter[data-p216-menu="1"] > button[data-basair-p121-button]{
+  display:none!important;
+}
+#basairUniversalP121Dialog.p216CenterActive .bu-p121-head>b{display:none!important}
+#p216UpdateCenter{font:14px/1.7 system-ui,sans-serif;direction:rtl;color:#234437;box-sizing:border-box}
+#p216UpdateCenter *{box-sizing:border-box}
+#p216UpdateCenter .p216Header{display:flex;flex-direction:column;gap:0;margin:0 0 12px}
+#p216UpdateCenter h3{font-size:18px;line-height:1.5;margin:0 0 3px;color:inherit}
+#p216UpdateCenter h4{font-size:15px;margin:9px 0 6px;color:inherit}
+#p216UpdateCenter .p216Header small{opacity:.75}
+#p216UpdateCenter .p216Tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+#p216UpdateCenter .p216Tab{flex:1;min-width:80px;background:transparent;color:inherit;border:1px solid #b2c9bc;padding:9px 5px;border-radius:9px}
+#p216UpdateCenter .p216Tab[aria-pressed="true"]{background:#277657;color:#fff;border-color:#277657}
+#p216UpdateCenter .p216Local{background:#eaf4ed;padding:11px 12px;border-radius:12px;margin-bottom:12px}
+#p216UpdateCenter .p216Local p{margin:4px 0}
+#p216UpdateCenter .p216Release{border:1px solid #a9cfb9;border-radius:12px;padding:12px;margin-bottom:10px}
+#p216UpdateCenter .p216Release p{margin:5px 0}
+#p216UpdateCenter .p216Actions{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
+#p216UpdateCenter .p216Btn{border:0;border-radius:9px;background:#286d50;color:#fff;padding:10px 12px;font:inherit;min-height:40px;cursor:pointer}
+#p216UpdateCenter .p216Btn:disabled{opacity:.5;cursor:not-allowed}
+#p216UpdateCenter .p216VersionRow{padding:10px 5px;border-bottom:1px solid #bdcfc4;display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+#p216UpdateCenter .p216VersionRow span{font-size:12px}
+#p216UpdateCenter .p216Confirm{background:#f3f4ea;border:1px solid #d5c6aa;padding:12px;border-radius:12px;margin:12px 0}
+#p216UpdateCenter .p216Secondary{background:transparent;color:inherit;border:1px solid #a7b7ad;padding:10px;border-radius:9px}
+#p216UpdateCenter .p216Error{color:#9c352b;font-weight:600}
+#p216UpdateCenter .p216Status{color:#245f48;font-weight:600}\n#p216UpdateCenter .p216NativeProgress{font-variant-numeric:tabular-nums;font-weight:600;color:#287855;margin:2px 0 8px}
+body.dark #p216UpdateCenter{color:#e4f3e9}
+body.dark #p216UpdateCenter .p216Local{background:#204232}
+body.dark #p216UpdateCenter .p216Release{border-color:#496f5a}
+body.dark #p216UpdateCenter .p216Confirm{background:#443d2c;border-color:#766544}
+body.dark #p216UpdateCenter .p216Tab{border-color:#557364}
+body.dark #p216UpdateCenter .p216Error{color:#ffc1b3}
+body.dark #p216UpdateCenter .p216Status{color:#bce8c9}
+@media(max-width:360px){#p216UpdateCenter .p216Tabs{gap:4px}#p216UpdateCenter .p216Tab{min-width:70px}}
