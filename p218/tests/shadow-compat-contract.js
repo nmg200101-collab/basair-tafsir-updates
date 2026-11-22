@@ -101,6 +101,27 @@ old.enable(); // simulate external re-enable during P218 ownership
 a._test.tick();
 ck('external P215 re-enable yields ownership immediately',
  !a.status().owned&&!a.status().active&&old.status().enabled===true);
+// Optional page markers are not required for the original compatibility fix.
+// When they exist, however, they MUST match the real native page to avoid
+// visually marking stale Quran text during a transition.
+var normalAttrs=normal.getAttribute;
+normal.getAttribute=function(k){return k==='data-b327-page'?'3':normalAttrs(k)};
+ck('stale normal page marker rejects shade at page 4',
+ a._test.tick()===false&&!a.status().active);
+normal.getAttribute=normalAttrs;
+ck('missing optional normal page marker remains eligible',
+ a._test.tick()===false&&a._test.tick()===true&&a.status().owned);
+normal.getAttribute=function(k){return k==='data-b327-page'?'3':normalAttrs(k)};
+ck('page mismatch clears an active shade and returns old owner',
+ a._test.tick()===false&&!a.status().active&&old.status().enabled===true);
+normal.getAttribute=normalAttrs;
+// V160 sometimes supplies its own page marker; never shade if stale.
+b.classList.add('b274LargeMushaf');
+var zoomAttrs=flow.getAttribute;
+flow.getAttribute=function(k){return k==='data-b345-page'?'3':null};
+ck('zoom page mismatch rejects old V160 flow',a._test.tick()===false&&!a.status().active);
+flow.getAttribute=zoomAttrs;
+
 
 ck('night normal and zoom CSS declared',css.includes('body.dark.reader-active.stableDigital')&&
  css.includes('.quranWord.p218ShadowMark')&&css.includes('.v160Ayah.p218ShadowMark'));
