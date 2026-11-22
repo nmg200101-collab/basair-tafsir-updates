@@ -144,11 +144,11 @@
       {
         "path": "modules/tilawa/p218-digital-shadow-compat.js",
         "kind": "js",
-        "size": 5559,
-        "sha256": "2e3b0d861b8eb1c6cadb4373975df30f0676e2b4c7a31ca069b94f3a6833ba7a"
+        "size": 5695,
+        "sha256": "219c5c04d644fbf18dc3a8ec3d25636c24e07937ac78fbb5eedb74c6318b05a1"
       }
     ],
-    "totalBytes": 129374
+    "totalBytes": 129510
   },
   "proposedRollback": {
     "sequence": 133,
@@ -274,7 +274,7 @@
   },
   "tests": {
     "contract": {
-      "passed": 23,
+      "passed": 24,
       "failed": 0
     },
     "androidWebView": "NOT_RUN",
