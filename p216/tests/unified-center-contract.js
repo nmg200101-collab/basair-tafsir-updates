@@ -37,6 +37,10 @@ root.__BASAIR_P216_CENTER_TESTS__=async function(source,style){
  var body=new N('body'),dialog=new N('section'),p=new N('div'),actions=new N('div');
  dialog.id='basairUniversalP121Dialog';p.className='bu-p121-panel';actions.className='bu-p121-actions';
  dialog.appendChild(p);p.appendChild(actions);body.appendChild(dialog);
+ // The old P207 card may exist before P216 or be inserted later.
+ var more=new N('div'),grid=new N('div'),legacy=new N('button');
+ more.id='bqMoreCenter';grid.className='bq-more-grid';legacy.id='p207OwnerUpdatesInMore';
+ grid.appendChild(legacy);more.appendChild(grid);body.appendChild(more);
  var doc={body,readyState:'loading',hidden:false,events,
    createElement:function(t){return new N(t)},
    getElementById:function(id){return body.find(n=>n.id===id)},
@@ -62,6 +66,9 @@ root.__BASAIR_P216_CENTER_TESTS__=async function(source,style){
    setTimeout:function(){},location:{reload:function(){reloads++}}};
  new Function('window','document',source)(w,doc);
  var ui=w.__BASAIR_P216_UPDATE_CENTER__;
+ if(typeof events.DOMContentLoaded==='function')events.DOMContentLoaded();
+ ck('one P216 card staged beside hidden P207',grid.findAll(n=>n.id==='p216MoreUpdates').length===1&&
+   more.getAttribute('data-p216-menu')==='1'&&style.includes('#p207OwnerUpdatesInMore'));
  ck('registered without native changes',ui&&ui.version===216&&installs===0&&checks===0&&restores===0);
  ck('no OTA install at boot',installs===0);
  ck('open uses P121 dialog',ui.open()===true&&!!doc.getElementById('p216UpdateCenter'));
@@ -108,6 +115,9 @@ root.__BASAIR_P216_CENTER_TESTS__=async function(source,style){
  // Disable is reversible and must not touch the native update engine.
  var old=ota.install;
  ck('disable center preserves native engine',ui.disable()===true&&ota.install===old);
+ ck('disabling removes own entry and restores old More',!more.getAttribute('data-p216-menu')&&
+   grid.findAll(n=>n.id==='p216MoreUpdates').length===0);
+ ck('disabling hides center and leaves native modal available',doc.getElementById('p216UpdateCenter').hidden===true);
  ck('safe disable rejects further actions',await ui.install()===false&&installs===1);
  ck('night and RTL declarations present',style.includes('body.dark #p216UpdateCenter')&&
    style.includes('direction:rtl'));
