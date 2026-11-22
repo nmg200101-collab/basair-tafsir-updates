@@ -27,17 +27,23 @@
    var w={__BASAIR_P206_SIGNED_ARCHIVE__:api,__BASAIR_P207_ACTIVATION__:{read:async()=>local}};
    new Function('window',src)(w);
    var p=w.__BASAIR_P217_VERIFIED_HISTORY__;
-   ck('adapter registered',p&&p.version===217&&p.limit===6);
+   ck('adapter registered',p&&p.version===217&&p.limit===6&&p.pendingLimit===1);
    var rows=await p.list();
-   ck('archive limited and sorted',rows.length===6&&rows[0].sequence===134&&rows[5].sequence===124);
-   ck('signature checks invoked',verifyCount===6);
-   ck('asset checks invoked on valid proofs',matchCount===5);
+   ck('archive retains six approved plus one pending',rows.length===7&&rows[0].sequence===134&&rows[6].sequence===122);
+   ck('signature checks invoked',verifyCount===7);
+   ck('asset checks invoked on valid proofs',matchCount===6);
    ck('future archived row not restorable',rows[0].verified&&!rows[0].restorable);
    ck('stable matching row recognized',rows[1].comparison==='مماثل للنشط'&&rows[1].restorable);
    ck('older signed version marked',rows[2].comparison==='أقدم من النشط'&&rows[2].restorable);
    ck('newer signed version marked',rows[3].comparison==='أحدث من النشط'&&rows[3].restorable);
    ck('not approved cannot restore',rows[4].verified&&!rows[4].approved&&!rows[4].restorable);
    ck('tampered signature fails closed',!rows[5].verified&&!rows[5].approved&&!rows[5].restorable);
+   ck('oldest approved record remains visible despite pending record',
+     rows[6].sequence===122&&rows[6].approved&&rows[6].verified&&rows[6].restorable);
+   ck('pending record retains its own read-only history status',
+     rows[4].sequence===126&&rows[4].status==='بانتظار اعتماد المالك');
+   ck('approved count limited without dropping pending',
+     rows.filter(x=>x.approved).length===5&&rows.filter(x=>!x.approved).length===2);
    var blocked=false;try{await p.restore(126)}catch(_){blocked=true}
    ck('unapproved restore refused',blocked&&restoreCount===0);
    blocked=false;try{await p.restore(134)}catch(_){blocked=true}
