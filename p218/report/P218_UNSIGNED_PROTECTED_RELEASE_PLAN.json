@@ -274,7 +274,7 @@
   },
   "tests": {
     "contract": {
-      "passed": 22,
+      "passed": 23,
       "failed": 0
     },
     "androidWebView": "NOT_RUN",
@@ -289,5 +289,10 @@
     "Confirm current live sequence and P216/P217 planned sequences before choosing these proposed numbers",
     "Verify all 21 forward SHA256+size and all 19 rollback assets"
   ],
-  "note": "Proposed sequence 132 and rollback 133 are NOT reserved or signed, cannot publish until prior sequences and owner approval checked."
+  "note": "Proposed sequence 132 and rollback 133 are NOT reserved or signed, cannot publish until prior sequences and owner approval checked.",
+  "metrics": {
+    "assetCount": 21,
+    "originalUnchanged": 19,
+    "exactNewAssetHashes": 2
+  }
 }
