@@ -30,14 +30,18 @@ function current(){
 }
 function shown(x){if(!x||!w.getComputedStyle)return false;var s=w.getComputedStyle(x);
  return !!(s&&s.display!=='none'&&s.visibility!=='hidden')}
-function textNodes(){
- var b=d.body,h=d.getElementById('b274LargeTextHost'),f,n;
+function textNodes(page){
+ var b=d.body,h=d.getElementById('b274LargeTextHost'),f,n,hostPage;
  if(b.classList.contains('b274LargeMushaf')&&h&&shown(h)&&
  h.getAttribute('aria-busy')!=='true'&&
  h.getAttribute('data-b330-scroll-owner')==='b274LargeTextHost'&&
  h.getAttribute('data-b329-zoom-source')!=='diagnostic'){
    f=h.querySelector('.v160DigitalFlow:not(.b329ZoomDiagnostic)');
    if(f&&shown(f)){
+     // A page marker is optional on V160, but if provided it must agree
+     // with the actual B345 page before a Quran word is highlighted.
+     hostPage=f.getAttribute&&f.getAttribute('data-b345-page');
+     if(hostPage!=null&&hostPage!==''&&Number(hostPage)!==page)return null;
      n=Array.prototype.slice.call(f.querySelectorAll(
        '.v160Ayah[data-s][data-selectayah]'),0,1000);
      if(n.length)return n; // one element per ayah, never shade nested words
@@ -51,6 +55,8 @@ function textNodes(){
  h=d.getElementById('stableDigitalHost');
  if(h&&shown(h)&&h.getAttribute('aria-busy')!=='true'&&
  h.querySelector('.exactLine.text .unicodeLine')){
+   hostPage=h.getAttribute('data-b327-page');
+   if(hostPage!=null&&hostPage!==''&&Number(hostPage)!==page)return null;
    n=Array.prototype.slice.call(h.querySelectorAll(
      '.quranWord[data-s][data-selectayah]'),0,1000);
    if(n.length)return n;
@@ -111,7 +117,7 @@ function paint(list,c,k){
 function tick(){
  try{
    var c=current();if(!c){release();return false}
-   var list=textNodes(),k=list&&select(list,c);
+   var list=textNodes(c.p),k=list&&select(list,c);
    if(!k){release();return false}
    if(!claim()){erase();return false}
    var success=paint(list,c,k);fails=0;return success;
