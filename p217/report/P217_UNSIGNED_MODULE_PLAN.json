@@ -60,8 +60,8 @@
       {
         "path": "modules/updates/p216-unified-update-center.js",
         "kind": "js",
-        "size": 20670,
-        "sha256": "61e13cc4f06f19ac272f7ac70b7f63f09f48731418b33bac7cfe0c5316191592"
+        "size": 20693,
+        "sha256": "a387d15df1544dc186c58a9883de847b11e31878afbcc2d124df328061d1c94d"
       },
       {
         "path": "modules/updates/p217-verified-history.js",
@@ -70,7 +70,7 @@
         "sha256": "35a80e24bad43f33cd72d6a0173ec02288d00e6bf7726cf1409d54087caeced2"
       }
     ],
-    "totalBytes": 72181
+    "totalBytes": 72204
   },
   "proposedRollback": {
     "sequence": 131,
@@ -116,11 +116,11 @@
       {
         "path": "modules/updates/p216-unified-update-center.js",
         "kind": "js",
-        "size": 20670,
-        "sha256": "61e13cc4f06f19ac272f7ac70b7f63f09f48731418b33bac7cfe0c5316191592"
+        "size": 20693,
+        "sha256": "a387d15df1544dc186c58a9883de847b11e31878afbcc2d124df328061d1c94d"
       }
     ],
-    "totalBytes": 67107
+    "totalBytes": 67130
   },
   "tests": {
     "p216": {
