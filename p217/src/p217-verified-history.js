@@ -6,7 +6,7 @@
 (function(w){
  'use strict';
  if(w.__BASAIR_P217_VERIFIED_HISTORY__)return;
- var VERSION=217, LIMIT=6, restoring=false;
+ var VERSION=217, LIMIT=6, PENDING_LIMIT=1, restoring=false;
  function archive(){
    var a=w.__BASAIR_P206_SIGNED_ARCHIVE__;
    return a&&typeof a.list==='function'&&typeof a.restore==='function'&&
@@ -71,7 +71,12 @@
    var rows=await api.list();
    if(!Array.isArray(rows))return [];
    rows=rows.filter(function(x){return !!(x&&num(x.sequence))})
-     .sort(function(a,b){return b.sequence-a.sequence}).slice(0,LIMIT);
+     .sort(function(a,b){return b.sequence-a.sequence});
+   // P206 retains SIX owner-approved snapshots AND ONE pending snapshot.
+   // Avoid hiding the oldest approved backup when a newer pending entry exists.
+   var approved=rows.filter(function(x){return x.approved===true}).slice(0,LIMIT);
+   var pending=rows.filter(function(x){return x.approved!==true}).slice(0,PENDING_LIMIT);
+   rows=approved.concat(pending).sort(function(a,b){return b.sequence-a.sequence});
    var output=[];
    for(var i=0;i<rows.length;i++)output.push(await inspect(rows[i],state,api));
    return output;
@@ -90,8 +95,8 @@
    }finally{restoring=false}
  }
  w.__BASAIR_P217_VERIFIED_HISTORY__=Object.freeze({
-   version:VERSION,limit:LIMIT,list:list,restore:restore,
+   version:VERSION,limit:LIMIT,pendingLimit:PENDING_LIMIT,list:list,restore:restore,
    status:function(){return{version:VERSION,available:!!archive(),restoring:restoring,
-     note:'Six local owner-approved signed snapshots maximum; no remote historical download'};}
+     note:'Six approved signed snapshots plus one pending maximum; no remote historical download'};}
  });
 })(typeof window!=='undefined'?window:globalThis);
