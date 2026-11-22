@@ -54,15 +54,15 @@
           {
             "path": "modules/updates/p216-unified-update-center.js",
             "kind": "js",
-            "size": 20670,
-            "sha256": "61e13cc4f06f19ac272f7ac70b7f63f09f48731418b33bac7cfe0c5316191592"
+            "size": 20693,
+            "sha256": "a387d15df1544dc186c58a9883de847b11e31878afbcc2d124df328061d1c94d"
           }
         ]
       }
     ],
     "deliveryMode": "notify",
     "description": "Single verified updates hub; new app-start in-app notice through P121; manually initiate download",
-    "totalBytes": 67107
+    "totalBytes": 67130
   },
   "rollback": {
     "proposedSequence": 129,
@@ -134,7 +134,7 @@
     ]
   },
   "quality": {
-    "sourceStagedAndVerifiedBlobSha1": "4eeec1ebac9674246ce9ac08f99e883e23629c4d",
+    "sourceStagedAndVerifiedBlobSha1": "2fa7574fea25272821a0fd1156fce3e8098f32d2",
     "regressions": {
       "passed": 35,
       "failed": 0
