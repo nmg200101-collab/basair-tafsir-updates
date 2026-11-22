@@ -1,0 +1,22 @@
+{
+  "schema": "BASAIR-QA050-SCOPED-APPROVAL-REQUEST-UNSIGNED",
+  "scope": {
+    "protocol": "basair-tilawa-unlock-v1",
+    "lock_id": "BASAIR-TILAWA-QA050-OWNER-LOCK-20261109",
+    "base_commit": "028a8b4f91998353a4469e5c2dedd98407fc53a1",
+    "protected_diff_sha256": "0d462ab0af4e676b690c5e506d22e9545e9ecd1b001eb241c9fca3ce644a5d7c",
+    "protected_files": [
+      ".github/workflows/p215-digital-stability-lock.yml"
+    ]
+  },
+  "request": {
+    "protocol": "basair-tilawa-unlock-v1",
+    "reason": "Owner-approved read-only P214/P215 digital stability CI; zero APK or release changes",
+    "issued_at": "2026-11-22T13:30:00Z",
+    "expires_at": "2026-11-29T13:30:00Z"
+  },
+  "workflowSha256": "be21760bbb26219bceada10a673feb38f0945bec26f6fe546414edd5adb7ba7e",
+  "signature": null,
+  "signer": "Original QA050 Ed25519 private signer; NOT the distinct P119 OTA key",
+  "warning": "Do not merge this protected workflow until an exact-scope QA050 signature is attached. Recalculate if main advances."
+}
