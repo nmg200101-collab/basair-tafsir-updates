@@ -9,7 +9,7 @@
      busy=false, disabled=false, candidate=null, local=null, archive=[],
      lastError='',status='', tab='updates', selected=null, loadSeq=0,
      checking=null, installing=null, confirmed=false, menuNode=null,
-     oldMenuTitle=null, oldMenuNote=null;
+     progressObserver=null;
  var MOD={tilawa:'التلاوة',tafsir:'التفسير',updates:'التحديثات',
    home:'الرئيسية',hifz:'الحفظ',library:'المكتبة',reciters:'القراء',
    search:'البحث',settings:'الإعدادات',shared:'المكونات المشتركة',
@@ -71,6 +71,7 @@
      p.insertBefore(el,p.querySelector('.bu-p121-actions')||null);
    }
    dlg.classList.add(ACTIVE);
+   hookProgress();
    return el;
  }
  function render(){
@@ -97,6 +98,9 @@
    }else add(info,'p','جارٍ قراءة حالة الإصدار من الهاتف، وليس من الخادم.');
    if(lastError)add(el,'p','تعذر إكمال العملية: '+safe(lastError),'p216Error');
    if(status)add(el,'p',safe(status,350),'p216Status');
+   var percentage=add(el,'p','','p216NativeProgress');percentage.id='p216RealProgress';
+   percentage.setAttribute('role','status');percentage.setAttribute('aria-live','polite');
+   syncProgress();
    if(tab==='updates')drawUpdates(el);
    else if(tab==='versions')drawVersions(el);
    else drawRestore(el);
@@ -126,6 +130,22 @@
        if(w.location&&typeof w.location.reload==='function')w.location.reload();
      },false);
    }
+ }
+ function syncProgress(){
+   var native=d.getElementById('buP121Progress'),
+       display=d.getElementById('p216RealProgress');
+   if(!display)return;
+   var value=native&&String(native.textContent||'').trim();
+   // Read ONLY genuine native P121 percent; never manufacture a progress bar.
+   display.textContent=busy&&/^(?:100|[1-9]?\d)%$/.test(value||'')?
+     'التنزيل الفعلي: '+value:'';
+ }
+ function hookProgress(){
+   if(!w.MutationObserver||progressObserver)return false;
+   var native=d.getElementById('buP121Progress');if(!native)return false;
+   progressObserver=new w.MutationObserver(syncProgress);
+   progressObserver.observe(native,{childList:true,characterData:true,subtree:true});
+   return true;
  }
  function compactRow(parent,label,value){
    var row=add(parent,'div',null,'p216VersionRow');
@@ -249,27 +269,19 @@
    var m=d.getElementById('bqMoreCenter');if(!m||m.hidden)return false;
    var grid=m.querySelector&&m.querySelector('.bq-more-grid');
    if(!grid)return false;
-   var item=d.getElementById('p207OwnerUpdatesInMore');
+   // Own exactly one P216 entry and leave all older entries in the DOM,
+   // hidden only by reversible scoped CSS. P207 may be inserted later.
+   var item=d.getElementById('p216MoreUpdates');
    if(!item||!grid.contains(item)){
-     item=d.getElementById('p216MoreUpdates');
-     if(!item){
-       item=node('button',null,'p216MoreButton');item.id='p216MoreUpdates';
-       item.type='button';
-       item.appendChild(node('span','↻','bq-opt-icon'));
-       item.appendChild(node('b','مركز التحديثات'));
-       item.appendChild(node('small','التحديثات والإصدارات والرجوع'));
-       grid.appendChild(item);
-     }
-   }
-   if(item.id==='p207OwnerUpdatesInMore'&&!menuNode){
-     oldMenuTitle=item.querySelector('b')&&item.querySelector('b').textContent;
-     oldMenuNote=item.querySelector('small')&&item.querySelector('small').textContent;
+     if(item&&item.parentNode)item.parentNode.removeChild(item);
+     item=node('button',null,'p216MoreButton');item.id='p216MoreUpdates';
+     item.type='button';
+     item.appendChild(node('span','↻','bq-opt-icon'));
+     item.appendChild(node('b','مركز التحديثات'));
+     item.appendChild(node('small','التحديثات والإصدارات والرجوع'));
+     grid.appendChild(item);
    }
    menuNode=item;
-   var a=item.querySelector&&item.querySelector('b'),
-       b=item.querySelector&&item.querySelector('small');
-   if(a)a.textContent='مركز التحديثات';
-   if(b)b.textContent='التحديثات والإصدارات والرجوع';
    m.setAttribute('data-p216-menu','1');return true;
  }
  function open(){
@@ -292,13 +304,9 @@
  }
  function disable(){
    disabled=true;loadSeq++;candidate=null;archive=[];selected=null;confirmed=false;
+   if(progressObserver){progressObserver.disconnect();progressObserver=null;}
    var dlg=dialog();if(dlg)dlg.classList.remove(ACTIVE);
    var m=d.getElementById('bqMoreCenter');if(m)m.removeAttribute('data-p216-menu');
-   if(menuNode&&menuNode.id==='p207OwnerUpdatesInMore'){
-     var a=menuNode.querySelector('b'),b=menuNode.querySelector('small');
-     if(a&&oldMenuTitle!==null)a.textContent=oldMenuTitle;
-     if(b&&oldMenuNote!==null)b.textContent=oldMenuNote;
-   }
    if(menuNode&&menuNode.id==='p216MoreUpdates'&&menuNode.parentNode)menuNode.parentNode.removeChild(menuNode);
    return true;
  }
