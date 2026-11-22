@@ -156,6 +156,23 @@ root.__BASAIR_P216_CENTER_TESTS__=async function(source,style){
    grid.findAll(n=>n.id==='p216MoreUpdates').length===0);
  ck('disabling hides center and leaves native modal available',doc.getElementById('p216UpdateCenter').hidden===true);
  ck('safe disable rejects further actions',await ui.install()===false&&installs===1);
+ // The native OTA is temporarily absent: retain old More controls and undo
+ // the P216-only dialog presentation; no dead update shortcut is allowed.
+ w.BasairUniversalOTA=null;
+ ui.enable();
+ ck('missing native engine removes P216-only shortcut',
+   grid.findAll(n=>n.id==='p216MoreUpdates').length===0);
+ ck('missing native engine re-exposes legacy menu',
+   !more.getAttribute('data-p216-menu'));
+ ck('missing native engine does not keep native dialog hidden by P216',
+   !dialog.classList.contains('p216CenterActive')&&doc.getElementById('p216UpdateCenter').hidden);
+ ck('opening fails closed when P121 is missing',ui.open()===false);
+ w.BasairUniversalOTA=ota;ui.enable();
+ ck('P121 return restores exactly one P216 entry',
+   grid.findAll(n=>n.id==='p216MoreUpdates').length===1&&
+   more.getAttribute('data-p216-menu')==='1');
+ ck('restoring service never auto-installs or reloads',
+   installs===1&&reloads===0);
  ck('night and RTL declarations present',style.includes('body.dark #p216UpdateCenter')&&
    style.includes('direction:rtl'));
  ck('no literal newline escape in CSS declarations',!style.includes('\\n'));
