@@ -54,14 +54,15 @@
           {
             "path": "modules/updates/p216-unified-update-center.js",
             "kind": "js",
-            "size": 19150,
-            "sha256": "668d4558f3c3c655760b111241805ef73071b31b12ffb664edea3cfa1eb7f766"
+            "size": 20059,
+            "sha256": "0615136edff6c0596a7857aa71af2d8fc8eb70fc3e6afb769b29a23d2bfc3ead"
           }
         ]
       }
     ],
     "deliveryMode": "notify",
-    "description": "Single verified updates hub; new app-start in-app notice through P121; manually initiate download"
+    "description": "Single verified updates hub; new app-start in-app notice through P121; manually initiate download",
+    "totalBytes": 66498
   },
   "rollback": {
     "proposedSequence": 129,
@@ -130,5 +131,16 @@
       "RSA sign forward and rollback from original owner environment",
       "QA050 and regression on final release head"
     ]
+  },
+  "quality": {
+    "sourceStagedAndVerifiedBlobSha1": "880568b2662744c6b0f780abca0578f701b99b43",
+    "regressions": {
+      "passed": 29,
+      "failed": 0
+    },
+    "nativeBrowserEndToEnd": "NOT_RUN",
+    "androidOwnerAcceptance": "NOT_RUN",
+    "nativePushWhenClosed": "NOT_SUPPORTED_IN_V695_WITHOUT_NATIVE_PUSH",
+    "date": "2026-11-22"
   }
 }
