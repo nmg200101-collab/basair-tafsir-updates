@@ -56,8 +56,12 @@
    return card;
  }
  function nodes(card,zoom){
-   return Array.prototype.slice.call(card.querySelectorAll(zoom?
-     '.v160Ayah[data-s][data-selectayah],.quranWord[data-s][data-selectayah]':
+   if(zoom){
+     var ayahs=Array.prototype.slice.call(card.querySelectorAll(
+       '.v160Ayah[data-s][data-selectayah]'),0,1000);
+     if(ayahs.length)return ayahs; // Never double-shade nested Quran words.
+   }
+   return Array.prototype.slice.call(card.querySelectorAll(
      '.quranWord[data-s][data-selectayah]'),0,1000);
  }
  function safeKey(n){
@@ -130,7 +134,7 @@
    timer=w.setTimeout(schedule,current()?WAIT_ACTIVE:WAIT_IDLE);
  }
  function disable(){enabled=false;clear();return true;}
- function enable(){if(locked)return false;enabled=true;return tick();}
+ function enable(){if(locked)return false;enabled=true;tick();return true;}
  function status(){return{version:VERSION,enabled:enabled,locked:locked,active:marked.length>0,
    page:last&&last.page||null,surah:last&&last.s||null,ayah:last&&last.a||null,
    quality:source,markedWords:marked.length,changes:changes,ticks:ticks,failures:failures,lastError:lastError};}
