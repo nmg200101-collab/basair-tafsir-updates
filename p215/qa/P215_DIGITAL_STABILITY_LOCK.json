@@ -1,0 +1,63 @@
+{
+  "schema": "basair-p215-digital-follow-freeze-v1",
+  "reference": {
+    "android": "V695",
+    "applicationId": "app.basair.qurv2",
+    "approved": "P214-SEQ124-DIGITAL-FOLLOW-20261121",
+    "approvedTilawaVersion": 241,
+    "protectedScope": "digital follow coordinator, bridge, actual V695 routing + P215 visual shadow; printed P212 unchanged"
+  },
+  "immutable": [
+    {
+      "path": "p121/owner-qa/modules/tilawa/p212-tajwid-static-follow.js",
+      "gitBlobSha1": "0f8dae469baeb827bbeda08377340a8589ef996d"
+    },
+    {
+      "path": "p121/owner-qa/modules/tilawa/p213-tajwid-static-follow-v2.js",
+      "gitBlobSha1": "6263a6a20d9a825c227f65dd0e323ad60b76c87c"
+    },
+    {
+      "path": "p121/owner-qa/modules/tilawa/p213-unified-follow-core.js",
+      "gitBlobSha1": "f149e146d44a8009e915269b81911b2e1d37179e"
+    },
+    {
+      "path": "p121/owner-qa/modules/tilawa/p213-owner-control-bridge.js",
+      "gitBlobSha1": "543a8af3477c3827a2ec3aee9c58116fb6325b44"
+    },
+    {
+      "path": "p121/owner-qa/modules/tilawa/p213-signed-ota-bootstrap.js",
+      "gitBlobSha1": "99b204fc5ed21916e4835211934aff82109166c6"
+    },
+    {
+      "path": "p121/owner-qa/modules/tilawa/p214-follow-route-adapters.js",
+      "gitBlobSha1": "01b178eef3d2295989667771a6b8b21c15e57a60"
+    },
+    {
+      "path": "p121/owner-qa/modules/tilawa/p215-digital-follow-shadow.js",
+      "gitBlobSha1": "ab57a983d974c04857899f881ff6f5dba9e173f9"
+    },
+    {
+      "path": "p121/owner-qa/modules/tilawa/p215-digital-follow-shadow.css",
+      "gitBlobSha1": "1d7efa7100a416160cae1b351925456eb2495ef6"
+    }
+  ],
+  "releaseGate": {
+    "minimumSequence": 126,
+    "minimumTilawaVersion": 243,
+    "allowedSingleActiveAdapter": "modules/tilawa/p214-follow-route-adapters.js",
+    "forbiddenLegacyActiveAdapter": "modules/tilawa/p213-follow-route-adapters.js",
+    "requiredAssets": [
+      "modules/tilawa/p213-tajwid-static-follow-v2.js",
+      "modules/tilawa/p213-unified-follow-core.js",
+      "modules/tilawa/p214-follow-route-adapters.js",
+      "modules/tilawa/p213-owner-control-bridge.js",
+      "modules/tilawa/p213-signed-ota-bootstrap.js",
+      "modules/tilawa/p215-digital-follow-shadow.css",
+      "modules/tilawa/p215-digital-follow-shadow.js"
+    ],
+    "shadowJsMustBeAfterAdapter": true,
+    "shaAndSizeCheck": true
+  },
+  "policy": "Must pass pinned immutable asset and signed-descriptor regression check before any future Tilawa OTA; do not claim enforced GitHub branch protection until QA-050 workflow integration is owner-authorized.",
+  "status": "STAGED_ONLY_NOT_SIGNED_OR_PUBLISHED"
+}
