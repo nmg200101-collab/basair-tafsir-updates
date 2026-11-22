@@ -1,0 +1,35 @@
+/* P216: one entry in More, one signed-update panel. No change to V695 core. */
+body.p216-center-ready #bqMoreCenter .bq-more-grid button[data-bq-page="updates"],
+body.p216-center-ready #p207OwnerUpdatesInMore,
+body.p216-center-ready #p197MoreUpdates,
+body.p216-center-ready #p197NavUpdates,
+body.p216-center-ready #p197LibraryUpdates {display:none!important}
+body.p216-notice-ready #basairUniversalP122Notice{display:none!important}
+#p216UpdatesCenter{position:fixed;inset:0;z-index:2147483450;background:rgba(0,0,0,.6);
+  display:flex;align-items:center;justify-content:center;padding:12px;font:14px system-ui,sans-serif}
+#p216UpdatesCenter[hidden]{display:none!important}
+#p216UpdatesCenter .p216-panel{width:min(96vw,520px);max-height:92vh;overflow:auto;
+ background:#fff;color:#243d30;border-radius:17px;padding:14px;box-shadow:0 12px 48px #0004}
+#p216UpdatesCenter .p216-header{display:flex;align-items:center;justify-content:space-between;gap:8px}
+#p216UpdatesCenter h2{font-size:18px;margin:0 0 10px}
+#p216UpdatesCenter h3{font-size:15px;margin:0 0 8px}
+#p216UpdatesCenter .p216-card{padding:12px;border:1px solid #d8e4de;border-radius:12px;margin:10px 0}
+#p216UpdatesCenter .p216-line,#p216UpdatesCenter .p216-bullet{margin:5px 0;line-height:1.65}
+#p216UpdatesCenter .p216-muted,#p216UpdatesCenter .p216-foot{color:#526b5c;font-size:12px;line-height:1.65}
+#p216UpdatesCenter button,#p216UpdateNotice button{font:inherit;padding:9px 12px;margin:4px;border-radius:9px;
+ min-height:40px;border:1px solid #327e5b;cursor:pointer}
+#p216UpdatesCenter button:disabled,#p216UpdateNotice button:disabled{opacity:.55}
+#p216UpdatesCenter .p216-primary,#p216UpdateNotice .p216-primary{background:#26704d;color:#fff}
+#p216UpdatesCenter .p216-secondary,#p216UpdateNotice .p216-secondary{background:transparent;color:#28684c}
+#p216UpdatesCenter .p216-history{padding:9px 0;border-top:1px solid #dfe8e1}
+#p216UpdatesCenter .p216-warning{border:1px solid #c49731;padding:10px;border-radius:9px;color:#77500d}
+#p216UpdatesCenter .p216-error{color:#a62d36}
+#p216UpdateNotice{position:fixed;z-index:2147483451;top:10px;left:10px;right:10px;max-width:510px;
+ margin:auto;background:#fffdf5;border:1px solid #ad9461;border-radius:12px;padding:12px;box-shadow:0 4px 20px #0003}
+#p216UpdateNotice p{margin:5px 0}
+body.dark #p216UpdatesCenter .p216-panel{background:#20392d;color:#f2f7f3}
+body.dark #p216UpdatesCenter .p216-card{border-color:#537967}
+body.dark #p216UpdatesCenter .p216-muted,body.dark #p216UpdatesCenter .p216-foot{color:#c5d8cd}
+body.dark #p216UpdatesCenter .p216-warning{color:#f5d58c}
+body.dark #p216UpdatesCenter .p216-secondary{color:#b7e9ce}
+body.dark #p216UpdateNotice{background:#21392f;color:#f3f7f1}
