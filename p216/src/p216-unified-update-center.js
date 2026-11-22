@@ -70,6 +70,7 @@
      el.setAttribute('data-p216-version',String(VER));
      p.insertBefore(el,p.querySelector('.bu-p121-actions')||null);
    }
+   el.hidden=false;
    dlg.classList.add(ACTIVE);
    hookProgress();
    return el;
@@ -168,11 +169,17 @@
  }
  function drawRestore(el){
    add(el,'h4','الرجوع إلى إصدار محفوظ');
+   if(status.indexOf('تمت استعادة بيانات')===0){
+     button(el,'إعادة فتح التطبيق بعد الاستعادة',function(){
+       if(w.location&&typeof w.location.reload==='function')w.location.reload();
+     },false);
+   }
    if(!historyApi()){
      add(el,'p','لم يُحمّل نظام الإصدارات المحفوظة P206. لا يمكن إجراء رجوع متعدد من هنا.');
      button(el,'فتح أداة الرجوع السابقة',function(){
        var p=dialog();if(!p)return;
        p.classList.remove(ACTIVE);
+       var center=d.getElementById(ID);if(center)center.hidden=true;
        var a=w.__BASAIR_P197_ROLLBACK__;
        if(a&&typeof a.refresh==='function')a.refresh();
        var older=d.getElementById('p197RollbackPanel');
@@ -243,6 +250,7 @@
      // Re-read the authoritative signed envelope to avoid installing stale UI
      // candidates. P121 re-verifies it AGAIN before any asset write.
      var again=await engine().check();
+     if(disabled)return false;
      if(!again||!again.newer||!again.manifest||again.manifest.sequence!==wanted||
         again.manifest.deliveryMode!=='notify')throw Error('تغير إصدار الخادم، أعد فحص التحديث');
      installing=engine().install(again);
@@ -306,6 +314,7 @@
    disabled=true;loadSeq++;candidate=null;archive=[];selected=null;confirmed=false;
    if(progressObserver){progressObserver.disconnect();progressObserver=null;}
    var dlg=dialog();if(dlg)dlg.classList.remove(ACTIVE);
+   var center=d.getElementById(ID);if(center)center.hidden=true;
    var m=d.getElementById('bqMoreCenter');if(m)m.removeAttribute('data-p216-menu');
    if(menuNode&&menuNode.id==='p216MoreUpdates'&&menuNode.parentNode)menuNode.parentNode.removeChild(menuNode);
    return true;
