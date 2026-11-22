@@ -135,6 +135,12 @@ root.__BASAIR_P216_CENTER_TESTS__=async function(source,style){
  ck('safe disable rejects further actions',await ui.install()===false&&installs===1);
  ck('night and RTL declarations present',style.includes('body.dark #p216UpdateCenter')&&
    style.includes('direction:rtl'));
+ ck('no literal newline escape in CSS declarations',!style.includes('\\n'));
+ ck('older update options hide with separate valid selectors',
+   style.includes('#p197MoreUpdates,\n#bqMoreCenter') &&
+   style.includes('#p207OwnerUpdatesInMore,'));
+ ck('native progress CSS rule is independent',
+   style.includes('color:#245f48;font-weight:600}\n#p216UpdateCenter .p216NativeProgress'));
  return {passed:pass,failed:fail.length,errors:fail,checks:checks,
    installs:installs,restores:restores,reloads:reloads,
    limit:'Isolated DOM/API contracts; no real Android/WebView acceptance'};
