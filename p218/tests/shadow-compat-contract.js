@@ -72,6 +72,14 @@ ck('zoom marks whole Ayah but never nested word',u.classList.contains('p218Shado
 u.pos=590;v.pos=285;a._test.tick();
 ck('zoom follows next visible ayah',!u.classList.contains('p218ShadowMark')&&
  v.classList.contains('p218ShadowMark'));
+var originalZoomQuery=zoom.querySelector;
+zoom.querySelector=function(){return null};
+a._test.tick();
+ck('missing zoom flow clears mark and rejects stale 100% fallback',
+ !a.status().active&&!u.classList.contains('p218ShadowMark')&&
+ !v.classList.contains('p218ShadowMark')&&
+ !x.classList.contains('p218ShadowMark'));
+zoom.querySelector=originalZoomQuery;
 core.status=()=>({route:'printed',running:true});a._test.tick();
 ck('printed route excluded',!a.status().active&&!v.classList.contains('p218ShadowMark'));
 core.status=()=>({route:'digital',running:true});
