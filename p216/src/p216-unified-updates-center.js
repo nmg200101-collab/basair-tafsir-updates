@@ -7,7 +7,7 @@
  if(w.__BASAIR_P216_CENTER__)return;
  var ID='p216UpdatesCenter',ENTRY='p216UpdatesEntry',BANNER='p216UpdateNotice';
  var model=w.__BASAIR_P216_MODEL__,open=false,busy=false,lastCandidate=null,lastInstalled=null,
-   history=[],pendingRestore=null,error='',lastScan=0,scanPromise=null,noticeSeq=null;
+   history=[],pendingRestore=null,pendingApproval=null,error='',lastScan=0,scanPromise=null,noticeSeq=null;
  function el(tag,cls,content){
    var e=d.createElement(tag);if(cls)e.className=cls;
    if(content!==undefined)e.textContent=String(content);return e;
@@ -41,7 +41,7 @@
    var content=add(wrap,'div','p216-content');content.id='p216CenterContent';
    d.body.appendChild(o);return o;
  }
- function close(){var o=d.getElementById(ID);if(o)o.hidden=true;open=false;pendingRestore=null;}
+ function close(){var o=d.getElementById(ID);if(o)o.hidden=true;open=false;pendingRestore=null;pendingApproval=null;}
  function render(){
    if(!open)return;
    var root=d.getElementById('p216CenterContent');if(!root)return;
@@ -82,12 +82,17 @@
        var row=add(past,'div','p216-history');
        add(row,'b','',(rec.title||rec.id||'إصدار')+' — Seq '+rec.sequence);
        add(row,'p','p216-muted',(rec.approved?'معتمد':'لم يعتمد')+(rec.date?' • '+rec.date.slice(0,10):''));
+       if(rec.moduleVersions.length)line(row,'الوحدات:',rec.moduleVersions.map(function(x){return x.name+(x.version?' v'+x.version:'')}).join('، '));
        if(rec.canRestore){
          action(row,pendingRestore===rec.sequence?'تأكيد الرجوع إلى هذا الإصدار':'الرجوع لهذا الإصدار',function(){restore(rec)},true);
+       }else if(!rec.approved&&lastInstalled&&lastInstalled.ready&&lastInstalled.sequence===rec.sequence&&
+         archive()&&typeof archive().approve==='function'){
+         action(row,pendingApproval===rec.sequence?'تأكيد اعتماد هذا الإصدار':'اعتماد الإصدار الحالي بعد التجربة',function(){approveCurrent(rec)},true);
        }else add(row,'p','p216-muted','للعرض فقط — يتطلب الرجوع اعتمادًا ونسخةً سليمة ومحرك استعادة صالحًا');
      });
      action(past,'تحديث السجل',loadHistory,true);
    }
+   if(pendingApproval!==null)add(root,'p','p216-warning','تأكيد اعتماد الإصدار الحالي كمستقر: لا تعتمد إصدارًا لم تختبره على الهاتف. ستتحقق خدمة P206 من ملفاته وتوقيعه وحالته قبل الاعتماد.');
    if(pendingRestore!==null){
      var rec=history.find(function(x){return x.sequence===pendingRestore});
      if(rec)add(root,'p','p216-warning',model.restoreMessage(lastInstalled,rec));
@@ -169,9 +174,19 @@
      history=model.history(valid);render();return history;
    }catch(e){error='تعذر قراءة أرشيف الإصدارات: '+err(e);render();return []}
  }
+ async function approveCurrent(rec){
+   var a=archive();
+   if(!a||typeof a.approve!=='function'||busy||rec.approved||
+      !lastInstalled||!lastInstalled.ready||lastInstalled.sequence!==rec.sequence)return false;
+   if(pendingApproval!==rec.sequence){pendingApproval=rec.sequence;pendingRestore=null;render();return false}
+   busy=true;error='';render();
+   try{await a.approve(rec.sequence);pendingApproval=null;await loadHistory();return true}
+   catch(e){pendingApproval=null;error='لم يتم اعتماد هذا الإصدار: '+err(e);return false}
+   finally{busy=false;render()}
+ }
  async function restore(rec){
    if(!rec||!rec.canRestore||busy)return false;
-   if(pendingRestore!==rec.sequence){pendingRestore=rec.sequence;render();return false}
+   if(pendingRestore!==rec.sequence){pendingRestore=rec.sequence;pendingApproval=null;render();return false}
    busy=true;error='';render();
    try{
      // P206 re-verifies owner signatures + actual assets and refuses trial
