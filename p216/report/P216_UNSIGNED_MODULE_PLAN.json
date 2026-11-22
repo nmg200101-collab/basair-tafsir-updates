@@ -1,0 +1,134 @@
+{
+  "schema": "basair-p216-unified-center-staging-v1",
+  "status": "UNSIGNED_NOT_PUBLISHED",
+  "source": "P212-Seq120 signed updates v200, retained through P215 Seq126",
+  "baseAndroid": "V695",
+  "baseline": {
+    "signedLiveSequence": 126,
+    "signedLiveTilawaVersion": 243,
+    "updatesVersion": 200
+  },
+  "forward": {
+    "proposedSequence": 128,
+    "modules": [
+      {
+        "id": "updates",
+        "version": 216,
+        "assets": [
+          {
+            "path": "modules/updates/p197-local-rollback.js",
+            "kind": "js",
+            "size": 12448,
+            "sha256": "82be9bf832eaa6fcfb15c21cf97023069fb5cb45140e245231848793eeb14c9a"
+          },
+          {
+            "path": "modules/updates/p206-signed-six-rollback.js",
+            "kind": "js",
+            "size": 15752,
+            "sha256": "d93ce6ecf6bd0e160f90346f32d12e2edbaa9cdbb46a7d0233c7de3bfc930ebe"
+          },
+          {
+            "path": "modules/updates/p206-unified-update-notice.js",
+            "kind": "js",
+            "size": 4876,
+            "sha256": "300c05fdfb2884f08eeca34fe4bf60cb249c3bdbf5bc49e91c7c716e45816a8a"
+          },
+          {
+            "path": "modules/updates/p207-local-activation-status.js",
+            "kind": "js",
+            "size": 5059,
+            "sha256": "89ac7804cb7afcb3e6034321d357a500618cabd0888b8e51d3e41b796044efbd"
+          },
+          {
+            "path": "modules/updates/p207-more-modal-entry.js",
+            "kind": "js",
+            "size": 4712,
+            "sha256": "41bd04b383f083180b349c00ec1041e0791ef7d394c1aa905e156573c5518f9b"
+          },
+          {
+            "path": "modules/updates/p216-unified-update-center.css",
+            "kind": "css",
+            "size": 3592,
+            "sha256": "780b3fd519e9e63b5b53a0a0dde2c695e9699b989d184c2a6174edc85b45a772"
+          },
+          {
+            "path": "modules/updates/p216-unified-update-center.js",
+            "kind": "js",
+            "size": 19150,
+            "sha256": "668d4558f3c3c655760b111241805ef73071b31b12ffb664edea3cfa1eb7f766"
+          }
+        ]
+      }
+    ],
+    "deliveryMode": "notify",
+    "description": "Single verified updates hub; new app-start in-app notice through P121; manually initiate download"
+  },
+  "rollback": {
+    "proposedSequence": 129,
+    "modules": [
+      {
+        "id": "updates",
+        "version": 217,
+        "assets": [
+          {
+            "path": "modules/updates/p197-local-rollback.js",
+            "kind": "js",
+            "size": 12448,
+            "sha256": "82be9bf832eaa6fcfb15c21cf97023069fb5cb45140e245231848793eeb14c9a"
+          },
+          {
+            "path": "modules/updates/p206-signed-six-rollback.js",
+            "kind": "js",
+            "size": 15752,
+            "sha256": "d93ce6ecf6bd0e160f90346f32d12e2edbaa9cdbb46a7d0233c7de3bfc930ebe"
+          },
+          {
+            "path": "modules/updates/p206-unified-update-notice.js",
+            "kind": "js",
+            "size": 4876,
+            "sha256": "300c05fdfb2884f08eeca34fe4bf60cb249c3bdbf5bc49e91c7c716e45816a8a"
+          },
+          {
+            "path": "modules/updates/p207-local-activation-status.js",
+            "kind": "js",
+            "size": 5059,
+            "sha256": "89ac7804cb7afcb3e6034321d357a500618cabd0888b8e51d3e41b796044efbd"
+          },
+          {
+            "path": "modules/updates/p207-more-modal-entry.js",
+            "kind": "js",
+            "size": 4712,
+            "sha256": "41bd04b383f083180b349c00ec1041e0791ef7d394c1aa905e156573c5518f9b"
+          }
+        ]
+      }
+    ],
+    "description": "Reinstate original updates module v200 content using a new higher OTA version; unchanged Tilawa v243"
+  },
+  "features": {
+    "singleMoreEntry": true,
+    "verifiedCheck": true,
+    "explicitDownload": true,
+    "originalNativeProgress": true,
+    "localVersionRead": true,
+    "signedP206Archive": true,
+    "twoStepRestore": true,
+    "returnForwardIfLocallyApproved": true,
+    "safeDisable": true,
+    "realBackgroundPushWhenAndroidClosed": false
+  },
+  "safety": {
+    "noAPK": true,
+    "noTilawaEdits": true,
+    "noDataReset": true,
+    "noNewDownloader": true,
+    "legacyRuntimeRetained": 5,
+    "releaseBlockedOn": [
+      "P215 Android owner visual acceptance",
+      "Integrated V695 WebView/Chromium testing of P216 More modal and archive",
+      "Verify on-device active updates module version and highestSequence",
+      "RSA sign forward and rollback from original owner environment",
+      "QA050 and regression on final release head"
+    ]
+  }
+}
