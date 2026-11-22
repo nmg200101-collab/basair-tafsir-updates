@@ -144,11 +144,11 @@
       {
         "path": "modules/tilawa/p218-digital-shadow-compat.js",
         "kind": "js",
-        "size": 5971,
-        "sha256": "2ca81d223730382e6ef9f51a5ef22ba950aeae4999a5411dec1ffed2bf8eb0f0"
+        "size": 6390,
+        "sha256": "cce1f0d53267443921fedf888cf4218abec2025d85845c8228946578b49cba06"
       }
     ],
-    "totalBytes": 129786
+    "totalBytes": 130205
   },
   "proposedRollback": {
     "sequence": 133,
@@ -274,7 +274,7 @@
   },
   "tests": {
     "contract": {
-      "passed": 30,
+      "passed": 34,
       "failed": 0
     },
     "androidWebView": "NOT_RUN",
@@ -298,6 +298,8 @@
   "guards": {
     "manualDisableReturnsP215": true,
     "externalP215EnablePreemptsP218": true,
-    "anyOriginalShaTouched": false
+    "anyOriginalShaTouched": false,
+    "stalePageRejectedWhenMarkerExists": true,
+    "externalP215PreemptsP218": true
   }
 }
