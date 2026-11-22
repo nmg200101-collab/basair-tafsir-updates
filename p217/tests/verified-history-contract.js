@@ -14,7 +14,12 @@
      {sequence:124,id:'TAMPERED',approved:true,envelope:{signed:false},active:{tilawa:{version:241},updates:{version:200}}},
      {sequence:122,id:'LIMIT',approved:true,envelope:{signed:true},active:{tilawa:{version:240},updates:{version:200}}}
    ];
+   var runtimeAvailable=true;
    var api={
+     hasArchiveRuntime:function(updates){return !!(runtimeAvailable&&updates&&
+       Array.isArray(updates.assets)&&updates.assets.some(function(a){
+         return a.path==='modules/updates/p206-signed-six-rollback.js';
+       }));},
      list:async function(){return records},
      verify:async function(env){verifyCount++;if(!env.signed)throw Error('RSA failed');
        var rec=records.find(r=>r.envelope===env);
@@ -24,6 +29,8 @@
      matches:async function(active,m){matchCount++;return active.tilawa.version===m.modules[0].version&&active.updates.version===m.modules[1].version},
      restore:async function(seq){restoreCount++;return seq===130}
    };
+   records[1].active.updates.assets=[
+     {path:'modules/updates/p206-signed-six-rollback.js',kind:'js'}];
    var w={__BASAIR_P206_SIGNED_ARCHIVE__:api,__BASAIR_P207_ACTIVATION__:{read:async()=>local}};
    new Function('window',src)(w);
    var p=w.__BASAIR_P217_VERIFIED_HISTORY__;
@@ -49,6 +56,18 @@
    blocked=false;try{await p.restore(134)}catch(_){blocked=true}
    ck('future sequence restore refused',blocked&&restoreCount===0);
    ck('approved local restore delegated to P206',await p.restore(130)===true&&restoreCount===1);
+   runtimeAvailable=false;
+   rows=await p.list();
+   ck('no approved P206-capable engine disables all restore actions',
+     rows.every(x=>!x.restorable));
+   ck('missing verified P206 runtime explains restore block',
+     rows.some(x=>x.approved&&x.status.includes('محرك الرجوع المحمي')));
+   blocked=false;try{await p.restore(130)}catch(_){blocked=true}
+   ck('restore cannot bypass missing trusted runtime',blocked&&restoreCount===1);
+   runtimeAvailable=true;
+   rows=await p.list();
+   ck('restoring verified P206 runtime unlocks approved snapshots',
+     rows.some(x=>x.sequence===130&&x.restorable));
    local.trial={status:'pending'};
    rows=await p.list();
    ck('active trial blocks restoring all rows',rows.every(x=>!x.restorable));
