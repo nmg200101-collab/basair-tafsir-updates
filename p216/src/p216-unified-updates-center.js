@@ -118,15 +118,20 @@
    if(scanPromise)return scanPromise;
    scanPromise=(async function(){
      busy=true;error='';render();
+     var notice=null;
      try{
        var candidate=await ota().check(); // P121 performs RSA+Ed25519 verification
        lastCandidate=model.candidate(candidate);
        if(!lastCandidate)throw Error('تعذر التحقق من بيانات بيان الإصدار');
        lastInstalled=await installedStatus().catch(function(){return null});
-       if(lastCandidate.newer)showBanner(lastCandidate);
+       if(lastCandidate.newer)notice=lastCandidate;
        lastScan=now();return lastCandidate;
      }catch(e){lastCandidate=null;error='فشل فحص التحديث الموقّع: '+err(e);return null}
-     finally{busy=false;scanPromise=null;render()}
+     finally{
+       busy=false;scanPromise=null;render();
+       // Build notification controls only AFTER async check exits busy state.
+       if(notice)showBanner(notice);
+     }
    })();
    return scanPromise;
  }
