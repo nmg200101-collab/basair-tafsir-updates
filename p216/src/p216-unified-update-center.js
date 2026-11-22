@@ -247,7 +247,7 @@
    try{var rows=await api.list();
      archive=(Array.isArray(rows)?rows:[]).filter(function(r){
        return r&&Number.isSafeInteger(r.sequence)&&r.sequence>0;
-     }).sort(function(a,b){return b.sequence-a.sequence}).slice(0,6);
+     }).sort(function(a,b){return b.sequence-a.sequence}).slice(0,api.pendingLimit===1?7:6);
      lastError='';
    }catch(err){archive=[];lastError=safe(String(err&&err.message||err));}
    render();return archive;
