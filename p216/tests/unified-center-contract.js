@@ -63,7 +63,14 @@ root.__BASAIR_P216_CENTER_TESTS__=async function(source,style){
    install:async function(c){installs++;if(c.manifest.sequence!==release.sequence)throw Error('invalid payload');
      state.highestSequence=c.manifest.sequence;state.active.updates.version=208;return true}};
  var hist={list:async()=>archives,restore:async function(seq){restores++;if(seq!==124)throw Error('bad seq');return restoreResult;}};
+ var initiallyVerified={
+   status:function(){return{available:true}},pendingLimit:1,
+   list:async function(){return archives.map(function(r){return Object.assign({},r,{
+     verified:r.approved===true,restorable:r.approved===true});});},
+   restore:hist.restore
+ };
  var w={BasairUniversalOTA:ota,__BASAIR_P206_SIGNED_ARCHIVE__:hist,
+   __BASAIR_P217_VERIFIED_HISTORY__:initiallyVerified,
    __BASAIR_P207_ACTIVATION__:{read:async()=>state},
    setTimeout:function(){},location:{reload:function(){reloads++}}};
  new Function('window','document',source)(w,doc);
@@ -149,6 +156,20 @@ root.__BASAIR_P216_CENTER_TESTS__=async function(source,style){
  await ui.loadArchive();
  ck('P206 fallback remains available when P217 is unavailable',
    ui.status().archiveCount===2&&delegated===0);
+ var rt=doc.getElementById('p216UpdateCenter').find(n=>
+   n.tagName==='BUTTON'&&n.textContent==='الرجوع');
+ rt.click();await ui.loadArchive();
+ ck('P206 fallback is read-only inside unified center',
+   doc.getElementById('p216UpdateCenter').findAll(n=>n.tagName==='BUTTON'&&
+     n.textContent==='اختيار الإصدار').length===0);
+ var nativeRestore=doc.getElementById('p216UpdateCenter').find(n=>
+   n.tagName==='BUTTON'&&n.textContent==='فتح أداة الرجوع الأصلية');
+ ck('trusted original P206 remains reachable',!!nativeRestore);
+ nativeRestore.click();
+ ck('opening legacy screen restores native P121 controls',
+   !dialog.classList.contains('p216CenterActive')&&
+   doc.getElementById('p216UpdateCenter').hidden===true);
+
  // Disable is reversible and must not touch the native update engine.
  var old=ota.install;
  ck('disable center preserves native engine',ui.disable()===true&&ota.install===old);
