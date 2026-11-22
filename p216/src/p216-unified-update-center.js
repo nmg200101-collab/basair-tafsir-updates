@@ -191,8 +191,13 @@
    add(el,'small','الإصدارات التاريخية غير المحفوظة لا يمكن استعادتها بمجرد معرفة رقمها.');
    button(el,'تحديث قائمة الإصدارات',loadArchive,busy||!historyApi());
  }
+ function trustedArchive(){
+   var a=w.__BASAIR_P217_VERIFIED_HISTORY__;
+   return !!(a&&a===historyApi()&&typeof a.restore==='function');
+ }
  function canRestore(r){
-   return !!(r&&r.approved===true&&r.restorable!==false&&local&&!local.trial&&historyApi()&&
+   return !!(trustedArchive()&&r&&r.approved===true&&r.verified===true&&
+     r.restorable===true&&local&&!local.trial&&
      Number.isSafeInteger(r.sequence)&&r.sequence<=local.highestSequence);
  }
  function drawRestore(el){
@@ -214,6 +219,20 @@
        if(older&&older.scrollIntoView)older.scrollIntoView({block:'nearest'});
      },!w.__BASAIR_P197_ROLLBACK__);
      return;
+   }
+   if(!trustedArchive()){
+     add(el,'p','يمكن قراءة سجل P206 هنا، لكن الرجوع عبر المركز الجديد يتطلب تحقق P217 من التوقيع والملفات ومحرك الاستعادة. استخدم أداة P206 الأصلية حتى يكتمل ذلك.','p216Status');
+     button(el,'فتح أداة الرجوع الأصلية',function(){
+       var dlg=dialog();
+       if(!dlg)return;
+       dlg.classList.remove(ACTIVE);
+       var center=d.getElementById(ID);if(center)center.hidden=true;
+       selected=null;confirmed=false;
+       var p=w.__BASAIR_P206_SIGNED_ARCHIVE__;
+       if(p&&typeof p.refresh==='function')p.refresh();
+       var legacy=d.getElementById('p206SignedArchivePanel');
+       if(legacy&&legacy.scrollIntoView)legacy.scrollIntoView({block:'nearest'});
+     },busy||!w.__BASAIR_P206_SIGNED_ARCHIVE__);
    }
    if(!archive.length)add(el,'p','لا توجد نسخة معتمدة ومحفوظة يمكن الرجوع إليها.');
    archive.forEach(function(r){
