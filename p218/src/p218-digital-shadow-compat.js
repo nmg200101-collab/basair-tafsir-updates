@@ -46,6 +46,8 @@ function textNodes(){
      if(n.length)return n;
    }
  }
+ // Refuse stale normal Quran text while the large-print V160 host is loading.
+ if(b.classList.contains('b274LargeMushaf'))return null;
  h=d.getElementById('stableDigitalHost');
  if(h&&shown(h)&&h.getAttribute('aria-busy')!=='true'&&
  h.querySelector('.exactLine.text .unicodeLine')){
