@@ -87,6 +87,21 @@ b.classList.add('h25-hifz');a._test.tick();
 ck('hifz excluded',!a.status().active);
 b.classList.remove('h25-hifz');state.running=false;a._test.tick();
 ck('never changes B345 running',state.running===false);
+state.running=true;b.classList.remove('b274LargeMushaf');
+ck('fallback reacquires ownership first wait',a._test.tick()===false);
+ck('fallback reacquires ownership second tick',a._test.tick()===true&&a.status().owned);
+a.disable();
+ck('disabling P218 clears marker and returns visual ownership to P215',
+ !a.status().owned&&!a.status().active&&!a.status().enabled&&
+ old.status().enabled===true);
+ck('disable has not modified native B345 running state',state.running===true);
+a.enable();a._test.tick(); // reacquire after the two-tick handoff
+ck('re-enabled P218 claims visual ownership again',a.status().owned===true);
+old.enable(); // simulate external re-enable during P218 ownership
+a._test.tick();
+ck('external P215 re-enable yields ownership immediately',
+ !a.status().owned&&!a.status().active&&old.status().enabled===true);
+
 ck('night normal and zoom CSS declared',css.includes('body.dark.reader-active.stableDigital')&&
  css.includes('.quranWord.p218ShadowMark')&&css.includes('.v160Ayah.p218ShadowMark'));
 ck('no font size/line/scroll geometry in CSS',!/(?:font-size|line-height|transform|position|scroll-behavior)\s*:/.test(css));
