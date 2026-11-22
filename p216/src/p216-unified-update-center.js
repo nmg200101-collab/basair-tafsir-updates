@@ -17,7 +17,13 @@
  function safe(x,n){return typeof x==='string'?x.slice(0,n||220):'';}
  function ota(){return w.BasairUniversalOTA;}
  function engine(){var a=ota();return a&&typeof a.check==='function'&&typeof a.install==='function'&&typeof a.open==='function'?a:null;}
- function historyApi(){var a=w.__BASAIR_P206_SIGNED_ARCHIVE__;return a&&typeof a.list==='function'&&typeof a.restore==='function'?a:null;}
+ function historyApi(){
+   var verified=w.__BASAIR_P217_VERIFIED_HISTORY__;
+   if(verified&&typeof verified.status==='function'&&verified.status().available===true&&
+      typeof verified.list==='function'&&typeof verified.restore==='function')return verified;
+   var a=w.__BASAIR_P206_SIGNED_ARCHIVE__;
+   return a&&typeof a.list==='function'&&typeof a.restore==='function'?a:null;
+ }
  function node(tag,txt,cls){
    var x=d.createElement(tag);if(txt!==undefined&&txt!==null)x.textContent=String(txt);
    if(cls)x.className=cls;return x;
@@ -174,13 +180,19 @@
    else if(!archive.length)add(el,'p','لم تُحفظ إصدارات معتمدة محليًا بعد. يمكنك فحصها عبر أدوات النسخ الأصلية.');
    archive.forEach(function(r){
      compactRow(el,'Seq'+r.sequence+' — '+safe(r.title||r.id,90),
+       r.verified===false?'تعذر إثبات سلامة النسخة؛ غير قابلة للاستعادة':
        r.approved?'محفوظ ومعتمد — '+relativeVersion(r):'سجل غير معتمد للاستعادة');
+     if(r.verified===true&&Array.isArray(r.modules)&&r.modules.length){
+       add(el,'small','الوحدات: '+r.modules.map(function(m){
+         return (MOD[m.id]||safe(m.id,50))+' v'+m.version;
+       }).join('، '));
+     }
    });
    add(el,'small','الإصدارات التاريخية غير المحفوظة لا يمكن استعادتها بمجرد معرفة رقمها.');
    button(el,'تحديث قائمة الإصدارات',loadArchive,busy||!historyApi());
  }
  function canRestore(r){
-   return !!(r&&r.approved===true&&local&&!local.trial&&historyApi()&&
+   return !!(r&&r.approved===true&&r.restorable!==false&&local&&!local.trial&&historyApi()&&
      Number.isSafeInteger(r.sequence)&&r.sequence<=local.highestSequence);
  }
  function drawRestore(el){
