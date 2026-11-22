@@ -36,6 +36,11 @@ new Function('window','document',src)(w,doc);
 var a=w.__BASAIR_P218_SHADOW__;
 ck('P218 registered',a&&a.version===218);
 ck('no eager second owner',disabled===0&&!a.status().active);
+var wrap=w.__BASAIR_P215_DIGITAL_SHADOW__,realStatus=wrap.status;
+wrap.status=function(){var x=realStatus();return Object.assign({},x,{active:true})};
+ck('existing P215 shade prevents P218 double ownership',
+   a._test.tick()===false&&!a.status().owned&&disabled===0);
+wrap.status=realStatus;
 ck('first fallback tick waits',a._test.tick()===false&&disabled===0);
 ck('second fallback tick owns shading',a._test.tick()===true&&disabled===1);
 ck('only first verse words shaded at 100%',x.classList.contains('p218ShadowMark')&&
