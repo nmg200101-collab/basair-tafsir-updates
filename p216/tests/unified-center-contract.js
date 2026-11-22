@@ -130,16 +130,19 @@ root.__BASAIR_P216_CENTER_TESTS__=async function(source,style){
  var delegated=0;
  w.__BASAIR_P217_VERIFIED_HISTORY__={
    status:function(){return{available:true}},
-   list:async function(){return[{sequence:120,id:'P217',title:'Verified only',
-     approved:true,verified:true,restorable:true,
-     active:{tilawa:{version:240},updates:{version:200}},
-     modules:[{id:'tilawa',version:240}]}]},
+   pendingLimit:1,
+   list:async function(){return[134,132,130,128,126,124,122].map(function(seq){
+     return{sequence:seq,id:'P217',title:seq===122?'Verified oldest':'Verified only',
+       approved:seq!==126,verified:true,restorable:seq!==126,
+       active:{tilawa:{version:240},updates:{version:200}},
+       modules:[{id:'tilawa',version:240}]};
+   });},
    restore:async function(){delegated++;return false;}
  };
  await ui.loadArchive();
- ck('P217 adapter replaces raw P206 listing when available',
-   ui.status().archiveCount===1&&
-   doc.getElementById('p216UpdateCenter').textContent.includes('Verified only'));
+ ck('P217 adapter retains six signed approved plus one pending',
+   ui.status().archiveCount===7&&
+   doc.getElementById('p216UpdateCenter').textContent.includes('Verified oldest'));
  ck('P217 displays confirmed module versions',
    doc.getElementById('p216UpdateCenter').textContent.includes('التلاوة v240'));
  w.__BASAIR_P217_VERIFIED_HISTORY__.status=function(){return{available:false}};
