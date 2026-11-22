@@ -169,7 +169,7 @@
    return 'محتوى مطابق أو لم تتوفر مقارنة';
  }
  function canRestore(r){
-   return !!(r&&r.approved===true&&local&&!local.trial&&historyApi()&&
+   return !!(r&&r.approved===true&&r._signatureVerified===true&&local&&!local.trial&&historyApi()&&
      Number.isSafeInteger(r.sequence)&&r.sequence<=local.highestSequence);
  }
  function versionName(record){
@@ -178,8 +178,11 @@
  }
  function compactRecord(el,r){
    var item=add(el,'article',null,'p218VersionRecord');
-   add(item,'b',versionName(r)+' — '+safe(r.title||r.id,'120'));
+   add(item,'b',versionName(r)+' — '+safe(r._verifiedTitle||r.title||r.id,'120'));
    if(r.date)add(item,'small','التاريخ: '+safe(r.date,10));
+   if(r._releaseType)add(item,'small','نوع التحديث: '+safe(r._releaseType,90));
+   if(r._changeSummary&&r._changeSummary.length)add(item,'p','تفاصيل: '+r._changeSummary.slice(0,3).join(' • '));
+   if(!r._signatureVerified)add(item,'small','لم يُتحقق من توقيع البيان المحفوظ؛ غير متاح للتفعيل.');
    var mods=Object.keys(r.active||{}).sort().map(function(id){
      return (MOD[id]||safe(id,40))+' v'+String(r.active[id]&&r.active[id].version||'?');
    });
@@ -235,11 +238,26 @@
  }
  async function loadArchive(){
    var api=historyApi();
-   if(!api){archive=[];render();return [];}
-   try{var rows=await api.list();
-     archive=(Array.isArray(rows)?rows:[]).filter(function(r){
+   if(!api||typeof api.verify!=='function'){archive=[];render();return [];}
+   try{
+     var rows=await api.list();
+     rows=(Array.isArray(rows)?rows:[]).filter(function(r){
        return r&&Number.isSafeInteger(r.sequence)&&r.sequence>0;
      }).sort(function(a,b){return b.sequence-a.sequence}).slice(0,6);
+     archive=await Promise.all(rows.map(async function(r){
+       var record=Object.assign({},r,{_signatureVerified:false});
+       try{
+         if(!r.envelope) return record;
+         var manifest=await api.verify(r.envelope);
+         if(!manifest||manifest.sequence!==r.sequence||manifest.channel!=='owner-qa')return record;
+         record._signatureVerified=true;
+         record._verifiedTitle=safe(manifest.title||manifest.id,130);
+         record._releaseType=safe(manifest.changeType||'غير محدد',60);
+         record._changeSummary=Array.isArray(manifest.changeSummary)?
+           manifest.changeSummary.map(function(s){return safe(s,170)}).slice(0,5):[];
+       }catch(_){}
+       return record;
+     }));
      lastError='';
    }catch(err){archive=[];lastError=safe(String(err&&err.message||err));}
    render();return archive;
@@ -329,7 +347,7 @@
      '#p197LibraryUpdates,#p197NavUpdates,#basairUniversalP122Notice button');
    if(!target)return;
    var nativeBanner=!!contains(target,'#basairUniversalP122Notice');
-   if(nativeBanner&&!/^تحديث/.test(String(target.textContent||'').trim()))return;
+   if(nativeBanner&&!/^(?:تحديث الآن|إعادة المحاولة)/.test(String(target.textContent||'').trim()))return;
    if(!nativeBanner&&!contains(target,'#bqMoreCenter')&&!contains(target,'#bqP26Menu')&&
       target.id!=='p197LibraryUpdates'&&target.id!=='p197NavUpdates')return;
    if(!engine())return;
