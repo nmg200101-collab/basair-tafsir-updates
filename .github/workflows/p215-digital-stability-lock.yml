@@ -1,0 +1,33 @@
+name: p215-digital-stability-lock
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  protected-digital-follow:
+    name: protected-digital-follow
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - name: Checkout immutable follow baseline
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Verify frozen P214/P215 asset bytes
+        run: python3 p215/tools/verify_digital_lock.py
+      - name: Verify current release keeps the digital follow contract
+        run: python3 p215/tools/verify_digital_lock.py --manifest p121/owner-qa/release.json
+      - name: Exercise visual-only shadow lifecycle regression
+        run: node p215/tests/run_p215.cjs
+      - name: Exercise original P214 digital follow regression
+        run: node p214/tests/run_p214.cjs
+      - name: Disclose scope
+        run: echo "Checks do not sign releases, install APKs or alter application data."
