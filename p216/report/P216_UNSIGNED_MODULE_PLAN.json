@@ -54,15 +54,15 @@
           {
             "path": "modules/updates/p216-unified-update-center.js",
             "kind": "js",
-            "size": 20693,
-            "sha256": "a387d15df1544dc186c58a9883de847b11e31878afbcc2d124df328061d1c94d"
+            "size": 22438,
+            "sha256": "185946810f70b231caf2d40860a18eb06b0a51ca433d22b3ac303af53d801a3f"
           }
         ]
       }
     ],
     "deliveryMode": "notify",
     "description": "Single verified updates hub; new app-start in-app notice through P121; manually initiate download",
-    "totalBytes": 67130
+    "totalBytes": 68875
   },
   "rollback": {
     "proposedSequence": 129,
@@ -117,7 +117,9 @@
     "returnForwardIfLocallyApproved": true,
     "safeDisable": true,
     "realBackgroundPushWhenAndroidClosed": false,
-    "verifiedHistoryAdapterOptional": true
+    "verifiedHistoryAdapterOptional": true,
+    "failOpenLegacyIfNativeMissing": true,
+    "verifiedHistoryRequiredForNewRestore": true
   },
   "safety": {
     "noAPK": true,
@@ -134,9 +136,9 @@
     ]
   },
   "quality": {
-    "sourceStagedAndVerifiedBlobSha1": "2fa7574fea25272821a0fd1156fce3e8098f32d2",
+    "sourceStagedAndVerifiedBlobSha1": "8c699cdb7806fe252d95610387ca9d4c3d9dcf91",
     "regressions": {
-      "passed": 35,
+      "passed": 44,
       "failed": 0
     },
     "nativeBrowserEndToEnd": "NOT_RUN",
