@@ -79,6 +79,17 @@
    rows=approved.concat(pending).sort(function(a,b){return b.sequence-a.sequence});
    var output=[];
    for(var i=0;i<rows.length;i++)output.push(await inspect(rows[i],state,api));
+   // P206 cannot safely restore if no *verified, approved* snapshot still
+   // contains a P206-capable signed updates runtime. Refuse the affordance,
+   // rather than let the user select an impossible rollback.
+   var runtimeTrusted=typeof api.hasArchiveRuntime==='function'&&
+     output.some(function(r){return !!(r.verified&&r.approved&&
+       r.active&&api.hasArchiveRuntime(r.active.updates));});
+   if(!runtimeTrusted)output.forEach(function(r){
+     r.restorable=false;
+     if(r.verified&&r.approved)
+       r.status='محرك الرجوع المحمي غير محفوظ أو غير معتمد';
+   });
    return output;
  }
  async function restore(sequence){
