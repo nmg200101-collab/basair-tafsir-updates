@@ -10,4 +10,4 @@ const result=ctx.window.__BASAIR_P218_TESTS__(
   read('p218/src/p218-digital-shadow-compat.css'),
   read('p121/owner-qa/modules/tilawa/p215-digital-follow-shadow.js'));
 console.log(JSON.stringify(result,null,2));
-if(result.failed!==0||result.passed!==30)process.exitCode=1;
+if(result.failed!==0||result.passed!==34)process.exitCode=1;
