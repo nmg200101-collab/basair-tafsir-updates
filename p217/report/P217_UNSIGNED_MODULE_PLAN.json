@@ -1,0 +1,148 @@
+{
+  "schema": "basair-p217-verified-local-history-staging-v1",
+  "status": "UNSIGNED_NOT_PUBLISHED",
+  "baseline": {
+    "android": "V695",
+    "liveRelease": "P215 Seq126",
+    "liveTilawaVersion": 243,
+    "proposedPrerequisite": "P216 update center signed and field-accepted"
+  },
+  "constraints": [
+    "No APK",
+    "No change to P214/P215 signed Tilawa assets",
+    "No retroactive local versions",
+    "No unrestricted remote unsigned history",
+    "Max six existing P206 snapshots",
+    "P206 owns RSA/Ed25519 verification, file digest check, rollback and trial",
+    "No unapproved QA050 workflow changes"
+  ],
+  "proposedForward": {
+    "sequence": 130,
+    "updatesModuleVersion": 218,
+    "deliveryMode": "notify",
+    "assets": [
+      {
+        "path": "modules/updates/p197-local-rollback.js",
+        "kind": "js",
+        "size": 12448,
+        "sha256": "82be9bf832eaa6fcfb15c21cf97023069fb5cb45140e245231848793eeb14c9a"
+      },
+      {
+        "path": "modules/updates/p206-signed-six-rollback.js",
+        "kind": "js",
+        "size": 15752,
+        "sha256": "d93ce6ecf6bd0e160f90346f32d12e2edbaa9cdbb46a7d0233c7de3bfc930ebe"
+      },
+      {
+        "path": "modules/updates/p206-unified-update-notice.js",
+        "kind": "js",
+        "size": 4876,
+        "sha256": "300c05fdfb2884f08eeca34fe4bf60cb249c3bdbf5bc49e91c7c716e45816a8a"
+      },
+      {
+        "path": "modules/updates/p207-local-activation-status.js",
+        "kind": "js",
+        "size": 5059,
+        "sha256": "89ac7804cb7afcb3e6034321d357a500618cabd0888b8e51d3e41b796044efbd"
+      },
+      {
+        "path": "modules/updates/p207-more-modal-entry.js",
+        "kind": "js",
+        "size": 4712,
+        "sha256": "41bd04b383f083180b349c00ec1041e0791ef7d394c1aa905e156573c5518f9b"
+      },
+      {
+        "path": "modules/updates/p216-unified-update-center.css",
+        "kind": "css",
+        "size": 3590,
+        "sha256": "6868d82053c0a7c65e0ff4b3a22446e82e977a87df98917bc509e18bde911d92"
+      },
+      {
+        "path": "modules/updates/p216-unified-update-center.js",
+        "kind": "js",
+        "size": 20670,
+        "sha256": "61e13cc4f06f19ac272f7ac70b7f63f09f48731418b33bac7cfe0c5316191592"
+      },
+      {
+        "path": "modules/updates/p217-verified-history.js",
+        "kind": "js",
+        "size": 4628,
+        "sha256": "4b13a114f74a0e7a042a85588a2b72f4b62a84256d9ca240eba9a878cfa0f788"
+      }
+    ],
+    "totalBytes": 71735
+  },
+  "proposedRollback": {
+    "sequence": 131,
+    "updatesModuleVersion": 219,
+    "description": "Signed P216 seven-asset module restored with exact verified bytes",
+    "assets": [
+      {
+        "path": "modules/updates/p197-local-rollback.js",
+        "kind": "js",
+        "size": 12448,
+        "sha256": "82be9bf832eaa6fcfb15c21cf97023069fb5cb45140e245231848793eeb14c9a"
+      },
+      {
+        "path": "modules/updates/p206-signed-six-rollback.js",
+        "kind": "js",
+        "size": 15752,
+        "sha256": "d93ce6ecf6bd0e160f90346f32d12e2edbaa9cdbb46a7d0233c7de3bfc930ebe"
+      },
+      {
+        "path": "modules/updates/p206-unified-update-notice.js",
+        "kind": "js",
+        "size": 4876,
+        "sha256": "300c05fdfb2884f08eeca34fe4bf60cb249c3bdbf5bc49e91c7c716e45816a8a"
+      },
+      {
+        "path": "modules/updates/p207-local-activation-status.js",
+        "kind": "js",
+        "size": 5059,
+        "sha256": "89ac7804cb7afcb3e6034321d357a500618cabd0888b8e51d3e41b796044efbd"
+      },
+      {
+        "path": "modules/updates/p207-more-modal-entry.js",
+        "kind": "js",
+        "size": 4712,
+        "sha256": "41bd04b383f083180b349c00ec1041e0791ef7d394c1aa905e156573c5518f9b"
+      },
+      {
+        "path": "modules/updates/p216-unified-update-center.css",
+        "kind": "css",
+        "size": 3590,
+        "sha256": "6868d82053c0a7c65e0ff4b3a22446e82e977a87df98917bc509e18bde911d92"
+      },
+      {
+        "path": "modules/updates/p216-unified-update-center.js",
+        "kind": "js",
+        "size": 20670,
+        "sha256": "61e13cc4f06f19ac272f7ac70b7f63f09f48731418b33bac7cfe0c5316191592"
+      }
+    ],
+    "totalBytes": 67107
+  },
+  "tests": {
+    "p216": {
+      "passed": 35,
+      "failed": 0
+    },
+    "p217": {
+      "passed": 20,
+      "failed": 0
+    },
+    "p215Baseline": {
+      "passed": 24,
+      "failed": 0
+    },
+    "type": "isolated JS/DOM mocks, not Android WebView or audio"
+  },
+  "gates": [
+    "Owner P215 visual acceptance on V695",
+    "Android WebView P216/P217 integrated tests with real P206 signed local snapshot",
+    "Check local active updates version, IndexedDB highestSequence and signed archive contents",
+    "Fresh owner RSA + relevant Ed25519 signatures on both forward and rollback",
+    "QA-050 protected scope approval if touching CI",
+    "Recheck current live sequence and immutable hashes before release"
+  ]
+}
