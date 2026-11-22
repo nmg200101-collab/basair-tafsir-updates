@@ -52,9 +52,9 @@ root.__BASAIR_P218_CENTER_TESTS__=async function(source,style){
  var release=manifest(130,'notify');
  var state={active:{tilawa:{version:243},updates:{version:207}},highestSequence:126,trial:null};
  var archives=[{sequence:124,id:'P214',title:'متابعة الخطوط الآلية',approved:true,
-     active:{tilawa:{version:241},updates:{version:200}}},
+     envelope:{sequence:124},active:{tilawa:{version:241},updates:{version:200}}},
    {sequence:122,id:'P213',title:'تجربة سابقة',approved:false,
-     active:{tilawa:{version:250},updates:{version:208}}}];
+     envelope:{sequence:122},active:{tilawa:{version:250},updates:{version:208}}}];
  var ota={open:function(){dialog.hidden=false},
    check:async function(){checks++;return accepted?{
      envelope:{payload:'signed',signature:'cryptographic-verifier-only'},
@@ -62,7 +62,11 @@ root.__BASAIR_P218_CENTER_TESTS__=async function(source,style){
      envelope:null,manifest:release,newer:true};},
    install:async function(c){installs++;if(c.manifest.sequence!==release.sequence)throw Error('invalid payload');
      state.highestSequence=c.manifest.sequence;state.active.updates.version=208;return true}};
- var hist={list:async()=>archives,restore:async function(seq){restores++;if(seq!==124)throw Error('bad seq');return restoreResult;}};
+ var hist={list:async()=>archives,
+   verify:async function(env){if(env.tampered)throw Error('invalid Ed25519/RSA');
+     return {sequence:env.sequence,channel:'owner-qa',title:'إصدار موثّق',changeType:'إصلاح',
+       changeSummary:['إصلاح تجريبي معتمد']};},
+   restore:async function(seq){restores++;if(seq!==124)throw Error('bad seq');return restoreResult;}};
  var w={BasairUniversalOTA:ota,__BASAIR_P206_SIGNED_ARCHIVE__:hist,
    __BASAIR_P207_ACTIVATION__:{read:async()=>state},
    setTimeout:function(){},location:{reload:function(){reloads++}}};
@@ -108,6 +112,13 @@ root.__BASAIR_P218_CENTER_TESTS__=async function(source,style){
  ck('no restore action before selecting a version',!center.find(n=>n.tagName==='BUTTON'&&n.textContent==='الرجوع إلى الإصدار المحدد'));
  var selectors=center.findAll(n=>n.tagName==='BUTTON'&&n.textContent==='تحديد الإصدار');
  ck('only approved saved release can be selected',selectors.length===1);
+ ck('signed version type appears in list',center.textContent.includes('نوع التحديث: إصلاح'));
+ archives[0].envelope.tampered=true;await ui.loadArchive();
+ var bad=doc.getElementById('p218UpdateCenter');
+ ck('invalid archive RSA/Ed25519 is not selectable',bad.findAll(n=>n.tagName==='BUTTON'&&n.textContent==='تحديد الإصدار').length===0);
+ archives[0].envelope.tampered=false;await ui.loadArchive();
+ selectors=doc.getElementById('p218UpdateCenter').findAll(n=>n.tagName==='BUTTON'&&n.textContent==='تحديد الإصدار');
+ ck('re-verification restores approved choice',selectors.length===1);
  selectors[0].click();
  center=doc.getElementById('p218UpdateCenter');
  var preview=center.find(n=>n.tagName==='BUTTON'&&n.textContent==='الرجوع إلى الإصدار المحدد');
