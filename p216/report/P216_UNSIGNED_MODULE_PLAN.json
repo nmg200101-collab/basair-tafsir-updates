@@ -48,21 +48,21 @@
           {
             "path": "modules/updates/p216-unified-update-center.css",
             "kind": "css",
-            "size": 3592,
-            "sha256": "780b3fd519e9e63b5b53a0a0dde2c695e9699b989d184c2a6174edc85b45a772"
+            "size": 3590,
+            "sha256": "6868d82053c0a7c65e0ff4b3a22446e82e977a87df98917bc509e18bde911d92"
           },
           {
             "path": "modules/updates/p216-unified-update-center.js",
             "kind": "js",
-            "size": 20059,
-            "sha256": "0615136edff6c0596a7857aa71af2d8fc8eb70fc3e6afb769b29a23d2bfc3ead"
+            "size": 20670,
+            "sha256": "61e13cc4f06f19ac272f7ac70b7f63f09f48731418b33bac7cfe0c5316191592"
           }
         ]
       }
     ],
     "deliveryMode": "notify",
     "description": "Single verified updates hub; new app-start in-app notice through P121; manually initiate download",
-    "totalBytes": 66498
+    "totalBytes": 67107
   },
   "rollback": {
     "proposedSequence": 129,
@@ -116,7 +116,8 @@
     "twoStepRestore": true,
     "returnForwardIfLocallyApproved": true,
     "safeDisable": true,
-    "realBackgroundPushWhenAndroidClosed": false
+    "realBackgroundPushWhenAndroidClosed": false,
+    "verifiedHistoryAdapterOptional": true
   },
   "safety": {
     "noAPK": true,
@@ -133,14 +134,16 @@
     ]
   },
   "quality": {
-    "sourceStagedAndVerifiedBlobSha1": "880568b2662744c6b0f780abca0578f701b99b43",
+    "sourceStagedAndVerifiedBlobSha1": "4eeec1ebac9674246ce9ac08f99e883e23629c4d",
     "regressions": {
-      "passed": 29,
+      "passed": 35,
       "failed": 0
     },
     "nativeBrowserEndToEnd": "NOT_RUN",
     "androidOwnerAcceptance": "NOT_RUN",
     "nativePushWhenClosed": "NOT_SUPPORTED_IN_V695_WITHOUT_NATIVE_PUSH",
-    "date": "2026-11-22"
+    "date": "2026-11-22",
+    "cssLiteralEscapesFixed": true,
+    "p217IntegrationReady": true
   }
 }
