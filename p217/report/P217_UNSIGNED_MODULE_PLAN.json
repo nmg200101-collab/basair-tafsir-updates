@@ -60,17 +60,17 @@
       {
         "path": "modules/updates/p216-unified-update-center.js",
         "kind": "js",
-        "size": 20693,
-        "sha256": "a387d15df1544dc186c58a9883de847b11e31878afbcc2d124df328061d1c94d"
+        "size": 22438,
+        "sha256": "185946810f70b231caf2d40860a18eb06b0a51ca433d22b3ac303af53d801a3f"
       },
       {
         "path": "modules/updates/p217-verified-history.js",
         "kind": "js",
-        "size": 5074,
-        "sha256": "35a80e24bad43f33cd72d6a0173ec02288d00e6bf7726cf1409d54087caeced2"
+        "size": 5689,
+        "sha256": "a894fcc6250f5a99486386bd8a073ed322f80a38ba0fc7e0feeedffc1170df0c"
       }
     ],
-    "totalBytes": 72204
+    "totalBytes": 74564
   },
   "proposedRollback": {
     "sequence": 131,
@@ -116,19 +116,19 @@
       {
         "path": "modules/updates/p216-unified-update-center.js",
         "kind": "js",
-        "size": 20693,
-        "sha256": "a387d15df1544dc186c58a9883de847b11e31878afbcc2d124df328061d1c94d"
+        "size": 22438,
+        "sha256": "185946810f70b231caf2d40860a18eb06b0a51ca433d22b3ac303af53d801a3f"
       }
     ],
-    "totalBytes": 67130
+    "totalBytes": 68875
   },
   "tests": {
     "p216": {
-      "passed": 35,
+      "passed": 44,
       "failed": 0
     },
     "p217": {
-      "passed": 23,
+      "passed": 27,
       "failed": 0
     },
     "p215Baseline": {
@@ -145,5 +145,9 @@
     "QA-050 protected scope approval if touching CI",
     "Recheck current live sequence and immutable hashes before release"
   ],
-  "description": "P217: preserve six owner-approved snapshots and one pending P206 snapshot, verifying RSA/Ed25519 and all cached bytes"
+  "description": "P217: preserve six owner-approved snapshots and one pending P206 snapshot, verifying RSA/Ed25519 and all cached bytes",
+  "features": {
+    "trustedP206RuntimeNeeded": true,
+    "originalNativeFallbackPreserved": true
+  }
 }
