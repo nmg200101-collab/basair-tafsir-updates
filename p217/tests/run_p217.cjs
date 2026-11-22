@@ -7,5 +7,5 @@ const read=p=>fs.readFileSync(path.join(root,p),'utf8');
  const win={};vm.runInNewContext(read('p217/tests/verified-history-contract.js'),{window:win},{timeout:5000});
  const result=await win.__BASAIR_P217_HISTORY_TESTS__(read('p217/src/p217-verified-history.js'));
  console.log(JSON.stringify(result,null,2));
- if(result.failed!==0||result.passed!==23)process.exitCode=1;
+ if(result.failed!==0||result.passed!==27)process.exitCode=1;
 })().catch(err=>{console.error(err);process.exitCode=1});
