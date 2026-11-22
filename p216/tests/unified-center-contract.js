@@ -51,8 +51,10 @@ root.__BASAIR_P216_CENTER_TESTS__=async function(source,style){
    deliveryMode:mode,modules:[{id:'updates',version:208}]});
  var release=manifest(130,'notify');
  var state={active:{tilawa:{version:243},updates:{version:207}},highestSequence:126,trial:null};
- var archives=[{sequence:124,id:'P214',title:'متابعة الخطوط الآلية',approved:true},
-   {sequence:122,id:'P213',title:'تجربة سابقة',approved:false}];
+ var archives=[{sequence:124,id:'P214',title:'متابعة الخطوط الآلية',approved:true,
+     active:{tilawa:{version:241},updates:{version:200}}},
+   {sequence:122,id:'P213',title:'تجربة سابقة',approved:false,
+     active:{tilawa:{version:250},updates:{version:208}}}];
  var ota={open:function(){dialog.hidden=false},
    check:async function(){checks++;return accepted?{
      envelope:{payload:'signed',signature:'cryptographic-verifier-only'},
@@ -112,6 +114,18 @@ root.__BASAIR_P216_CENTER_TESTS__=async function(source,style){
  await Promise.resolve();await Promise.resolve();await Promise.resolve();
  ck('restore delegates only to verified P206',restores===1);
  ck('restore does not reload without direct action',reloads===0);
+ archives[1].approved=true;
+ await ui.loadArchive();
+ // Opening Versions tab compares ACTIVE module numbers, not just highestSequence.
+ var versions=doc.getElementById('p216UpdateCenter').find(n=>
+   n.tagName==='BUTTON'&&n.textContent==='الإصدارات');
+ versions.click();await ui.loadArchive();
+ var historyText=doc.getElementById('p216UpdateCenter').textContent;
+ ck('history distinguishes saved older and newer content',historyText.includes('محتوى محفوظ أقدم من النشط')&&
+   historyText.includes('محتوى محفوظ أحدث من النشط'));
+ ck('highestSequence is not mislabeled as installed release',historyText.includes('أعلى تسلسل تم استلامه'));
+ accepted=false;await ui.refresh();
+ ck('invalid unverified OTA result cannot be installed',await ui.install()===false&&installs===1);
  // Disable is reversible and must not touch the native update engine.
  var old=ota.install;
  ck('disable center preserves native engine',ui.disable()===true&&ota.install===old);
