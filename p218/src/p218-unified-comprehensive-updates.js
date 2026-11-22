@@ -313,7 +313,7 @@
    finally{busy=false;render();}
  }
  function menu(){
-   var m=d.getElementById('bqMoreCenter');if(!m||m.hidden)return false;
+   var m=d.getElementById('bqMoreCenter');if(!m)return false;
    var grid=m.querySelector&&m.querySelector('.bq-more-grid');
    if(!grid)return false;
    // Own exactly one P218 entry and leave all older entries in the DOM,
