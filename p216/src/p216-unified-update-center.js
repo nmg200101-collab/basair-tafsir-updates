@@ -93,7 +93,7 @@
      var active=local.active||{},vers=Object.keys(active).sort().map(function(k){
        return (MOD[k]||k)+' v'+(active[k]&&active[k].version||'?');
      });
-     add(info,'b','النسخة المثبّتة فعليًا — آخر تسلسل '+String(local.highestSequence||0));
+     add(info,'b','الوحدات المثبّتة فعليًا — أعلى تسلسل تم استلامه '+String(local.highestSequence||0));
      add(info,'p',vers.join(' • ')||'لا توجد وحدات مثبتة مسجلة');
      if(local.trial)add(info,'small','تفعيل قيد التحقق؛ لا تنفذ رجوعًا حتى يكتمل.');
    }else add(info,'p','جارٍ قراءة حالة الإصدار من الهاتف، وليس من الخادم.');
@@ -152,13 +152,29 @@
    var row=add(parent,'div',null,'p216VersionRow');
    add(row,'b',label);add(row,'span',value);return row;
  }
+ function relativeVersion(record){
+   // Monotonic highestSequence is NOT the active version after rollback.
+   // Compare actual module versions inside locally verified snapshots.
+   var candidate=record&&record.active||{},active=local&&local.active||{};
+   var newer=0,older=0;
+   Object.keys(candidate).forEach(function(id){
+     var a=Number(active[id]&&active[id].version),
+         b=Number(candidate[id]&&candidate[id].version);
+     if(!Number.isSafeInteger(a)||!Number.isSafeInteger(b))return;
+     if(b>a)newer++;else if(b<a)older++;
+   });
+   if(newer&&older)return 'محتوى مختلف بين الأقسام';
+   if(newer)return 'محتوى محفوظ أحدث من النشط';
+   if(older)return 'محتوى محفوظ أقدم من النشط';
+   return 'محتوى مطابق أو لم تتوفر مقارنة';
+ }
  function drawVersions(el){
    add(el,'h4','سجل الإصدارات المحفوظة على هذا الهاتف');
    if(!historyApi())add(el,'p','أرشيف P206 الموقّع غير متاح؛ لا يمكن الادعاء بوجود إصدارات قابلة للاستعادة.');
    else if(!archive.length)add(el,'p','لم تُحفظ إصدارات معتمدة محليًا بعد. يمكنك فحصها عبر أدوات النسخ الأصلية.');
    archive.forEach(function(r){
      compactRow(el,'Seq'+r.sequence+' — '+safe(r.title||r.id,90),
-       r.approved?'محفوظ ومعتمد':'سجل غير معتمد للاستعادة');
+       r.approved?'محفوظ ومعتمد — '+relativeVersion(r):'سجل غير معتمد للاستعادة');
    });
    add(el,'small','الإصدارات التاريخية غير المحفوظة لا يمكن استعادتها بمجرد معرفة رقمها.');
    button(el,'تحديث قائمة الإصدارات',loadArchive,busy||!historyApi());
@@ -189,7 +205,7 @@
    }
    if(!archive.length)add(el,'p','لا توجد نسخة معتمدة ومحفوظة يمكن الرجوع إليها.');
    archive.forEach(function(r){
-     var row=compactRow(el,'Seq'+r.sequence,' '+safe(r.title||r.id,90));
+     var row=compactRow(el,'Seq'+r.sequence,' '+safe(r.title||r.id,90)+' — '+relativeVersion(r));
      if(!canRestore(r))return;
      button(row,selected===r.sequence?'إلغاء الاختيار':'اختيار الإصدار',function(){
        selected=selected===r.sequence?null:r.sequence;confirmed=false;render();
