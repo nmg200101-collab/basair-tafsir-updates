@@ -126,6 +126,26 @@ root.__BASAIR_P216_CENTER_TESTS__=async function(source,style){
  ck('highestSequence is not mislabeled as installed release',historyText.includes('أعلى تسلسل تم استلامه'));
  accepted=false;await ui.refresh();
  ck('invalid unverified OTA result cannot be installed',await ui.install()===false&&installs===1);
+ // P217 signed-local adapter takes precedence when present and ready.
+ var delegated=0;
+ w.__BASAIR_P217_VERIFIED_HISTORY__={
+   status:function(){return{available:true}},
+   list:async function(){return[{sequence:120,id:'P217',title:'Verified only',
+     approved:true,verified:true,restorable:true,
+     active:{tilawa:{version:240},updates:{version:200}},
+     modules:[{id:'tilawa',version:240}]}]},
+   restore:async function(){delegated++;return false;}
+ };
+ await ui.loadArchive();
+ ck('P217 adapter replaces raw P206 listing when available',
+   ui.status().archiveCount===1&&
+   doc.getElementById('p216UpdateCenter').textContent.includes('Verified only'));
+ ck('P217 displays confirmed module versions',
+   doc.getElementById('p216UpdateCenter').textContent.includes('التلاوة v240'));
+ w.__BASAIR_P217_VERIFIED_HISTORY__.status=function(){return{available:false}};
+ await ui.loadArchive();
+ ck('P206 fallback remains available when P217 is unavailable',
+   ui.status().archiveCount===2&&delegated===0);
  // Disable is reversible and must not touch the native update engine.
  var old=ota.install;
  ck('disable center preserves native engine',ui.disable()===true&&ota.install===old);
