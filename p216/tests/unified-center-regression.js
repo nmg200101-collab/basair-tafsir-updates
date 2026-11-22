@@ -4,7 +4,7 @@
 (function(root){
 'use strict';
 root.__BASAIR_P216_TESTS__=async function(modelSource,centerSource){
- var passed=0,failed=[],events={},timers=[],checks=0,installs=0,restores=0,reloads=0;
+ var passed=0,failed=[],events={},timers=[],checks=0,installs=0,restores=0,reloads=0,approvals=0,localSeq=126;
  function ck(name,ok){if(ok)passed++;else failed.push(name)}
  class Element{
   constructor(tag){this.tagName=tag.toUpperCase();this.children=[];this.parentNode=null;
@@ -46,11 +46,12 @@ root.__BASAIR_P216_TESTS__=async function(modelSource,centerSource){
    MutationObserver:class{observe(){} disconnect(){}},
    BasairUniversalOTA:{check:async()=>{checks++;return signed},install:async(c)=>{installs++;return true},
      open(){},rollback(){throw Error('Native rollback must not be called from P216')}},
-   __BASAIR_P207_ACTIVATION__:{read:async()=>({highestSequence:126,active:{tilawa:{version:243}},trial:null})},
+   __BASAIR_P207_ACTIVATION__:{read:async()=>({highestSequence:localSeq,active:{tilawa:{version:243}},trial:null})},
    __BASAIR_P206_SIGNED_ARCHIVE__:{list:async()=>[archiveRecord],
      verify:async()=>({sequence:124,modules:[{id:'updates',version:207}]}),
      matches:async()=>true,hasArchiveRuntime:()=>true,
-     restore:async(seq)=>{restores++;return seq===124}}};
+     restore:async(seq)=>{restores++;return seq===124},
+     approve:async(seq)=>{approvals++;if(seq!==localSeq)throw Error('wrong local edition');archiveRecord.approved=true;return true}}};
  new Function('window',modelSource)(win);
  new Function('window','document',centerSource)(win,doc);
  const api=win.__BASAIR_P216_CENTER__;
@@ -87,6 +88,17 @@ root.__BASAIR_P216_TESTS__=async function(modelSource,centerSource){
  if(confirm){confirm.click();for(let i=0;i<8;i++)await Promise.resolve()}
  ck('second restore click invokes verified P206',restores===1&&reloads===1);
  ck('never calls native restore implicitly',restores===1);
- return{passed,failed:failed.length,errors:failed,checkCalls:checks,installs,restores};
+ archiveRecord.approved=false;localSeq=124;
+ await api.check();await api.history();
+ const approveFirst=buttons().find(x=>x.textContent==='اعتماد الإصدار الحالي بعد التجربة');
+ ck('unapproved current version asks manual approval',!!approveFirst);
+ if(approveFirst){approveFirst.click();for(let i=0;i<4;i++)await Promise.resolve()}
+ ck('first approve click does not alter archive',approvals===0);
+ const approveConfirm=buttons().find(x=>x.textContent==='تأكيد اعتماد هذا الإصدار');
+ ck('second approval confirmation shown',!!approveConfirm);
+ if(approveConfirm){approveConfirm.click();for(let i=0;i<16;i++)await Promise.resolve()}
+ ck('owner approved only current verified edition',approvals===1&&archiveRecord.approved===true);
+ ck('no silent additional download or rollback',installs===1&&restores===1);
+ return{passed,failed:failed.length,errors:failed,checkCalls:checks,installs,restores,approvals};
 };
 })(typeof window!=='undefined'?window:globalThis);
