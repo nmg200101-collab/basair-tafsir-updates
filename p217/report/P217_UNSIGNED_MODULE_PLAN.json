@@ -66,11 +66,11 @@
       {
         "path": "modules/updates/p217-verified-history.js",
         "kind": "js",
-        "size": 4628,
-        "sha256": "4b13a114f74a0e7a042a85588a2b72f4b62a84256d9ca240eba9a878cfa0f788"
+        "size": 5074,
+        "sha256": "35a80e24bad43f33cd72d6a0173ec02288d00e6bf7726cf1409d54087caeced2"
       }
     ],
-    "totalBytes": 71735
+    "totalBytes": 72181
   },
   "proposedRollback": {
     "sequence": 131,
@@ -128,7 +128,7 @@
       "failed": 0
     },
     "p217": {
-      "passed": 20,
+      "passed": 23,
       "failed": 0
     },
     "p215Baseline": {
@@ -144,5 +144,6 @@
     "Fresh owner RSA + relevant Ed25519 signatures on both forward and rollback",
     "QA-050 protected scope approval if touching CI",
     "Recheck current live sequence and immutable hashes before release"
-  ]
+  ],
+  "description": "P217: preserve six owner-approved snapshots and one pending P206 snapshot, verifying RSA/Ed25519 and all cached bytes"
 }
