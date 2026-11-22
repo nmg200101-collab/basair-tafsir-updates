@@ -1,0 +1,22 @@
+/* P215 visual-only shading; text, font, line and print geometry are unchanged. */
+body.reader-active.stableDigital #b345NormalStack .b345ExactPage .quranWord.p215ShadowMark,
+body.reader-active.stableDigital #stableDigitalHost .quranWord.p215ShadowMark{
+  background:linear-gradient(180deg,transparent 8%,rgba(66,155,113,.23) 8%,rgba(66,155,113,.23) 94%,transparent 94%)!important;
+  box-shadow:0 0 0 2px rgba(49,139,96,.16)!important;
+  border-radius:3px!important;
+  text-shadow:inherit!important;
+}
+body.reader-active.stableDigital #b274LargeTextHost .v160Ayah.p215ShadowMark,
+body.reader-active.stableDigital #b274LargeTextHost .quranWord.p215ShadowMark{
+  background:rgba(60,150,105,.17)!important;
+  box-shadow:0 1px 0 2px rgba(53,130,95,.19)!important;
+  border-radius:5px!important;
+  text-shadow:inherit!important;
+}
+body.dark.reader-active.stableDigital #b345NormalStack .b345ExactPage .quranWord.p215ShadowMark,
+body.dark.reader-active.stableDigital #stableDigitalHost .quranWord.p215ShadowMark,
+body.dark.reader-active.stableDigital #b274LargeTextHost .v160Ayah.p215ShadowMark,
+body.dark.reader-active.stableDigital #b274LargeTextHost .quranWord.p215ShadowMark{
+  background:rgba(111,192,155,.24)!important;
+  box-shadow:0 0 0 2px rgba(121,205,164,.2)!important;
+}
