@@ -305,6 +305,19 @@
    var m=d.getElementById('bqMoreCenter');if(!m||m.hidden)return false;
    var grid=m.querySelector&&m.querySelector('.bq-more-grid');
    if(!grid)return false;
+   // Fail OPEN: never hide the original signed P121/P197/P207 update
+   // controls when their verified P121 engine is not ready.
+   if(!engine()){
+     m.removeAttribute('data-p216-menu');
+     var abandoned=d.getElementById('p216MoreUpdates');
+     if(abandoned&&abandoned.parentNode)abandoned.parentNode.removeChild(abandoned);
+     menuNode=null;
+     var nativeDialog=dialog();
+     if(nativeDialog)nativeDialog.classList.remove(ACTIVE);
+     var inactive=d.getElementById(ID);
+     if(inactive)inactive.hidden=true;
+     return false;
+   }
    // Own exactly one P216 entry and leave all older entries in the DOM,
    // hidden only by reversible scoped CSS. P207 may be inserted later.
    var item=d.getElementById('p216MoreUpdates');
@@ -347,7 +360,13 @@
    if(menuNode&&menuNode.id==='p216MoreUpdates'&&menuNode.parentNode)menuNode.parentNode.removeChild(menuNode);
    return true;
  }
- function enable(){disabled=false;menu();render();return true;}
+ function enable(){
+   disabled=false;menu();
+   var dlg=dialog();
+   // Re-enable must not open a hidden native dialog by itself.
+   if(engine()&&dlg&&dlg.classList.contains(ACTIVE))render();
+   return true;
+ }
  function boot(){
    if(!d.body)return;
    d.addEventListener('click',clicked,true);
