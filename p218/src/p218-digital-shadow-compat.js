@@ -12,7 +12,7 @@ function old(){return w.__BASAIR_P215_DIGITAL_SHADOW__}
 function erase(){marked.forEach(function(x){try{x.classList.remove(MARK)}catch(_){}});marked=[];last=null}
 function release(){
  erase();pending=0;own=false;
- var x=old();if(enabled&&disabledOld&&x&&x.status&&x.status().locked!==true&&x.enable)x.enable();
+ var x=old();if(disabledOld&&x&&x.status&&x.status().locked!==true&&x.enable)x.enable();
  disabledOld=false;
 }
 function ready(){
@@ -82,8 +82,17 @@ function select(list,c){
  return best?{s:best.s,a:best.a,q:'visible-reading-guide'}:null;
 }
 function claim(){
- if(own)return true;
  var l=old(),s=l&&l.status&&l.status();
+ if(own){
+   // If the user or host re-activates P215, give up the visual owner
+   // immediately; never repaint across another active P215 mark.
+   if(!s||s.active||s.enabled===true){
+     disabledOld=false; // external owner now controls P215
+     release();
+     return false;
+   }
+   return true;
+ }
  if(!s||!l.disable||s.active||(s.enabled===false&&!s.locked)){pending=0;return false}
  if(++pending<2)return false;
  if(s.enabled!==false){l.disable();disabledOld=true}
@@ -113,7 +122,7 @@ function tick(){
  }
 }
 function loop(){tick();if(w.setTimeout)w.setTimeout(loop,current()?220:850)}
-function disable(){enabled=false;erase();return true}
+function disable(){enabled=false;release();return true}
 function enable(){if(locked)return false;enabled=true;tick();return true}
 function status(){return{version:218,enabled:enabled,locked:locked,owned:own,
  active:marked.length>0,changes:changes,marked:marked.length,quality:last&&last.q||'',
