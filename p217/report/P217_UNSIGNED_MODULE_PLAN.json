@@ -1,6 +1,6 @@
 {
   "schema": "basair-p217-verified-local-history-staging-v1",
-  "status": "UNSIGNED_NOT_PUBLISHED_RENUMBERED_AFTER_SEQ130_PROTECTED_RECOVERY",
+  "status": "DRAFT_UNSIGNED_RENUMBERED_AFTER_SIGNED_P219_SEQ131_132",
   "baseline": {
     "android": "V695",
     "liveRelease": "P215 Seq126",
@@ -19,7 +19,7 @@
     "Before P217 release after Seq130, arrange a new higher-sequence owner-signed protected fallback; Seq130 becomes ineligible for direct OTA after the device advances beyond it."
   ],
   "proposedForward": {
-    "sequence": 131,
+    "sequence": 133,
     "updatesModuleVersion": 218,
     "deliveryMode": "notify",
     "assets": [
@@ -75,7 +75,7 @@
     "totalBytes": 75253
   },
   "proposedRollback": {
-    "sequence": 132,
+    "sequence": 134,
     "updatesModuleVersion": 219,
     "description": "Signed P216 seven-asset module restored with exact verified bytes",
     "assets": [
@@ -150,7 +150,8 @@
     "Fresh owner RSA + relevant Ed25519 signatures on both forward and rollback",
     "QA-050 protected scope approval if touching CI",
     "Recheck current live sequence and immutable hashes before release",
-    "Re-evaluate protected recovery sequence expiry and monotonic highestSequence before P217/Seq131 promotion."
+    "Re-evaluate protected recovery sequence expiry and monotonic highestSequence before P217/Seq131 promotion.",
+    "P219 protected signed forward Seq131 and rollback Seq132 are reserved; do not reuse; obtain fresh signatures on the renumbered draft and ensure protected rollback sequence > currently installed monotonic highestSequence."
   ],
   "description": "P217: preserve six owner-approved snapshots and one pending P206 snapshot, verifying RSA/Ed25519 and all cached bytes",
   "features": {
