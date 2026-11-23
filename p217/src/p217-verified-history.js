@@ -84,6 +84,7 @@
    // rather than let the user select an impossible rollback.
    var runtimeTrusted=typeof api.hasArchiveRuntime==='function'&&
      output.some(function(r){return !!(r.verified&&r.approved&&
+       r.modules.some(function(m){return m.id==='updates'})&&
        r.active&&api.hasArchiveRuntime(r.active.updates));});
    if(!runtimeTrusted)output.forEach(function(r){
      r.restorable=false;
