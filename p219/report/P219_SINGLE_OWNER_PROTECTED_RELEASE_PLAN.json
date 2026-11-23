@@ -1,6 +1,6 @@
 {
   "schema": "basair-p219-single-native-word-shadow-protected-staging-v1",
-  "status": "UNSIGNED_NOT_PUBLISHED",
+  "status": "SIGNED_HELD_NOT_PUBLISHED_PENDING_QA050_AND_WEBVIEW",
   "reference": {
     "applicationId": "app.basair.qurv2",
     "android": "V695",
@@ -150,7 +150,8 @@
       }
     ],
     "assetCount": 20,
-    "totalBytes": 126593
+    "totalBytes": 126593,
+    "payloadSha256": "878d86e9dea8e403624d33ab23f98c2f114c219428187b163d85e87ed31e0e31"
   },
   "proposedRollback": {
     "sequence": 132,
@@ -274,7 +275,8 @@
     ],
     "assetCount": 19,
     "totalBytes": 122850,
-    "summary": "Restore exact original P215 visual/runtime files without P219 arbiter"
+    "summary": "Restore exact original P215 visual/runtime files without P219 arbiter",
+    "payloadSha256": "f4b489d937d713ee5666b11baa3ee96599913391ef516ab17cd867b0e5f71b1d"
   },
   "tests": {
     "isolatedSingleOwner": {
@@ -286,11 +288,19 @@
       "failed": 0
     },
     "androidWebView": "NOT_RUN",
-    "nativeAudioWordAlignmentOnPhone": "UNVERIFIED"
+    "nativeAudioWordAlignmentOnPhone": "UNVERIFIED",
+    "p215RealSourceOneOwnerIntegration": {
+      "passed": 15,
+      "failed": 0
+    },
+    "singleOwnerIsolated": {
+      "passed": 24,
+      "failed": 0
+    }
   },
   "signatures": {
-    "RSA3072": "NOT_SIGNED",
-    "Ed25519Owner": "NOT_SIGNED",
+    "RSA3072": "VERIFIED_OFFLINE_FORWARD_AND_ROLLBACK",
+    "Ed25519Owner": "VERIFIED_OFFLINE_FORWARD_AND_ROLLBACK",
     "QA050ScopedApproval": "NOT_GRANTED"
   },
   "gates": [
@@ -301,5 +311,7 @@
     "Real Android WebView/owner-device acceptance of native word highlight; if absent, revert without falsely claiming audio alignment",
     "Do not change main/owner-qa/release.json until signed tests and field acceptance pass"
   ],
-  "notes": "P219 removes one known duplicate; native word timing is owned by B345 and is NOT implemented or reconstructed by P219."
+  "notes": "P219 removes one known duplicate; native word timing is owned by B345 and is NOT implemented or reconstructed by P219.",
+  "signatureApprovalExpiresAt": "2026-11-28T13:00:00Z",
+  "packaging": "BASAIR_P219_SEQ131_SEQ132_SIGNED_HELD_20261123.zip; kept offline without private material"
 }
