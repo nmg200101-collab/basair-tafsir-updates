@@ -5,14 +5,14 @@
   "channel": "owner-qa",
   "sourceOfTruth": "main owner-qa release.json remains P216 Seq128; P219 protected Seq131/132 signed only",
   "sourceDeviceEvidence": "owner V695 screenshot: highestSequence 126; tilawa 243; updates 200; stable local; P206 multi-restore disabled and only P212 Seq120 pending",
-  "signedCandidatePolicy": "All signed outputs are HELD; no auto-install and no edit to live release.json until Android and protected rollback test",
+  "signedCandidatePolicy": "Live Seq128 is already published and owner confirms one update center. Seq131/132 remain HELD pending distinct QA050 approval and physical word-mark test; do not change release.json for them until ready.",
   "entries": [
     {
       "sequence": 126,
       "operation": "P215 signed tilawa current",
       "module": "tilawa",
       "version": 243,
-      "status": "LIVE_SIGNED",
+      "status": "PREVIOUS_SIGNED_TILAWA_CURRENTLY_ACTIVE_ON_V695_DEVICE",
       "assets": 19,
       "source": "p121/owner-qa/release.json"
     },
@@ -31,7 +31,7 @@
       "operation": "P216 center with scope-safe signed archive v2",
       "module": "updates",
       "version": 216,
-      "status": "RSA_SIGNED_HELD",
+      "status": "LIVE_SIGNED_OWNER_QA",
       "assets": 7,
       "source": "offline owner signed P216 zip in this conversation",
       "androidWebView": false
@@ -127,5 +127,11 @@
     "APK signing certificate",
     "user data"
   ],
-  "signingSecretsInRepo": false
+  "signingSecretsInRepo": false,
+  "currentLive": {
+    "sequence": 128,
+    "releaseId": "P216-SEQ128-UNIFIED-UPDATES-SIGNED-ARCHIVE-V2-20261123",
+    "activeTilawaVersionOnOwnerV695": 243,
+    "updateCenterVersion": 216
+  }
 }
