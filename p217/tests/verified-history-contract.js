@@ -14,7 +14,7 @@
      {sequence:124,id:'TAMPERED',approved:true,envelope:{signed:false},active:{tilawa:{version:241},updates:{version:200}}},
      {sequence:122,id:'LIMIT',approved:true,envelope:{signed:true},active:{tilawa:{version:240},updates:{version:200}}}
    ];
-   var runtimeAvailable=true;
+   var runtimeAvailable=true,onlyTilawaSigned=false;
    var api={
      hasArchiveRuntime:function(updates){return !!(runtimeAvailable&&updates&&
        Array.isArray(updates.assets)&&updates.assets.some(function(a){
@@ -25,8 +25,10 @@
        var rec=records.find(r=>r.envelope===env);
        return {sequence:rec.sequence,id:rec.id,title:rec.id,issuedAt:'2026-11-22T12:00:00Z',
          applicationId:'app.basair.qurv2',channel:'owner-qa',
-         modules:[{id:'tilawa',version:rec.active.tilawa.version},{id:'updates',version:rec.active.updates.version}]};},
-     matches:async function(active,m){matchCount++;return active.tilawa.version===m.modules[0].version&&active.updates.version===m.modules[1].version},
+         modules:onlyTilawaSigned&&rec.sequence===132?
+           [{id:'tilawa',version:rec.active.tilawa.version}]:
+           [{id:'tilawa',version:rec.active.tilawa.version},{id:'updates',version:rec.active.updates.version}]};},
+     matches:async function(active,m){matchCount++;return m.modules.every(function(mod){return active[mod.id]&&active[mod.id].version===mod.version})},
      restore:async function(seq){restoreCount++;return seq===130}
    };
    records[1].active.updates.assets=[
@@ -68,6 +70,19 @@
    rows=await p.list();
    ck('restoring verified P206 runtime unlocks approved snapshots',
      rows.some(x=>x.sequence===130&&x.restorable));
+   // Old archive entries sometimes contain extra active units not covered
+   // by their signed envelope. P206v2 verifies only the signed module scope.
+   // An unsigned updates runtime in a Tilawa-only signed snapshot must NOT
+   // make the whole history claim multi-restore is available.
+   onlyTilawaSigned=true;
+   rows=await p.list();
+   ck('extra unsigned updates runtime cannot unlock historical restore',
+     rows.every(x=>!x.restorable));
+   blocked=false;try{await p.restore(130)}catch(_){blocked=true}
+   ck('unsigned updater in signed Tilawa snapshot prevents actual restore',
+     blocked&&restoreCount===1);
+   onlyTilawaSigned=false;
+   rows=await p.list();
    local.trial={status:'pending'};
    rows=await p.list();
    ck('active trial blocks restoring all rows',rows.every(x=>!x.restorable));
