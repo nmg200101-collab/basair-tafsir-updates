@@ -1,6 +1,6 @@
 {
   "schema": "basair-p218-visual-fallback-staging-v1",
-  "status": "UNSIGNED_NOT_PUBLISHED",
+  "status": "UNSIGNED_NOT_PUBLISHED_RENUMBERED_AFTER_SEQ130_PROTECTED_RECOVERY",
   "reference": {
     "appId": "app.basair.qurv2",
     "android": "V695",
@@ -17,8 +17,8 @@
     "No APK; no owner credential in source"
   ],
   "proposedForward": {
-    "sequence": 132,
-    "tilawaVersion": 245,
+    "sequence": 133,
+    "tilawaVersion": 246,
     "deliveryMode": "notify",
     "assets": [
       {
@@ -151,8 +151,8 @@
     "totalBytes": 130205
   },
   "proposedRollback": {
-    "sequence": 133,
-    "tilawaVersion": 246,
+    "sequence": 134,
+    "tilawaVersion": 247,
     "deliveryMode": "notify",
     "assets": [
       {
@@ -287,9 +287,10 @@
     "QA050 signed owner authorization for protected Tilawa extension",
     "Original owner RSA3072 + Ed25519 sign forward and independent rollback",
     "Confirm current live sequence and P216/P217 planned sequences before choosing these proposed numbers",
-    "Verify all 21 forward SHA256+size and all 19 rollback assets"
+    "Verify all 21 forward SHA256+size and all 19 rollback assets",
+    "Seq130 is a signed emergency protected recovery and does not authorize P218; obtain fresh exact-scope RSA+Ed25519 on Seq133/Seq134. Do not deploy Seq133 until verified higher protected recovery exists after Seq134."
   ],
-  "note": "Proposed sequence 132 and rollback 133 are NOT reserved or signed, cannot publish until prior sequences and owner approval checked.",
+  "note": "Proposed Seq133 forward / Seq134 rollback (tilawa v246/v247) are UNRESERVED and UNSIGNED. Seq130 is a distinct signed P214 emergency rescue valid only until it is superseded by a higher highestSequence; QA050 and Android WebView acceptance still mandatory.",
   "metrics": {
     "assetCount": 21,
     "originalUnchanged": 19,
