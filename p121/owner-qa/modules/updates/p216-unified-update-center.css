@@ -11,7 +11,8 @@
   display:none!important;
 }
 #bqMoreCenter[data-p216-menu="1"] .bq-more-grid button[data-bq-page="updates"],
-#bqMoreCenter[data-p216-menu="1"] #p197MoreUpdates,\n#bqMoreCenter[data-p216-menu="1"] #p207OwnerUpdatesInMore,
+#bqMoreCenter[data-p216-menu="1"] #p197MoreUpdates,
+#bqMoreCenter[data-p216-menu="1"] #p207OwnerUpdatesInMore,
 #bqMoreCenter[data-p216-menu="1"] > button[data-basair-p121-button]{
   display:none!important;
 }
@@ -37,7 +38,8 @@
 #p216UpdateCenter .p216Confirm{background:#f3f4ea;border:1px solid #d5c6aa;padding:12px;border-radius:12px;margin:12px 0}
 #p216UpdateCenter .p216Secondary{background:transparent;color:inherit;border:1px solid #a7b7ad;padding:10px;border-radius:9px}
 #p216UpdateCenter .p216Error{color:#9c352b;font-weight:600}
-#p216UpdateCenter .p216Status{color:#245f48;font-weight:600}\n#p216UpdateCenter .p216NativeProgress{font-variant-numeric:tabular-nums;font-weight:600;color:#287855;margin:2px 0 8px}
+#p216UpdateCenter .p216Status{color:#245f48;font-weight:600}
+#p216UpdateCenter .p216NativeProgress{font-variant-numeric:tabular-nums;font-weight:600;color:#287855;margin:2px 0 8px}
 body.dark #p216UpdateCenter{color:#e4f3e9}
 body.dark #p216UpdateCenter .p216Local{background:#204232}
 body.dark #p216UpdateCenter .p216Release{border-color:#496f5a}
