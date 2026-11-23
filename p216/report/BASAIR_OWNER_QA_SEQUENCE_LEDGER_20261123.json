@@ -3,7 +3,7 @@
   "date": "2026-11-23",
   "appId": "app.basair.qurv2",
   "channel": "owner-qa",
-  "sourceOfTruth": "p121/owner-qa/release.json on main remains P215 Seq126",
+  "sourceOfTruth": "main owner-qa release.json remains P216 Seq128; P219 protected Seq131/132 signed only",
   "sourceDeviceEvidence": "owner V695 screenshot: highestSequence 126; tilawa 243; updates 200; stable local; P206 multi-restore disabled and only P212 Seq120 pending",
   "signedCandidatePolicy": "All signed outputs are HELD; no auto-install and no edit to live release.json until Android and protected rollback test",
   "entries": [
@@ -58,35 +58,55 @@
     },
     {
       "sequence": 131,
-      "operation": "P217 signed local version-history proposal",
+      "operation": "P219 owner-signed single shadow owner, protected Tilawa forward",
+      "module": "tilawa",
+      "version": 246,
+      "status": "RSA_AND_OWNER_ED25519_SIGNED_HELD_PENDING_QA050",
+      "assets": 20,
+      "source": "p219 owner-signed offline ZIP; PR #173; private keys not committed",
+      "expiry": "2026-11-28T13:00:00Z"
+    },
+    {
+      "sequence": 132,
+      "operation": "P219 protected Tilawa rollback to original P215 assets",
+      "module": "tilawa",
+      "version": 247,
+      "status": "RSA_AND_OWNER_ED25519_SIGNED_HELD_PENDING_QA050",
+      "assets": 19,
+      "source": "p219 owner-signed offline ZIP; PR #173",
+      "expiry": "2026-11-28T13:00:00Z"
+    },
+    {
+      "sequence": 133,
+      "operation": "P217 verified history forward (unsigned draft)",
       "module": "updates",
       "version": 218,
       "status": "DRAFT_UNSIGNED",
       "assets": 8,
-      "precondition": "newer protected emergency recovery and actual archive QA"
+      "source": "p217/report/P217_UNSIGNED_MODULE_PLAN.json"
     },
     {
-      "sequence": 132,
-      "operation": "P217 updates-only rollback proposal",
+      "sequence": 134,
+      "operation": "P217 updates rollback (unsigned draft)",
       "module": "updates",
       "version": 219,
       "status": "DRAFT_UNSIGNED",
       "assets": 7
     },
     {
-      "sequence": 133,
-      "operation": "P218 visual shadow compatibility proposal",
+      "sequence": 135,
+      "operation": "P218 additional shadow compatibility forward (suspended draft)",
       "module": "tilawa",
-      "version": 246,
-      "status": "DRAFT_UNSIGNED_QA050_REQUIRED",
+      "version": 248,
+      "status": "DRAFT_UNSIGNED_SUSPENDED_PENDING_P219_FIELD_RESULT",
       "assets": 21
     },
     {
-      "sequence": 134,
-      "operation": "P218 standalone tilawa rollback proposal",
+      "sequence": 136,
+      "operation": "P218 rollback (suspended draft)",
       "module": "tilawa",
-      "version": 247,
-      "status": "DRAFT_UNSIGNED_QA050_REQUIRED",
+      "version": 249,
+      "status": "DRAFT_UNSIGNED_SUSPENDED_PENDING_P219_FIELD_RESULT",
       "assets": 19
     }
   ],
@@ -95,7 +115,11 @@
     "P206 on-device signed archive lacks approved P206-capable runtime; no verified protected P214 snapshot in shown list",
     "QA050 CI workflow PR#167 needs distinct signed scoped approval",
     "P218 protected module rollout needs fresh owner RSA+Ed25519 and owner acceptance",
-    "Sequence130 emergency protected recovery becomes stale after any future sequence>=131"
+    "Sequence130 emergency protected recovery becomes stale after any future sequence>=131",
+    "PR #173 protected P219 addition not yet independently QA050 signed; its green tilawa-owner-lock ignores p121/owner-qa/modules/tilawa/",
+    "PR #174 hardens trusted QA050 guard to cover p121 owner-qa Tilawa and correctly fails pending original distinct QA050 key",
+    "Owner V695 native word/audio timing not demonstrated; P219 only suppresses stationary P215 guide",
+    "P218 fallback shade is suspended because it may reintroduce duplicate shading"
   ],
   "noChanges": [
     "p121/owner-qa/release.json",
