@@ -1,6 +1,6 @@
 {
   "schema": "basair-p216-rsa-signed-offline-candidate-receipt-v1",
-  "status": "RSA_SIGNED_HELD_NOT_PUBLISHED",
+  "status": "SUPERSEDED_DO_NOT_PUBLISH",
   "date": "2026-11-23",
   "channel": "owner-qa",
   "app": "app.basair.qurv2",
@@ -34,5 +34,7 @@
     "Current signed protected P215 rollback is Seq127; advancing global highestSequence to Seq128 may invalidate direct Seq127 install unless P197/P206 protected rollback is confirmed on device or higher signed protected recovery exists",
     "No changes to p121/owner-qa/release.json authorized until rollback ability demonstrated"
   ],
-  "note": "Public receipt only. Full signed envelopes were created locally in conversation deliverable, not committed to GitHub or promoted."
+  "note": "Public receipt only. Full signed envelopes were created locally in conversation deliverable, not committed to GitHub or promoted.",
+  "supersededReason": "Original P216 Seq128 signed candidate included P206 old script whose archive matcher rejects updates-only manifests when tilawa is active. New versioned P216 archive v2 changes signed module asset path, size and sha256. Existing RSA signatures do not apply.",
+  "previousSignedCandidateZip": "BASAIR_P216_SIGNED_OWNER_QA_CANDIDATE_NOT_PUBLISHED_20261123.zip"
 }
