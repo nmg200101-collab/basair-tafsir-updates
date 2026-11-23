@@ -1,0 +1,107 @@
+{
+  "schema": "basair-owner-qa-owner-signed-sequence-ledger-v1",
+  "date": "2026-11-23",
+  "appId": "app.basair.qurv2",
+  "channel": "owner-qa",
+  "sourceOfTruth": "p121/owner-qa/release.json on main remains P215 Seq126",
+  "sourceDeviceEvidence": "owner V695 screenshot: highestSequence 126; tilawa 243; updates 200; stable local; P206 multi-restore disabled and only P212 Seq120 pending",
+  "signedCandidatePolicy": "All signed outputs are HELD; no auto-install and no edit to live release.json until Android and protected rollback test",
+  "entries": [
+    {
+      "sequence": 126,
+      "operation": "P215 signed tilawa current",
+      "module": "tilawa",
+      "version": 243,
+      "status": "LIVE_SIGNED",
+      "assets": 19,
+      "source": "p121/owner-qa/release.json"
+    },
+    {
+      "sequence": 127,
+      "operation": "P214 signed historical rollback",
+      "module": "tilawa",
+      "version": 244,
+      "status": "SIGNED_HELD",
+      "assets": 17,
+      "source": "p215/recovery/P215-SEQ127-ROLLBACK-P214-20261122-SIGNED.json",
+      "risk": "Direct install invalid after highestSequence>=128"
+    },
+    {
+      "sequence": 128,
+      "operation": "P216 center with scope-safe signed archive v2",
+      "module": "updates",
+      "version": 216,
+      "status": "RSA_SIGNED_HELD",
+      "assets": 7,
+      "source": "offline owner signed P216 zip in this conversation",
+      "androidWebView": false
+    },
+    {
+      "sequence": 129,
+      "operation": "P216 restore original updates",
+      "module": "updates",
+      "version": 217,
+      "status": "RSA_SIGNED_HELD",
+      "assets": 5,
+      "source": "offline owner signed P216 zip in this conversation"
+    },
+    {
+      "sequence": 130,
+      "operation": "P214 protected emergency recovery after Seq128",
+      "module": "tilawa",
+      "version": 245,
+      "status": "RSA_AND_OWNER_ED25519_SIGNED_HELD",
+      "assets": 17,
+      "source": "offline signed protected recovery zip in this conversation",
+      "ownerApprovalExpiresAt": "2026-11-26T10:07:03Z",
+      "risk": "Cannot directly install once highestSequence reaches 131 or higher; renew at a higher sequence before later promotions"
+    },
+    {
+      "sequence": 131,
+      "operation": "P217 signed local version-history proposal",
+      "module": "updates",
+      "version": 218,
+      "status": "DRAFT_UNSIGNED",
+      "assets": 8,
+      "precondition": "newer protected emergency recovery and actual archive QA"
+    },
+    {
+      "sequence": 132,
+      "operation": "P217 updates-only rollback proposal",
+      "module": "updates",
+      "version": 219,
+      "status": "DRAFT_UNSIGNED",
+      "assets": 7
+    },
+    {
+      "sequence": 133,
+      "operation": "P218 visual shadow compatibility proposal",
+      "module": "tilawa",
+      "version": 246,
+      "status": "DRAFT_UNSIGNED_QA050_REQUIRED",
+      "assets": 21
+    },
+    {
+      "sequence": 134,
+      "operation": "P218 standalone tilawa rollback proposal",
+      "module": "tilawa",
+      "version": 247,
+      "status": "DRAFT_UNSIGNED_QA050_REQUIRED",
+      "assets": 19
+    }
+  ],
+  "blockers": [
+    "Android WebView V695 real device P216 update-center integration not observed",
+    "P206 on-device signed archive lacks approved P206-capable runtime; no verified protected P214 snapshot in shown list",
+    "QA050 CI workflow PR#167 needs distinct signed scoped approval",
+    "P218 protected module rollout needs fresh owner RSA+Ed25519 and owner acceptance",
+    "Sequence130 emergency protected recovery becomes stale after any future sequence>=131"
+  ],
+  "noChanges": [
+    "p121/owner-qa/release.json",
+    "QA050 pinned P214/P215 assets",
+    "APK signing certificate",
+    "user data"
+  ],
+  "signingSecretsInRepo": false
+}
