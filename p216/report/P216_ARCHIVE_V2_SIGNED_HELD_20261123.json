@@ -1,0 +1,52 @@
+{
+  "schema": "basair-p216-rsa-signed-archive-v2-receipt-v1",
+  "status": "RSA_SIGNED_HELD_NOT_PUBLISHED",
+  "version": "P216-archive-v2",
+  "deviceObservation": {
+    "date": "2026-11-23",
+    "app": "app.basair.qurv2",
+    "highestSequence": 126,
+    "tilawaVersion": 243,
+    "updatesVersion": 200,
+    "trial": "stable",
+    "P121EngineVersion": 694,
+    "P207Loaded": true,
+    "P205Installed": true,
+    "source": "Owner screenshot viewed in conversation; private screenshot not uploaded to GitHub"
+  },
+  "forward": {
+    "sequence": 128,
+    "updatesVersion": 216,
+    "assets": 7,
+    "bytes": 69502,
+    "payloadSha256": "b247c61fc06b196a3d4ca8e92299270c16435f021286a32584b7c5c4ae2929d0",
+    "signatureSha256": "8a4fa665545419ef787021c7cac31bc56ff77a47d3933db28569319836b43e8f"
+  },
+  "rollback": {
+    "sequence": 129,
+    "updatesVersion": 217,
+    "assets": 5,
+    "bytes": 42847,
+    "payloadSha256": "0631789eb8619a1f4c4bfc329d1aeb197de31f862582572f81607e62383999a7"
+  },
+  "trustedRsaPublicDerSha256": "ca29e72d263432c7347dcb0e5b376c142401ad24b543b7ab6d2fc1c2f92e5e88",
+  "signatureChecks": {
+    "forwardRSA3072Pkcs1Sha256": "PASS",
+    "rollbackRSA3072Pkcs1Sha256": "PASS",
+    "privateKeyOrPasswordInExport": false
+  },
+  "archiveFix": {
+    "signedScopeTests": 17,
+    "oldP206FrozenAndUnmodified": true,
+    "newPath": "modules/updates/p216-signed-six-rollback-v2.js",
+    "preservesUnrelatedProtectedTilawa": true
+  },
+  "notYetVerified": [
+    "Actual V695 WebView rollout",
+    "Approved protected historical tilawa rollback survives global sequence 128",
+    "Required QA050 reviewer signoff for protection workflow PR167"
+  ],
+  "published": false,
+  "liveReleaseJsonUnchanged": true,
+  "warning": "DO NOT deploy original P216 signed bundle (superseded). This archive-v2 forward envelope is the only current signed candidate. Do not promote to owner-qa until protected Tilawa rollback is safely demonstrated or a new higher signed protected rollback is available."
+}
