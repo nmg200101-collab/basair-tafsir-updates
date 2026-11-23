@@ -22,10 +22,10 @@
             "sha256": "82be9bf832eaa6fcfb15c21cf97023069fb5cb45140e245231848793eeb14c9a"
           },
           {
-            "path": "modules/updates/p206-signed-six-rollback.js",
+            "path": "modules/updates/p216-signed-six-rollback-v2.js",
             "kind": "js",
-            "size": 15752,
-            "sha256": "d93ce6ecf6bd0e160f90346f32d12e2edbaa9cdbb46a7d0233c7de3bfc930ebe"
+            "size": 16379,
+            "sha256": "99b437708cdf25994d7e24fd8fb87ff5d812004161230ba703b410ee85762f93"
           },
           {
             "path": "modules/updates/p206-unified-update-notice.js",
@@ -62,7 +62,7 @@
     ],
     "deliveryMode": "notify",
     "description": "Single verified updates hub; new app-start in-app notice through P121; manually initiate download",
-    "totalBytes": 68875
+    "totalBytes": 69502
   },
   "rollback": {
     "proposedSequence": 129,
@@ -119,7 +119,8 @@
     "realBackgroundPushWhenAndroidClosed": false,
     "verifiedHistoryAdapterOptional": true,
     "failOpenLegacyIfNativeMissing": true,
-    "verifiedHistoryRequiredForNewRestore": true
+    "verifiedHistoryRequiredForNewRestore": true,
+    "signedScopeArchiveV2": true
   },
   "safety": {
     "noAPK": true,
@@ -133,7 +134,8 @@
       "Verify on-device active updates module version and highestSequence",
       "RSA sign forward and rollback from original owner environment",
       "QA050 and regression on final release head"
-    ]
+    ],
+    "signedScopeRestoreKeepsUnrelatedProtectedModules": true
   },
   "quality": {
     "sourceStagedAndVerifiedBlobSha1": "8c699cdb7806fe252d95610387ca9d4c3d9dcf91",
@@ -146,6 +148,10 @@
     "nativePushWhenClosed": "NOT_SUPPORTED_IN_V695_WITHOUT_NATIVE_PUSH",
     "date": "2026-11-22",
     "cssLiteralEscapesFixed": true,
-    "p217IntegrationReady": true
+    "p217IntegrationReady": true,
+    "signedScopeArchiveTests": {
+      "passed": 17,
+      "failed": 0
+    }
   }
 }
