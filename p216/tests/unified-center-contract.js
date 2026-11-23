@@ -63,7 +63,14 @@ root.__BASAIR_P216_CENTER_TESTS__=async function(source,style){
    install:async function(c){installs++;if(c.manifest.sequence!==release.sequence)throw Error('invalid payload');
      state.highestSequence=c.manifest.sequence;state.active.updates.version=208;return true}};
  var hist={list:async()=>archives,restore:async function(seq){restores++;if(seq!==124)throw Error('bad seq');return restoreResult;}};
+ var initiallyVerified={
+   status:function(){return{available:true}},pendingLimit:1,
+   list:async function(){return archives.map(function(r){return Object.assign({},r,{
+     verified:r.approved===true,restorable:r.approved===true});});},
+   restore:hist.restore
+ };
  var w={BasairUniversalOTA:ota,__BASAIR_P206_SIGNED_ARCHIVE__:hist,
+   __BASAIR_P217_VERIFIED_HISTORY__:initiallyVerified,
    __BASAIR_P207_ACTIVATION__:{read:async()=>state},
    setTimeout:function(){},location:{reload:function(){reloads++}}};
  new Function('window','document',source)(w,doc);
@@ -126,6 +133,43 @@ root.__BASAIR_P216_CENTER_TESTS__=async function(source,style){
  ck('highestSequence is not mislabeled as installed release',historyText.includes('أعلى تسلسل تم استلامه'));
  accepted=false;await ui.refresh();
  ck('invalid unverified OTA result cannot be installed',await ui.install()===false&&installs===1);
+ // P217 signed-local adapter takes precedence when present and ready.
+ var delegated=0;
+ w.__BASAIR_P217_VERIFIED_HISTORY__={
+   status:function(){return{available:true}},
+   pendingLimit:1,
+   list:async function(){return[134,132,130,128,126,124,122].map(function(seq){
+     return{sequence:seq,id:'P217',title:seq===122?'Verified oldest':'Verified only',
+       approved:seq!==126,verified:true,restorable:seq!==126,
+       active:{tilawa:{version:240},updates:{version:200}},
+       modules:[{id:'tilawa',version:240}]};
+   });},
+   restore:async function(){delegated++;return false;}
+ };
+ await ui.loadArchive();
+ ck('P217 adapter retains six signed approved plus one pending',
+   ui.status().archiveCount===7&&
+   doc.getElementById('p216UpdateCenter').textContent.includes('Verified oldest'));
+ ck('P217 displays confirmed module versions',
+   doc.getElementById('p216UpdateCenter').textContent.includes('التلاوة v240'));
+ w.__BASAIR_P217_VERIFIED_HISTORY__.status=function(){return{available:false}};
+ await ui.loadArchive();
+ ck('P206 fallback remains available when P217 is unavailable',
+   ui.status().archiveCount===2&&delegated===0);
+ var rt=doc.getElementById('p216UpdateCenter').find(n=>
+   n.tagName==='BUTTON'&&n.textContent==='الرجوع');
+ rt.click();await ui.loadArchive();
+ ck('P206 fallback is read-only inside unified center',
+   doc.getElementById('p216UpdateCenter').findAll(n=>n.tagName==='BUTTON'&&
+     n.textContent==='اختيار الإصدار').length===0);
+ var nativeRestore=doc.getElementById('p216UpdateCenter').find(n=>
+   n.tagName==='BUTTON'&&n.textContent==='فتح أداة الرجوع الأصلية');
+ ck('trusted original P206 remains reachable',!!nativeRestore);
+ nativeRestore.click();
+ ck('opening legacy screen restores native P121 controls',
+   !dialog.classList.contains('p216CenterActive')&&
+   doc.getElementById('p216UpdateCenter').hidden===true);
+
  // Disable is reversible and must not touch the native update engine.
  var old=ota.install;
  ck('disable center preserves native engine',ui.disable()===true&&ota.install===old);
@@ -133,8 +177,31 @@ root.__BASAIR_P216_CENTER_TESTS__=async function(source,style){
    grid.findAll(n=>n.id==='p216MoreUpdates').length===0);
  ck('disabling hides center and leaves native modal available',doc.getElementById('p216UpdateCenter').hidden===true);
  ck('safe disable rejects further actions',await ui.install()===false&&installs===1);
+ // The native OTA is temporarily absent: retain old More controls and undo
+ // the P216-only dialog presentation; no dead update shortcut is allowed.
+ w.BasairUniversalOTA=null;
+ ui.enable();
+ ck('missing native engine removes P216-only shortcut',
+   grid.findAll(n=>n.id==='p216MoreUpdates').length===0);
+ ck('missing native engine re-exposes legacy menu',
+   !more.getAttribute('data-p216-menu'));
+ ck('missing native engine does not keep native dialog hidden by P216',
+   !dialog.classList.contains('p216CenterActive')&&doc.getElementById('p216UpdateCenter').hidden);
+ ck('opening fails closed when P121 is missing',ui.open()===false);
+ w.BasairUniversalOTA=ota;ui.enable();
+ ck('P121 return restores exactly one P216 entry',
+   grid.findAll(n=>n.id==='p216MoreUpdates').length===1&&
+   more.getAttribute('data-p216-menu')==='1');
+ ck('restoring service never auto-installs or reloads',
+   installs===1&&reloads===0);
  ck('night and RTL declarations present',style.includes('body.dark #p216UpdateCenter')&&
    style.includes('direction:rtl'));
+ ck('no literal newline escape in CSS declarations',!style.includes('\\n'));
+ ck('older update options hide with separate valid selectors',
+   style.includes('#p197MoreUpdates,\n#bqMoreCenter') &&
+   style.includes('#p207OwnerUpdatesInMore,'));
+ ck('native progress CSS rule is independent',
+   style.includes('color:#245f48;font-weight:600}\n#p216UpdateCenter .p216NativeProgress'));
  return {passed:pass,failed:fail.length,errors:fail,checks:checks,
    installs:installs,restores:restores,reloads:reloads,
    limit:'Isolated DOM/API contracts; no real Android/WebView acceptance'};

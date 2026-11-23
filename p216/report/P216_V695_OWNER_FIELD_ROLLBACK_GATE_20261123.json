@@ -1,0 +1,51 @@
+{
+  "schema": "basair-owner-qa-v695-local-rollback-field-gate-v1",
+  "recordedAt": "2026-11-23",
+  "basis": "Owner-submitted V695 screenshot of P206 signed six-archive and P207 local activation panel; user is explicitly not instructed to click approve/restore.",
+  "applicationId": "app.basair.qurv2",
+  "observed": {
+    "highestSequence": 126,
+    "activeModules": {
+      "tilawa": {
+        "version": 243
+      },
+      "updates": {
+        "version": 200
+      }
+    },
+    "activation": "stable-local",
+    "P121EngineVersion": 694,
+    "P207Loaded": true,
+    "P205AdapterInstalled": true,
+    "signedArchiveHeading": "الإصدارات المستقرة المحفوظة — آخر 6",
+    "signedArchiveStatus": "الرجوع المتعدد غير مفعّل حتى يتوفر محرك P206 موقّع ومحفوظ؛ يمكنك متابعة قراءة سجل الإصدارات فقط.",
+    "oldEntry": {
+      "sequence": 120,
+      "id": "P212",
+      "description": "محرك التلاوة الملونة الثابت المستقل",
+      "approval": "pending owner approval"
+    },
+    "approvedProtectedP214SnapshotVisible": false,
+    "P197PreviousLocalTilawaVerified": "unknown"
+  },
+  "interpretation": [
+    "The current handset is stable and matches main P215 Seq126. This does not show a verified independent signed P214 rollback.",
+    "The pending P212 Seq120 entry cannot serve as an approved P214/Seq124 rollback, nor as an approved P206-capable updates runtime.",
+    "P206 trustedUpdateRuntime() requires an owner-approved signed snapshot carrying its updates runtime; screenshot states that multi-restore is disabled.",
+    "P216 updates-only Seq128 can advance P121 highestSequence beyond signed Tilawa rollback Seq127, so direct OTA replay of Seq127 is not a safe fallback.",
+    "Do not infer presence or integrity of P197 local previous tilawa state from this screenshot."
+  ],
+  "requiredGates": [
+    "Real V695 Android WebView acceptance for P216 center and P216-signed-six-rollback-v2 script",
+    "Verify a protected Tilawa fallback can be restored independently after highestSequence increases (or issue higher-sequence owner-signed protected rollback and test its install)",
+    "Confirm P206-capable approved signed archive snapshot on device for multi-restore if that feature is advertised",
+    "Confirm forward/rollback signatures/sha256 after publication branch merge and staged assets",
+    "Do not auto-approve pending P212 or downgrade current stable tilawa"
+  ],
+  "candidate": {
+    "P216Seq128": "RSA signed archive-v2 HELD only",
+    "P216RollbackSeq129": "RSA signed original updates-only rollback HELD",
+    "changesToLiveRelease": false
+  },
+  "decision": "HOLD_FOR_ROLLBACK_PROOF_AND_ANDROID_WEBVIEW_QA"
+}

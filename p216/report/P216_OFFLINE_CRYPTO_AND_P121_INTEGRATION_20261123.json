@@ -1,0 +1,97 @@
+{
+  "schema": "basair-owner-qa-offline-crypto-and-p121-integration-v1",
+  "date": "2026-11-23",
+  "repo": "nmg200101-collab/basair-tafsir-updates",
+  "appId": "app.basair.qurv2",
+  "channel": "owner-qa",
+  "status": "SIGNED_OFFLINE_HELD_NOT_PUBLISHED",
+  "offlineSigned": {
+    "checks": [
+      {
+        "sequence": 128,
+        "kind": "updates forward",
+        "rsa": "verified PKCS1v1_5 SHA256 using original RSA public key",
+        "ownerEd25519": "not required for unprotected updates module",
+        "signedAssets": 7
+      },
+      {
+        "sequence": 129,
+        "kind": "updates rollback",
+        "rsa": "verified PKCS1v1_5 SHA256 using original RSA public key",
+        "ownerEd25519": "not required for unprotected updates module",
+        "signedAssets": 5
+      },
+      {
+        "sequence": 130,
+        "kind": "P214 protected emergency recovery",
+        "rsa": "verified PKCS1v1_5 SHA256 using original RSA public key",
+        "ownerEd25519": "verified with original P119 owner public key",
+        "signedAssets": 17,
+        "ownerApprovalExpiresAt": "2026-11-26T10:07:03Z"
+      }
+    ],
+    "protectedAssetDescriptorDigest": "9c823ab837bb39933532746d84b9c24e475bf3226a17cec3c2679af46d419dec",
+    "protectedDigestEqualToOriginalSeq127": true,
+    "privateKeysInRepo": false
+  },
+  "simulatedP121Integration": {
+    "originalP206ReproducedMismatch": true,
+    "newP216ArchiveV2": {
+      "passed": 17,
+      "failed": 0
+    },
+    "covered": [
+      "P121 IndexedDB mock state update v216 and tilawa v243",
+      "P206 signature-scope archival only",
+      "Owner approval of saved record",
+      "Restore updates v216 after local highestSequence=129",
+      "Preserve tilawa identity and version",
+      "Keep monotonic highestSequence",
+      "P121 pending trial and previous fallback",
+      "Reject unapproved and overlapping restores"
+    ],
+    "caveats": [
+      "Simulated IndexedDB with mock crypto signatures, NOT Android WebView",
+      "Does not verify native V695 signed loader/HTTP or app lifecycle"
+    ]
+  },
+  "existingIsolatedRegression": {
+    "P215": 24,
+    "P216": 44,
+    "P216ArchiveMock": 17,
+    "P216IndexedDbMock": 17,
+    "P217": 29,
+    "P218": 34,
+    "total": 165
+  },
+  "releaseGates": [
+    "P216 Android WebView field acceptance not completed",
+    "P206 historical restore disabled in owner screenshot; no verified P214 snapshot available inside phone",
+    "Protected Seq130 emergency rollback must be genuinely deployable on owner-qa from signed artifact and have non-expired Ed25519 scope approval",
+    "Protected QA050 workflow PR167 remains unsigned and blocked",
+    "Do not promote main/p121/owner-qa/release.json until these checks"
+  ],
+  "decision": "HOLD_ALL_SIGNED_CANDIDATES_FOR_OWNER_QA_FIELD_ACCEPTANCE",
+  "liveRelease": "P215 Seq126",
+  "additionalRegression": {
+    "issue": "P217 originally considered an updates runtime inside an approved signed Tilawa-only record as trusted, though the updates module was outside the signed manifest scope.",
+    "resolution": "Rollback eligibility now requires at least one verified, approved archive whose signed manifest modules explicitly include updates and whose archived updates module contains the P206-compatible runtime.",
+    "p217Cases": {
+      "passed": 29,
+      "failed": 0
+    },
+    "testsSaved": [
+      "p217/tests/verified-history-contract.js",
+      "p216/tests/p121-state-integration-contract.js"
+    ],
+    "readOnlyPreflightRunner": "node p216/tests/run_p216_p217_preflight.cjs",
+    "crossSuite": {
+      "passed": 107,
+      "failed": 0
+    },
+    "p217ForwardSha256VerifiedAssets": {
+      "passed": 8,
+      "total": 8
+    }
+  }
+}

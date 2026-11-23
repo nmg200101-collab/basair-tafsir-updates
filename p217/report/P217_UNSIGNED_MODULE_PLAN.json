@@ -1,0 +1,162 @@
+{
+  "schema": "basair-p217-verified-local-history-staging-v1",
+  "status": "DRAFT_UNSIGNED_RENUMBERED_AFTER_SIGNED_P219_SEQ131_132",
+  "baseline": {
+    "android": "V695",
+    "liveRelease": "P215 Seq126",
+    "liveTilawaVersion": 243,
+    "proposedPrerequisite": "P216 update center signed and field-accepted"
+  },
+  "constraints": [
+    "No APK",
+    "No change to P214/P215 signed Tilawa assets",
+    "No retroactive local versions",
+    "No unrestricted remote unsigned history",
+    "Max six existing P206 snapshots",
+    "P206 owns RSA/Ed25519 verification, file digest check, rollback and trial",
+    "No unapproved QA050 workflow changes",
+    "Seq130 is already reserved for independently RSA+Ed25519 signed P214 protected emergency recovery and cannot be reused.",
+    "Before P217 release after Seq130, arrange a new higher-sequence owner-signed protected fallback; Seq130 becomes ineligible for direct OTA after the device advances beyond it."
+  ],
+  "proposedForward": {
+    "sequence": 133,
+    "updatesModuleVersion": 218,
+    "deliveryMode": "notify",
+    "assets": [
+      {
+        "path": "modules/updates/p197-local-rollback.js",
+        "kind": "js",
+        "size": 12448,
+        "sha256": "82be9bf832eaa6fcfb15c21cf97023069fb5cb45140e245231848793eeb14c9a"
+      },
+      {
+        "path": "modules/updates/p216-signed-six-rollback-v2.js",
+        "kind": "js",
+        "size": 16379,
+        "sha256": "99b437708cdf25994d7e24fd8fb87ff5d812004161230ba703b410ee85762f93"
+      },
+      {
+        "path": "modules/updates/p206-unified-update-notice.js",
+        "kind": "js",
+        "size": 4876,
+        "sha256": "300c05fdfb2884f08eeca34fe4bf60cb249c3bdbf5bc49e91c7c716e45816a8a"
+      },
+      {
+        "path": "modules/updates/p207-local-activation-status.js",
+        "kind": "js",
+        "size": 5059,
+        "sha256": "89ac7804cb7afcb3e6034321d357a500618cabd0888b8e51d3e41b796044efbd"
+      },
+      {
+        "path": "modules/updates/p207-more-modal-entry.js",
+        "kind": "js",
+        "size": 4712,
+        "sha256": "41bd04b383f083180b349c00ec1041e0791ef7d394c1aa905e156573c5518f9b"
+      },
+      {
+        "path": "modules/updates/p216-unified-update-center.css",
+        "kind": "css",
+        "size": 3590,
+        "sha256": "6868d82053c0a7c65e0ff4b3a22446e82e977a87df98917bc509e18bde911d92"
+      },
+      {
+        "path": "modules/updates/p216-unified-update-center.js",
+        "kind": "js",
+        "size": 22438,
+        "sha256": "185946810f70b231caf2d40860a18eb06b0a51ca433d22b3ac303af53d801a3f"
+      },
+      {
+        "path": "modules/updates/p217-verified-history.js",
+        "kind": "js",
+        "size": 5751,
+        "sha256": "1c58df039de71ac24fa4b8a945f50bf18833d2dd62047a077b2cad6bc4a48e46"
+      }
+    ],
+    "totalBytes": 75253
+  },
+  "proposedRollback": {
+    "sequence": 134,
+    "updatesModuleVersion": 219,
+    "description": "Signed P216 seven-asset module restored with exact verified bytes",
+    "assets": [
+      {
+        "path": "modules/updates/p197-local-rollback.js",
+        "kind": "js",
+        "size": 12448,
+        "sha256": "82be9bf832eaa6fcfb15c21cf97023069fb5cb45140e245231848793eeb14c9a"
+      },
+      {
+        "path": "modules/updates/p216-signed-six-rollback-v2.js",
+        "kind": "js",
+        "size": 16379,
+        "sha256": "99b437708cdf25994d7e24fd8fb87ff5d812004161230ba703b410ee85762f93"
+      },
+      {
+        "path": "modules/updates/p206-unified-update-notice.js",
+        "kind": "js",
+        "size": 4876,
+        "sha256": "300c05fdfb2884f08eeca34fe4bf60cb249c3bdbf5bc49e91c7c716e45816a8a"
+      },
+      {
+        "path": "modules/updates/p207-local-activation-status.js",
+        "kind": "js",
+        "size": 5059,
+        "sha256": "89ac7804cb7afcb3e6034321d357a500618cabd0888b8e51d3e41b796044efbd"
+      },
+      {
+        "path": "modules/updates/p207-more-modal-entry.js",
+        "kind": "js",
+        "size": 4712,
+        "sha256": "41bd04b383f083180b349c00ec1041e0791ef7d394c1aa905e156573c5518f9b"
+      },
+      {
+        "path": "modules/updates/p216-unified-update-center.css",
+        "kind": "css",
+        "size": 3590,
+        "sha256": "6868d82053c0a7c65e0ff4b3a22446e82e977a87df98917bc509e18bde911d92"
+      },
+      {
+        "path": "modules/updates/p216-unified-update-center.js",
+        "kind": "js",
+        "size": 22438,
+        "sha256": "185946810f70b231caf2d40860a18eb06b0a51ca433d22b3ac303af53d801a3f"
+      }
+    ],
+    "totalBytes": 69502
+  },
+  "tests": {
+    "p216": {
+      "passed": 44,
+      "failed": 0
+    },
+    "p217": {
+      "passed": 29,
+      "failed": 0
+    },
+    "p215Baseline": {
+      "passed": 24,
+      "failed": 0
+    },
+    "type": "isolated JS/DOM mocks, not Android WebView or audio",
+    "signedScopeArchive": {
+      "passed": 17,
+      "failed": 0
+    }
+  },
+  "gates": [
+    "Owner P215 visual acceptance on V695",
+    "Android WebView P216/P217 integrated tests with real P206 signed local snapshot",
+    "Check local active updates version, IndexedDB highestSequence and signed archive contents",
+    "Fresh owner RSA + relevant Ed25519 signatures on both forward and rollback",
+    "QA-050 protected scope approval if touching CI",
+    "Recheck current live sequence and immutable hashes before release",
+    "Re-evaluate protected recovery sequence expiry and monotonic highestSequence before P217/Seq131 promotion.",
+    "P219 protected signed forward Seq131 and rollback Seq132 are reserved; do not reuse; obtain fresh signatures on the renumbered draft and ensure protected rollback sequence > currently installed monotonic highestSequence."
+  ],
+  "description": "P217: preserve six owner-approved snapshots and one pending P206 snapshot, verifying RSA/Ed25519 and all cached bytes",
+  "features": {
+    "trustedP206RuntimeNeeded": true,
+    "originalNativeFallbackPreserved": true,
+    "runtimeMustBeCoveredBySignedUpdatesModule": true
+  }
+}

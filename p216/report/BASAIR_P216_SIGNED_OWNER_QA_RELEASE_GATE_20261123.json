@@ -1,0 +1,163 @@
+{
+  "schema": "basair-v695-release-readiness-verification-v1",
+  "date": "2026-11-23",
+  "channel": "owner-qa",
+  "app": "app.basair.qurv2",
+  "currentLive": {
+    "sequence": 126,
+    "id": "P215-SEQ126-DIGITAL-SHADOW-20261122",
+    "tilawaModuleVersion": 243
+  },
+  "ownerDevice": {
+    "highestSequence": 126,
+    "activeTilawaVersion": 243,
+    "activeUpdatesVersion": 200,
+    "state": "stable locally",
+    "p121EngineVersion": 694,
+    "archive": "P206 multiple restore disabled; sole visible P212 Seq120 pending; P214 backup not independently approved"
+  },
+  "signedOfflineCandidates": [
+    {
+      "sequence": 128,
+      "module": "updates",
+      "version": 216,
+      "assets": 7,
+      "bytes": 69502,
+      "signatures": "RSA3072 verified",
+      "status": "HELD"
+    },
+    {
+      "sequence": 129,
+      "module": "updates",
+      "version": 217,
+      "assets": 5,
+      "bytes": 42847,
+      "signatures": "RSA3072 verified",
+      "status": "HELD"
+    },
+    {
+      "sequence": 130,
+      "module": "tilawa",
+      "version": 245,
+      "assets": 17,
+      "bytes": 115032,
+      "signatures": "RSA3072+owner Ed25519 verified",
+      "ownerApprovalExpiresAt": "2026-11-26T10:07:03Z",
+      "status": "HELD"
+    }
+  ],
+  "assetVerification": {
+    "P216Forward": {
+      "matched": 7,
+      "total": 7,
+      "method": "fresh GitHub text SHA256 and byte-size, branch candidate"
+    },
+    "P214ProtectedRecovery": {
+      "matched": 17,
+      "total": 17,
+      "method": "fresh GitHub SHA256 and byte-size, main; signed Seq130 descriptor array identical to original signed Seq127 descriptor array"
+    },
+    "P217Forward": {
+      "matched": 8,
+      "total": 8,
+      "method": "GitHub SHA256 + UTF8 byte size, newly modified P217 unsigned draft"
+    }
+  },
+  "isolatedTests": [
+    {
+      "suite": "P215",
+      "passed": 24,
+      "failed": 0
+    },
+    {
+      "suite": "P216",
+      "passed": 44,
+      "failed": 0
+    },
+    {
+      "suite": "P216 archive v2",
+      "passed": 17,
+      "failed": 0
+    },
+    {
+      "suite": "P217",
+      "passed": 29,
+      "failed": 0
+    },
+    {
+      "suite": "P218",
+      "passed": 34,
+      "failed": 0
+    },
+    {
+      "suite": "P216 V695 P121 IndexedDB simulated state-machine",
+      "passed": 17,
+      "failed": 0
+    }
+  ],
+  "isolatedTotal": {
+    "passed": 165,
+    "failed": 0
+  },
+  "gitHubCI": {
+    "PR169": "tilawa-owner-lock success",
+    "PR170": "tilawa-owner-lock success",
+    "PR167": "p215-digital-stability-lock success; tilawa-owner-lock FAILED: separate QA050 owner approval required"
+  },
+  "browserTesting": {
+    "attempted": "Chromium WebCrypto verification via file:// and local HTTP secure context",
+    "result": "BLOCKED_BY_ADMINISTRATOR for file:// and loopback navigation in current execution environment",
+    "androidWebView": "NOT_RUN",
+    "ownerDeviceIntegration": "NOT_RUN"
+  },
+  "sequenceAllocation": [
+    {
+      "sequence": 126,
+      "kind": "active signed P215"
+    },
+    {
+      "sequence": 127,
+      "kind": "older signed P214 rollback"
+    },
+    {
+      "sequence": 128,
+      "kind": "P216 signed held"
+    },
+    {
+      "sequence": 129,
+      "kind": "P216 signed rollback held"
+    },
+    {
+      "sequence": 130,
+      "kind": "protected P214 signed emergency rescue held"
+    },
+    {
+      "sequence": 131,
+      "kind": "P217 unsigned proposed forward"
+    },
+    {
+      "sequence": 132,
+      "kind": "P217 unsigned proposed rollback"
+    },
+    {
+      "sequence": 133,
+      "kind": "P218 unsigned proposed forward"
+    },
+    {
+      "sequence": 134,
+      "kind": "P218 unsigned proposed rollback"
+    }
+  ],
+  "hardStops": [
+    "Cannot assert owner device recovery path proven merely because Seq130 signed emergency recovery file is available",
+    "Seq130 protected rescue becomes non-installable by monotonic OTA once highestSequence advances to 131+; must re-sign a higher protected backup before later release",
+    "Protected QA050 CI workflow PR167 not owner-approved",
+    "Cannot claim Android WebView accepted; Chromium browser access blocked by administrator",
+    "Do not promote signed candidate into main release.json while hard stops remain",
+    "P217 runtime trust now requires signed updates module scope, but WebView integration remains unverified."
+  ],
+  "decision": "STAGED_SIGNED_HELD_NO_OWNER_QA_PROMOTION",
+  "liveManifestModified": false,
+  "appBuildChanged": false,
+  "privateSigningKeysInRepo": false
+}

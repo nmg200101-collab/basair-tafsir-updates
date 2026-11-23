@@ -22,10 +22,10 @@
             "sha256": "82be9bf832eaa6fcfb15c21cf97023069fb5cb45140e245231848793eeb14c9a"
           },
           {
-            "path": "modules/updates/p206-signed-six-rollback.js",
+            "path": "modules/updates/p216-signed-six-rollback-v2.js",
             "kind": "js",
-            "size": 15752,
-            "sha256": "d93ce6ecf6bd0e160f90346f32d12e2edbaa9cdbb46a7d0233c7de3bfc930ebe"
+            "size": 16379,
+            "sha256": "99b437708cdf25994d7e24fd8fb87ff5d812004161230ba703b410ee85762f93"
           },
           {
             "path": "modules/updates/p206-unified-update-notice.js",
@@ -48,21 +48,21 @@
           {
             "path": "modules/updates/p216-unified-update-center.css",
             "kind": "css",
-            "size": 3592,
-            "sha256": "780b3fd519e9e63b5b53a0a0dde2c695e9699b989d184c2a6174edc85b45a772"
+            "size": 3590,
+            "sha256": "6868d82053c0a7c65e0ff4b3a22446e82e977a87df98917bc509e18bde911d92"
           },
           {
             "path": "modules/updates/p216-unified-update-center.js",
             "kind": "js",
-            "size": 20059,
-            "sha256": "0615136edff6c0596a7857aa71af2d8fc8eb70fc3e6afb769b29a23d2bfc3ead"
+            "size": 22438,
+            "sha256": "185946810f70b231caf2d40860a18eb06b0a51ca433d22b3ac303af53d801a3f"
           }
         ]
       }
     ],
     "deliveryMode": "notify",
     "description": "Single verified updates hub; new app-start in-app notice through P121; manually initiate download",
-    "totalBytes": 66498
+    "totalBytes": 69502
   },
   "rollback": {
     "proposedSequence": 129,
@@ -116,7 +116,11 @@
     "twoStepRestore": true,
     "returnForwardIfLocallyApproved": true,
     "safeDisable": true,
-    "realBackgroundPushWhenAndroidClosed": false
+    "realBackgroundPushWhenAndroidClosed": false,
+    "verifiedHistoryAdapterOptional": true,
+    "failOpenLegacyIfNativeMissing": true,
+    "verifiedHistoryRequiredForNewRestore": true,
+    "signedScopeArchiveV2": true
   },
   "safety": {
     "noAPK": true,
@@ -130,17 +134,24 @@
       "Verify on-device active updates module version and highestSequence",
       "RSA sign forward and rollback from original owner environment",
       "QA050 and regression on final release head"
-    ]
+    ],
+    "signedScopeRestoreKeepsUnrelatedProtectedModules": true
   },
   "quality": {
-    "sourceStagedAndVerifiedBlobSha1": "880568b2662744c6b0f780abca0578f701b99b43",
+    "sourceStagedAndVerifiedBlobSha1": "8c699cdb7806fe252d95610387ca9d4c3d9dcf91",
     "regressions": {
-      "passed": 29,
+      "passed": 44,
       "failed": 0
     },
     "nativeBrowserEndToEnd": "NOT_RUN",
     "androidOwnerAcceptance": "NOT_RUN",
     "nativePushWhenClosed": "NOT_SUPPORTED_IN_V695_WITHOUT_NATIVE_PUSH",
-    "date": "2026-11-22"
+    "date": "2026-11-22",
+    "cssLiteralEscapesFixed": true,
+    "p217IntegrationReady": true,
+    "signedScopeArchiveTests": {
+      "passed": 17,
+      "failed": 0
+    }
   }
 }

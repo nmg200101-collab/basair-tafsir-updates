@@ -1,0 +1,40 @@
+{
+  "schema": "basair-p216-rsa-signed-offline-candidate-receipt-v1",
+  "status": "SUPERSEDED_DO_NOT_PUBLISH",
+  "date": "2026-11-23",
+  "channel": "owner-qa",
+  "app": "app.basair.qurv2",
+  "signedAgainstMainRelease": "P215-SEQ126-DIGITAL-SHADOW-20261122",
+  "forward": {
+    "sequence": 128,
+    "updatesModuleVersion": 216,
+    "assets": 7,
+    "bytes": 68875,
+    "payloadSha256": "6bfd6a6348a7da209221f9799279cd34f0708d46b463ec9262fc94d8ac7bd0cd",
+    "signatureSha256": "791b8924f92ecf6d04559fd710be6a2749f7d85b72d06af880a3d4b648fad76b"
+  },
+  "rollback": {
+    "sequence": 129,
+    "updatesModuleVersion": 217,
+    "assets": 5,
+    "bytes": 42847,
+    "payloadSha256": "0631789eb8619a1f4c4bfc329d1aeb197de31f862582572f81607e62383999a7",
+    "signatureSha256": "2f2e1ed5ffaf45d08fc51a62ee00a0649ef53a29cea65874d11988150715f35f"
+  },
+  "signedAt": "2026-11-23T08:03:39Z",
+  "expiresAt": "2026-12-28T08:03:39Z",
+  "signature": "RSA3072-PKCS1v1_5-SHA256 verified against current P206 public key",
+  "sourceAssetIntegrity": "7 of 7 exact SHA256 and size matched staged branch in GitHub",
+  "scope": "updates only, no protected tilawa edits",
+  "secretExported": false,
+  "published": false,
+  "heldReasons": [
+    "Latest Android V695 local installed updates version and highestSequence unknown",
+    "Real V695 WebView end-to-end P216 QA not completed",
+    "Current signed protected P215 rollback is Seq127; advancing global highestSequence to Seq128 may invalidate direct Seq127 install unless P197/P206 protected rollback is confirmed on device or higher signed protected recovery exists",
+    "No changes to p121/owner-qa/release.json authorized until rollback ability demonstrated"
+  ],
+  "note": "Public receipt only. Full signed envelopes were created locally in conversation deliverable, not committed to GitHub or promoted.",
+  "supersededReason": "Original P216 Seq128 signed candidate included P206 old script whose archive matcher rejects updates-only manifests when tilawa is active. New versioned P216 archive v2 changes signed module asset path, size and sha256. Existing RSA signatures do not apply.",
+  "previousSignedCandidateZip": "BASAIR_P216_SIGNED_OWNER_QA_CANDIDATE_NOT_PUBLISHED_20261123.zip"
+}
