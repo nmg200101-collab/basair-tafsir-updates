@@ -1,0 +1,12 @@
+/* P218: color-only ayah shade, unchanged Quran font/line/page geometry. */
+body.reader-active.stableDigital #stableDigitalHost .quranWord.p218ShadowMark{
+background:rgba(55,153,102,.24)!important;box-shadow:0 0 0 2px rgba(43,128,81,.17)!important;
+border-radius:3px!important;text-shadow:inherit!important}
+body.reader-active.stableDigital #b274LargeTextHost .v160Ayah.p218ShadowMark,
+body.reader-active.stableDigital #b274LargeTextHost .quranWord.p218ShadowMark{
+background:rgba(55,153,102,.22)!important;box-shadow:0 0 0 2px rgba(43,128,81,.17)!important;
+border-radius:4px!important;text-shadow:inherit!important}
+body.dark.reader-active.stableDigital #stableDigitalHost .quranWord.p218ShadowMark,
+body.dark.reader-active.stableDigital #b274LargeTextHost .v160Ayah.p218ShadowMark,
+body.dark.reader-active.stableDigital #b274LargeTextHost .quranWord.p218ShadowMark{
+background:rgba(111,192,155,.26)!important;box-shadow:0 0 0 2px rgba(121,205,164,.2)!important}
