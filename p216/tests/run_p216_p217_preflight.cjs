@@ -11,7 +11,7 @@ const jobs=[
  {name:'P216 center',file:'p216/tests/run_p216.cjs',expected:44},
  {name:'P216 signed scope',file:'p216/tests/run_signed_scope_archive.cjs',expected:17},
  {name:'P121 IndexedDB integration',file:'p216/tests/run_p121_state_integration.cjs',expected:17},
- {name:'P217 verified history',file:'p217/tests/run_p217.cjs',expected:27}
+ {name:'P217 verified history',file:'p217/tests/run_p217.cjs',expected:29}
 ];
 let all=true;
 for(const x of jobs){
@@ -26,6 +26,6 @@ for(const x of jobs){
    if(p.error)console.error(String(p.error));
  }
 }
-console.log(all?'PASS 105/105 isolated cases; Android/WebView NOT TESTED':
+console.log(all?'PASS 107/107 isolated cases; Android/WebView NOT TESTED':
                 'FAIL: do not publish owner-qa candidate');
 if(!all)process.exitCode=1;
