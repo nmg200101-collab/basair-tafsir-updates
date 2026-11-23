@@ -13,12 +13,17 @@ class TilawaLockTests(unittest.TestCase):
                   'basair-tajweed-reference-manifest.json',
                   '.github/workflows/other-publisher.yml',
                   'ci/tilawa_lock_baseline.json',
-                  '.github/CODEOWNERS'):
+                  '.github/CODEOWNERS',
+                  'p121/owner-qa/modules/tilawa/p219-native-single-shadow-owner.js',
+                  'p121/owner-qa/modules/tilawa/new-visual.css',
+                  'p121/owner-qa/modules/tilawa/new-module.json'):
             self.assertTrue(g.protect(x),x)
     def test_other_departments_unrestricted(self):
         for x in ('library/assets/icons.svg','basair-surah-002-001.json',
                   'README.md','p92/owner-qa-001/review.md',
-                  'ci/tilawa-approvals/signed-change.json'):
+                  'ci/tilawa-approvals/signed-change.json',
+                  'p121/owner-qa/modules/updates/p216-unified-update-center.js',
+                  'p121/owner-qa/modules/tilawa/README.md'):
             self.assertFalse(g.protect(x),x)
     def test_canonical_order(self):
         self.assertEqual(g.canonical({'b':2,'a':1}),b'{"a":1,"b":2}')
