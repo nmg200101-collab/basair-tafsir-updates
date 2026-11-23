@@ -1,0 +1,63 @@
+{
+  "schema": "basair-p219-qa050-exact-protected-owner-request-v1",
+  "status": "AWAITING_QA050_PRIVATE_KEY_AND_GUARD_SCOPE_ENFORCEMENT",
+  "applicationId": "app.basair.qurv2",
+  "baseVersion": "V695",
+  "channel": "owner-qa",
+  "pr": {
+    "number": 173,
+    "headSha": "1bd276e6f44c9a890c79b4a3dd71d040220ceb3d",
+    "baseSha": "97cf790aa01a779a53196e237ce10f0dcaac6f98"
+  },
+  "live": {
+    "sequence": 128,
+    "description": "P216 unified updates center; preserve it"
+  },
+  "approvedScopeRequested": {
+    "path": "p121/owner-qa/modules/tilawa/p219-native-single-shadow-owner.js",
+    "change": "ADDED_FILE_ONLY",
+    "sha256": "ff9861774d7c963e421a4c493a2d0ca6f7409706c3a4abd719f047fc727cc401",
+    "sizeBytes": 3743,
+    "protectedPinnedFilesChanged": 0
+  },
+  "signedOTAPayloads": [
+    {
+      "sequence": 131,
+      "module": "tilawa",
+      "version": 246,
+      "assets": 20,
+      "payloadSha256": "878d86e9dea8e403624d33ab23f98c2f114c219428187b163d85e87ed31e0e31",
+      "RSA": true,
+      "Ed25519Owner": true
+    },
+    {
+      "sequence": 132,
+      "module": "tilawa",
+      "version": 247,
+      "assets": 19,
+      "payloadSha256": "f4b489d937d713ee5666b11baa3ee96599913391ef516ab17cd867b0e5f71b1d",
+      "RSA": true,
+      "Ed25519Owner": true
+    }
+  ],
+  "ownerQA050": {
+    "trustedPublicKeyPath": "ci/tilawa-owner-approval-public.pem",
+    "privateKeyAvailable": false,
+    "approvalSigned": false,
+    "doNotReplaceWithP119": true
+  },
+  "guardAudit": {
+    "currentTrustedBaseProtectsP121OwnerQATilawa": false,
+    "conclusion": "UNSAFE GREEN CHECK: p121 owner-qa tilawa path not included in trusted base protect()"
+  },
+  "constraints": [
+    "Never publish to live release.json until exact-scope independent QA050 approval verifies with pinned QA050 public key",
+    "Never count a green tilawa-owner-lock check with empty protected scope as owner approval",
+    "QA050 signed scope workflow must cover p121/owner-qa/modules/tilawa/* and validate the exact P219 diff",
+    "Real owner V695 Android WebView and audio-word highlight test still required",
+    "Keep signed separate Seq132 rollback and do not change P216 updates v216",
+    "Never commit private keys, passwords, or create a substitute QA050 key"
+  ],
+  "signingMessageDescription": "The QA050 key custodian must use the existing trusted basair-tilawa-unlock-v1 canonical scope/request protocol after the protected path is covered by a trusted base guard. This receipt is an UNSIGNED request, not an approval.",
+  "noWriteToLive": true
+}
