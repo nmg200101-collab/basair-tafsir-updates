@@ -60,9 +60,9 @@
     "P216": 44,
     "P216ArchiveMock": 17,
     "P216IndexedDbMock": 17,
-    "P217": 27,
+    "P217": 29,
     "P218": 34,
-    "total": 163
+    "total": 165
   },
   "releaseGates": [
     "P216 Android WebView field acceptance not completed",
@@ -72,5 +72,26 @@
     "Do not promote main/p121/owner-qa/release.json until these checks"
   ],
   "decision": "HOLD_ALL_SIGNED_CANDIDATES_FOR_OWNER_QA_FIELD_ACCEPTANCE",
-  "liveRelease": "P215 Seq126"
+  "liveRelease": "P215 Seq126",
+  "additionalRegression": {
+    "issue": "P217 originally considered an updates runtime inside an approved signed Tilawa-only record as trusted, though the updates module was outside the signed manifest scope.",
+    "resolution": "Rollback eligibility now requires at least one verified, approved archive whose signed manifest modules explicitly include updates and whose archived updates module contains the P206-compatible runtime.",
+    "p217Cases": {
+      "passed": 29,
+      "failed": 0
+    },
+    "testsSaved": [
+      "p217/tests/verified-history-contract.js",
+      "p216/tests/p121-state-integration-contract.js"
+    ],
+    "readOnlyPreflightRunner": "node p216/tests/run_p216_p217_preflight.cjs",
+    "crossSuite": {
+      "passed": 107,
+      "failed": 0
+    },
+    "p217ForwardSha256VerifiedAssets": {
+      "passed": 8,
+      "total": 8
+    }
+  }
 }
