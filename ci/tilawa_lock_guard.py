@@ -25,6 +25,9 @@ def protect(p):
     if p in ('app-update-manifest.json','.github/CODEOWNERS','BASAIR-TILAWA-QA050-LOCK-20261109.md'): return True
     if p.startswith('basair-tajweed-') and p.endswith(('.json','.js','.css')): return True
     if p.startswith('p92/') and p.endswith(('.js','.css','.html','.json')): return True
+    # All OTA-delivered Tilawa assets are protected, including newly added files.
+    # Do NOT add the updates-only channel here: P216 remains independent.
+    if p.startswith('p121/owner-qa/modules/tilawa/') and p.endswith(('.js','.css','.html','.json')): return True
     if p.startswith('.github/workflows/') and p.endswith(('.yml','.yaml')): return True
     if p == 'ci/test_tilawa_lock_guard.py': return True
     if p.startswith('ci/tilawa-approvals/'): return False
