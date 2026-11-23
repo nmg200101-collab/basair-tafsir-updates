@@ -68,11 +68,11 @@
       {
         "path": "modules/updates/p217-verified-history.js",
         "kind": "js",
-        "size": 5689,
-        "sha256": "a894fcc6250f5a99486386bd8a073ed322f80a38ba0fc7e0feeedffc1170df0c"
+        "size": 5751,
+        "sha256": "1c58df039de71ac24fa4b8a945f50bf18833d2dd62047a077b2cad6bc4a48e46"
       }
     ],
-    "totalBytes": 75191
+    "totalBytes": 75253
   },
   "proposedRollback": {
     "sequence": 132,
@@ -130,7 +130,7 @@
       "failed": 0
     },
     "p217": {
-      "passed": 27,
+      "passed": 29,
       "failed": 0
     },
     "p215Baseline": {
@@ -155,6 +155,7 @@
   "description": "P217: preserve six owner-approved snapshots and one pending P206 snapshot, verifying RSA/Ed25519 and all cached bytes",
   "features": {
     "trustedP206RuntimeNeeded": true,
-    "originalNativeFallbackPreserved": true
+    "originalNativeFallbackPreserved": true,
+    "runtimeMustBeCoveredBySignedUpdatesModule": true
   }
 }
