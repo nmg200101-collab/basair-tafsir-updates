@@ -12,5 +12,5 @@ const read=p=>fs.readFileSync(path.join(root,p),'utf8');
     read('p216/src/p216-unified-update-center.js'),
     read('p216/src/p216-unified-update-center.css'));
   console.log(JSON.stringify(result,null,2));
-  if(result.failed!==0||result.passed<26)process.exitCode=1;
+  if(result.failed!==0||result.passed!==44)process.exitCode=1;
 })().catch(err=>{console.error(err);process.exitCode=1});
