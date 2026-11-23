@@ -28,10 +28,10 @@
         "sha256": "82be9bf832eaa6fcfb15c21cf97023069fb5cb45140e245231848793eeb14c9a"
       },
       {
-        "path": "modules/updates/p206-signed-six-rollback.js",
+        "path": "modules/updates/p216-signed-six-rollback-v2.js",
         "kind": "js",
-        "size": 15752,
-        "sha256": "d93ce6ecf6bd0e160f90346f32d12e2edbaa9cdbb46a7d0233c7de3bfc930ebe"
+        "size": 16379,
+        "sha256": "99b437708cdf25994d7e24fd8fb87ff5d812004161230ba703b410ee85762f93"
       },
       {
         "path": "modules/updates/p206-unified-update-notice.js",
@@ -70,7 +70,7 @@
         "sha256": "a894fcc6250f5a99486386bd8a073ed322f80a38ba0fc7e0feeedffc1170df0c"
       }
     ],
-    "totalBytes": 74564
+    "totalBytes": 75191
   },
   "proposedRollback": {
     "sequence": 131,
@@ -84,10 +84,10 @@
         "sha256": "82be9bf832eaa6fcfb15c21cf97023069fb5cb45140e245231848793eeb14c9a"
       },
       {
-        "path": "modules/updates/p206-signed-six-rollback.js",
+        "path": "modules/updates/p216-signed-six-rollback-v2.js",
         "kind": "js",
-        "size": 15752,
-        "sha256": "d93ce6ecf6bd0e160f90346f32d12e2edbaa9cdbb46a7d0233c7de3bfc930ebe"
+        "size": 16379,
+        "sha256": "99b437708cdf25994d7e24fd8fb87ff5d812004161230ba703b410ee85762f93"
       },
       {
         "path": "modules/updates/p206-unified-update-notice.js",
@@ -120,7 +120,7 @@
         "sha256": "185946810f70b231caf2d40860a18eb06b0a51ca433d22b3ac303af53d801a3f"
       }
     ],
-    "totalBytes": 68875
+    "totalBytes": 69502
   },
   "tests": {
     "p216": {
@@ -135,7 +135,11 @@
       "passed": 24,
       "failed": 0
     },
-    "type": "isolated JS/DOM mocks, not Android WebView or audio"
+    "type": "isolated JS/DOM mocks, not Android WebView or audio",
+    "signedScopeArchive": {
+      "passed": 17,
+      "failed": 0
+    }
   },
   "gates": [
     "Owner P215 visual acceptance on V695",
