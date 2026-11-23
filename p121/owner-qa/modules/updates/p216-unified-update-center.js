@@ -17,7 +17,13 @@
  function safe(x,n){return typeof x==='string'?x.slice(0,n||220):'';}
  function ota(){return w.BasairUniversalOTA;}
  function engine(){var a=ota();return a&&typeof a.check==='function'&&typeof a.install==='function'&&typeof a.open==='function'?a:null;}
- function historyApi(){var a=w.__BASAIR_P206_SIGNED_ARCHIVE__;return a&&typeof a.list==='function'&&typeof a.restore==='function'?a:null;}
+ function historyApi(){
+   var verified=w.__BASAIR_P217_VERIFIED_HISTORY__;
+   if(verified&&typeof verified.status==='function'&&verified.status().available===true&&
+      typeof verified.list==='function'&&typeof verified.restore==='function')return verified;
+   var a=w.__BASAIR_P206_SIGNED_ARCHIVE__;
+   return a&&typeof a.list==='function'&&typeof a.restore==='function'?a:null;
+ }
  function node(tag,txt,cls){
    var x=d.createElement(tag);if(txt!==undefined&&txt!==null)x.textContent=String(txt);
    if(cls)x.className=cls;return x;
@@ -174,13 +180,24 @@
    else if(!archive.length)add(el,'p','لم تُحفظ إصدارات معتمدة محليًا بعد. يمكنك فحصها عبر أدوات النسخ الأصلية.');
    archive.forEach(function(r){
      compactRow(el,'Seq'+r.sequence+' — '+safe(r.title||r.id,90),
+       r.verified===false?'تعذر إثبات سلامة النسخة؛ غير قابلة للاستعادة':
        r.approved?'محفوظ ومعتمد — '+relativeVersion(r):'سجل غير معتمد للاستعادة');
+     if(r.verified===true&&Array.isArray(r.modules)&&r.modules.length){
+       add(el,'small','الوحدات: '+r.modules.map(function(m){
+         return (MOD[m.id]||safe(m.id,50))+' v'+m.version;
+       }).join('، '));
+     }
    });
    add(el,'small','الإصدارات التاريخية غير المحفوظة لا يمكن استعادتها بمجرد معرفة رقمها.');
    button(el,'تحديث قائمة الإصدارات',loadArchive,busy||!historyApi());
  }
+ function trustedArchive(){
+   var a=w.__BASAIR_P217_VERIFIED_HISTORY__;
+   return !!(a&&a===historyApi()&&typeof a.restore==='function');
+ }
  function canRestore(r){
-   return !!(r&&r.approved===true&&local&&!local.trial&&historyApi()&&
+   return !!(trustedArchive()&&r&&r.approved===true&&r.verified===true&&
+     r.restorable===true&&local&&!local.trial&&
      Number.isSafeInteger(r.sequence)&&r.sequence<=local.highestSequence);
  }
  function drawRestore(el){
@@ -202,6 +219,20 @@
        if(older&&older.scrollIntoView)older.scrollIntoView({block:'nearest'});
      },!w.__BASAIR_P197_ROLLBACK__);
      return;
+   }
+   if(!trustedArchive()){
+     add(el,'p','يمكن قراءة سجل P206 هنا، لكن الرجوع عبر المركز الجديد يتطلب تحقق P217 من التوقيع والملفات ومحرك الاستعادة. استخدم أداة P206 الأصلية حتى يكتمل ذلك.','p216Status');
+     button(el,'فتح أداة الرجوع الأصلية',function(){
+       var dlg=dialog();
+       if(!dlg)return;
+       dlg.classList.remove(ACTIVE);
+       var center=d.getElementById(ID);if(center)center.hidden=true;
+       selected=null;confirmed=false;
+       var p=w.__BASAIR_P206_SIGNED_ARCHIVE__;
+       if(p&&typeof p.refresh==='function')p.refresh();
+       var legacy=d.getElementById('p206SignedArchivePanel');
+       if(legacy&&legacy.scrollIntoView)legacy.scrollIntoView({block:'nearest'});
+     },busy||!w.__BASAIR_P206_SIGNED_ARCHIVE__);
    }
    if(!archive.length)add(el,'p','لا توجد نسخة معتمدة ومحفوظة يمكن الرجوع إليها.');
    archive.forEach(function(r){
@@ -235,7 +266,7 @@
    try{var rows=await api.list();
      archive=(Array.isArray(rows)?rows:[]).filter(function(r){
        return r&&Number.isSafeInteger(r.sequence)&&r.sequence>0;
-     }).sort(function(a,b){return b.sequence-a.sequence}).slice(0,6);
+     }).sort(function(a,b){return b.sequence-a.sequence}).slice(0,api.pendingLimit===1?7:6);
      lastError='';
    }catch(err){archive=[];lastError=safe(String(err&&err.message||err));}
    render();return archive;
@@ -293,6 +324,19 @@
    var m=d.getElementById('bqMoreCenter');if(!m||m.hidden)return false;
    var grid=m.querySelector&&m.querySelector('.bq-more-grid');
    if(!grid)return false;
+   // Fail OPEN: never hide the original signed P121/P197/P207 update
+   // controls when their verified P121 engine is not ready.
+   if(!engine()){
+     m.removeAttribute('data-p216-menu');
+     var abandoned=d.getElementById('p216MoreUpdates');
+     if(abandoned&&abandoned.parentNode)abandoned.parentNode.removeChild(abandoned);
+     menuNode=null;
+     var nativeDialog=dialog();
+     if(nativeDialog)nativeDialog.classList.remove(ACTIVE);
+     var inactive=d.getElementById(ID);
+     if(inactive)inactive.hidden=true;
+     return false;
+   }
    // Own exactly one P216 entry and leave all older entries in the DOM,
    // hidden only by reversible scoped CSS. P207 may be inserted later.
    var item=d.getElementById('p216MoreUpdates');
@@ -335,7 +379,13 @@
    if(menuNode&&menuNode.id==='p216MoreUpdates'&&menuNode.parentNode)menuNode.parentNode.removeChild(menuNode);
    return true;
  }
- function enable(){disabled=false;menu();render();return true;}
+ function enable(){
+   disabled=false;menu();
+   var dlg=dialog();
+   // Re-enable must not open a hidden native dialog by itself.
+   if(engine()&&dlg&&dlg.classList.contains(ACTIVE))render();
+   return true;
+ }
  function boot(){
    if(!d.body)return;
    d.addEventListener('click',clicked,true);
