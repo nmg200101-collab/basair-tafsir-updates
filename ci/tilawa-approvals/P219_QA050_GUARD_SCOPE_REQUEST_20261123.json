@@ -1,0 +1,19 @@
+{
+  "scope": {
+    "protocol": "basair-tilawa-unlock-v1",
+    "lock_id": "BASAIR-TILAWA-QA050-OWNER-LOCK-20261109",
+    "base_commit": "97cf790aa01a779a53196e237ce10f0dcaac6f98",
+    "protected_diff_sha256": "3f3e7c1054207d2b6be436df7beeb6e9be2f50b9324fd99809ce70bad0b9e473",
+    "protected_files": [
+      "ci/test_tilawa_lock_guard.py",
+      "ci/tilawa_lock_guard.py"
+    ]
+  },
+  "request": {
+    "protocol": "basair-tilawa-unlock-v1",
+    "reason": "Owner approve exact QA050 guard hardening to protect future P121 owner-qa Tilawa modules including P219, without changing existing pinned Quran content or P216 updates.",
+    "issued_at": "2026-11-23T00:00:00Z",
+    "expires_at": "2026-11-28T12:00:00Z"
+  },
+  "signature": ""
+}
