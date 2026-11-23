@@ -56,6 +56,11 @@
       "matched": 17,
       "total": 17,
       "method": "fresh GitHub SHA256 and byte-size, main; signed Seq130 descriptor array identical to original signed Seq127 descriptor array"
+    },
+    "P217Forward": {
+      "matched": 8,
+      "total": 8,
+      "method": "GitHub SHA256 + UTF8 byte size, newly modified P217 unsigned draft"
     }
   },
   "isolatedTests": [
@@ -76,17 +81,22 @@
     },
     {
       "suite": "P217",
-      "passed": 27,
+      "passed": 29,
       "failed": 0
     },
     {
       "suite": "P218",
       "passed": 34,
       "failed": 0
+    },
+    {
+      "suite": "P216 V695 P121 IndexedDB simulated state-machine",
+      "passed": 17,
+      "failed": 0
     }
   ],
   "isolatedTotal": {
-    "passed": 146,
+    "passed": 165,
     "failed": 0
   },
   "gitHubCI": {
@@ -143,7 +153,8 @@
     "Seq130 protected rescue becomes non-installable by monotonic OTA once highestSequence advances to 131+; must re-sign a higher protected backup before later release",
     "Protected QA050 CI workflow PR167 not owner-approved",
     "Cannot claim Android WebView accepted; Chromium browser access blocked by administrator",
-    "Do not promote signed candidate into main release.json while hard stops remain"
+    "Do not promote signed candidate into main release.json while hard stops remain",
+    "P217 runtime trust now requires signed updates module scope, but WebView integration remains unverified."
   ],
   "decision": "STAGED_SIGNED_HELD_NO_OWNER_QA_PROMOTION",
   "liveManifestModified": false,
