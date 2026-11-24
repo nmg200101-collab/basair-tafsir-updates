@@ -1,0 +1,61 @@
+{
+  "schema": "basair-p219-qa050-protected-field-release-gate-v1",
+  "date": "2026-11-23",
+  "app": "app.basair.qurv2",
+  "live": "P216 Seq128 (updates only)",
+  "ownerFieldFault": "Two visible Tilawa shadows; visual P215 midpoint ayah guide plus native B345 word indication, word emphasis no longer visible",
+  "rootCause": "P215 activeKey() returns visible-reading-guide when page MP3 has no exact ayah timestamp, paints entire ayah with p215ShadowMark; P216 does not modify Tilawa",
+  "fix": "P219 calls P215 public disable() to remove its duplicate visual overlay; does not create new shade or alter native B345",
+  "tests": {
+    "p219Unit": {
+      "passed": 24,
+      "failed": 0
+    },
+    "realP215SourceDOMMock": {
+      "passed": 15,
+      "failed": 0
+    },
+    "total": 39,
+    "fieldAcceptance": "NOT_TESTED",
+    "realAudioWordSync": "NOT_VERIFIED"
+  },
+  "signedHeld": {
+    "forward": {
+      "sequence": 131,
+      "version": 246,
+      "assets": 20,
+      "bytes": 126593,
+      "payloadSha256": "878d86e9dea8e403624d33ab23f98c2f114c219428187b163d85e87ed31e0e31"
+    },
+    "rollback": {
+      "sequence": 132,
+      "version": 247,
+      "assets": 19,
+      "bytes": 122850,
+      "payloadSha256": "f4b489d937d713ee5666b11baa3ee96599913391ef516ab17cd867b0e5f71b1d"
+    },
+    "rsa": "VERIFIED",
+    "ownerEdP119": "VERIFIED",
+    "approvalExpiry": "2026-11-28T13:00:00Z",
+    "notPublished": true
+  },
+  "qa050Governance": {
+    "policy": "Every Tilawa change requires independent owner approval using separately encrypted Ed25519 QA050 signing key.",
+    "lockDocument": "BASAIR-TILAWA-QA050-LOCK-20261109.md",
+    "trustedQA050Public": "ci/tilawa-owner-approval-public.pem",
+    "sourceGuardCoverageGap": "ci/tilawa_lock_guard.py protect() lists p92, CI, workflows, but does not include p121/owner-qa/modules/tilawa/*.",
+    "pr173CiResult": "tilawa-owner-lock success only because protected path was outside guard coverage, not evidence of QA050 approval.",
+    "ownerScopedQA050Approval": "NOT_AVAILABLE; original private key not found in accessible file sources",
+    "mustNotCircumvent": true,
+    "actions": [
+      "Obtain owner-signed exact QA050 scoped approval via trusted signer",
+      "Check updated guard covers current p121 Tilawa protected module path, with approval for changing guard itself",
+      "Verify signed Seq131+Seq132 envelopes against staged exact source files, maintain owner-pinned immutables",
+      "Android V695 owner-qa manual delivery test, one moving native word highlight and no stationary shade; if native word tracking absent revert and diagnose timing source"
+    ]
+  },
+  "decision": "HOLD_PROTECTED_TILAWA_RELEASE_UNTIL_INDEPENDENT_QA050_SIGNATURE_AND_FIELD_ACCEPTANCE",
+  "liveManifestModified": false,
+  "APKChanged": false,
+  "userDataChanged": false
+}
