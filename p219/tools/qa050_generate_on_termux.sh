@@ -63,8 +63,11 @@ printf '%s\n' 'QA050 key generation OK. Status: UNAPPROVED.' \
   "PUBLIC saved inside Termux: $PUBLIC" \
   'The PRIVATE PEM and its password must NEVER be uploaded.'
 if [ -d "$HOME/storage/downloads" ]; then
-  cp "$PUBLIC" "$HOME/storage/downloads/BASAIR-QA050-REPLACEMENT-PUBLIC.pem"
-  echo 'Public PEM copied to Downloads for sending to the project.'
+  if cp "$PUBLIC" "$HOME/storage/downloads/BASAIR-QA050-REPLACEMENT-PUBLIC.pem"; then
+    echo 'Public PEM copied to Downloads for sending to the project.'
+  else
+    echo 'PUBLIC PEM safely remains in Termux; check storage permission and copy only the PUBLIC file.'
+  fi
 else
   echo 'To share ONLY the public PEM: run termux-setup-storage, allow permission,'
   echo 'then run: cp ~/.local/share/basair/qa050-recovery/BASAIR-QA050-REPLACEMENT-PUBLIC.pem ~/storage/downloads/'
