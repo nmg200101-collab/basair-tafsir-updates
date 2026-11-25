@@ -1,5 +1,5 @@
 {
-  "status": "UNSIGNED_DRAFT_NOT_FOR_SIGNING_OR_PUBLISH_UNTIL_NATIVE_SOURCE_QA",
+  "status": "UNSIGNED_HELD_NATIVE_AUDIT_JOB_PASSED_DETAILED_REVIEW_AND_SIGNATURE_PENDING",
   "baseline": {
     "sequence": 141,
     "version": 254,
@@ -298,7 +298,15 @@
     "newAssets": 3,
     "existingLivePointerNotChanged": true,
     "actualDeviceQA": "NOT_RUN",
-    "nativeSourceAudit": "QUEUED",
-    "signature": "ABSENT"
+    "nativeSourceAudit": "CI_SUCCESS_REPORTED_LOG_NOT_RETRIEVED",
+    "signature": "ABSENT",
+    "nativeSourceAuditEvidence": {
+      "repo": "nmg200101-collab/basair-quran-p88-build",
+      "commit": "2f8048d2146d878a5311df381999dac3556b6112",
+      "context": "ci/circleci: p223-native-source-audit",
+      "url": "https://app.circleci.com/workflow/869d6793-a383-4d6c-b00a-8cdfc3275946/job/d856fcf4-8d58-4c5e-a0ef-890e1731328b"
+    },
+    "detailedNativeSourceReview": "NOT_CONFIRMED",
+    "ownerSigningMaterialAvailable": false
   }
 }
