@@ -1,6 +1,6 @@
 {
   "schema": "basair-p220-original-audio-print-staging-v1",
-  "state": "UNSIGNED_NOT_PUBLISHED",
+  "state": "ORIGINAL_OWNER_RSA_AND_P119_ED25519_SIGNED_HELD_NOT_PUBLISHED",
   "baseline": {
     "liveSequence": 131,
     "id": "P219-SEQ131-NATIVE-WORD-SINGLE-SHADOW-20261123",
@@ -296,13 +296,17 @@
     "sourceMatchesDeploy": true,
     "androidOnDevice": "NOT_RUN",
     "realAudioWordOrPageTiming": "NOT_VERIFIED",
-    "signing": "NOT_SIGNED"
+    "signing": "VERIFIED_OFFLINE_FORWARD_AND_ROLLBACK",
+    "forwardPayloadSha256": "36bd3eec635f37668d1f1ad7a11f1825536ff57192ea1442de7040fa8e61c88c",
+    "rollbackPayloadSha256": "5be1b9fcac1836efc6a9d7e90c353a82e71d8c2061204be0c60f6e997b0359b0",
+    "ownerApprovalExpiresAt": "2026-11-30T05:13:30Z",
+    "archive": "BASAIR_P220_SEQ137_138_SIGNED_HELD_20261125.zip (offline, not installable APK; contains only signed envelopes/public report)"
   },
   "gates": [
     "Preserve live Seq131 and P219 while staging",
     "Recheck unique proposed Seq137/138 against published highest sequence before signing",
     "Do not change original audio files, P219, P216 or QA050 frozen baseline",
-    "Owner signature RSA3072 plus original P119 owner Ed25519 required for forward and independent rollback",
+    "COMPLETED: exact original RSA3072 plus P119 Ed25519 signatures verified for Seq137 and independent Seq138 rollback",
     "QA050 governance of Tilawa must be addressed for this separate change; P219 exception does not automatically extend",
     "Real V695 WebView: verify original audio page scroll, page boundary, green border, pauses, stop/manual, silent and colored regressions",
     "Do not publish until signed and reversible"
