@@ -54,7 +54,8 @@
    n.textContent=
      'body.'+SILENT+' #b345NormalStack>.r33PrintShell{outline:0!important;border:0!important;box-shadow:none!important;border-radius:0!important}' +
      'body.'+SILENT+' #b345NormalStack>.r33PrintShell>.stableFrame{display:none!important}' +
-     'body.'+SILENT+' #mushafReader #mushafText{outline:0!important;box-shadow:none!important}' +
+     'body.'+SILENT+' #mushafReader{outline:0!important;box-shadow:none!important}' +
+     'body.'+SILENT+' #mushafReader #mushafText{border:0!important;outline:0!important;box-shadow:none!important}' +
      'body.'+AUDIO+'.p220-original-audio-live #mushafReader #mushafText{opacity:0!important;visibility:hidden!important;pointer-events:none!important}' +
      'body.'+AUDIO+'.p220-original-audio-live #mushafReader #b345NormalStack{opacity:1!important;visibility:visible!important}' +
      'body.'+AUDIO+' #b345NormalStack>.r33PrintShell{outline:0!important;border:0!important;box-shadow:none!important}' +
@@ -93,9 +94,12 @@
    var relativePageTop=top-r.top+now;
    var target=clip(relativePageTop+progress*Math.max(0,pageRect.height-viewport*.45),
                    0,height-viewport);
-   if(!(target>now+2))return false;
+   // Once a real native scroller was proven visible, advance in small
+   // real-audio increments instead of waiting for large, jerky pixel jumps.
+   if(!(target>now+(owner==='scroll'&&scroller===elem?.3:2)))return false;
    elem.scrollTop=target;
-   var after=rectTop(card),moved=after!==null&&Math.abs(after-top)>1.0;
+   var after=rectTop(card),moved=after!==null&&
+        Math.abs(after-top)>(owner==='scroll'&&scroller===elem?.25:1.0);
    if(!moved){elem.scrollTop=now;return false}
    owner='scroll';scroller=elem;
    meters.scrollCorrected++;meters.visualCorrections++;
