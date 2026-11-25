@@ -28,7 +28,7 @@
  function B(){return w.__BASAIR_B345_SEQUENCE__}
  function P(){return w.__BASAIR_PRINT_FOLLOW_100__}
  function safeNum(x){var v=Number(x);return Number.isFinite(v)?v:null}
- function pnum(x){var n=safeNum(x);return n!==null&&n>=0&&n<=1?n:null}
+ function pnum(x){if(typeof x!=='number'||!Number.isFinite(x))return null;return x>=0&&x<=1?x:null}
  function printed(){
    try{var s=B()&&B().state,p=P(),b=d.body;
      return !!(enabled&&b&&s&&s.running&&s.scaleMode==='normal'&&!s.surfaceBusy&&
