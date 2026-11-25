@@ -68,11 +68,14 @@ root.__BASAIR_P220_TESTS__=function(src){
  check('two observed progress increases fix stalled native scroller',a.reader.scrollTop>0&&api.status().scrollRecoveries===1);
  a.reader.scrollTop+=30;a.state.progress=.27;api.refresh();
  check('native scrolling remains sole owner if active',api.status().nativeScrollMoves>=1&&api.status().scrollRecoveries===1);
- a.state.paused=true;api.refresh();
- check('pause hides overlay and restores original control parent',!api.status().active&&a.mini.parentNode===a.origin);
- check('pause preserves sibling order',a.origin.children[0]===a.mini&&a.origin.children[1]===a.sibling);
+ const recoveredScroll=a.reader.scrollTop;
+ a.state.paused=true;a.state.progress=.8;api.refresh();
+ check('pause preserves current native printed page',api.status().active&&a.mini.parentNode===a.dock);
+ check('pause preserves scroll position',a.reader.scrollTop===recoveredScroll);
  check('pause does not stop audio engine',a.state.running===true);
- a.state.paused=false;a.edition('tajwid');api.refresh();check('Tajwid excluded',!api.status().active);
+ a.state.paused=false;api.refresh();
+ check('resume retains the active printed page',api.status().active&&a.mini.parentNode===a.dock);
+ a.edition('tajwid');api.refresh();check('Tajwid excluded',!api.status().active);
  a.edition('blue');api.refresh();check('blue edition excluded',!api.status().active);
  a.edition('original');a.scale(130);api.refresh();check('enlarged print excluded',!api.status().active);
  a.scale(100);a.font('digital');api.refresh();check('digital font excluded',!api.status().active);
