@@ -21,7 +21,7 @@
  function state(){var c=w.__BASAIR_B345_SEQUENCE__;return c&&c.state}
  function original(){
    var b=d.body,s=state(),p=w.__BASAIR_PRINT_FOLLOW_100__;
-   if(!enabled||!b||!s||!s.running||s.paused||s.mode!=='audio'||
+   if(!enabled||!b||!s||!s.running||s.mode!=='audio'||
        s.scaleMode!=='normal'||s.surfaceBusy||!safePage(s.page))return false;
    if(!b.classList.contains('reader-active')||b.classList.contains('stableDigital')||
        b.classList.contains('h25-hifz')||b.classList.contains('h90-review')||
@@ -90,6 +90,9 @@
    var progress=typeof s.progress==='number'&&Number.isFinite(s.progress)&&
         s.progress>=0&&s.progress<=1?s.progress:null;
    var page=safePage(s.page);
+   // A paused audio session keeps exactly the same native printed page and
+   // existing pause/stop controls. It must NOT reveal the stale static stage.
+   if(s.paused){lastPage=page;lastProgress=progress;lastScroll=position;stall=0;return}
    var nativeMoved=lastScroll!==null&&Math.abs(position-lastScroll)>1.25;
    if(nativeMoved){stats.nativeScrollMoves++;stall=0}
    if(lastPage&&page!==lastPage)stats.pageTransitions++;
