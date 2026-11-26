@@ -6,7 +6,8 @@
  'use strict';
  if(w.__BASAIR_P225_READER_BRIDGE__)return;
  const E=id=>d.getElementById(id),B=()=>d.body;
- let installed=false,engine=null,lease=null,serial=0,owner=null,legacy=null,core=null,sessionToken=0,lastError='';
+ let installed=false,engine=null,lease=null,serial=0,owner=null,legacy=null,core=null,sessionToken=0,lastError='',selected=null;
+ const enabled={original:false,tajwid:false};
  const excluded=['stableDigital','h25-hifz','h90-review','h100-teacher','b274LargeMushaf'];
  function edition(){
    const b=B(),p=w.__BASAIR_PRINT_FOLLOW_100__;
@@ -132,13 +133,57 @@
    resume(){const instance=engine,t=serial;if(!instance||instance.status()?.phase!=='paused')return false;instance.resume().then(ok=>{if(!ok&&engine===instance&&serial===t&&owner==='p225'&&core.status()?.generation===sessionToken)core.stop('p225-resume-failed')});return true},
    position(){const s=engine&&engine.status();return s?{page:s.page,progress:s.progress}:null}
  };
+ // Route only the explicitly selected printed edition to the experiment.
+ // Pin the delegate for the entire session, including STOP after a route switch.
+ function choose(){return enabled[edition()]?candidate:legacy}
+ const dispatch={
+   canStart(mode,opts){const a=choose();return !!a&&(!a.canStart||a.canStart(mode,opts)!==false)},
+   start(mode,opts){const a=choose();if(!a)return false;selected=a;try{const ok=a.start(mode,opts);if(ok===false)selected=null;return ok}catch(e){try{a.stop('start-error')}finally{selected=null}throw e}},
+   stop(reason){if(!selected)return true;const ok=selected.stop(reason);if(ok!==false)selected=null;return ok},
+   pause(){return !!selected&&selected.pause()},
+   resume(){return !!selected&&selected.resume()},
+   position(){return selected?selected.position():null}
+ };
  function install(){
    if(installed)return true;
    core=w.__BASAIR_P213_FOLLOW__;const a=w.__BASAIR_P213_ADAPTERS__,b=w.__BASAIR_P213_CONTROL_BRIDGE__;
    if(!core||core.status()||!a||!a.adapters||!a.adapters.printed||!b||!b.status().enabled||!nativeIdle()||
       !w.__BASAIR_P225_PRINT_VIEWPORT__||!w.__BASAIR_P225_RECORDING_PLAN__||!w.__BASAIR_P225_PRINT_SESSION__)return false;
-   legacy=a.adapters.printed;core.register('printed',candidate);installed=true;return true;
+   legacy=a.adapters.printed;core.register('printed',dispatch);installed=true;return true;
  }
- function uninstall(){if(!installed)return true;if(core.status()?.route==='printed'&&!core.stop('p225-uninstall'))return false;if(lease)release(false);core.register('printed',legacy);installed=false;return true}
- w.__BASAIR_P225_READER_BRIDGE__=Object.freeze({install,uninstall,status:()=>({installed,owner,error:lastError,session:engine&&engine.status()})});
+ function uninstall(){
+   if(!installed)return true;
+   const state=core.status();
+   if(state?.route==='printed'){
+     if(selected!==candidate)return false;
+     if(!core.stop('p225-uninstall'))return false;
+   }
+   if(lease)release(false);core.register('printed',legacy);installed=false;selected=null;
+   enabled.original=enabled.tajwid=false;return true;
+ }
+ function setTrial(ed,on){
+   if(!Object.prototype.hasOwnProperty.call(enabled,ed)||typeof on!=='boolean')return false;
+   if(on){
+     // Never reconfigure while any old or digital session owns controls.
+     if(!nativeIdle()||w.__BASAIR_P213_FOLLOW__?.status())return false;
+     if(!install())return false;enabled[ed]=true;return true;
+   }
+   if(lease?.edition===ed&&core.status()?.route==='printed'&&selected===candidate&&!core.stop('p225-disable-edition'))return false;
+   enabled[ed]=false;
+   if(!enabled.original&&!enabled.tajwid&&installed&&core.status()?.route!=='printed')return uninstall();
+   return true;
+ }
+ function stopTrial(){
+   if(selected===candidate&&core?.status()?.route==='printed'&&!core.stop('p225-emergency-stop'))return false;
+   enabled.original=enabled.tajwid=false;
+   if(installed&&core.status()?.route!=='printed')return uninstall();
+   return true;
+ }
+ function guard(){
+   // Also run during paused/preparing sessions, where no media tick is active.
+   if(lease&&(edition()!==lease.edition||!nativeIdle()))return stopTrial();
+   if(installed&&!enabled.original&&!enabled.tajwid&&core.status()?.route!=='printed')return uninstall();
+   return true;
+ }
+ w.__BASAIR_P225_READER_BRIDGE__=Object.freeze({setTrial,stopTrial,guard,edition,status:()=>({installed,owner,error:lastError,enabled:{...enabled},session:engine&&engine.status()})});
 })(window,document);
