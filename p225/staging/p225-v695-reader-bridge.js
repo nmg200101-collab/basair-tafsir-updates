@@ -51,8 +51,8 @@
  }
  function restore(l){
    if(!l)return;
-   if(l.original.parentNode)l.original.parentNode.removeChild(l.original);
-   if(l.tajwid.parentNode)l.tajwid.parentNode.removeChild(l.tajwid);
+   if(l.original&&l.original.parentNode)l.original.parentNode.removeChild(l.original);
+   if(l.tajwid&&l.tajwid.parentNode)l.tajwid.parentNode.removeChild(l.tajwid);
    // Only undo the specific inline property owned by this bridge.
    if(l.hidden&&l.surface.style.getPropertyValue('display')==='none'&&l.surface.style.getPropertyPriority('display')==='important'){
      if(l.prior)l.surface.style.setProperty('display',l.prior,l.priority);else l.surface.style.removeProperty('display');
@@ -65,14 +65,14 @@
    return bridge.resolvePage(p);
  }
  function setMini(s){
-   if(!lease||edition()!==lease.edition)return;
+   if(!lease||s&&edition()!==lease.edition||!s&&!nativeIdle())return;
    const mini=E('sequenceMiniControl'),label=E('sequenceMiniText'),pause=E('sequenceMiniPause');
    if(!mini||!label||!pause)return;
    if(s){mini.classList.add('show');label.textContent=(s.mode==='audio'?'🔊 ':'▤ ')+'صفحة '+s.page;pause.textContent=s.phase==='paused'?'▶ متابعة':'⏸ إيقاف مؤقت'}
    else{mini.classList.remove('show');label.textContent='';pause.textContent='⏸ إيقاف مؤقت'}
  }
  function release(restorePage){
-   const l=lease,s=engine&&engine.status();++serial;
+   const l=lease,s=(engine&&engine.status())||(l&&l.lastSession);++serial;
    if(l)setMini(null);
    lease=null;const c=engine;engine=null;
    if(c)c.stop('bridge-release');
@@ -95,7 +95,7 @@
    const recordings=plans.create({pageProvider:w.__BASAIR_V180_TEST__,specialProvider:w.__BASAIR_SPECIAL_RECITER_R62__,fallbackProvider:(p,k)=>{const a=w.__BASAIR_V173_TEST__;return a&&typeof a.pageAudioUrls==='function'&&read('sequenceReciterV17','v170Reciter','alafasy')===k?a.pageAudioUrls(p):[]}});
    return sessions.create({viewport,recordings,createMedia:()=>new w.Audio(),now:()=>w.performance.now(),schedule:f=>w.setTimeout(f,50),cancel:t=>w.clearTimeout(t),eligible,onChange:s=>{
      if(lease!==l||serial!==token)return;
-     if(s)setMini(s);
+     if(s){l.lastSession=s;setMini(s)}
      else{w.setTimeout(()=>{if(lease===l&&serial===token&&owner==='p225'&&core.status()?.generation===sessionToken)core.stop('p225-session-ended')},0)}
    }});
  }
@@ -103,10 +103,10 @@
    canStart(mode){return !!(request(mode)&&layout(edition())&&nativeIdle()&&(!core.status()||core.status().route==='printed'&&owner==='p225'))},
    start(mode){
      const req=request(mode),layoutState=req&&layout(req.edition);
-     if(!req||!layoutState||!nativeIdle()||lease)return false;
+     if(!req||!layoutState||!nativeIdle()||lease||typeof w.openPage!=='function')return false;
      const t=++serial,l={...layoutState,edition:req.edition,page:req.page,prior:layoutState.surface.style.getPropertyValue('display'),priority:layoutState.surface.style.getPropertyPriority('display'),hidden:false};
-     l.original=mountFor(l,'original');l.tajwid=mountFor(l,'tajwid');lease=l;owner='p225';sessionToken=core.status()?.generation;
-     try{engine=create(req,l,t);const instance=engine;
+     lease=l;owner='p225';sessionToken=core.status()?.generation;
+     try{l.original=mountFor(l,'original');l.tajwid=mountFor(l,'tajwid');engine=create(req,l,t);const instance=engine;
        instance.start(req).then(ok=>{if(!ok&&lease===l&&serial===t){lastError='start not ready';if(core.status()?.generation===sessionToken)core.stop('p225-start-failed')}}).catch(()=>{if(lease===l&&serial===t&&core.status()?.generation===sessionToken)core.stop('p225-start-error')});
        return true
      }catch(e){lastError=String(e);release(false);owner=null;return false}
@@ -123,6 +123,6 @@
       !w.__BASAIR_P225_PRINT_VIEWPORT__||!w.__BASAIR_P225_RECORDING_PLAN__||!w.__BASAIR_P225_PRINT_SESSION__)return false;
    legacy=a.adapters.printed;core.register('printed',candidate);installed=true;return true;
  }
- function uninstall(){if(!installed)return true;if(core.status()?.route==='printed')core.stop('p225-uninstall');if(lease)release(false);core.register('printed',legacy);installed=false;return true}
+ function uninstall(){if(!installed)return true;if(core.status()?.route==='printed'&&!core.stop('p225-uninstall'))return false;if(lease)release(false);core.register('printed',legacy);installed=false;return true}
  w.__BASAIR_P225_READER_BRIDGE__=Object.freeze({install,uninstall,status:()=>({installed,owner,error:lastError,session:engine&&engine.status()})});
 })(window,document);
