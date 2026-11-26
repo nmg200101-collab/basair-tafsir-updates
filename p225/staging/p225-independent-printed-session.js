@@ -43,6 +43,9 @@
    }
    async function next(r){
      if(!live(r)||r.phase!=='running')return;
+     // The reader may be holding the page at the end of its clock. Wait
+     // for the private viewport's gesture to settle instead of switching it.
+     if(typeof viewport.canAdvance==='function'&&!viewport.canAdvance()){arm(r);return}
      r.phase='transition';emit();
      if(r.media)r.media.pause();
      if(r.mode==='audio'&&r.repeatsLeft>1){
