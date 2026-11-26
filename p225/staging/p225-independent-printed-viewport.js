@@ -7,13 +7,27 @@
  function create(opts){
    const {document:d,mount,edition,resolvePage,isEligible}=opts;
    if(!d||!mount||!['original','tajwid'].includes(edition)||typeof resolvePage!=='function'||typeof isEligible!=='function')throw Error('invalid viewport ports');
-   let epoch=0,view=null,current=null,next=null,pending=null,phase='idle',fraction=0,advancing=false;
+   let epoch=0,view=null,current=null,next=null,pending=null,phase='idle',fraction=0,advancing=false,manual=null,anchor=null,clockFraction=0;
    const valid=p=>Number.isInteger(p)&&p>=1&&p<=604;
    const alive=t=>t===epoch&&isEligible();
    function makeViewport(){
      const node=d.createElement('div');
      node.setAttribute('data-p225-viewport',edition);
      Object.assign(node.style,{position:'relative',width:'100%',height:'100%',overflowY:'auto',overflowX:'hidden',overscrollBehavior:'contain',background:'#fffdf8',margin:'0',padding:'0',display:'block',boxSizing:'border-box'});
+     // Only this private viewport listens to manual input. Do not infer a
+     // touch from a programmatic scroll event.
+     if(typeof node.addEventListener==='function'){
+       const begin=()=>{if(phase==='ready'&&isEligible()){manual={active:true,last:Date.now()};anchor=null}};
+       const end=()=>{if(manual){manual.active=false;manual.last=Date.now()}};
+       node.addEventListener('pointerdown',begin,{passive:true});
+       node.addEventListener('pointerup',end,{passive:true});
+       node.addEventListener('pointercancel',end,{passive:true});
+       node.addEventListener('touchstart',begin,{passive:true});
+       node.addEventListener('touchend',end,{passive:true});
+       node.addEventListener('touchcancel',end,{passive:true});
+       node.addEventListener('wheel',()=>{begin();end()},{passive:true});
+       node.addEventListener('scroll',()=>{if(manual)manual.last=Date.now()},{passive:true});
+     }
      return node;
    }
    function card(p){
@@ -35,7 +49,7 @@
    }
    function clear(){
      ++epoch; if(view&&view.parentNode===mount)mount.removeChild(view);
-     view=current=next=pending=null;fraction=0;phase='idle';advancing=false;
+     view=current=next=pending=null;fraction=0;phase='idle';advancing=false;manual=anchor=null;clockFraction=0;
    }
    async function preload(t){
      if(!current||current.p===604||!alive(t))return false;
@@ -72,7 +86,17 @@
    function progress(value){
      if(phase!=='ready'||!isEligible()||!Number.isFinite(value))return false;
      const g=geometry();if(!g)return false;
-     fraction=Math.min(1,Math.max(0,value));
+     clockFraction=Math.min(1,Math.max(0,value));
+     if(manual){
+       fraction=Math.max(0,Math.min(1,(view.scrollTop-g.base)/g.span));
+       if(manual.active||Date.now()-manual.last<350)return true;
+       anchor={clock:clockFraction,visual:fraction};
+       manual=null;
+     }
+     // After manual scroll, continue from the visible position without
+     // moving the audio clock. Reach the next page at the same audio end.
+     fraction=anchor?Math.max(0,Math.min(1,anchor.visual+(clockFraction-anchor.clock)*(1-anchor.visual)/Math.max(.001,1-anchor.clock))):clockFraction;
+     if(clockFraction===1&&!manual)fraction=1;
      const limit=next?g.max:Math.min(g.max,g.base+Math.max(0,g.height-view.clientHeight));
      view.scrollTop=Math.max(0,Math.min(limit,g.base+fraction*g.span));
      return true;
@@ -83,12 +107,16 @@
      try{
        if(!next)await (pending||kick(t));
        if(!alive(t)||current!==old||!next||next.p!==old.p+1||!view)return false;
-       view.removeChild(old.n);current=next;next=null;fraction=0;view.scrollTop=0;
+       view.removeChild(old.n);current=next;next=null;fraction=clockFraction=0;manual=anchor=null;view.scrollTop=0;
        kick(t);return true;
      }finally{if(t===epoch)advancing=false}
    }
-   function position(){return Object.freeze({edition,phase,page:current?current.p:null,progress:fraction,nextReady:!!next})}
-   return Object.freeze({start,progress,advance,stop:clear,position});
+   function reset(){
+     if(phase!=='ready'||!current||!isEligible())return false;
+     manual=anchor=null;fraction=clockFraction=0;return progress(0);
+   }
+   function position(){return Object.freeze({edition,phase,page:current?current.p:null,progress:fraction,clockProgress:clockFraction,manual:!!manual,nextReady:!!next})}
+   return Object.freeze({start,progress,advance,reset,stop:clear,position});
  }
  function pair(opts){
    if(!opts.original||!opts.tajwid||opts.original.mount===opts.tajwid.mount)throw Error('separate mounts required');
@@ -103,7 +131,7 @@
      return true;
    }
    function stop(){const session=active;active=null;if(session)session.engine.stop()}
-   return Object.freeze({start,stop,progress(value){return !!active&&active.engine.progress(value)},advance(){return active?active.engine.advance():Promise.resolve(false)},position(){return active?active.engine.position():null}});
+   return Object.freeze({start,stop,progress(value){return !!active&&active.engine.progress(value)},advance(){return active?active.engine.advance():Promise.resolve(false)},reset(){return !!active&&active.engine.reset()},position(){return active?active.engine.position():null}});
  }
  root.__BASAIR_P225_PRINT_VIEWPORT__=Object.freeze({create,pair});
 })(typeof window!=='undefined'?window:globalThis);
