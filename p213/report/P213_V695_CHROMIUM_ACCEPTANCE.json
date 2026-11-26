@@ -1,0 +1,339 @@
+{
+  "schema": "basair-p213-v695-acceptance-evidence-v1",
+  "testDate": "2026-11-19",
+  "status": "DEVELOPMENT_ONLY_NOT_PUBLISHED",
+  "apk": {
+    "file": "basair-v695-owner-signed.apk",
+    "bytes": 102941369,
+    "sha256": "925f6116899ad8acf1cba2a9ec75d04db7951af66ad5b3de98b7cbc7cba9d384",
+    "packageId": "app.basair.qurv2"
+  },
+  "environment": "Chromium isolated, mobile viewport 390x844, V695 index.html/assets extracted from signed APK; not Android WebView",
+  "checks": {
+    "isolated_core": {
+      "passed": 22,
+      "failed": 0
+    },
+    "adapter_routing": {
+      "passed": 51,
+      "failed": 0
+    },
+    "contract_smoke": {
+      "passed": 4,
+      "failed": 0
+    },
+    "total_isolated": {
+      "passed": 104,
+      "failed": 0
+    },
+    "control_capture": {
+      "passed": 16,
+      "failed": 0
+    },
+    "signed_bootstrap": {
+      "passed": 11,
+      "failed": 0
+    }
+  },
+  "originalV695": {
+    "print100": {
+      "silentStart": "PASS",
+      "pause": "PASS",
+      "resume": "PASS",
+      "stopPreservesPage4": "PASS"
+    },
+    "zoom": [
+      {
+        "scale": 130,
+        "nativeB345Running": true,
+        "r51Active": true,
+        "scalePreserved": true
+      },
+      {
+        "scale": 150,
+        "nativeB345Running": true,
+        "r51Active": true,
+        "scalePreserved": true
+      },
+      {
+        "scale": 200,
+        "nativeB345Running": true,
+        "r51Active": true,
+        "scalePreserved": true
+      }
+    ],
+    "originalImageOffline": "MISSING (page not downloaded to local browser)",
+    "continuousRealImageScrolling": "NOT_VERIFIED"
+  },
+  "coloredV695": {
+    "zoom": [
+      {
+        "scale": 130,
+        "nativeB345Running": true,
+        "r51Active": true,
+        "scalePreserved": true
+      },
+      {
+        "scale": 150,
+        "nativeB345Running": true,
+        "r51Active": true,
+        "scalePreserved": true
+      },
+      {
+        "scale": 200,
+        "nativeB345Running": true,
+        "r51Active": true,
+        "scalePreserved": true
+      }
+    ],
+    "imageOffline": "BUNDLED WEBP AVAILABLE",
+    "continuousVerticalFollow": "NOT_FULLY_VERIFIED"
+  },
+  "findings": [
+    "B345.startSilent/startAudio/stop and _test.togglePause may return false even after success",
+    "No public B345.pause()",
+    "R33 provides printed follow at 100%; R51 provides printed follow at >100%",
+    "P212 original intercepts colored start even when zoomed; staged v2 restricts interception to fixed colored 100%",
+    "Unrelated Chromium-only IndexedDB errors observed"
+  ],
+  "gates": {
+    "ownerQA050ScopedEd25519Approval": "SEPARATE_DIFFERENT_PUBLIC_KEY — GitHub QA050 verifier public differs; protected-path approval required only on guarded changes",
+    "androidWebviewE2E": "NOT_RUN",
+    "originalDownloadedPrintedImageScrolling": "MISSING_OFFLINE_ORIGINAL_RESOURCE",
+    "realReciterAudioContinuity": "NOT_RUN",
+    "signedP213Envelope": "NOT_AVAILABLE — approval RSA/Ed25519 cannot be inferred from unsigned catalog",
+    "rollbackSignedEnvelope": "NOT_CREATED",
+    "deployment": "NOT_STARTED: production P121 manifest remains P212 Seq120",
+    "digitalFontsLiveRender": "NOT_VERIFIED_ON_ANDROID",
+    "uiIntegrationEndToEnd": "NOT_RUN — opt-in V695 capture bridge only tested with mock coordinator and real native button handlers",
+    "activationStatus": "NOT_ENABLED — no owner-qa manifest update",
+    "gitHubQa050ScopedEd25519Approval": "NOT_AVAILABLE_FOR_P213_DIFF",
+    "v695OtaModuleEd25519Approval": "SIGNING_KEY_VERIFIED_LOCALLY — ready for scoped approval when frozen forward/recovery manifests and acceptance exist; no release signed",
+    "signedRecoveryEnvelope": "NOT_AVAILABLE — higher Tilawa version 240 + independently signed sequence required",
+    "realP213ChromiumIntegration": "NOT_EXECUTED — p213/tests/test_v695_integrated_follow.py exists but this test exercises native V695 ONLY"
+  },
+  "r51VerticalScrollChromium": {
+    "method": "While B345 is paused, set progress=0.9 and call R51.follow(0.9,state,true); wait 750ms",
+    "viewportClientHeight": 757,
+    "results": [
+      {
+        "edition": "original",
+        "scale": 130,
+        "maxScrollTop": 130,
+        "observedScrollTop": 130,
+        "manualScrollAfterPause": "PASS"
+      },
+      {
+        "edition": "original",
+        "scale": 150,
+        "maxScrollTop": 266,
+        "observedScrollTop": 266,
+        "manualScrollAfterPause": "PASS"
+      },
+      {
+        "edition": "original",
+        "scale": 200,
+        "maxScrollTop": 607,
+        "observedScrollTop": 607,
+        "manualScrollAfterPause": "PASS"
+      },
+      {
+        "edition": "tajwid",
+        "scale": 130,
+        "maxScrollTop": 130,
+        "observedScrollTop": 130,
+        "manualScrollAfterPause": "PASS"
+      },
+      {
+        "edition": "tajwid",
+        "scale": 150,
+        "maxScrollTop": 266,
+        "observedScrollTop": 266,
+        "manualScrollAfterPause": "PASS"
+      },
+      {
+        "edition": "tajwid",
+        "scale": 200,
+        "maxScrollTop": 607,
+        "observedScrollTop": 607,
+        "manualScrollAfterPause": "PASS"
+      }
+    ],
+    "scope": "Confirms physical vertical scrolling and manual scrolling in isolated Chromium; original images absent offline, actual audio progression not tested."
+  },
+  "digitalFontsOfflineChromium": {
+    "method": "Select data-final-font=digital from original V695; inspect state and actual digital host",
+    "observed": {
+      "stableFont": "digital",
+      "bodyClassStableDigital": false,
+      "digitalHostPresent": false,
+      "originalMushafVisible": true,
+      "b345NativeStartWorks": true
+    },
+    "interpretation": "Font selection persists but real digital page did not mount in isolated offline Chromium. May depend on cached/downloaded exact-layout data, and must not be treated as loaded digital renderer.",
+    "p213Guard": "Require stableDigital class, nonempty stableDigitalHost, and not aria-busy",
+    "extraGuardsPassed": 2
+  },
+  "followSafetyImprovements": {
+    "preflightRouteReadiness": "PASS — unavailable new route leaves existing follow running",
+    "postStartFailureCleanup": "PASS — late exception in B345/P212 start cleans up owned engine",
+    "emergencyStopWithoutPauseInterface": "PASS — stop requires stop contract only",
+    "sessionSwitchNoOverlap": "PASS — refusal to stop blocks new route",
+    "scope": "Isolated V695 API-compatible test doubles, not Android hardware"
+  },
+  "nativeButtonCaptureChromium": {
+    "status": "PASS",
+    "method": "Original signed V695 index.html/B345 + isolated test controller, inject reversible opt-in P213 capture bridge",
+    "observations": {
+      "b345OriginalCaptureInstalled": true,
+      "enableRebindsNativeHandler": true,
+      "followClickGoesToP213Controller": true,
+      "nativeB345RemainsStoppedDuringInterception": true,
+      "disableRestoresOriginalHandler": true,
+      "clickAfterDisableStartsNativeB345": true
+    },
+    "limits": "Test used a mock P213 coordinator, did not test integrated audio/scroll or Android WebView."
+  },
+  "releaseGateVerifier": {
+    "path": "p213/tools/verify_v695_ota.py",
+    "purpose": "Read-only RSA/Ed25519 approval plus manifest SHA/bytes validation against V695 embedded public keys",
+    "publicKeysSanity": "V695 APK read-only RSA 3072-bit SPKI and ED25519 32-byte public key parsed successfully by OpenSSL",
+    "targetSequenceMinimum": 122,
+    "requiredSignedRollbackSequenceMinimum": 123,
+    "limitations": "No signed P213 forward or rollback available; verifier cannot confirm absent signatures, and it does not create them."
+  },
+  "ownerKeyCompatibility": {
+    "comparison": "CI Ed25519 public key DER vs V695 embedded OTA owner Ed25519 public key",
+    "sameKey": false,
+    "ciKeyPath": "ci/tilawa-owner-approval-public.pem",
+    "otaKeySource": "signed V695 APK assets/www/p121/universal-updates.js OWNER_ED25519",
+    "consequence": "CI QA050 scoped code-diff authorization and OTA module ownerApproval must be independently signed and verified. RSA envelope signature is an additional separate requirement.",
+    "privateKeysInspected": false
+  },
+  "signedBootstrap": {
+    "source": "p213/src/signed-ota-bootstrap.js",
+    "state": "STAGED_ONLY_NOT_SIGNED_OR_DEPLOYED",
+    "autoEnableRequirement": "document.currentScript.dataset.basairP121 === 'tilawa' from verified original V695 loader; corrected P212 version>=213; B345/P212 idle; core/route/UI ready",
+    "sourceVerification": "V695 p121/universal-updates.js uses script.dataset.basairP121=module before appending inline JS",
+    "preflightTests": 11,
+    "controlOwnershipTests": 14,
+    "fallback": "No activation when injected from other origins or when an existing session runs; native V695 remains installed",
+    "assetPlan": "17 tilawa assets including last signed-ota-bootstrap.js"
+  },
+  "compatibility": {
+    "androidPackageVersion": "1.0.0-v695",
+    "embeddedP121ReceiverVersion": 694,
+    "requiredSignedMinAppVersion": 694,
+    "source": "assets/www/p121/universal-updates.js: var NS..., APP_VERSION = 694",
+    "warning": "minAppVersion 695 would be refused by installed P121 receiver even though Android package reports v695",
+    "verifiedSignedApkSha256": "925f6116899ad8acf1cba2a9ec75d04db7951af66ad5b3de98b7cbc7cba9d384"
+  },
+  "assetCatalog": {
+    "path": "p213/report/P213_UNSIGNED_ASSET_CATALOG.json",
+    "baselineP212AssetsVerifiedAgainstSignedManifest": 13,
+    "forwardAssets": 17,
+    "forwardTotalBytes": 113996,
+    "rollbackAssets": 13,
+    "rollbackTotalBytes": 88438,
+    "forwardVersion": 239,
+    "recoveryVersion": 240,
+    "mutableOldAssetOverwriteAllowed": false,
+    "correctedP212NewUrl": "modules/tilawa/p213-tajwid-static-follow-v2.js",
+    "status": "UNSIGNED_STAGED_ONLY",
+    "refreshedAdapterSha256": "b362070c20a875e84b3f8ffa696355d20c1155e10a5eddb04fee23fed5fe09f6",
+    "refreshedAdapterSize": 10845,
+    "refreshedControlBridgeSize": 5293,
+    "refreshedControlBridgeSha256": "d3e4bfa92044cc97c3662c32146b00316c51e3ba155f776b7ab7416adcd4fd2b"
+  },
+  "newFullIntegrationTest": {
+    "path": "p213/tests/test_v695_integrated_follow.py",
+    "status": "WRITTEN_NOT_EXECUTED",
+    "purpose": "Test real V695 B345/R33/R51 with unmocked P213 coordinator, real P212 v2, reversible UI capture in isolated Chromium",
+    "androidRealAudioAcceptance": false
+  },
+  "nativeV695LifecycleReproduction": {
+    "test": "p213/tests/test_v695_native_lifecycle.py",
+    "result": "PASS_4_OF_4",
+    "executedEnvironment": "Chromium 390x844, isolated local files from original signed V695 APK",
+    "actualB345": [
+      {
+        "operation": "startSilent",
+        "returned": false,
+        "running": true,
+        "paused": false,
+        "mode": "silent",
+        "page": 4
+      },
+      {
+        "operation": "togglePause pause",
+        "returned": false,
+        "running": true,
+        "paused": true,
+        "mode": "silent",
+        "page": 4
+      },
+      {
+        "operation": "togglePause resume",
+        "returned": false,
+        "running": true,
+        "paused": false,
+        "mode": "silent",
+        "page": 4
+      },
+      {
+        "operation": "stop",
+        "returned": false,
+        "running": false,
+        "paused": false,
+        "mode": "",
+        "page": 4
+      }
+    ],
+    "selectorMatch": "B345 native selectors #sequenceSilentB345, #sequenceAudioB345, #sequenceMiniPause, #sequenceMiniStop verified in original bundled JS",
+    "scope": "Native B345 behavior only; P213 is NOT injected by this test; no Android WebView, real audio, digital font or printed image scrolling proof"
+  },
+  "digitalZoomRouteFix": {
+    "source": "p213/src/follow-route-adapters.js",
+    "cause": "V695 B330 renders digital fonts >100% in #b274LargeTextHost, not #stableDigitalHost (100% surface)",
+    "rule": "Require stableDigital + stableFont != original; at 100% require nonempty #stableDigitalHost .v160DigitalFlow; above 100% require b274LargeMushaf and nonempty #b274LargeTextHost .v160DigitalFlow with data-b330-scroll-owner=b274LargeTextHost and no diagnostic markup",
+    "newChecks": [
+      "digital 130% text host starts",
+      "digital 130% stops",
+      "zoom diagnostic cannot start",
+      "empty digital flow cannot start"
+    ],
+    "result": "PASS_51_OF_51_VERIFIED_INTERFACE_MOCK_NOT_ANDROID",
+    "importantLimitation": "Digital page at 130% not tested with real downloaded Quran text on Android; the Chromium integration test remains unexecuted"
+  },
+  "staleP212GlobalGuard": {
+    "reason": "P212 v1 code retains window.__BASAIR_P212_TAJWID_STATIC_FOLLOW__ between OTA changes; newly loaded P212 v2 has duplicate-global guard and cannot replace v1 in same WebView",
+    "change": "P213 capture enable refuses existing legacy P212 where version <213, missing or unparsable, even when idle; prevents stale controllers from taking over B345",
+    "regression": "16/16 control checks, total 104/104 isolated",
+    "runtimeRequirement": "Reopen app and verify version 213 is installed before authorizing P213; no claim of Android acceptance"
+  },
+  "signingInventory": {
+    "originalRsaPkcs12": "AVAILABLE_PREVIOUSLY_VERIFIED",
+    "v695OtaEd25519PrivateKey": "NOT_FOUND_IN_UPLOADED_P12_OR_ZIP_OR_AVAILABLE_LIBRARY_KEY_FILES",
+    "qa050CiEd25519PrivateKey": "NOT_FOUND_IN_AVAILABLE_LIBRARY_KEY_FILES",
+    "passphraseOnlyRecord": "BASAIR-P119-ED25519-OWNER-PASSPHRASE-KEEP-SEPARATE.txt exists, but by itself cannot sign",
+    "sourceProtectionWorkflow": "tilawa-owner-lock.yml is read-only approval guard; not an OTA signer",
+    "signaturesForP213": "NOT_CREATED",
+    "privateMaterialWrittenToGitHub": false,
+    "v695OtaEd25519EncryptedPrivateKey": "FOUND_LOCAL_USER_UPLOADED_BASAIR_P119_OWNER_ED25519_ENCRYPTED_BACKUP_ZIP",
+    "backupPublicRawSha256": "47fec7dbe6fc3949c01b000658b2f2d376adcbd98c42c02cdc280c313ec7dbcf",
+    "embeddedV695OwnerEd25519RawSha256": "47fec7dbe6fc3949c01b000658b2f2d376adcbd98c42c02cdc280c313ec7dbcf",
+    "backupMatchesV695OtaPublic": true,
+    "qa050CiEd25519PublicRawSha256": "468a4b0de5066569eb55f22987e1768569de7ff96d95b716ff8ebbed1a90e1c7",
+    "backupMatchesQa050CiPublic": false,
+    "encryptedPrivateDecryption": "PASS — decrypted in local memory using separately stored user passphrase; plaintext private key never written to disk, exported or uploaded",
+    "signingProof": "NO_P213_OTA_SIGNATURE_CREATED",
+    "uploadedArchive": "BASAIR-P119-OWNER-ED25519-ENCRYPTED-BACKUP.zip",
+    "noSecretsInRepository": true,
+    "caution": "ZIP README describes a 2026-11-10 replacement key; V695 OTA embedded public key is already the replacement. Do not replace APK V695 or infer this key matches separate GitHub QA050 verifier.",
+    "encryptedPrivatePairCheck": "PASS — Ed25519 private key public component exactly matches bundled PEM and embedded V695 OTA OWNER_ED25519",
+    "dummySignatureCheck": "PASS — signed and verified an audit-only unrelated message",
+    "p213ForwardApproval": "NOT_SIGNED",
+    "p213RecoveryApproval": "NOT_SIGNED",
+    "actualReleaseSignature": "NOT_SIGNED"
+  }
+}
