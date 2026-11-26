@@ -101,8 +101,9 @@
      view.scrollTop=Math.max(0,Math.min(limit,g.base+fraction*g.span));
      return true;
    }
+   function canAdvance(){return phase==='ready'&&isEligible()&&(!manual||(!manual.active&&Date.now()-manual.last>=350))}
    async function advance(){
-     if(advancing||phase!=='ready'||!current||current.p===604||!isEligible())return false;
+     if(advancing||!canAdvance()||!current||current.p===604)return false;
      const t=epoch,old=current;advancing=true;
      try{
        if(!next)await (pending||kick(t));
@@ -116,7 +117,7 @@
      manual=anchor=null;fraction=clockFraction=0;return progress(0);
    }
    function position(){return Object.freeze({edition,phase,page:current?current.p:null,progress:fraction,clockProgress:clockFraction,manual:!!manual,nextReady:!!next})}
-   return Object.freeze({start,progress,advance,reset,stop:clear,position});
+   return Object.freeze({start,progress,advance,canAdvance,reset,stop:clear,position});
  }
  function pair(opts){
    if(!opts.original||!opts.tajwid||opts.original.mount===opts.tajwid.mount)throw Error('separate mounts required');
@@ -131,7 +132,7 @@
      return true;
    }
    function stop(){const session=active;active=null;if(session)session.engine.stop()}
-   return Object.freeze({start,stop,progress(value){return !!active&&active.engine.progress(value)},advance(){return active?active.engine.advance():Promise.resolve(false)},reset(){return !!active&&active.engine.reset()},position(){return active?active.engine.position():null}});
+   return Object.freeze({start,stop,progress(value){return !!active&&active.engine.progress(value)},advance(){return active?active.engine.advance():Promise.resolve(false)},reset(){return !!active&&active.engine.reset()},canAdvance(){return !!active&&active.engine.canAdvance()},position(){return active?active.engine.position():null}});
  }
  root.__BASAIR_P225_PRINT_VIEWPORT__=Object.freeze({create,pair});
 })(typeof window!=='undefined'?window:globalThis);
