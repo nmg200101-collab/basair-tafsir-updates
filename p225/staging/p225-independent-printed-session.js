@@ -45,7 +45,8 @@
      if(!live(r)||r.phase!=='running')return;
      // The reader may be holding the page at the end of its clock. Wait
      // for the private viewport's gesture to settle instead of switching it.
-     if(typeof viewport.canAdvance==='function'&&!viewport.canAdvance()){arm(r);return}
+     if(typeof viewport.canAdvance==='function'&&!viewport.canAdvance()){if(r.media)r.media.pause();r.boundaryHold=true;arm(r);return}
+     r.boundaryHold=false;
      r.phase='transition';emit();
      if(r.media)r.media.pause();
      if(r.mode==='audio'&&r.repeatsLeft>1){
@@ -115,7 +116,7 @@
      try{
        r.phase='resuming';
        const media=r.media;
-       if(media)await media.play();
+       if(media&&!r.boundaryHold)await media.play();
        if(!live(r)){if(media)media.pause();if(run===r)stop('route-changed');return false}
        r.base=now();r.phase='running';emit();arm(r);return true;
      }catch(_){if(run===r)stop('resume-failed');return false}
