@@ -81,11 +81,17 @@
    return bridge.resolvePage(p);
  }
  function setMini(s){
-   if(!lease||s&&edition()!==lease.edition||!s&&!nativeIdle())return;
+   if(!lease||s&&edition()!==lease.edition)return;
    const mini=E('sequenceMiniControl'),label=E('sequenceMiniText'),pause=E('sequenceMiniPause');
    if(!mini||!label||!pause)return;
-   if(s){mini.classList.add('show');label.textContent=(s.mode==='audio'?'🔊 ':'▤ ')+'صفحة '+s.page;pause.textContent=s.phase==='paused'?'▶ متابعة':'⏸ إيقاف مؤقت'}
-   else{mini.classList.remove('show');label.textContent='';pause.textContent='⏸ إيقاف مؤقت'}
+   if(s){
+     if(!lease.miniBefore)lease.miniBefore={show:mini.classList.contains('show'),label:label.textContent,pause:pause.textContent};
+     const nextLabel=(s.mode==='audio'?'🔊 ':'▤ ')+'صفحة '+s.page,nextPause=s.phase==='paused'?'▶ متابعة':'⏸ إيقاف مؤقت';
+     mini.classList.add('show');label.textContent=nextLabel;pause.textContent=nextPause;lease.miniOwned={label:nextLabel,pause:nextPause};
+   }else if(lease.miniBefore&&lease.miniOwned&&nativeIdle()&&label.textContent===lease.miniOwned.label&&pause.textContent===lease.miniOwned.pause){
+     const before=lease.miniBefore;if(before.show)mini.classList.add('show');else mini.classList.remove('show');
+     label.textContent=before.label;pause.textContent=before.pause;
+   }
  }
  function release(restorePage){
    const l=lease,s=(engine&&engine.status())||(l&&l.lastSession);++serial;
