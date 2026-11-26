@@ -7,7 +7,7 @@
  function create(opts){
    const {document:d,mount,edition,resolvePage,isEligible}=opts;
    if(!d||!mount||!['original','tajwid'].includes(edition)||typeof resolvePage!=='function'||typeof isEligible!=='function')throw Error('invalid viewport ports');
-   let epoch=0,view=null,current=null,next=null,pending=null,phase='idle',fraction=0;
+   let epoch=0,view=null,current=null,next=null,pending=null,phase='idle',fraction=0,advancing=false;
    const valid=p=>Number.isInteger(p)&&p>=1&&p<=604;
    const alive=t=>t===epoch&&isEligible();
    function makeViewport(){
@@ -35,7 +35,7 @@
    }
    function clear(){
      ++epoch; if(view&&view.parentNode===mount)mount.removeChild(view);
-     view=current=next=pending=null;fraction=0;phase='idle';
+     view=current=next=pending=null;fraction=0;phase='idle';advancing=false;
    }
    async function preload(t){
      if(!current||current.p===604||!alive(t))return false;
@@ -78,12 +78,14 @@
      return true;
    }
    async function advance(){
-     if(phase!=='ready'||!current||current.p===604||!isEligible())return false;
-     const t=epoch,old=current;
-     if(!next)await (pending||kick(t));
-     if(!alive(t)||current!==old||!next||next.p!==old.p+1||!view)return false;
-     view.removeChild(old.n);current=next;next=null;fraction=0;view.scrollTop=0;
-     kick(t);return true;
+     if(advancing||phase!=='ready'||!current||current.p===604||!isEligible())return false;
+     const t=epoch,old=current;advancing=true;
+     try{
+       if(!next)await (pending||kick(t));
+       if(!alive(t)||current!==old||!next||next.p!==old.p+1||!view)return false;
+       view.removeChild(old.n);current=next;next=null;fraction=0;view.scrollTop=0;
+       kick(t);return true;
+     }finally{if(t===epoch)advancing=false}
    }
    function position(){return Object.freeze({edition,phase,page:current?current.p:null,progress:fraction,nextReady:!!next})}
    return Object.freeze({start,progress,advance,stop:clear,position});
