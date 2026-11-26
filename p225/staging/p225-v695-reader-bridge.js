@@ -24,8 +24,8 @@
  function read(id,key,fallback){let v=E(id)?.value;try{if(!v&&key)v=w.localStorage.getItem(key)}catch(_){}return v||fallback}
  function request(mode){
    const ed=edition(),p=page(),repeatMode=read('sequenceRepeatModeR107',null,'page'),raw=read('sequenceRepeatV17',null,'1');
-   const count=Number(raw),ppm=Number(read('sequenceSpeedV10','v170Speed','.5')),rate=Number(read('sequenceAudioRateV174','v174AudioRate','1'));
-   if(!ed||!p||repeatMode!=='page'||!Number.isInteger(count)||count<1||count>5||mode==='silent'&&count!==1||!(ppm>0)||rate<.75||rate>1.75)return null;
+   const count=raw==='loop'||raw==='infinite'?Infinity:Number(raw),ppm=Number(read('sequenceSpeedV10','v170Speed','.5')),rate=Number(read('sequenceAudioRateV174','v174AudioRate','1'));
+   if(!ed||!p||repeatMode!=='page'||!(count===Infinity||[1,2,3,5].includes(count))||mode==='silent'&&count!==1||!(ppm>0)||rate<.75||rate>1.75)return null;
    let volume=1;try{if(typeof w.v194s3Volume==='function')volume=Number(w.v194s3Volume())}catch(_){}
    if(!Number.isFinite(volume)||volume<0||volume>1)volume=1;
    return {edition:ed,page:p,mode,repeatMode,repeatCount:count,durationMs:60000/ppm,rate,volume,reciter:read('sequenceReciterV17','v170Reciter','alafasy'),selectedGlobal:Number(w.selectedGlobal)||undefined};
@@ -90,7 +90,7 @@
        l[ed].style.display='block';l.surface.style.setProperty('display','none','important');l.hidden=true;
        // Now, and only now, geometry can be measured in the exclusive visible mount.
        if(!pair.progress(0)){restore(l);return false}return true},
-     progress:p=>pair.progress(p),advance:()=>pair.advance(),stop:()=>pair.stop(),position:()=>pair.position()
+     progress:p=>pair.progress(p),advance:()=>pair.advance(),reset:()=>pair.reset(),stop:()=>pair.stop(),position:()=>pair.position()
    };
    const recordings=plans.create({pageProvider:w.__BASAIR_V180_TEST__,specialProvider:w.__BASAIR_SPECIAL_RECITER_R62__,fallbackProvider:(p,k)=>{const a=w.__BASAIR_V173_TEST__;return a&&typeof a.pageAudioUrls==='function'&&read('sequenceReciterV17','v170Reciter','alafasy')===k?a.pageAudioUrls(p):[]}});
    return sessions.create({viewport,recordings,createMedia:()=>new w.Audio(),now:()=>w.performance.now(),schedule:f=>w.setTimeout(f,50),cancel:t=>w.clearTimeout(t),eligible,onChange:s=>{
