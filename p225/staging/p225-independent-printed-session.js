@@ -4,11 +4,11 @@
  * fresh media element. Do not wire until V695 integration has real QA. */
 (function(root){
  'use strict';
- function create({viewport,recordings,createMedia,now,schedule,cancel,eligible,onChange=()=>{}}){
+ function create({viewport,recordings,exactRepeat,createMedia,now,schedule,cancel,eligible,onChange=()=>{}}){
    if(!viewport||!recordings||typeof createMedia!=='function'||typeof now!=='function'||typeof schedule!=='function'||typeof cancel!=='function'||typeof eligible!=='function')throw Error('invalid session ports');
    let run=null;
    const live=r=>run===r&&eligible(r.edition);
-   const snapshot=()=>run?{edition:run.edition,mode:run.mode,page:run.page,phase:run.phase,progress:run.progress,repeatCount:run.repeatCount,repeatsLeft:run.repeatsLeft,reason:run.reason}:null;
+   const snapshot=()=>run?{edition:run.edition,mode:run.mode,page:run.page,phase:run.phase,progress:run.progress,repeatCount:run.repeatCount,repeatsLeft:run.repeatsLeft,reason:run.reason,target:run.exactTarget||null,repeatMode:run.exactSpec?.mode||'page'}:null;
    function emit(){try{onChange(snapshot())}catch(_){}}
    function detach(r){if(r.timer!==null)cancel(r.timer);r.timer=null;if(r.media){try{r.media.pause();r.media.removeAttribute('src');r.media.load()}catch(_){}r.media=null}}
    function stop(reason='stopped'){const r=run;if(!r)return false;run=null;r.reason=reason;detach(r);viewport.stop();emit();return true}
@@ -41,6 +41,18 @@
      if(!live(r)||!validPlan(plan,r.page))return false;
      r.plan=plan;return playSegment(r,plan.index,plan.initial);
    }
+   async function loadExact(r,target,prepared){
+     const plan=prepared||exactRepeat.plan(r.exactSpec,target);
+     if(!live(r)||!validPlan(plan,target.page)||!plan.visual)return false;
+     if(r.page!==target.page){
+       if(typeof viewport.seekPage!=='function'||!await viewport.seekPage(r.edition,target.page)||!live(r))return false;
+       r.page=target.page;
+     }
+     r.exactTarget=target;r.plan=plan;
+     if(typeof viewport.reset==='function'&&!viewport.reset())return false;
+     if(!update(r,plan.visual.start))return false;
+     return playSegment(r,0,0);
+   }
    async function next(r){
      if(!live(r)||r.phase!=='running')return;
      // The reader may be holding the page at the end of its clock. Wait
@@ -49,7 +61,15 @@
      r.boundaryHold=false;
      r.phase='transition';emit();
      if(r.media)r.media.pause();
-     if(r.mode==='audio'&&r.repeatsLeft>1){
+     if(r.exactSpec){
+       let target=exactRepeat.following(r.exactSpec,r.exactTarget);
+       if(!target){
+         if(!(r.repeatsLeft>1)){stop('exact-repeat-complete');return}
+         if(Number.isFinite(r.repeatsLeft))r.repeatsLeft--;
+         target=r.exactSpec.first;
+       }
+       if(!await loadExact(r,target)){if(run===r)stop('exact-recording-unavailable');return}
+     }else if(r.mode==='audio'&&r.repeatsLeft>1){
        if(Number.isFinite(r.repeatsLeft))r.repeatsLeft--;r.progress=0;
        if((typeof viewport.reset==='function'&&!viewport.reset())||!update(r,0)||!await playSegment(r,0,r.plan.segments[0].start)){if(run===r)stop('repeat-failed');return}
      }else{
@@ -75,7 +95,10 @@
        if(Number.isFinite(end)&&end>s.start&&Number.isFinite(cur)){
          const spans=r.plan.segments.map((v,i)=>v.end===null&&i===r.segment?end-v.start:v.end-v.start);
          const total=spans.reduce((a,b)=>a+b,0),before=spans.slice(0,r.segment).reduce((a,b)=>a+b,0);
-         if(total>0&&!update(r,(before+Math.min(end-s.start,Math.max(0,cur-s.start)))/total)){stop('display-not-ready');return}
+         if(total>0){
+           const p=(before+Math.min(end-s.start,Math.max(0,cur-s.start)))/total,range=r.exactSpec&&r.plan.visual;
+           if(!update(r,range?range.start+(range.end-range.start)*p:p)){stop('display-not-ready');return}
+         }
          if(m.ended&&cur<end-.25){stop('recording-ended-early');return}
          if(cur>=end||m.ended){
            if(r.segment+1<r.plan.segments.length){
@@ -91,15 +114,20 @@
    }
    async function start(opts){
      if(run||!opts||!['original','tajwid'].includes(opts.edition)||!['silent','audio'].includes(opts.mode)||!Number.isInteger(opts.page)||opts.page<1||opts.page>604||!eligible(opts.edition))return false;
-     if(opts.repeatMode&&opts.repeatMode!=='page')return false;
+     let exactSpec=null;
+     if(opts.repeatMode&&opts.repeatMode!=='page'){
+       if(opts.mode!=='audio'||!exactRepeat||typeof exactRepeat.prepare!=='function')return false;
+       try{exactSpec=exactRepeat.prepare(opts)}catch(_){return false}
+       if(!exactSpec)return false;
+     }
      const rate=opts.rate??1,volume=opts.volume??1,count=opts.repeatCount??1;
      if(!Number.isFinite(rate)||rate<.75||rate>1.75||!Number.isFinite(volume)||volume<0||volume>1||!(count===Infinity||[1,2,3,5].includes(count)))return false;
      if(opts.mode==='silent'&&(!(Number.isFinite(opts.durationMs)&&opts.durationMs>0)||count!==1)||opts.mode==='audio'&&!opts.reciter)return false;
-     const r={edition:opts.edition,mode:opts.mode,page:opts.page,phase:'preparing',progress:0,reason:'',timer:null,media:null,plan:null,rate,volume,repeatCount:count,repeatsLeft:count,duration:opts.durationMs,reciter:opts.reciter,elapsed:0,base:0};
+     const r={edition:opts.edition,mode:opts.mode,page:opts.page,phase:'preparing',progress:0,reason:'',timer:null,media:null,plan:null,rate,volume,repeatCount:count,repeatsLeft:count,duration:opts.durationMs,reciter:opts.reciter,exactSpec,exactTarget:null,elapsed:0,base:0};
      run=r;emit();
      try{
        if(!await viewport.start(r.edition,r.page)||!live(r)){if(run===r)stop('surface-unavailable');return false}
-       if(r.mode==='audio'&&!await loadAudio(r,opts.selectedGlobal)){if(run===r)stop('playback-unavailable');return false}
+       if(r.mode==='audio'&&!(r.exactSpec?await loadExact(r,r.exactSpec.first,r.exactSpec.firstPlan):await loadAudio(r,opts.selectedGlobal))){if(run===r)stop('playback-unavailable');return false}
        if(!live(r)){if(run===r)stop('route-changed');return false}
        r.base=now();r.phase='running';emit();arm(r);return true;
      }catch(_){if(run===r)stop('start-failed');return false}
