@@ -22,13 +22,28 @@
  }
  function page(){const n=Number(E('readerPageInput')?.value);return Number.isInteger(n)&&n>=1&&n<=604?n:0}
  function read(id,key,fallback){let v=E(id)?.value;try{if(!v&&key)v=w.localStorage.getItem(key)}catch(_){}return v||fallback}
+ function exactPorts(){
+   const factory=w.__BASAIR_P225_EXACT_REPEAT__,b=w.__BASAIR_B345_SEQUENCE__,p=w.__BASAIR_PRINT_BRIDGE__;
+   if(!factory||!Array.isArray(w.LOCAL_QURAN)||typeof w.globalFor!=='function'||typeof w.pageForGlobal!=='function'||typeof b?._test?.exactAyahUrls!=='function'||typeof p?.hitHTML!=='function')return null;
+   return factory.create({
+     catalog:w.LOCAL_QURAN,
+     pageFor:(s,a)=>{const g=Number(w.globalFor(s,a));return g>0?Number(w.pageForGlobal(g)):0},
+     urls:(s,a,k)=>read('sequenceReciterV17','v170Reciter','alafasy')===k?b._test.exactAyahUrls(s,a):[],
+     hitRows:page=>{
+       const node=d.createElement('div');node.innerHTML=p.hitHTML(page,false);
+       return Array.from(node.querySelectorAll('.ayahHit[data-s][data-selectayah]')).filter(n=>n.style.top.endsWith('%')&&n.style.height.endsWith('%')).map(n=>({s:Number(n.getAttribute('data-s')),a:Number(n.getAttribute('data-selectayah')),top:parseFloat(n.style.top)/100,height:parseFloat(n.style.height)/100}));
+     }
+   });
+ }
  function request(mode){
    const ed=edition(),p=page(),repeatMode=read('sequenceRepeatModeR107',null,'page'),raw=read('sequenceRepeatV17',null,'1');
    const count=raw==='loop'||raw==='infinite'?Infinity:Number(raw),ppm=Number(read('sequenceSpeedV10','v170Speed','.5')),rate=Number(read('sequenceAudioRateV174','v174AudioRate','1'));
-   if(!ed||!p||repeatMode!=='page'||!(count===Infinity||[1,2,3,5].includes(count))||mode==='silent'&&count!==1||!(ppm>0)||rate<.75||rate>1.75)return null;
+   if(!ed||!p||!['page','ayah','surah'].includes(repeatMode)||!(count===Infinity||[1,2,3,5].includes(count))||mode==='silent'&&(count!==1||repeatMode!=='page')||!(ppm>0)||rate<.75||rate>1.75)return null;
    let volume=1;try{if(typeof w.v194s3Volume==='function')volume=Number(w.v194s3Volume())}catch(_){}
    if(!Number.isFinite(volume)||volume<0||volume>1)volume=1;
-   return {edition:ed,page:p,mode,repeatMode,repeatCount:count,durationMs:60000/ppm,rate,volume,reciter:read('sequenceReciterV17','v170Reciter','alafasy'),selectedGlobal:Number(w.selectedGlobal)||undefined};
+   const req={edition:ed,page:p,mode,repeatMode,repeatCount:count,durationMs:60000/ppm,rate,volume,reciter:read('sequenceReciterV17','v170Reciter','alafasy'),selectedGlobal:Number(w.selectedGlobal)||undefined,surah:Number(w.selectedSurah),ayah:Number(w.selectedTilawaAyah)};
+   if(repeatMode!=='page'){try{if(!exactPorts()?.prepare(req))return null}catch(_){return null}}
+   return req;
  }
  function layout(ed){
    const reader=E('mushafReader'),surface=E('pageReading'),text=E('mushafText'),stage=text&&text.querySelector('.localPageStage');
@@ -90,10 +105,11 @@
        l[ed].style.display='block';l.surface.style.setProperty('display','none','important');l.hidden=true;
        // Now, and only now, geometry can be measured in the exclusive visible mount.
        if(!pair.progress(0)){restore(l);return false}return true},
+     async seekPage(ed,p){if(!eligible(ed))return false;pair.stop();return await pair.start(ed,p)&&eligible(ed)&&pair.progress(0)},
      progress:p=>pair.progress(p),advance:()=>pair.advance(),reset:()=>pair.reset(),canAdvance:()=>pair.canAdvance(),stop:()=>pair.stop(),position:()=>pair.position()
    };
    const recordings=plans.create({pageProvider:w.__BASAIR_V180_TEST__,specialProvider:w.__BASAIR_SPECIAL_RECITER_R62__,fallbackProvider:(p,k)=>{const a=w.__BASAIR_V173_TEST__;return a&&typeof a.pageAudioUrls==='function'&&read('sequenceReciterV17','v170Reciter','alafasy')===k?a.pageAudioUrls(p):[]}});
-   return sessions.create({viewport,recordings,createMedia:()=>new w.Audio(),now:()=>w.performance.now(),schedule:f=>w.setTimeout(f,50),cancel:t=>w.clearTimeout(t),eligible,onChange:s=>{
+   return sessions.create({viewport,recordings,exactRepeat:req.repeatMode==='page'?null:exactPorts(),createMedia:()=>new w.Audio(),now:()=>w.performance.now(),schedule:f=>w.setTimeout(f,50),cancel:t=>w.clearTimeout(t),eligible,onChange:s=>{
      if(lease!==l||serial!==token)return;
      if(s){l.lastSession=s;setMini(s)}
      else{w.setTimeout(()=>{if(lease===l&&serial===token&&owner==='p225'&&core.status()?.generation===sessionToken)core.stop('p225-session-ended')},0)}
