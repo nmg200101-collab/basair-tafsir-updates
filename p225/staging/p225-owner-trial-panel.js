@@ -31,6 +31,8 @@
    const mode=d.getElementById('sequenceSilentV10'),host=mode?.parentNode?.parentNode;
    const mini=d.getElementById('sequenceMiniControl');
    if(!host||!mini?.parentNode)return false;
+   if(panel&&!panel.isConnected){panel=null;buttons={};statusText=null}
+   if(emergency&&!emergency.isConnected)emergency=null;
    if(!panel){
      panel=d.createElement('section');panel.id='p225TrialPanel';panel.dir='rtl';
      Object.assign(panel.style,{display:'none',padding:'10px',margin:'8px 0',border:'1px solid #658374',borderRadius:'10px'});
@@ -50,8 +52,8 @@
    return true;
  }
  function refresh(){
-   const b=bridge();if(!b||!mount())return;
-   b.guard();const s=b.status(),ed=b.edition(),active=s.owner==='p225'&&!!s.session;
+   const b=bridge();if(!b)return;
+   b.guard();if(!mount())return;const s=b.status(),ed=b.edition(),active=s.owner==='p225'&&!!s.session;
    panel.style.display=ed?'block':'none';
    buttons.original.textContent='الأصلية: '+(s.enabled.original?'تجريبي':'سابق');
    buttons.tajwid.textContent='الملونة: '+(s.enabled.tajwid?'تجريبي':'سابق');
