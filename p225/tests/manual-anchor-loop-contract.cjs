@@ -24,8 +24,8 @@ const source=n=>fs.readFileSync(path.resolve(__dirname,'../staging',n),'utf8');
  check(v.reset()&&el.scrollTop===0&&!v.position().manual,'repeat clears manual anchor');
  check(v.progress(.5)&&el.scrollTop===500,'repeat progress follows original clock');check(await v.advance()&&v.position().page===21,'transition clears anchor');
  check(digital.shadow==='native','digital untouched');v.stop();
- let q=new Map(),seq=0,media=[],resets=0,advances=0,display=null;
- const viewport={async start(e,p){display=p;return true},progress:()=>true,reset(){resets++;return true},async advance(){advances++;display++;return true},stop(){display=null}};
+ let q=new Map(),seq=0,media=[],resets=0,advances=0,display=null,canAdvance=true;
+ const viewport={async start(e,p){display=p;return true},progress:()=>true,canAdvance:()=>canAdvance,reset(){resets++;return true},async advance(){advances++;display++;return true},stop(){display=null}};
  const recordings={async resolve({page}){return {page,index:0,initial:0,segments:[{sources:['recording'],start:0,end:null}]}}};
  const ctrl=w.__BASAIR_P225_PRINT_SESSION__.create({viewport,recordings,createMedia:()=>{const m={currentTime:0,duration:10,paused:true,async play(){this.paused=false},pause(){this.paused=true},removeAttribute(){},load(){}};media.push(m);return m},now:()=>clock,schedule:f=>{q.set(++seq,f);return seq},cancel:t=>q.delete(t),eligible:()=>true});
  const req={edition:'original',mode:'audio',reciter:'alafasy',page:12,repeatCount:Infinity};
@@ -33,5 +33,6 @@ const source=n=>fs.readFileSync(path.resolve(__dirname,'../staging',n),'utf8');
  for(let i=0;i<4;i++){media.at(-1).currentTime=10;let jobs=[...q.values()];q.clear();jobs.forEach(f=>f());await flush();check(ctrl.status().page===12&&ctrl.status().repeatsLeft===Infinity,'loop stays on page '+i)}
  check(resets===4&&advances===0,'loop reset count');check(ctrl.stop()&&media.every(m=>m.paused)&&q.size===0,'loop stop');
  check(!await ctrl.start({...req,repeatCount:4}),'unsupported count rejected');
+ check(await ctrl.start({...req,repeatCount:1}),'boundary hold starts');canAdvance=false;media.at(-1).currentTime=10;let jobs=[...q.values()];q.clear();jobs.forEach(f=>f());await flush();check(ctrl.status().page===12&&media.at(-1).paused&&advances===0,'audio held at boundary without page switch');check(ctrl.pause()&&await ctrl.resume()&&media.at(-1).paused,'resume does not play beyond held boundary');canAdvance=true;jobs=[...q.values()];q.clear();jobs.forEach(f=>f());await flush();check(ctrl.status().page===13&&advances===1,'page advances after gesture settles');ctrl.stop();
  return {checks,scope:'simulated viewport input and audio loop; real WebView pending'};
 })(source('p225-independent-printed-viewport.js'),source('p225-independent-printed-session.js')).then(r=>console.log(JSON.stringify(r))).catch(e=>{console.error(e);process.exitCode=1});
