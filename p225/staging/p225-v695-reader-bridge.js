@@ -90,7 +90,7 @@
        l[ed].style.display='block';l.surface.style.setProperty('display','none','important');l.hidden=true;
        // Now, and only now, geometry can be measured in the exclusive visible mount.
        if(!pair.progress(0)){restore(l);return false}return true},
-     progress:p=>pair.progress(p),advance:()=>pair.advance(),reset:()=>pair.reset(),stop:()=>pair.stop(),position:()=>pair.position()
+     progress:p=>pair.progress(p),advance:()=>pair.advance(),reset:()=>pair.reset(),canAdvance:()=>pair.canAdvance(),stop:()=>pair.stop(),position:()=>pair.position()
    };
    const recordings=plans.create({pageProvider:w.__BASAIR_V180_TEST__,specialProvider:w.__BASAIR_SPECIAL_RECITER_R62__,fallbackProvider:(p,k)=>{const a=w.__BASAIR_V173_TEST__;return a&&typeof a.pageAudioUrls==='function'&&read('sequenceReciterV17','v170Reciter','alafasy')===k?a.pageAudioUrls(p):[]}});
    return sessions.create({viewport,recordings,createMedia:()=>new w.Audio(),now:()=>w.performance.now(),schedule:f=>w.setTimeout(f,50),cancel:t=>w.clearTimeout(t),eligible,onChange:s=>{
